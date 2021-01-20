@@ -79,14 +79,14 @@ dropdown-submenu {
 
 						  <li class=""><a href="/import"> Importer </a></li>
 
-						  <li class=""><a href="/statistiqueDoctocare"> Stat Doctocare </a></li>
-						  <li class=""><a href="/statistiqueBriant"> Stat Jacques Briant </a></li>
-						  <li class=""><a href="/statistiqueCodelis"> Stat CODELIS </a></li>
-						  <li class=""><a href="/statistique"> Stat AE </a></li>
-						  <li class=""><a href="/statistiqueAS"> Stat AS </a></li>
+						  <li class=""><a href="/statistiqueDoctocare?menu=statistique_doctocare"> Stat Doctocare </a></li>
+                      	  <li class=""><a href="/statistiqueBriant?menu=statistique_briant"> Stat Jacques Briant </a></li>
+                    	  <li class=""><a href="/statistiqueCodelis?menu=statistique_codelis"> Stat CODELIS </a></li>
+                      	  <li class=""><a href="/statistique?menu=statistique_ae"> Stat AE </a></li>
+                    	  <li class=""><a href="/statistiqueAS?menu=statistique_as"> Stat AS </a></li>
 
 						  <li class=""><a href="/statistiqueEole"> Stat Ecoute Client Eole  </a></li>
-						  <li class=""><a href="/statistiqueIsoEole"> Stat Ecoute Iso Eole </a></li>
+                      	  <li class=""><a href="/statistiqueIsoEole?menu=statistique_iso_eole"> Stat Ecoute Iso Eole </a></li>
 
 						</ul>-->
 						<ul class="dropdown-menu notifications">
@@ -96,7 +96,7 @@ dropdown-submenu {
 							<ul class="dropdown-menu">
 							  <li><a class="dropdown-item" href="/masqueDoctocare"> Ecoute Doctocare </a></li>
 							  <li><a class="dropdown-item" href="/listeEcouteDoctocare"> Liste écoute Doctocare </a></li>
-							  <li><a class="dropdown-item" href="/statistiqueDoctocare"> Statistique Doctocare </a></li>
+							  <li><a class="dropdown-item" href="/statistiqueDoctocare?menu=statistique_doctocare"> Statistique Doctocare </a></li>
 							</ul>
 						  </li>
 
@@ -105,7 +105,7 @@ dropdown-submenu {
 							<ul class="dropdown-menu">
 							  <li><a class="dropdown-item" href="/masqueBriant"> Ecoute JB </a></li>
 							  <li><a class="dropdown-item" href="/listeEcouteBriant"> Liste écoute JB </a></li>
-							  <li><a class="dropdown-item" href="/statistiqueBriant"> Statistique JB </a></li>
+							  <li><a class="dropdown-item" href="/statistiqueBriant?menu=statistique_briant"> Statistique JB </a></li>
 							</ul>
 						  </li>-->
 						  
@@ -114,7 +114,7 @@ dropdown-submenu {
 							<ul class="dropdown-menu">
 							  <li><a class="dropdown-item" href="/masqueBriant"> Ecoute JB AE </a></li>
 							  <li><a class="dropdown-item" href="/listeEcouteBriant"> Liste écoute JB AE </a></li>
-							  <li><a class="dropdown-item" href="/statistiqueBriant"> Statistique JB AE </a></li>
+							  <li><a class="dropdown-item" href="/statistiqueBriant?menu=statistique_briant"> Statistique JB AE </a></li>
 							</ul>
 						  </li>
 						  
@@ -123,7 +123,7 @@ dropdown-submenu {
 							<ul class="dropdown-menu">
 							  <li><a class="dropdown-item" href="/masqueBriantAs"> Ecoute JB AS </a></li>
 							  <li><a class="dropdown-item" href="/listeEcouteBriantAs"> Liste écoute JB AS </a></li>
-							  <li><a class="dropdown-item" href="/statistiqueBriantAs"> Statistique JB AS </a></li>
+							  <li><a class="dropdown-item" href="/statistiqueBriantAs?menu=statistique_briant_as"> Statistique JB AS </a></li>
 							</ul>
 						  </li>
 
@@ -132,7 +132,7 @@ dropdown-submenu {
 							<ul class="dropdown-menu">
 							  <li><a class="dropdown-item" href="/masqueCodelis"> Ecoute CODELIS </a></li>
 							  <li><a class="dropdown-item" href="/listeEcouteCodelis"> Liste écoute CODELIS </a></li>
-							  <li><a class="dropdown-item" href="/statistiqueCodelis"> Statistique CODELIS </a></li>
+							  <li><a class="dropdown-item" href="/statistiqueCodelis?menu=statistique_codelis"> Statistique CODELIS </a></li>
 							</ul>
 						  </li>
 
@@ -141,7 +141,7 @@ dropdown-submenu {
 							<ul class="dropdown-menu">
 							  <li><a class="dropdown-item" href="/masque"> Ecoute AE </a></li>
 							  <li><a class="dropdown-item" href="/listeEcoute"> Liste écoute AE </a></li>
-							  <li><a class="dropdown-item" href="/statistique"> Statistique AE </a></li>
+							  <li><a class="dropdown-item" href="/statistique?menu=statistique_ae"> Statistique AE </a></li>
 							</ul>
 						  </li>
 
@@ -150,7 +150,7 @@ dropdown-submenu {
 							<ul class="dropdown-menu">
 							  <li><a class="dropdown-item" href="/masqueAS"> Ecoute AS </a></li>
 							  <li><a class="dropdown-item" href="/listeEcouteAS"> Liste écoute AS </a></li>
-							  <li><a class="dropdown-item" href="/statistiqueAS"> Statistique AS </a></li>
+							  <li><a class="dropdown-item" href="/statistiqueAS?menu=statistique_as"> Statistique AS </a></li>
 							</ul>
 						  </li>
 
@@ -286,6 +286,15 @@ dropdown-submenu {
 
 						<li class=""><a href="/neocles-reporting-indiviuel"> Consultation individuelle</a></li>
 						<li class=""><a href="/neocles-reporting-equipe"> Consultation groupée </a></li>
+					</ul>
+				</li>
+
+				<!-- Ajout menu fiche de suivi -->
+				<li class="dropdown messages-dropdown dropdown-masque" id="">
+					<a href="#"><i class="fa fa-dashboard fa-lg" style="color:#fff16f"></i>Fiche de suivi</a>
+					<ul class="dropdown-menu notifications">
+						<li><a href="/fiche_suivi">Fiche de suivi</a></li>
+						<li><a href="/fiche_suivi">Fiche de suivi</a></li>
 					</ul>
 				</li>
 				 <%

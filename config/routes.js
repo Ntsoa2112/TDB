@@ -123,8 +123,9 @@ module.exports.routes = {
   '/neocles-reporting-equipe' : 'NeoclesReportingController.indexReportingEquipe',
   '/neocles-reporting-conformite-annuelle' : 'NeoclesReportingController.getConformiteParEquipe',
   
-
- 
+  /*********** Ajout suivi ***********************/
+  '/fiche_suivi_en_detail': 'FichedesuivineoController.fichedesuiviendetail',
+  '/fiche_suivi_de_conformite': 'FichedesuivineoController.fichedesuivideconformite',
   /*********** Dossiers ************************************************************************************************/
   '/statOp': 'LienOperDossierController.index',
   '/ajaxStat': 'LienOperDossierController.ajaxStat',
