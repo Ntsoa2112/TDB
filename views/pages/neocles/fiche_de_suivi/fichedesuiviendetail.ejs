@@ -26,6 +26,41 @@
 
 <% }%>
 <h1>Fiche de suivi en détail</h1>
+
+<div id="page-wrapper">
+    <div class="row">
+      <div class="col-md-12">
+        <div class=" row ">
+            <div  class="">
+              <div class="panel panel-primary">
+                <div class="panel-heading">
+                  <h3 class="panel-title"> <i class="fa fa-bar-chart-o"></i> </h3>
+                  <div class="row">
+                    <div class="form-group">
+                        <div class="col-xs-2 col-md-2 col-lg-2">
+                          <select class="form-control" tabindex="-1" id="equipeDashAdmin" placeholder = "Equipe" name="equipe" >
+                            <option value="1">EQUIPE</option>
+                          </select>
+                        </div>
+                        <div class="col-xs-2 col-md-2 col-lg-2">
+                          <input class="form-control" tabindex="-1" id="datetim" />
+                        </div>
+                      <div class="col-xs-2 col-md-2 col-lg-2">
+                          <input type="text" class="form-control" tabindex="-1" id="id_pers" placeholder="Matricule"/>
+                        </div>
+                        <div class="col-xs-2 col-md-2 col-lg-2">
+                            <button type="submit" style="margin-top:-1px" class="btn btn-info" onclick="go();">ok</button>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="clearfix"></div>
+                <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                <span class="sr-only">Loading...</span>
+              </div>
+              <div id="div" class="col-md-12 col-sm-12 col-xs-12">
     <script src="/js/dependencies/sails.io.js"></script>
     <script src="/js/jquery-1.10.2.min.js"></script>
     <script src="/bootstrap/js/bootstrap.min.js"></script>
