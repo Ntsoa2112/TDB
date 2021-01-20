@@ -1,0 +1,41 @@
+
+  <head>
+    <title><%=typeof title == 'undefined' ? 'TDB' : title%></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!--STYLES-->
+    <link rel="stylesheet" href="/styles/importer.css">
+    <link rel="stylesheet" href="/bootflat/css/bootflat.min.css">
+    <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/local.css">
+    <link rel="stylesheet" href="/css/Style_v3.css">
+    <link rel="stylesheet" href="/morris/morris.css">
+    <link rel="stylesheet" href="/css/bootstrap-material-datetimepicker.css">
+    <!--STYLES END-->
+</head>
+<body>
+<% if(req.session.droit==1){
+
+%>
+<% include ../../../includes/entete.ejs %>
+
+<% }else{
+
+%>
+<% include ../../../includes/enteteOperateur.ejs %>
+
+<% }%>
+
+<h1>Fiche de suivi de conformité</h1>
+
+    <script src="/js/dependencies/sails.io.js"></script>
+    <script src="/js/jquery-1.10.2.min.js"></script>
+    <script src="/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/material/chart/highcharts.js"></script>
+    <script src="/material/chart/exporting.js"></script>
+    <script src="/js/dossierEtapeApp.js"></script>
+    <script src="/js/jquery-ui.min.js"></script>
+    <script src="/js/material-modal.min.js"></script>
+    <script src="/js/pikaday.js"></script>
+</body>
+
