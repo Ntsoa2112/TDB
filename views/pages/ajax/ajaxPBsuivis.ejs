@@ -1,0 +1,163 @@
+
+<script>
+  function load(date_in,date_out,h_theor,id_pers,pdate){
+    var date_in_d = [];
+    var date_out_d = [];
+
+    var date_in = date_in;
+    var date_out = date_out;
+    var h_theorique = h_theor;
+    var duree = 0;
+    var th_split = h_theorique.split(":");
+    var dure_theorique = 1000 * (parseInt(th_split[0])*60*60+parseInt(th_split[1])*60+parseInt(th_split[1]));
+    dur_tmp = 0;
+
+
+    /*calcule de reel pointage*/
+    var tableIn =[];
+    var tableOut =[];
+
+    var lastIn = null;
+    var lastOut = null;
+    //recuperation de la liste exacte des heures de pointages sans doublons
+    for (var i = 0;i<date_in.length;i++){
+      if(lastIn !== null){
+        var lastInsplit = lastIn.split(":");
+        var linNum = new Date(Date.parse(pdate)).setHours(parseInt(lastInsplit[0]), parseInt(lastInsplit[1]), parseInt(lastInsplit[2]));
+        var Insplit = date_in[i].split(":");
+        var inNum = new Date(Date.parse(pdate)).setHours(parseInt(Insplit[0]), parseInt(Insplit[1]), parseInt(Insplit[2]));
+        //comparaison par rapport au last In si la #ce entre in[i] et lastIn < 1 Min
+        if(((inNum-linNum)/1000)/60 > 3/*min*/){
+          //on affecte in[i] dans lastIn et dans tableIn
+          lastIn  = date_in[i];
+          tableIn.push(lastIn);
+
+        }
+      }else{
+        lastIn  = date_in[i];
+        tableIn.push(lastIn);
+      }
+    }
+
+    for (var i = 0;i<date_out.length;i++){
+
+      if(lastOut !== null){
+        var lastOutsplit = lastOut.split(":");
+        var loutNum = new Date(Date.parse(pdate)).setHours(parseInt(lastOutsplit[0]), parseInt(lastOutsplit[1]), parseInt(lastOutsplit[2]));
+        var Outsplit = date_out[i].split(":");
+        var outNum = new Date(Date.parse(pdate)).setHours(parseInt(Outsplit[0]), parseInt(Outsplit[1]), parseInt(Outsplit[2]));
+        //comparaison par rapport au lastOut si la #ce entre out[i] et lastOut < 1 Min
+        if(((outNum-loutNum)/1000)/60 > 3/*min*/){
+          //on affecte out[i] dans lastOut et dans tableOut
+          lastOut  = date_out[i];
+          tableOut.push(lastOut);
+
+        }
+      }else{
+
+        lastOut  = date_out[i];
+        tableOut.push(lastOut);
+      }
+    }
+
+   /* //console.log("---------------------------------------------------------------------------------------------------------------");
+    //console.log(tableIn);
+    //console.log(tableOut);*/
+
+
+
+    /*calcule de reel pointage*/
+    for(var i=0 ; i<tableIn.length;i++) {
+      if (tableIn.length < tableOut.length) {
+        ////console.log("anomalie pointage");
+      } else {
+        var dt = new Date(Date.now());
+        var date_in_tmp =new Date(Date.parse(pdate)) ;
+        var date_out_tmp =new Date(Date.parse(pdate));
+        date_in_tmp.setHours(parseInt(dt.getHours()),parseInt(dt.getMinutes()),parseInt(dt.getSeconds()));
+        date_out_tmp.setHours(parseInt(dt.getHours()),parseInt(dt.getMinutes()),parseInt(dt.getSeconds()));
+        var in_split = tableIn[i].split(":");
+        date_in_tmp.setHours(parseInt(in_split[0]), parseInt(in_split[1]), parseInt(in_split[2]));
+        var out_split = [];
+        if (typeof tableOut[i] === "undefined") {
+
+        } else {
+          ////console.log(date_out_tmp +"====");
+
+          out_split = tableOut[i].split(":");
+          date_out_tmp.setHours(parseInt(out_split[0]), parseInt(out_split[1]), parseInt(out_split[2]));
+        }
+        dur_tmp += (date_out_tmp - date_in_tmp);
+
+        /*//console.log("temp : " + (date_out_tmp - date_in_tmp));
+        //console.log(date_in_tmp);
+        //console.log(date_out_tmp);*/
+      }
+    }
+
+    var h_tot = dure_theorique;
+    var dtt = h_tot - dur_tmp;
+    var p_time = 0;
+    if(h_tot!=0){
+      p_time = (dur_tmp/h_tot)*100;
+    }
+
+    var classing = '';
+    if(p_time<30){
+      classing = 'progress-bar-danger';
+    }else if(p_time<80){
+      classing = 'progress-bar-warning';
+    }else if(p_time<90){
+      classing = '';
+    }else if(p_time<80){
+      classing = 'btn-success';
+    }
+    ////console.log(p_time);
+    var pb="<div class='progress-bar "+classing+"' role='progressbar' aria-valuenow='"+Math.round(p_time)+"' aria-valuemin='0' aria-valuemax='100' style='width:"+Math.round(p_time)+"%'>" +
+      "<span class='sr-only'>"+Math.round(p_time)+"% Complete</span>  </div>"
+    $("#pb_"+id_pers).html(pb);
+
+  }
+
+
+</script>
+
+
+
+
+
+
+
+<%
+var date_in = [];
+var date_out = [];
+var h_theorique_str = "";
+var pdate ="";
+//console.log(pointage);
+pointage.forEach(function (row) {
+  h_theorique_str = row['horaire_journaliere'];
+  pdate =row['pdate'];
+  //console.log("IN = "+(row['horaire_journaliere'])) ;
+  if((row['source']).indexOf("IN")===0){
+    date_in.push(row['entree']);
+  }else{
+    date_out.push(row['entree']);
+  }
+
+
+});
+
+ %>
+<script>
+
+  var date_in0 = <%-JSON.stringify(date_in)%>;
+  var date_out0 =<%-JSON.stringify(date_out)%>;
+  var pdate ='<%=pdate%>';
+</script>
+
+<% var script = "<script>";
+      script += " load(date_in0,date_out0,'"+h_theorique_str+"',"+id_pers+",pdate); </script>";
+%>
+
+
+<%-script %>

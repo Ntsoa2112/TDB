@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+
+  
+  <link rel="stylesheet" href="/styles/importer.css">
+  <link rel="stylesheet" href="/bootflat/css/bootflat.min.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/local.css">
+  <link rel="stylesheet" href="/css/Style_v3.css">
+  <link rel="stylesheet" href="/jquery-ui/jquery-ui.css">
+
+
+  <style type="text/css">
+    .notation_almerys{
+    }
+    .colorTable{
+      background-color:red;
+    }
+    input[type=radio] {
+      display: block;
+      margin: 0 auto;
+    }
+    label {
+      display: inline-block;
+    }
+  </style>
+  <title>Ecoute Masque</title>
+</head>
+<body  onload="loadAll();"> <!--  onload="loadAll();"
+
+
+	<!-- HEADER -->
+	<%
+	var mapPonderation = {};
+	if(req.session.droit==1){
+
+	%>
+	<% include ../../../includes/entete.ejs %>
+	<% }else{
+
+	%>
+	<% include ../../../includes/enteteOperateur.ejs %>
+
+	<% }%>
+	<!-- /HEADER -->
+
+	<!-- Main -->
+	<div id="page-wrapper">
+		<div class="row">
+			<div class="page-title" style="margin-left:25px">
+			  <div class="title_left">
+				<h3 style="color:#2B75A6;">
+				  Liste écoute Jacques Briant AE
+				</h3>
+			  </div>
+			</div>
+
+			<!--div de selection --->
+			<div class="">
+			  <div class="form-group col-md-2">
+				<label for="date_ecoute">Date debut</label>
+				<input type="text" class="form-control" id="date_ecoute" name="date_ecoute" onchange="getAjaxFiltreEcoute();"></input>
+			  </div>
+			</div>
+			<div class="">
+			  <div class="form-group col-md-2">
+				<label for="date_ecoute">Date fin</label>
+				<input type="text" class="form-control" id="date_ecoute2" name="date_ecoute2" onchange="getAjaxFiltreEcoute();"></input>
+			  </div>
+			</div>
+			<div class="form-group col-md-2 hidden">
+				<label for="tc_select">CE</label>
+				<select class="form-control" id="equipe_select" name="equipe_select" onchange="getAjaxFiltreEcoute();">
+				  <option value="">-</option>
+				</select>
+			</div>
+			<div class="form-group col-md-2">
+				<label for="tc_select">SQ</label>
+				<select class="form-control" id="sq_select" name="sq_select" onchange="getAjaxFiltreEcoute();">
+				  <option value="">-</option>
+				</select>
+			</div>
+			<div class="form-group col-md-2">
+				<label for="tc_select">TC</label>
+				<select class="form-control" id="tc_select" name="tc_select" onchange="getAjaxFiltreEcoute();">
+				  <option value="">-</option>
+				</select>
+			</div>
+			<!--<div class="form-group col-md-2">
+			  <label for="tc_select">Numero enregistrement</label>
+				<select class="form-control" id="numero_select" name="numero_select" onchange="getAjaxFiltreEcoute();">
+				  <option value="">-</option>
+				</select>
+			</div>
+
+			-->
+
+			<div class="form-group col-md-2 hidden">
+				<label for="campagne_select">Campagne</label>
+					<select class="form-control" id="campagne_select" onclick="" onchange="getAjaxFiltreEcoute()" > 
+						<option value="">-</option>
+					</select>
+			</div>
+			<div class="form-group col-md-2">
+				<label for="tc_select">Conformité</label>
+				<select class="form-control" id="conforme_select" name="conforme_select" onchange="getAjaxFiltreEcoute();">
+				  <option value=""></option>
+				  <option value="1">Oui</option>
+				  <option value="2">Non</option>
+				</select>
+			</div>
+			<div id="lstEcoute">
+		
+			</div>
+			<!--fin div de selection --->
+
+		</div>
+	</div>
+	</br>
+	</br>
+</body>
+
+
+<!--<script src="/js/jquery-ui.min.js"></script>
+<script src="/bootstrap/js/bootstrap.min.js"></script>
+<script src="/js/jquery.min.js"></script>-->
+
+<script src="/js/jquery-1.12.4.js"></script>
+<script src="/js/project.min.js"></script>
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/scripts.js"></script>
+
+<script src="/js/vendors/echarts.min.js"></script>
+<script src="/js/dependencies/sails.io.js"></script>
+<script src="/js/jquery-ui.min.js"></script>
+<script src="/js/echarts/theme.js"></script>
+<script src="/js/echarts/echarts.js"></script>
+<script src="/js/custom.min.js"></script>
+
+
+<script language="javascript">
+	$(function() { 
+		$( "#date_ecoute").datepicker({
+		  dateFormat: 'yy-mm-dd'
+		}); //.datepicker("setDate", new Date());
+		$( "#date_ecoute2").datepicker({
+		  dateFormat: 'yy-mm-dd'
+		}); //.datepicker("setDate", new Date());
+	  } );
+	  
+	  /*
+	   * Fonction pour afficher la liste deroulante des TC et la liste des motifs appels
+	   * */
+	  function loadAll(){
+		loadTC();
+		loadNumero();
+		loadChefEquipe();
+		loadSq();
+		loadCampagneAS()
+	  }
+	  
+		/*
+	   * Fonction pour afficher la liste deroulante des TC
+	   * */
+	  function loadTC(){
+		$.ajax({
+		  type: "GET",
+		  url: "/getLsTCdetails",
+
+		  success: function(msg){
+			var html = "<option value=''></option>";
+			var data = JSON.parse(msg);
+
+			for (var i = 0 ; i<data.length ; i++){
+			  html += "<option value='"+data[i].matricule+"'>"+data[i].matricule+" - "+data[i].pseudo+" - "+data[i].appelation+"</option>";
+			}
+			$("#tc_select").html(html);
+		  },
+		  error: function (error) {
+
+		  }
+		});
+		}
+		
+		function loadCampagneAS(){
+    $.ajax({
+      type: "GET",
+      url: "/getLsCampagneAS",
+
+      success: function(msg){
+        var html = "<option value=''></option>";
+        var data = JSON.parse(msg);
+
+        for (var i = 0 ; i<data.length ; i++){
+          html += "<option value='"+data[i].id_campagne+"'>"+data[i].libelle+"</option>";
+        }
+        $("#campagne_select").html(html);
+      },
+      error: function (error) {
+        alert("ERROR CAMPAGNE");
+      }
+    });
+  }
+	  
+	  /*
+	   * Fonction pour afficher la liste deroulante des TC
+	   * */
+	  function loadNumero(){
+		$.ajax({
+		  type: "GET",
+		  url: "/getLsNumeroEnregistrement",
+
+		  success: function(msg){
+			var html = "<option value=''></option>";
+			var data = JSON.parse(msg);
+
+			for (var i = 0 ; i<data.length ; i++){
+			  html += "<option value='"+data[i].numero_enregistrement+"'>"+data[i].numero_enregistrement+"</option>";
+			}
+			$("#numero_select").html(html);
+		  },
+		  error: function (error) {
+
+		  }
+		});
+	  }
+	  
+	  /*
+	   * Fonction pour afficher la liste deroulante des SQ
+	   * */
+	  function loadSq(){
+		$.ajax({
+		  type: "GET",
+		  url: "/getLsSq",
+
+		  success: function(msg){
+			var html = "<option value=''></option>";
+			var data = JSON.parse(msg);
+
+			for (var i = 0 ; i<data.length ; i++){
+			  html += "<option value='"+data[i].matricule+"'>"+data[i].appelation+"</option>";
+			}
+			$("#sq_select").html(html);
+		  },
+		  error: function (error) {
+
+		  }
+		});
+	  }
+	  
+	  /*
+	   * Fonction pour afficher la liste deroulante des Chefs d'equipe
+	   * */
+	  function loadChefEquipe(){
+		/*$.ajax({
+		  type: "GET",
+		  url: "/getLsChefEquipe",
+
+		  success: function(msg){
+			var html = "<option value=''></option>";
+			var data = JSON.parse(msg);
+
+			for (var i = 0 ; i<data.length ; i++){
+			  html += "<option value='"+data[i].id_ce+"'>"+data[i].appelation+"</option>";
+			}
+			$("#equipe_select").html(html);
+		  },
+		  error: function (error) {
+
+		  }
+		});*/
+			$.ajax({
+			  type: "GET",
+			  url: "/getLsCE?sql=",
+
+			  success: function(msg){
+
+				var html = "<option value=''></option>";
+				var data = JSON.parse(msg);
+
+				for (var i = 0 ; i<data.length ; i++){
+				  html += "<option value='"+data[i].matricule+"'>"+data[i].pseudo+"</option>";
+				}
+				$("#equipe_select").html(html);
+			  },
+			  error: function (error) {
+
+			  }
+			});
+		}
+</script>
+<script language="javascript">
+	$(document).ready(function() {
+		//alert( "ready!" );
+		var dateEcoute = "";
+		$.ajax({
+			type: "GET",
+			url: "/getLsEcouteBriant?dateEcoute="+dateEcoute,
+			success: function(msg){
+			  $("#lstEcoute").html(msg);
+			},
+			error: function (error) {
+			  //alert('error; ' +error);
+			}
+		});
+	});
+
+    function getAjaxFiltreEcoute()
+    {
+		//alert($("#date_ecoute").val()); 2017-04-18
+		var dateecoute = $("#date_ecoute").val(); // + " 03:00:00"+"+"+"03"
+		var dateecoute2 = $("#date_ecoute2").val(); // + " 03:00:00"+"+"+"03" 
+		
+		var tc = $("#tc_select").val();
+		var numero = null;
+		var chefEquipe = $("#equipe_select").val();
+		var sq = $("#sq_select").val();
+		var camp = $("#campagne_select").val();
+		
+		var conforme = $("#conforme_select").val();
+		
+		//alert(dateecoute);
+		//var dateecoute = "2017-04-14 03:00:00+03"; // 
+		$.ajax({
+			type: "GET",
+			url: "/getLsEcouteBriant?dateEcoute="+dateecoute+"&dateEcoute2="+dateecoute2+"&idTc="+tc+"&numero="+numero+"&idChef="+chefEquipe+"&iqSq="+sq+"&conforme="+conforme+"&camp="+camp,
+			success: function(msg){
+			  $("#lstEcoute").html(msg);
+			},           
+			error: function (error) {
+			  //alert('error; ' +error);
+			}
+		});
+    }
+</script>
+
+</html>

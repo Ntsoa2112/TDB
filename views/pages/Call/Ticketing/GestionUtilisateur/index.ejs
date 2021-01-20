@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TDB Traitement Remontee Call</title>
+
+    <link rel="stylesheet" href="/styles/importer.css">
+    <link rel="stylesheet" href="/bootflat/css/bootflat.min.css">
+    <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/local.css">
+    <link rel="stylesheet" href="/css/Style_v3.css">
+    <link rel="stylesheet" href="/jquery-ui/jquery-ui.css">
+    <!--STYLES END-->
+</head>
+
+<body onLoad="loadNiveauTicket();">
+<% if(req.session.droit==1){
+
+%>
+    <% include ../../../../includes/entete.ejs %>
+<% }else{
+
+%>
+    <% include ../../../../includes/enteteOperateur.ejs %>
+
+<% }%>
+<div id="page-wrapper">
+    <!--         MENU  FILTRE         -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class=" row ">
+                <div  class="">
+
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"> <i class="fa fa-bar-chart-o"></i> </h3>
+                            <div class="row">
+                                <div class="form-group">
+                                    <div class="col-xs-1 col-md-2 col-lg-2">
+                                        <a title="echantillons CQ"> <span style="cursor:pointer"><i class="fa fa-ellipsis-v fa-2x link">  </i></span> </a>
+                                        <a onclick="ShowModalInsertionUser();" class="text-info" title="Affectation"><span style="cursor:pointer" class="gray"><i class="fa fa-user-plus fa-2x link"> </i></span></a>
+                                        <a> <span><i class="fa fa-ellipsis-v fa-2x link">  </i></span> </a>
+                                    </div>
+ <!--                                   <div class="col-xs-2 col-md-2 col-lg-2">
+                                        <label> SPECIALITE </label>
+                                        <select class="form-control" tabindex="-1" id="specialite">
+                                            <option value=""></option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xs-2 col-md-2 col-lg-2">
+                                        <label> ETAT </label>
+                                        <select class="form-control" tabindex="-1" id="etat">
+                                            <option value=""></option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xs-1 col-md-1 col-lg-2">
+                                        <label> CLIENT </label>
+                                        <select class="form-control" tabindex="-1" id="client">
+                                            <option value=""></option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xs-1 col-md-1 col-lg-1">
+                                        <label> FINESS </label>
+                                        <input class="form-control" tabindex="-1" placeholder="N° FINESS" id="num_finess" type="text"/>
+                                    </div>
+                                    <div class="col-xs-1 col-md-1 col-lg-1">
+                                        <label> DATE DEBUT </label>
+                                        <input class="form-control" tabindex="-1" placeholder="Date Debut" id="datedeb" type="text"/>
+                                    </div>
+                                    <div class="col-xs-1 col-md-1 col-lg-1">
+                                        <label> DATE FIN </label>
+                                        <input class="form-control" tabindex="-1" placeholder="Date Fin" id="datefin" type="text"/>
+                                    </div>
+                                    <div class="col-xs-1 col-md-1 col-lg-1">
+                                        <label> MATRICULE </label>
+                                        <input class="form-control" tabindex="-1" placeholder="Matricule" id="matricule" type="text"/>
+                                    </div>
+                                    <div class="col-xs-1 col-md-2 col-lg-2" style="padding-top: 1%">
+                                        &lt;!&ndash; Etat Remontee &ndash;&gt;
+                                        <a onclick="loadDataRemonter();" class="text-warning col-md-3" title="recherche remonte"><span style="cursor:pointer" class="gray"><i class="fa fa-search fa-3x link"> </i></span></a>
+                                        <span></span>
+                                        &lt;!&ndash; Statistique Remonte &ndash;&gt;
+                                        <a onclick="loadReportingEtat();" class="text-success col-md-3" title="Statistiques"> <span style="cursor:pointer"><i class="fa fa-pie-chart fa-3x link"></i></span> </a>
+                                    </div>
+-->
+
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--         DONNEE TRAITEMENT REMONTEE         -->
+    <div id="loadG" class="col-md-4" style="display:none">
+        <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+        <span class="sr-only">Loading...</span>
+    </div>
+    <!--    DIV MODIFI-->
+    <div id="div_tableauGestion" class="col-md-12 col-sm-12 col-xs-12">
+    <!--       MODAL TRAITEMENT REMONTEE    -->
+    <div id="myModalInsertionUserRemonte" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-md">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title text-primary" id="titre" >Insertion nouveau profil</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <!-- SECTION FORMULAIRE HORIZONTAL -->
+                            <form class="form-horizontal">
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3" for="modal_user_tc">Matricule :</label>
+                                    <div class="col-sm-9">
+                                        <input  class="form-control" id="modal_user_tc" value="">
+                                    </div>
+                                </div>
+                                <div class="form-group" id="div_liste_traitement_modal">
+                                    <label class="control-label col-sm-3" for="modal_user_niveau">Niveau :</label>
+                                    <div class="col-sm-9">
+                                        <select  class="form-control" id="modal_user_niveau">
+                                        </select>
+                                    </div>
+                                </div>
+                            </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" onclick="ValiderInsertionUserRemonte()">Valider</button>
+                    <button type="button" class="btn btn-danger" onclick="AnnulerInsertionUserRemonte()" data-dismiss="modal">Annuler</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--       MODAL TRAITEMENT ACTION REMONTEE -->
+    <div id="myModalTraiteActionRemonte" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-md" style="width:100%;max-width:1250px">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title text-primary" id="titre" >Validation Traitement Remontee</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <!-- SECTION COMMENTAIRE ADMIN  -->
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3" for="modal_traitement_commentaire">COMMENTAIRE :</label>
+                                    <div class="col-sm-8">
+                                        <textarea id="modal_traitement_commentaire" class="form-control" cols="50" rows="10"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- SECTION ACTION -->
+                        <div class="col-sm-6">
+                            <form class="form-horizontal">
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3" for="action_ticket">Action :</label>
+                                    <div class="col-sm-9">
+                                        <select  class="form-control" id="action_ticket" onchange="alert(this.value)">
+                                        </select>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" onclick="ValiderTraitementRemonte()" data-dismiss="modal">Valider</button>
+                    <button type="button" class="btn btn-danger" onclick="AnnulerTraitementRemonte()" data-dismiss="modal">Annuler</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+
+<!-- ECharts -->
+<script src="/vendors/echarts/dist/echarts.min.js"></script>
+<script src="/js/jquery-1.12.4.js"></script>
+<script src="/js/dependencies/sails.io.js"></script>
+<script src="/js/jquery-ui.min.js"></script>
+<script src="/bootstrap/js/bootstrap.min.js"></script>
+<script src="/vendors/fastclick/lib/fastclick.js"></script>
+<!-- NProgress -->
+<script src="/vendors/nprogress/nprogress.js"></script>
+<script src="/js/dossierEtapeApp.js"></script>
+<script src="/js/echarts/theme.js"></script>
+<script src="/js/echarts/echarts.js"></script>
+
+<!-- Custom Theme Scripts -->
+<script src="/js/custom.min.js"></script>
+
+
+<script src="/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+<script src="/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
+<script src="/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
+<script src="/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+<script src="/vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+<script src="/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+<script src="/vendors/datatables.net-scroller/js/datatables.scroller.min.js"></script>
+<script src="/vendors/jszip/dist/jszip.min.js"></script>
+<script src="/vendors/pdfmake/build/pdfmake.min.js"></script>
+<script src="/vendors/pdfmake/build/vfs_fonts.js"></script>
+
+<!-- Custom Theme Scripts -->
+<script src="/js/custom.min.js"></script>
+
+<script src="/js/moment.min.js"></script>
+<script src="/js/cq_almerys.js"></script>
+<!--script src="/js/almerys_heure.js"></script-->
+<script>
+    // GLOBAL VARIABLE
+    var dataRemonteGlobal = [];
+    var valeurHistorique = {};
+    var dataListeNiveau  = [];
+    // IS VIEW CHAT CHANGE
+    function changeSecondToBasicHourFormat(seconds){
+        /*var formatcorrect=  moment("2015-01-01").startOf('day')
+          .seconds(seconds)
+          .format('HH:mm:ss');*/
+        var dur = moment.duration(seconds, "seconds");
+        var formatcorrect = Math.floor(dur.asHours()) + moment.utc(dur.asMilliseconds()).format(":mm:ss");
+        if(parseInt(Math.floor(dur.asHours()))<10)
+        {
+            formatcorrect = "0"+Math.floor(dur.asHours()) + moment.utc(dur.asMilliseconds()).format(":mm:ss");
+        }
+        return formatcorrect.toString();
+    }
+
+    // GET LISTE SPECIALITE TICKETING CALL
+    function loadNiveauTicket()
+    {
+        console.log("Debut");
+        dataListeNiveau = [];
+        $.ajax({
+            type: "GET",
+            url: "/call/ticketing/get-niveau",
+
+            success: function(msg){
+
+                var html = "<option value=''></option>";
+                var data = null;
+
+                try {
+                    console.log(msg);
+                    data = JSON.parse(msg);
+                    console.log(data);
+                    for (var i = 0 ; i<data.length ; i++){
+                        html += "<option value='"+data[i].id+"'>"+data[i].libelle+"</option>";
+                        dataListeNiveau.push({id: data[i].id, libelle: ""+data[i].libelle+""});
+                    }
+                    $("#modal_user_niveau").html(html);
+                    // Chargement Donnee Profil
+                    loadListeUtilisateur();
+                }
+                catch (e) {
+                    console.log("error");
+                    $("#niveau_profil").html(html);
+                }
+
+            },
+            error: function (error) {
+                alert(error);
+            }
+        });
+    }
+    // AFFICHAGE DONNEE REMONTEE
+    function loadListeUtilisateur() {
+        // donneAll = [];
+        //fltr = a;
+      /*  var dtdb = $("#datedeb").datepicker().val();
+        var dtfn = $("#datefin").datepicker().val();
+        var sp = $("#specialite").val();
+        var etat = $("#etat").val();
+        var client = $("#client").val();
+        var num_finess = $("#num_finess").val();
+        var matricule= $("#matricule").val();
+        if(isNaN(parseInt(matricule.toString())) && matricule!="")
+        {
+            alert("Veuillez entrer un matricule valide!");
+            return;
+        }
+        if(isNaN(parseInt(num_finess.toString())) && num_finess!="")
+        {
+            alert("Veuillez entrer un num_finess valide!");
+            return;
+        }
+        if(matricule == "") matricule="0";
+        if(sp.toString() == "")
+        {
+            //alert("Veuillez selectionner un Dossier!");
+            //return;
+        }
+        if(dtdb.toString() == "" || dtfn.toString() == "")
+        {
+            alert("Veuillez selectionner les deux dates!");
+            return;
+        }*/
+        $.ajax({
+            type: "POST",
+            url: "/call/ticketing/gestionuser/get-list-utilisateur",
+            data: {
+                /*date_deb: dtdb,
+                date_fin: dtfn,
+                specialite: sp,
+                matricule: matricule,
+                id_etat: etat,
+                client: client,*/
+            },
+            beforeSend: function (xhr) {
+                $("#loadG").show();
+                $("#tableFiltre").remove();
+            },
+            success: function (msg) {
+                $("#loadG").hide();
+                dataRemonteGlobal = [];
+                var data = msg;
+                dataRemonteGlobal = data;
+                var html =  "<div class='col-md-12 col-sm-12 col-xs-12'>"+
+                    "          <div class='x_panel'>"+
+                    "            <div class='x_title'>"+
+                    "            <h2>GESTION PROFIL REMONTE CALL</h2>"+
+                    "          <ul class='nav navbar-right panel_toolbox'>"+
+                    "            <li><a class='collapse-link'><i class='fa fa-chevron-up'></i></a>"+
+                    "            </li>"+
+                    ""+
+                    "            <li><a class='close-link'><i class='fa fa-close'></i></a>"+
+                    "            </li>"+
+                    "            </ul>"+
+                    "            <div class='clearfix'></div>"+
+                    "            </div>"+
+                    "            <div class='x_content'>"+
+                    "          <div id='tableFiltre'>" +
+                    "<h2></h2>"+
+                    "          <table  id='datatable-remonte-buttons' class='table table-striped table-bordered'>" +
+                    "          <thead>" +
+                    "          <tr class=''>" +
+                    "           <th id='Matricule' class='th text-center'>Matricule</th>" +
+                    "           <th id='Appelation' class='text-center'>Appelation</th>" +
+                    "           <th id='Prenom Fr' class='text-center'>Prenom Fr</th>" +
+                    "           <th id='Niveau' class='text-center'>Niveau</th>" +
+                    "           <th id='button_suppression' class=''></th>" +
+                    "          </tr>" +
+                    "          </thead>" +
+                    "          <tbody>" +
+                    "";
+                // Boucle Donnee Remonte
+                for(var i=0,maxlength=data.length;i<maxlength;i++)
+                {
+                    let prenom_fr = "-";
+                    if(data[i].prenom_fr)
+                    {
+                        prenom_fr = data[i].prenom_fr;
+                    }
+                    html+="<tr>" +
+                        "   <td>"+data[i].id_pers+"</td>" +
+                        "   <td>"+data[i].appelation+"</td>" +
+                        "   <td>"+prenom_fr+"</td>";
+                    // Assignation User Niveau Profil
+                    html+= "<td><select  class='form-control' id='_id_niveau_"+data[i].id+"' onchange='ModifierNiveauRemonteCall(this.value,"+data[i].id+");'>";
+                    for(var j = 0, maxNiveauLength=dataListeNiveau.length; j<maxNiveauLength; j++)
+                    {
+                        if(parseInt(dataListeNiveau[j].id) === parseInt(data[i].id_niveau))
+                        {
+                            html+= "<option value='"+dataListeNiveau[j].id+"' selected>"+dataListeNiveau[j].libelle+"</option>";
+                        }
+                        else
+                        {
+                            html+= "<option value='"+dataListeNiveau[j].id+"'>"+dataListeNiveau[j].libelle+"</option>";
+                        }
+                    }
+                    html+= " </select></td>";
+                    html+="   <td><button class='btn btn-danger' onclick='launchSupprissionUserRemonte("+data[i].id_pers+")'>Supprimer</button></td>" +
+                        "</tr>";
+                }
+                html += "</tbody></table></div></div></div>";
+                $("#div_tableauGestion").append(html);
+
+                reloadDatatableHeure();
+            },
+            error: function (error) {
+                alert(error);
+            }
+        });
+    }
+    // DATATABLE ET CALCULE
+    function reloadDatatableHeure(){
+        var handleDataTableButtons_v = function() {
+            if ($("#datatable-remonte-buttons").length) {
+                $("#datatable-remonte-buttons").DataTable({
+                    dom: "Bfrtip",
+                    searching: false,
+                    paging: false,
+                    "aLengthMenu": [[25, 50, 75, -1], [25, 50, 75, "All"]],
+                    "iDisplayLength": 25,
+                    buttons: [
+                        {
+                            extend: "copy",
+                            className: "btn-sm"
+                        },
+                        {
+                            extend: "csv",
+                            className: "btn-sm"
+                        },
+                        {
+                            extend: "excel",
+                            className: "btn-sm"
+                        },
+                        {
+                            extend: "pdfHtml5",
+                            className: "btn-sm"
+                        },
+                        {
+                            extend: "print",
+                            className: "btn-sm"
+                        },
+                    ],
+                    responsive: true
+                });
+            }
+        };
+
+        TableManageButtons_v = function() {
+            "use strict";
+            return {
+                init: function() {
+                    handleDataTableButtons_v();
+                }
+            };
+        }();
+        TableManageButtons_v.init();
+    }
+    // Fonction Lancement Traitement Remonte
+    function launchSupprissionUserRemonte(id_pers) {
+        var objetJson = { id_pers: id_pers };
+        //alert("Debut Verification");
+        // Verification Droit
+        // Droit OK --> Debut Sauvegarde Ancient Donnee  +  Recuperation Etat Appel
+        $.ajax({
+            type: "POST",
+            url: "/call/ticketing/gestionuser/delete-utilisateur",
+            data: objetJson,
+            beforeSend: function (xhr) {
+            },
+            success: function (msg) {
+                var data = msg;
+                //alert("Debut Traitement Remontée");
+                alert("Suppression terminée");
+                window.location.reload();
+            },
+            error: function (error) {
+                alert("Echec Initialisation Donnee Remonter!")
+                alert(JSON.stringify(error));
+            }
+        });
+    }
+    // Afficher Modal Traitement Remontée
+    function ShowModalInsertionUser() {
+        $("#myModalInsertionUserRemonte").modal('show');
+    }
+    // INSERTION NOUVEAU UTILISATEUR PROFIL REMONTE
+    function ValiderInsertionUserRemonte() {
+        // Debut Annulation
+        var matricule_new = $("#modal_user_tc").val();
+        var id_niveau_new = $("#modal_user_niveau").val();
+        var matricule_test = parseInt(matricule_new);
+        if(isNaN(matricule_test))
+        {
+            alert("Format Matricule Erroner");
+            return;
+        }
+        if(id_niveau_new === "")
+        {
+            alert("Veuillez selectionner un niveau svp!");
+            return;
+        }
+        var jsonInsertion = {
+            id_pers: matricule_test,
+            id_niveau: id_niveau_new,
+        };
+        $.ajax({
+            type: "POST",
+            url: "/call/ticketing/gestionuser/insert-new-utilisateur",
+            data: jsonInsertion,
+            beforeSend: function (xhr) {
+            },
+            success: function (msg) {
+                if(msg.status === 'done')
+                {
+                    alert("Insertion Terminer");
+                    window.location.reload();
+                }
+                else
+                {
+                    alert("Utilisateur existe deja");
+                }
+            },
+            error: function (error) {
+                alert("Echec insertion profil!")
+                alert(JSON.stringify(error));
+            }
+        });
+    }
+    // ANNULATION REMONTE USER REMONTE
+    function AnnulerInsertionUserRemonte() {
+        $("#myModalInsertionUserRemonte").modal('hide');
+        $("#modal_user_tc").val("");
+        $("#modal_user_niveau").val("");
+    }
+    // MODIFIER NIVEAU REMONTE USER
+    function ModifierNiveauRemonteCall(valeur_id_nouveau, id_profil) {
+        // Debut Annulation
+        if(valeur_id_nouveau === "")
+        {
+            alert("Veuillez selectionner un niveau valide svp!");
+            return;
+        }
+        var jsonMaj = {
+            id: id_profil,
+            id_niveau: valeur_id_nouveau,
+        };
+        $.ajax({
+            type: "POST",
+            url: "/call/ticketing/gestionuser/update-niveau-utilisateur",
+            data: jsonMaj,
+            beforeSend: function (xhr) {
+            },
+            success: function (msg) {
+                if(msg.status === 'done')
+                {
+                    alert("Modification Terminer");
+                   // window.location.reload();
+                }
+                else
+                {
+                }
+            },
+            error: function (error) {
+                alert("Echec modification profil!")
+                alert(JSON.stringify(error));
+            }
+        });
+    }
+</script>
+</body>
+</html>

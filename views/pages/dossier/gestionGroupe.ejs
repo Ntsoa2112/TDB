@@ -1,0 +1,292 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TDB Stat</title>
+
+  <link rel="stylesheet" href="/styles/importer.css">
+  <link rel="stylesheet" href="/bootflat/css/bootflat.min.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/local.css">
+  <link rel="stylesheet" href="/css/Style_v3.css">
+  <!--STYLES END-->
+
+  <script>
+    function show(op,cp) {
+
+      var e = e || window.event;
+      var btnCode;
+
+      if ('object' === typeof e) {
+        btnCode = e.button;
+
+        if (btnCode === 2) {
+          var r = confirm("Etes vous  sur de vouloir affecté le Matricule " + op + " dans l'equipe " + cp);
+          if (r == true) {
+            $.ajax({
+              type: "GET",
+              url: "/addEquipById?idcp=" + cp + "&idpers=" + op + "",//delEquipById
+              success: function (msg) {
+                alert('Enregistrement Terminé ');
+                location.reload();
+              },
+              error: function (error) {
+                alert('error: ' + error);
+              }
+            });
+          } else {
+
+          }
+        }
+      }
+    }
+
+      function showdel(op,cp){
+
+        var e = e || window.event;
+        var btnCode;
+
+        if ('object' === typeof e) {
+          btnCode = e.button;
+
+          if(btnCode === 2){
+            var r = confirm("Etes vous  sur de vouloir désaffecté le Matricule "+op + " de l'equipe "+cp);
+            if (r == true) {
+              $.ajax({
+                type: "GET",
+                url: "/delEquipById?idcp="+cp+"&idpers="+op+"",//delEquipById
+                success: function(msg){
+                  alert('Suppression Terminé ');
+                  location.reload();
+                },
+                error: function (error) {
+                  alert('error: ' +error);
+                }
+              });
+            } else {
+
+            }
+          }
+        }
+
+      }
+  </script>
+</head>
+<body>
+<% if(req.session.droit==1){
+
+%>
+<% include ../../includes/entete.ejs %>
+<% }else{
+
+%>
+<% include ../../includes/enteteOperateur.ejs %>
+
+<% }%>
+
+<div id="page-wrapper" class="content">
+
+
+
+  <div class="container-fluid  flat-blue">
+    <div class="side-body padding-top">
+      <div class="row">
+        <div class="form-group">
+          <form method="get" action="/findGroupeId">
+            <div class="col-xs-2">
+              <select class="form-control" tabindex="-1" id="grpDashAdmin" placeholder = "EQUIPE" name="idcp">
+                <option value="">Groupe</option>
+              </select>
+
+            </div>
+            <button type="submit" class="btn btn-info btn-md">ok</button>
+          </form>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+          <div class="card card-success">
+            <div class="card-header">
+              <div class="card-title">
+                <div class="title" >
+                  Membres du groupe
+                </div>
+              </div>
+              <div class="clear-both"></div>
+            </div>
+            <div class="card-body no-padding">
+              <select name="menu_content"  id="menu_content" class="form-control"   size="15"  data-draggable="target1" min-width="300">
+
+                <% listMembre.forEach(function(dossier){ %>
+                <option class="target1"  data-draggable="item" onmouseup="showdel('<%= dossier.id_pers %>','<%=idCP%>')" value="<%= dossier.id_pers %>" ><%=  dossier.id_pers %> - <%=  dossier.nom %>  <%=  dossier.prenom %>  </option>
+                <% }); %>
+
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+          <div class="card card-success">
+            <div class="card-header">
+              <div class="card-title">
+                <div class="title" ></i>Personnel</div>
+              </div>
+              <div class="clear-both"></div>
+            </div>
+            <div class="card-body no-padding">
+              <select name="id_enseigne"  id="id_enseigne"   size="15" class="form-control"   data-draggable="target">
+                <% lpers.forEach(function(dossiersAll){ %>
+                <option  data-draggable="item" onmouseup="show('<%= dossiersAll.id_pers %>','<%=idCP%>')"  value="<%= dossiersAll.id_pers %>" ><b><%= dossiersAll.id_pers %></b> - <%=  dossiersAll.nom %> <%=  dossiersAll.prenom %></option>
+                <% }); %>
+              </select>
+            </div>
+          </div>
+        </div>
+
+
+
+
+      </div>
+
+    </div>
+  </div>
+
+
+</div>
+
+
+
+
+
+<script src="/js/dependencies/sails.io.js"></script>
+<script src="/js/jquery-1.12.4.js"></script>
+<script src="/js/jquery-ui.js"></script>
+<script>
+
+  (function()  {
+    if    (  !document.querySelectorAll  || !('draggable' in document.createElement('span')) || window.opera )   { return; }
+    for(var  items = document.querySelectorAll('[data-draggable="item"]'),  len = items.length,     i = 0; i < len; i ++)
+    {
+      items[i].setAttribute('draggable', 'true');
+    }
+
+      $.ajax({
+        type: "GET",
+        url: "/getLsEquipe",
+        success: function(msg){
+          $("#grpDashAdmin").html(msg);
+        },
+        error: function (error) {
+          //alert('error; ' +error);
+        }
+      });//regsvr32 zkemsdk.dll
+
+    var item = null;
+
+    //dragstart event to initiate mouse dragging
+    document.addEventListener('dragstart', function(e)
+    {
+      item = e.target;
+      e.dataTransfer.setData('text', '');
+
+    }, false);
+
+    //dragover event to allow the drag by preventing its default
+    //ie. the default action of an element is not to allow dragging
+    document.addEventListener('dragover', function(e)
+    {
+      if(item)
+      {
+        e.preventDefault();
+      }
+
+    }, false);
+
+    //drop event to allow the element to be dropped into valid targets
+    document.addEventListener('drop', function(e)
+    {
+      //if this element is a drop target, move the item here
+      //then prevent default to allow the action (same as dragover)
+      if(e.target.getAttribute('data-draggable') == 'target1' || e.target.getAttribute('class') == 'target1')
+      {
+        e.target.appendChild(item);
+        e.preventDefault();
+
+        var idsp = "<%=idCP %>";
+        var idpers = ""+item.value;
+        $.ajax({
+          type: "GET",
+          url: "/addEquipById?idcp="+idsp+"&idpers="+idpers+"",//delEquipById
+          success: function(msg){
+            alert('Enregistrement Terminé ');
+          },
+          error: function (error) {
+            alert('error: ' +error);
+          }
+        });
+        var liste_produits = '';
+        $('#menu_content').children().each(function()  {
+          //alert($(this).prop('value') );
+          liste_produits += ',' + $(this).prop('value');
+
+
+
+
+        });
+        $('#liste_produit').val (liste_produits.substr(1, liste_produit.length)) ;
+        //alert('ok');
+      }else{
+        e.target.appendChild(item);
+        e.preventDefault();
+
+        var idsp = "<%=idCP %>";
+        var idpers = ""+item.value;
+        $.ajax({
+          type: "GET",
+          url: "/delEquipById?idcp="+idsp+"&idpers="+idpers+"",//delEquipById
+          success: function(msg){
+            alert('Suppression Terminé ');
+          },
+          error: function (error) {
+            alert('error: ' +error);
+          }
+        });
+        var liste_produits = '';
+        $('#id_enseigne').children().each(function()  {
+          //alert($(this).prop('value') );
+          liste_produits += ',' + $(this).prop('value');
+
+
+
+
+        });
+        $('#id_enseigne').val (liste_produits.substr(1, liste_produit.length)) ;
+      }
+    }, false);
+
+    //dragend event to clean-up after drop or abort
+    //which fires whether or not the drop target was valid
+    document.addEventListener('dragend', function(e)
+    {
+      item = null;
+    }, false);
+
+
+
+  }
+
+
+  )();
+
+
+
+
+</script>
+
+
+<!-- /CONTAINER -->
+
+</body>
+
+</html>
+

@@ -1,0 +1,61 @@
+<div class="col-xs-12 col-sm-12">
+<div class="box">
+  <div class="box-header">
+    <div class="box-name">
+      <i class="fa fa-circle"></i>
+      <span><%= title %></span>
+    </div>
+
+    <div class="no-move"></div>
+  </div>
+  <div class="box-content">
+    <div id="<%= idElement %>" class="<%= classeElement %>"></div>
+  </div>
+</div>
+</div>
+<link rel="stylesheet" href="/morris/morris.css">
+<script src="/morris/morris.min.js"></script>
+<link rel="stylesheet" href="/jquery-ui/jquery-ui.css">
+<script src="/js/jquery-1.12.4.js"></script>
+<script src="/js/jquery-ui.min.js"></script>
+<script src="js/helper.js"></script>
+  <link rel="stylesheet" href="/css/grapheStyle.css">
+
+  <script>
+
+    function donutMultipleMorris(idElement, data){
+      var dataConvert = [];
+
+      //convertir les donnees
+      for(var key in data){
+        dataConvert.push({label : key, value : data[key]});
+      }
+
+
+        var donut = Morris.Donut({
+          element: idElement,
+          data: [
+            {label: "Download Sales", value: 12},
+            {label: "In-Store Sales", value: 30},
+            {label: "Mail-Order Sales", value: 20}
+          ]
+        }).on('click', function(i, row){
+
+        });
+
+
+    }
+  </script>
+    <script>
+		$(document).ready(function() {
+			var donnees = {};
+
+			//construction des donnees
+			//le format collection du serveur vers format collection coté client
+			//array de la forme {clé : value}
+
+
+      donutMultipleMorris("<%= idElement %>", donnees);
+		});
+
+    </script>

@@ -1,0 +1,104 @@
+<script>
+  function round(value, decimals) {
+    return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
+  }
+  var datedeb = [];
+  var vitesseBrute = [];
+  var vitesseNette = [];
+  var heureProd = [];
+  var heureHorsProd = [];
+  var heureTotal = [];
+  datedeb = [<%
+  for(var tt = 0; tt<vitesseNette.length;tt++){
+  if(tt!=0){
+  %>
+    ,
+    <%
+    }
+    %>
+    <%=vitesseNette[tt].date_deb_ldt %>
+    <%
+    }
+    %>];
+
+  vitesseNette = [<%
+  for(var tt = 0; tt<vitesseNette.length;tt++){
+    var vit = 0;
+    vit = vitesseNette[tt].qte/(vitesseNette[tt].somme/3600);
+  if(tt!=0){
+  %>
+    ,
+    <%
+    }
+    %>
+    round(<%=vit %>,2)
+    <%
+    }
+    %>];
+
+  vitesseBrute = [<%
+  for(var tt = 0; tt<vitesseBrute.length;tt++){
+    var vit = 0;
+    vit = vitesseBrute[tt].qte/(vitesseBrute[tt].somme/3600);
+  if(tt!=0){
+  %>
+    ,
+    <%
+    }
+    %>
+    round(<%=vit %>,2)
+    <%
+    }
+    %>];
+
+
+  heureProd = [<%
+  for(var tt = 0; tt<vitesseNette.length;tt++){
+    var vit = 0;
+    vit = vitesseNette[tt].somme/3600;
+  if(tt!=0){
+  %>
+    ,
+    <%
+    }
+    %>
+    round(<%=vit %>,2)
+    <%
+    }
+    %>];
+
+  heureHorsProd = [<%
+  for(var tt = 0; tt<vitesseBrute.length;tt++){//console.log(tt+':'+JSON.stringify(vitesseBrute[tt]));
+    var vit = 0;
+    if(vitesseNette[tt]!=null){
+      vit = (vitesseBrute[tt]['somme']/3600)-(vitesseNette[tt]['somme']/3600);
+
+    }else{
+      vit = vitesseBrute[tt]['somme']/3600;
+    }
+  if(tt!=0){
+  %>
+    ,
+    <%
+    }
+    %>
+    round(<%=vit %>,2)
+    <%
+    }
+    %>];
+
+  heureTotal = [<%
+  for(var tt = 0; tt<vitesseBrute.length;tt++){
+    var vit = 0;
+    vit = vitesseBrute[tt]['somme']/3600;
+  if(tt!=0){
+  %>
+    ,
+    <%
+    }
+    %>
+    round(<%=vit %>,2)
+    <%
+    }
+    %>];
+</script>

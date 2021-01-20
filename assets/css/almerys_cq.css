@@ -1,0 +1,67 @@
+
+.grilles {
+    min-width: 1200px !important;
+}
+
+.info table {
+    width: 37% !important;
+}
+
+.check {
+    margin-top: 15px;
+}
+
+.etapes-header {
+    font-weight: bold;
+    background-color: #edf7fc !important;
+    margin-top: 10px;
+}
+
+.etapes-header td {
+    text-align: left !important;
+}
+
+.etapes-normal td {
+    background-color: white !important;
+}
+
+
+.select-success {
+    background-color: springgreen;
+    font-weight: bold;
+    color: black;
+}
+
+
+.select-rejected {
+    background-color: tomato;
+    font-weight: bold;
+    color: black;
+}
+
+
+/*
+.check table tr{
+    height: 35px;
+}
+*/
+
+#id-type-cq {
+    width: 25%;
+    margin-top: 35px;
+}
+
+#id-type-grille td {
+    padding: 1px !important;
+}
+
+.form-control {
+    height: 32px;
+}
+
+@media screen and (max-width : 1730px) {
+    .grilles {
+        min-width: 1200px !important;
+    }
+}
+

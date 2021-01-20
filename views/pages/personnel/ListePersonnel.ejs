@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+
+  
+  <link rel="stylesheet" href="/styles/importer.css">
+  <link rel="stylesheet" href="/bootflat/css/bootflat.min.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/local.css">
+  <link rel="stylesheet" href="/css/Style_v3.css">
+  <link rel="stylesheet" href="/jquery-ui/jquery-ui.css">
+
+  
+
+  <style type="text/css">
+    .notation_almerys{
+    }
+    .colorTable{
+      background-color:red;
+    }
+    input[type=radio] {
+      display: block;
+      margin: 0 auto;
+    }
+    label {
+      display: inline-block;
+    }
+  </style>
+  <title>Recherche personnel</title>
+</head>
+<body  onload="loadAll();"> <!--  onload="loadAll();"
+
+
+	<!-- HEADER -->
+	<%
+	var mapPonderation = {};
+	if(req.session.droit==1){
+
+	%>
+	<% include ../../includes/entete.ejs %>
+	<% }else{
+
+	%>
+	<% include ../../includes/enteteOperateur.ejs %>
+
+	<% }%>
+	<!-- /HEADER -->
+
+	<!-- Main -->
+	<div id="page-wrapper">
+		<div class="row">
+			<div class="page-title" style="margin-left:25px">
+			  <div class="title_left">
+				<h3 style="color:#2B75A6;">
+				  Liste personnel
+				</h3>
+			  </div>
+			</div>
+
+			<!--div de selection --->
+			<div class="">
+			  <div class="form-group col-md-2">
+				<label for="date_ecoute">Matricule</label>
+				<input type="number" class="form-control" id="matricule_select" name="matricule_select" oninput="getAjaxFiltrePersonnel();"></input>
+			  </div>
+			</div>
+			<div class="">
+			  <div class="form-group col-md-2">
+				<label for="date_ecoute">Appellation</label>
+				<input type="text" class="form-control" id="prenom_select" name="prenom_select" oninput="getAjaxFiltrePersonnel();"></input>
+			  </div>
+			</div>
+			<div class="form-group col-md-2">
+				<label for="tc_select">Département</label>
+				<select class="form-control" id="departement_select" name="departement_select" onchange="getAjaxFiltrePersonnel();">
+				  <option value="">-</option>
+				</select>
+			</div>
+			<div class="form-group col-md-2">
+				<label for="tc_select">Fonction</label>
+				<select class="form-control" id="fonction_select" name="fonction_select" onchange="getAjaxFiltrePersonnel();">
+				  <option value="">-</option>
+				</select>
+			</div>
+			<div class="form-group col-md-2">
+				<label for="tc_select">Date d'embauche</label>
+				<input type="text" class="form-control" id="date_embauche" name="date_embauche" onchange="getAjaxFiltrePersonnel();" oninput="getAjaxFiltrePersonnel();"></input>
+			</div>
+			<!--fin div de selection --->
+
+			<div id="lstPers">
+		
+			</div>
+			
+		</div>
+	</div>
+	</br>
+	</br>
+</body>
+
+<script src="/js/jquery-1.12.4.js"></script>
+<script src="/js/project.min.js"></script>
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/scripts.js"></script>
+
+
+<script src="/js/vendors/echarts.min.js"></script>
+<script src="/js/dependencies/sails.io.js"></script>
+<script src="/js/jquery-ui.min.js"></script>
+<script src="/js/echarts/theme.js"></script>
+<script src="/js/echarts/echarts.js"></script>
+<script src="/js/custom.min.js"></script>
+
+<script language="javascript">
+	/*$(document).ready(function() {
+		var matricule = "";
+		var id_departement = "";
+		var id_fonction = "";
+		$.ajax({
+			type: "GET",
+			url: "/getLsPers?matricule="+matricule+"&id_departement="+id_departement+"&id_fonction="+id_fonction,
+			success: function(msg){
+			  $("#lstPers").html(msg);
+			},
+			error: function (error) {
+			  //alert('error; ' +error);
+			}
+		});
+	});*/
+	
+	function get_info_pers(id_pers, nom, prenom, cin, departement, fonction){
+		//alert(id_pers+ " - " +nom+ " - " +prenom+ " - " +cin+ " - " +departement+ " - " +fonction);
+		
+		$('#matricule_nom_prenom').text(id_pers+ " - " +unescape(nom)+ " " +unescape(prenom));
+		$('#cin').text(unescape(cin));
+		$('#departement').text(unescape(departement));
+		$('#fonction').text(unescape(fonction));
+		
+		$.ajax({
+			type: "GET",
+			async:false,
+			url: "/getPhotoPers?matricule="+id_pers+"",
+			success: function (msg) {
+				var img = JSON.parse(msg);
+				var src = "data:image/png;base64, " + img;
+				$('#img_pers').attr("src", src);
+				$('#modalInfoPers').modal('show');
+			},
+			error: function (error) {
+				ralert("Erreur : "+ error);
+			}
+		});
+	}
+	
+	function stringToArrayBuffer(str){
+		if(/[\u0080-\uffff]/.test(str)){
+			throw new Error("this needs encoding, like UTF-8");
+		}
+		var arr = new Uint8Array(str.length);
+		for(var i=str.length; i--; )
+			arr[i] = str.charCodeAt(i);
+		return arr.buffer;
+	}
+
+	function arrayBufferToString(buffer){
+		var arr = new Uint8Array(buffer);
+		var str = String.fromCharCode.apply(String, arr);
+		if(/[\u0080-\uffff]/.test(str)){
+			throw new Error("this string seems to contain (still encoded) multibytes");
+		}
+		return str;
+	}
+
+	$(function() { 
+		$( "#date_embauche").datepicker({
+		  dateFormat: 'dd/mm/yy'
+		}); //.datepicker("setDate", new Date())
+	  } );
+	  
+    function getAjaxFiltrePersonnel()
+    {
+		var matricule = $("#matricule_select").val();
+		var prenom = $("#prenom_select").val();
+		var id_departement = $("#departement_select").val();
+		var id_fonction = $("#fonction_select").val();
+		var date_embauche = $("#date_embauche").val();
+		//alert(date_embauche);
+		
+		//alert("/getLsPers?matricule="+matricule+"&id_departement="+id_departement+"&id_fonction="+id_fonction+"&prenom="+prenom+"&date_embauche="+date_embauche);
+		
+		$.ajax({
+			type: "GET",
+			url: "/getLsPers?matricule="+matricule+"&id_departement="+id_departement+"&id_fonction="+id_fonction+"&prenom="+prenom+"&date_embauche="+date_embauche,
+			success: function(msg){
+				
+			  $("#lstPers").html(msg);
+			  //alert(matricule +"  "+id_departement +"  "+ id_fonction);
+			  
+			},           
+			error: function (error) {
+			  alert("error; " +error);
+			}
+		});
+    }
+</script>
+
+<script language="javascript">
+	  function loadAll(){
+		loadFonction();
+		loadDepartement();
+	  }
+	  
+	  function loadDepartement(){
+		$.ajax({
+		  type: "GET",
+		  url: "/getLsDepartementPers",
+
+		  success: function(msg){
+			
+			var html = "<option value=''></option>";
+			var data = JSON.parse(msg);
+
+			//alert("test "+data);
+			
+			for (var i = 0 ; i<data.length ; i++){
+			  html += "<option value='"+data[i].id_departement+"'>"+data[i].libelle+"</option>";
+			}
+			$("#departement_select").html(html);
+		  },
+		  error: function (error) {
+			alert(error);
+		  }
+		});
+	  }
+	  
+	  function loadFonction(){
+		$.ajax({
+		  type: "GET",
+		  url: "/getLsFonction",
+
+		  success: function(msg){
+			var html = "<option value=''></option>";
+			var data = JSON.parse(msg);
+
+			for (var i = 0 ; i<data.length ; i++){
+			  html += "<option value='"+data[i].id_fonction+"'>"+data[i].libelle+"</option>";
+			}
+			$("#fonction_select").html(html);
+		  },
+		  error: function (error) {
+
+		  }
+		});
+	  }
+	  
+</script>
+
+</html>

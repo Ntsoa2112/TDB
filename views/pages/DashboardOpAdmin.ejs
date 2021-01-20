@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TDB Stat</title>
+
+  <link rel="stylesheet" href="/styles/importer.css">
+  <link rel="stylesheet" href="/bootflat/css/bootflat.min.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/local.css">
+  <link rel="stylesheet" href="/css/Style_v3.css">
+  <link rel="stylesheet" href="/jquery-ui/jquery-ui.css">
+  <!--STYLES END-->
+</head>
+
+<body onLoad="getMat();">
+<%
+    if(req.session.droit==1){
+%>
+<% include ../includes/entete.ejs %>
+<%  }else{
+%>
+<% include ../includes/enteteOperateur.ejs %>
+<%  }%>
+<div id="page-wrapper">
+  <div class="row">
+    <div class="col-md-12">
+      <div class=" row ">
+
+          <div  class="">
+
+            <div class="panel panel-primary">
+              <div class="panel-heading">
+                <h3 class="panel-title"> <i class="fa fa-bar-chart-o"></i> </h3>
+                <div class="row">
+                  <div class="form-group">
+
+
+
+
+                      <div class="col-xs-2 col-md-2 col-lg-2">
+                        <select class="form-control mat" tabindex="-1" id="mat" onchange="">
+                          <option value="">MATRICULE</option>
+                        </select>
+
+                      </div>
+
+                    <div class="col-xs-2 col-md-2 col-lg-2">
+                      <input type="text" class="form-control" tabindex="-1" id="datetim" onchange="">
+
+                    </div>
+
+
+                      <div class="col-xs-1 col-md-2 col-lg-2">
+					  <a   title="echantillons CQ"> <span style="cursor:pointer"><i class="fa fa-ellipsis-v fa-2x link">  </i></span> </a>
+                        <a onclick="tdbOp();" class="text-info" title="Affectation"><span style="cursor:pointer" class="gray"><i class="fa fa-bar-chart fa-2x link"> </i></span></a>
+						<a   > <span><i class="fa fa-ellipsis-v fa-2x link">  </i></span> </a>
+                      </div>
+                  </div>
+
+
+                </div>
+              </div>
+
+
+
+
+            </div>
+
+
+
+
+
+
+
+
+
+          </div>
+
+
+
+
+        </div>
+      </div>
+
+
+
+
+    </div>
+  </div>
+<div id="loadC" class="col-md-4" style="display:none">
+  <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+  <span class="sr-only">Loading...</span>
+</div>
+<div id="div" class="col-md-12 col-sm-12 col-xs-12">
+</div>
+
+
+</div>
+
+
+<!-- ECharts -->
+<script src="/vendors/echarts/dist/echarts.min.js"></script>
+<script src="/js/jquery-1.12.4.js"></script>
+<script src="/js/dependencies/sails.io.js"></script>
+<script src="/js/jquery-ui.min.js"></script>
+<script src="/bootstrap/js/bootstrap.min.js"></script>
+<script src="/vendors/fastclick/lib/fastclick.js"></script>
+<!-- NProgress -->
+<script src="/vendors/nprogress/nprogress.js"></script>
+<script src="/js/dossierEtapeApp.js"></script>
+<script src="/js/echarts/theme.js"></script>
+<script src="/js/echarts/echarts.js"></script>
+
+<!-- Custom Theme Scripts -->
+<script src="/js/custom.min.js"></script>
+
+<link rel="stylesheet" href="/jquery-ui/jquery-ui.css">
+<link href="/select/css/select2.min.css" rel="stylesheet" />
+<script src="/select/js/select2.min.js"></script>
+<!--<script src="/js/cq_almerys.js"></script>-->
+<script>
+
+  $(function() {
+    $( "#datetim" ).datepicker({
+      dateFormat: 'yy/mm/dd'
+    });
+  } );
+  $(".mat").select2();
+  $(".niv").select2({
+    placeholder: "Choisir le niveau",
+    allowClear: true
+  });
+
+  function tdbOp() {
+    var id_pers = $("#mat").val();
+    var dt = $("#datetim").val();
+    var niv = $("#niv").val();
+    $.ajax({
+      type: "GET",
+      url: "/getCryptedKey?text="+id_pers+"_"+new Date().getHours()+":"+new Date().getMinutes()+":"+new Date().getSeconds(),
+
+      success: function(msg){
+        getpage("/ldtByOp?idpers="+id_pers+"&key="+msg+"&dt="+dt,id_pers);
+
+      },
+      error: function (error) {
+
+      }
+    });
+  }
+
+  function getMat() {
+
+    $.ajax({
+      type: "GET",
+      url: "/getLsMatPara",
+
+      success: function(msg){
+
+        var html = "<option value=''></option>";
+        var data = JSON.parse(msg);
+
+        for (var i = 0 ; i<data.length ; i++){
+          html += "<option value='"+data[i].id_pers+"'>"+data[i].matricule+"</option>";
+        }
+        $("#mat").html(html);
+      },
+      error: function (error) {
+
+      }
+    });
+  }
+  function getpage(url,id) {
+
+    $.ajax({
+      type: "GET",
+      url: url,
+
+      success: function(msg){
+
+
+        $("#div").html(msg);
+        loadErreurCq(id);
+      },
+      error: function (error) {
+
+      }
+    });
+  }
+
+  function remove(id){
+    $.ajax({
+      type: "GET",
+      url: "/removeCQ?id_pers="+id,
+
+      success: function(msg){
+        getCQMat();
+        getMat();
+
+      },
+      error: function (error) {
+      }
+    });
+  }
+
+  function loadErreurCq(id) {
+    $.ajax({
+      type: "GET",
+      url: "/loadErreurCq?idpers=" + id,
+      success: function (msg) {
+        //$("#loadpointage").html(msg);
+        //$("#date").val(date);
+        var data = JSON.parse(msg)
+        $("#count_es").html("<a href='#'  data-toggle='modal' data-target='#erreurModal'  onclick='loadListErreurCq(" + id + ",5)'>"+data.es+"</a>");
+        $("#count_nrrg").html("<a href='#'  data-toggle='modal' data-target='#erreurModal'  onclick='loadListErreurCq(" + id + ",4)'>"+data.nrrg+"</a>");
+        $("#jm1").html(data.date);
+        //console.log(data);
+      },
+      error: function (error) {
+        //alert('error; ' +error);
+      }
+    });
+  }
+    function loadListErreurCq(id,id_etat){
+      $.ajax({
+        type: "GET",
+        url: "/loadListErreurCq?idpers="+id+"&id_etat="+id_etat,
+        success: function(msg){
+          //$("#loadpointage").html(msg);
+          //$("#date").val(date);
+          var data = JSON.parse(msg)
+          var html = "";
+          for (var i = 0;i<data.length;i++){
+            html +="<tr><td>"+data[i].num_nuo+"</td><td>"+data[i].libelle+"</td></tr>";
+          }
+
+          $("#erreurtab").html(html);
+          //console.log(data);
+        },
+        error: function (error) {
+          //alert('error; ' +error);
+        }
+      });
+
+
+  }
+
+
+</script>
+
+</body>
+</html>

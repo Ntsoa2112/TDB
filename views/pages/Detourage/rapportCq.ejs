@@ -1,0 +1,330 @@
+<title xmlns="http://www.w3.org/1999/html">Detourage Reporting</title>
+<head>
+
+
+  <!-- TIME PICKER INCLUDE  -->
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!--link rel="stylesheet" href="bootstrap.css" /-->
+  <!-- FIN TIME PICKER INCLUDE  -->
+
+  <!--script type='text/javascript' src='/js/jquery.min.js'></script-->
+  <!-- TEST BUG MENU -->
+
+
+  <link rel="stylesheet" href="/styles/importer.css">
+  <link rel="stylesheet" href="/bootflat/css/bootstrap.css">
+  <link rel="stylesheet" href="/bootflat/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/local.css">
+  <link rel="stylesheet" href="/css/Style_v3.css">
+  <link rel="stylesheet" href="/jquery-ui/jquery-ui.css">
+
+  <script src="/js/dependencies/sails.io.js"></script>
+  <script src="/js/jquery-1.10.2.min.js"></script>
+  <script src="/bootstrap/js/bootstrap.min.js"></script>
+  <script src="/js/jquery-ui.min.js"></script>
+  <!--script type='text/javascript' src='/js/fullcalendar.min.js'></script-->
+  <script type="text/javascript">
+    $(document).ready(function(){
+      $("#submit").click(function(e){
+        e.preventDefault();
+        // ajax();
+      });
+    });
+  </script>
+</head>
+<body>
+<% include ../../includes/entete.ejs %>
+
+<%
+  var style = '';
+  if(id_pers==0)
+    style = "style='display: none'";
+%>
+<div class="container-fluid">
+  <form method="post" action="/Detourage/rapportCq">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+      <div class="x_panel">
+        <div class="x_title">
+          <h2></h2>
+          <ul class="nav navbar-right panel_toolbox">
+            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+            </li>
+            <li><a class="close-link"><i class="fa fa-close"></i></a>
+            </li>
+          </ul>
+          <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+
+            <div class="form-groupe col-md-3">
+              <label for="dateDeb">Debut</label>
+                <input type="text" class="form-control"  id="dateDeb" name="dateDeb" onchange="" value="<%=dateDeb%>">
+            </div>
+
+            <div class="form-groupe col-md-3">
+              <label for="dateFin">Fin</label>
+                <input type="text" class="form-control"  id="dateFin" name="dateFin" onchange="" value="<%=dateFin%>">
+            </div>
+
+
+          <div class="form-groupe col-md-3">
+            <label for="etape">CLIENT</label>
+            <select id="id_client" name="id_client" class="form-control" >
+              <option value="0">Tous</option>
+              <%
+              clients.forEach(function(client){
+              if(Number(client.id_client)===Number(id_client))
+              {
+              %>
+              <option value="<%=client.id_client %>" selected='true'><%=client.nom_client %></option>
+              <%
+              }else{
+              %>
+              <option value="<%=client.id_client %>"><%=client.nom_client %></option>
+              <%
+              }
+              });
+              %>
+
+            </select>
+          </div>
+
+
+
+            <div class="form-groupe col-md-3">
+              <label for="sem">-</label>
+              <input type="submit" value="OK" class="btn btn-info form-control"/>
+            </div>
+
+
+        </div>
+      </div>
+    </div>
+  </form>
+<style>
+  .t_client {
+    background : #381c1c;
+    color : white;
+  }
+  .designation {
+    text-align:left !important;
+    padding-left : 50px;
+  }
+</style>
+  <div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="x_panel">
+      <div class="x_title">
+        <h2></h2>
+        <ul class="nav navbar-right panel_toolbox">
+          <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+          </li>
+          <li><a class="close-link"><i class="fa fa-close"></i></a>
+          </li>
+        </ul>
+        <div class="clearfix"></div>
+      </div>
+      <div class="x_content">
+        <table id="dttb" class="table table-hover">
+
+          <thead>
+          <tr style='font-size:10px'>
+            <th style='width:50%;text-align:left !important'>Nom du fichier</th>
+            <th>Etat</th>
+            <th>Remarque</th>
+            <th>Modification</th>
+          </tr>
+          </thead>
+          <tbody>
+<%
+            var html_table = "";
+            var last_name = "";
+            listCq.forEach(function(cq){
+
+              console.log("last_name:"+last_name);
+              if(last_name!="" && last_name== cq.libelle && (cq.commentaire || '')=='')
+              {
+                html_table += "<td>OK</td></tr>";
+                last_name = "";
+              }else{
+                if((cq.commentaire || '') !==''){
+                  if(last_name== cq.libelle)
+                  {
+                    html_table += "<td>NOK</td></tr><tr><td>"+cq.libelle+"</td><td>NOK</td><td>"+cq.commentaire+"</td>";
+                  }else{
+                    html_table += "<tr><td>"+cq.libelle+"</td><td>NOK</td><td>"+cq.commentaire+"</td>";
+
+                  }
+                  last_name = cq.libelle
+
+                }else if(last_name!=''){
+                  html_table += "<td>-</td></tr>";
+                  last_name = "";
+                }
+                else{
+                  html_table += "<tr><td>"+cq.libelle+"</td><td>OK</td><td></td><td>OK</td></tr>";
+                }
+              }
+            });
+
+
+            %>
+
+          <%-html_table%>
+          </tbody>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- modal-->
+<div class="modal fade" id="modifVitesseEquilibreModal" tabindex="-1" role="dialog" aria-labelledby="alertModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <!--Content-->
+    <form method="GET" action="#" >
+      <div class="modal-content">
+        <!--Header-->
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" id="alertModalLabel">Specifier la vitesse d'équilibre</h4>
+        </div>
+        <!--Body-->
+        <div class="modal-body">
+          <h3 id="title_client_dif"></h3>
+          <input type="hidden" id="id_dificulte"/>
+          <input type="hidden" id="id_client"/>
+          <div class="form-group col-md-6">
+            <input type="number" id="vitesse_eq" class="form-control"/>
+          </div>
+        </div>
+        <!--Footer-->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermé</button>
+          <button type="button" class="btn btn-success" onclick="saveVequilibre()">Valider</button>
+        </div>
+      </div>
+    </form>
+    <!--/.Content-->
+  </div>
+</div>
+</body>
+
+<!-- FastClick -->
+<script src="/vendors/fastclick/lib/fastclick.js"></script>
+<!-- NProgress -->
+<script src="/vendors/nprogress/nprogress.js"></script>
+<!-- ECharts -->
+<script src="/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+<script src="/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
+<script src="/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
+<script src="/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+<script src="/vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+<script src="/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+<script src="/vendors/datatables.net-scroller/js/datatables.scroller.min.js"></script>
+<script src="/vendors/jszip/dist/jszip.min.js"></script>
+<script src="/vendors/pdfmake/build/pdfmake.min.js"></script>
+<script src="/vendors/pdfmake/build/vfs_fonts.js"></script>
+
+<!-- Custom Theme Scripts -->
+<script src="/js/custom.min.js"></script>
+<script src="/js/dependencies/sails.io.js"></script>
+
+
+<script>
+  $(function() {
+    $( "#dateDeb" ).datepicker({
+      dateFormat: 'yymmdd'
+    });
+
+    $( "#dateFin" ).datepicker({
+      dateFormat: 'yymmdd'
+    });
+
+    $('#dttb').DataTable({
+      "searching":   false,
+      "bPaginate": true,
+      "pageLength": 50,
+      "ordering": false,
+      dom: 'Bfrtip',
+        buttons: [
+            {
+                extend: 'excelHtml5',
+                exportOptions: {
+                    columns: ':visible',
+                    format: {
+                        body: function(data, row, column, node) {
+                            var data_value =  data;
+                            var split_value = data_value.split('.');
+                            var result = data_value;
+                            if(split_value.length> 3 ){
+                              result = "";
+                              for (var i = 3; i<split_value.length;i++){
+                                if(i==3)
+                                  result += ""+split_value[i];
+                                else
+                                  result += "."+split_value[i];
+                              }
+                            }
+                            return result;
+                        }
+                    }
+                }
+            },
+            {
+                extend: 'csvHtml5',
+                exportOptions: {
+                    columns: ':visible',
+                    format: {
+                        body: function(data, row, column, node) {
+                          var data_value =  data;
+                          var split_value = data_value.split('.');
+                          var result = data_value;
+                          if(split_value.length> 3 ){
+                            result = "";
+                            for (var i = 3; i<split_value.length;i++){
+                              if(i==3)
+                                result += ""+split_value[i];
+                              else
+                                result += "."+split_value[i];
+                            }
+                          }
+                          return result;
+                        }
+                    }
+                }
+            }
+        ]
+    });
+  } );
+
+  function loadDataModif(data){
+    $("#title_client_dif").html(data[2]+"<br/>"+data[3]);
+    $("#id_client").val(""+data[0]);
+    $("#id_dificulte").val(""+data[1]);
+    $("#vitesse_eq").val(""+data[4]);
+  }
+
+  function saveVequilibre() {
+    $.ajax({
+      type: "GET",
+      url: "/Detourage/saveVitesseEquilibre?id_client="+$("#id_client").val()+"&id_difficulte="+$("#id_dificulte").val()+"&vitesse_eq="+$("#vitesse_eq").val(),
+      success: function(msg){
+        document.location.reload(true);
+      },
+      error: function (error) {
+        alert('error; ' +error);
+      }
+    });
+  }
+</script>
+
+</body>

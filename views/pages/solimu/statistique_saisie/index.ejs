@@ -1,0 +1,1671 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TDB Reporting Almerys</title>
+  <link rel="stylesheet" href="/styles/importer.css">
+  <link rel="stylesheet" href="/bootflat/css/bootflat.min.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/local.css">
+  <link rel="stylesheet" href="/css/Style_v3.css">
+  <link rel="stylesheet" href="/jquery-ui/jquery-ui.css">
+  <!--STYLES END-->
+</head>
+
+<body onLoad="loadspecialite();">
+<% if(req.session.droit==1){
+%>
+<% include ../../../includes/entete.ejs %>
+<% }else{
+%>
+<% include ../../../includes/enteteOperateur.ejs %>
+<% }%>
+<div id="page-wrapper">
+  <div class="row">
+    <div class="col-md-12">
+      <div class=" row ">
+        <div  class="">
+          <div class="panel panel-primary">
+            <div class="panel-heading">
+              <h3 class="panel-title"> <i class="fa fa-bar-chart-o"></i> </h3>
+              <div class="row">
+                <div class="form-group">
+                  <div class="col-xs-1 col-md-1 col-lg-2">
+                    <select class="form-control" tabindex="-1" id="specialite" onchange="loadsousspecialite(this.value);">
+                      <option value="">POLE</option>
+                    </select>
+                  </div>
+                  <div class="col-xs-1 col-md-1 col-lg-" style="display:none" id="divsspec">
+                    <select class="form-control" tabindex="-1" id="sspecialite" onchange="loadsoussousspecialite(this.value)">
+                      <option value="">SPECIALITE</option>
+                    </select>
+                  </div>
+
+                  <div class="col-xs-1 col-md-1 col-lg-1">
+                    <input class="form-control" tabindex="-1" placeholder="Date Debut" id="datedeb" type="text"/>
+                  </div>
+                  <div class="col-xs-1 col-md-1 col-lg-1">
+                    <input class="form-control" tabindex="-1" placeholder="Date Fin" id="datefin" type="text"/>
+                  </div>
+                  <div class="col-xs-1 col-md-2 col-lg-2">
+                    <a   title="echantillons CQ"> <span style="cursor:pointer"><i class="fa fa-ellipsis-v fa-3x link">  </i></span> </a>
+                    <a onclick="loadDT();" class="text-success" title="Statistiques"> <span style="cursor:pointer"><i class="fa fa-pie-chart fa-3x link"></i></span> </a>
+                    <a   > <span><i class="fa fa-ellipsis-v fa-3x link">  </i></span> </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="loadG" class="col-md-4" style="display:none">
+    <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+    <span class="sr-only">Loading...</span>
+  </div>
+
+  <div class="row">
+    <div id="divGraph" class="col-md-12 col-sm-12 col-xs-12">
+    </div>
+    <div id="divGraphique" class="col-md-12 col-sm-12 col-xs-12">
+    </div>
+  </div>
+</div>
+<div id="loadC" class="col-md-4" style="display:none">
+  <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+  <span class="sr-only">Loading...</span>
+</div>
+<div id="div" class="col-md-12 col-sm-12 col-xs-12">
+</div>
+</div>
+</div>
+<script src="/js/jquery-1.12.4.js"></script>
+<script>
+  var niveaux = <%=req.session.niveaux %>;
+  var user = <%=req.session.user %>;
+</script>
+<script>
+  $(function() {
+    $( "#datedeb").datepicker({
+      dateFormat: 'yymmdd'
+    }).datepicker("setDate", new Date());
+    $( "#datefin").datepicker({
+      dateFormat: 'yymmdd'
+    }).datepicker("setDate", new Date());
+  } );
+</script>
+<!-- ECharts -->
+<script src="/vendors/echarts/dist/echarts.min.js"></script>
+<script src="/js/jquery-1.12.4.js"></script>
+<script src="/js/dependencies/sails.io.js"></script>
+<script src="/js/jquery-ui.min.js"></script>
+<script src="/bootstrap/js/bootstrap.min.js"></script>
+<script src="/vendors/fastclick/lib/fastclick.js"></script>
+
+
+<script src="/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+<script src="/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
+<script src="/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
+<script src="/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+<script src="/vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+<script src="/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+<script src="/vendors/datatables.net-scroller/js/datatables.scroller.min.js"></script>
+<script src="/vendors/jszip/dist/jszip.min.js"></script>
+<script src="/vendors/pdfmake/build/pdfmake.min.js"></script>
+<script src="/vendors/pdfmake/build/vfs_fonts.js"></script>
+<!-- NProgress -->
+<script src="/js/echarts/theme.js"></script>
+<script src="/js/echarts/echarts.js"></script>
+<!-- Custom Theme Scripts -->
+<script src="/js/custom.min.js"></script>
+<!--<script src="/js/rp_almerys.js"></script>-->
+</body>
+</html>
+<script>
+  /**
+   * Created by 01020 on 07-Feb-17.
+   */
+
+//Les variable a utiliser
+  var data = [];
+  var ssp = [];
+  var datspe = [];
+  var data9h = [];
+  var data11h = [];
+  var data13h = [];
+  var data15h = [];
+  var dataPlush = [];
+
+  var data7_8h = [];
+  var data8_9h = [];
+  var data9_9h45 = [];
+  var data10_11h = [];
+  var data11_11h45 = [];
+  var data12h30_14 = [];
+  var data14_15h = [];
+  var data15_16h = [];
+  var data16_17h = [];
+  var data17_18h = [];
+
+  function loadspecialite() {
+    var html = "<option value=''>POLE</option>";
+    html += "<option value='"+951+"'>SOLIMU</option>";
+    $("#specialite").html(html);
+    /*$.ajax({
+      type: "GET",
+      url: "/getspecialite",
+
+      success: function(msg){
+
+        var html = "<option value=''>POLE</option>";
+        var data = null;
+
+        try {
+          data = JSON.parse(msg);
+          for (var i = 0 ; i<data.length ; i++){
+            html += "<option value='"+data[i].id_dossier+"'>"+data[i].num_dossier+"</option>"
+          }
+          $("#specialite").html(html);
+        }
+        catch (e) {
+          $("#specialite").html(html);
+        }
+
+      },
+      error: function (error) {
+
+      }
+    });*/
+  }
+  var idSouspec = []
+  function loadsousspecialite(id) {
+    $.ajax({
+      type: "GET",
+      url: "/getsouspecialite?id_dossier="+id,
+
+      success: function(msg){
+        var html = "<option value=''>SPECIALITE</option>";
+          // ADD --  POUR ALM CQ SEUL pour l'instant
+          if(id == 35)
+          {
+              html += "<option value='"+id+"-cible'>TOUS LES CIBLES</option>"
+          }
+        var data = null;
+
+        try {
+          data = JSON.parse(msg);
+          for (var i = 0 ; i<data.length ; i++){
+            idSouspec.push(data[i].id_lotclient);
+            html += "<option value='"+data[i].id_lotclient+"'>"+data[i].libelle+"</option>"
+          }
+          $("#sspecialite").html(html);
+          $("#divsspec").show();
+
+        }
+        catch (e) {
+          idSouspec = [];
+          $("#sspecialite").html(html);
+          $("#divsspec").hide();
+        }
+
+
+      },
+      error: function (error) {
+
+      }
+    });
+  }
+
+
+  function loadsoussousspecialite(id) {
+
+    $.ajax({
+      type: "GET",
+      url: "/getssouspecialite?id_dossier="+$('#specialite').val()+"&id_lotclient="+id,
+
+      success: function(msg){
+
+        var html = "<option value=''>SOUS SPECIALITE</option>";
+        var data = null;
+
+        try {
+          data = JSON.parse(msg);
+          for (var i = 0 ; i<data.length ; i++){
+            idSouspec.push(data[i].id_lotclient);
+            html += "<option value='"+data[i].id_ss_spe+"'>"+data[i].libelle+"</option>"
+          }
+          $("#ssspecialite").html(html);
+          $("#divssspec").show();
+
+        }
+        catch (e) {
+
+          $("#ssspecialite").html(html);
+          $("#divssspec").hide();
+        }
+
+
+      },
+      error: function (error) {
+
+      }
+    });
+
+  }
+
+  function loadvitessecible() {
+    var id_lotclient = $("#specialite").val();
+    $.ajax({
+      type: "GET",
+      url: "/getsouspecialite?id_dossier="+id_lotclient,
+
+      success: function(msg){
+
+        var html = "<table class='table table-bordered'>" +
+          "<thead>" +
+          "<tr>" +
+          "<th>Sous-specialités</th>" +
+          "<th> 0 - 1 mois  (qte/heure/op)</th>" +
+          "<th>1 - 3 mois (qte/heure/op)</th>" +
+          "<th>3 - 6 mois (qte/heure/op)</th>" +
+          "<th>6 + mois (qte/heure/op)</th>" +
+          "<th>option</th>" +
+          "</tr>" +
+          "</thead>" +
+          "<tbody>" ;
+        var data = null;
+
+        try {
+
+          data = JSON.parse(msg);
+          for (var i = 0 ; i<data.length ; i++){
+            //idSouspec.push(data[i].id_lotclient);
+            html += "<tr>" +
+              "<td><input type='hidden' id='id_lotc_"+data[i].id_lotclient+"' value='"+data[i].id_lotclient+"'/>"+data[i].libelle+"</td>" +
+              "<td><input id='a_"+data[i].id_lotclient+"' class='cl_"+data[i].id_lotclient+"' type='text' id='cible_a' value='"+(data[i].cible_a || '0')+"' disabled='true'/></td>" +
+              "<td><input id='b_"+data[i].id_lotclient+"' class='cl_"+data[i].id_lotclient+"' type='text' id='cible_b' value='"+(data[i].cible_b || '0')+"' disabled='true'/></td>" +
+              "<td><input id='c_"+data[i].id_lotclient+"' class='cl_"+data[i].id_lotclient+"' type='text' id='cible_c' value='"+(data[i].cible_c || '0')+"' disabled='true'/></td>" +
+              "<td><input id='d_"+data[i].id_lotclient+"' class='cl_"+data[i].id_lotclient+"' type='text' id='cible_d' value='"+(data[i].cible_d || '0')+"' disabled='true'/></td>" +
+              "<td id='id_"+data[i].id_lotclient+"'><a href='#' onclick='enable(\""+data[i].id_lotclient+"\")'><i class='fa fa-edit fa-2x'></i> </a> </td>" +
+              "</tr>"
+          }
+
+          html +="</tbody>" +
+            "</table>";
+          $("#div").html(html);
+
+        }
+        catch (e) {
+        }
+
+
+      },
+      error: function (error) {
+
+      }
+    });
+  }
+
+  function enable(clas){
+    var html = "<a href='#' onclick='save(\""+clas+"\")'><i class='fa fa-check fa-2x text-success'></i> </a> "
+    $('.cl_'+clas).prop("disabled",false);
+    $('#id_'+clas).html(html);
+
+  }
+
+  function save(clas) {
+    var id_lc = $("#id_lotc_"+clas).val();
+    var a = $("#a_"+clas).val();
+    var b = $("#b_"+clas).val();
+    var c = $("#c_"+clas).val();
+    var d = $("#d_"+clas).val();
+
+    $.ajax({
+      type: "GET",
+      url: "/modif_cible?id_lotclient="+id_lc+"&a="+a+"&b="+b+"&c="+c+"&d="+d,
+
+      success: function(msg){
+        //alert(msg);
+        loadvitessecible();
+
+      },
+      error: function (error) {
+        //alert(error);
+      }
+    });
+
+  }
+
+  var html_div_globale = "" ; // html du table de valeur globale
+  var html_graphe_globale = "<div id='echart_pie_globale' style='height:600px;'></div>" ; // html du graphe de valeur globale
+
+
+  var html_div_heure = "" ; // html du table de valeur par lapse de temps
+  var html_graphe_heure = "<div id='graphe_heure' style='height:600px;'></div>" ; // html du graphe de valeur par lapse de temps
+
+  var html_div_quantite = "" ; // html du table de quantite group by sous-specialite
+  var html_graphe_quantite = "<div id='graphe_quantite' style='height:600px;'></div>" ; // html du graphe de quantite group by sous-specialite
+
+  var html_div_vitesse = "" ; // html du table de vitesse group by sous-specialite
+  var html_graphe_vitesse = "<div id='graphe_quantite' style='height:600px;'></div>" ; // html du graphe de vitesse group by sous-specialite
+
+
+  var libGlobale = [];
+  var dataGlobale = [];
+
+  /*function de changement de contenu du DIV valeur globale
+   * parametre fenetre
+   * 1=>tableau de valeur globale
+   * 2=>graphe de valeur globale
+   * */
+  function  change_globale(fenetre) {
+    if(Number(fenetre)==1){
+
+      $("#div_globale").html(html_div_globale);
+      for(var i = 0; i<data.length;i++){
+        $(".dep_"+data[i].id_pers).html(""+(data[i].libelle ||'-'));
+
+      }
+      reloadDatatableGlobale();
+    }else if (Number(fenetre)==2){
+      $.getScript("/js/echarts/theme.js");
+      $.getScript("/js/echarts/echarts.js");
+      $("#div_globale").html(html_graphe_globale);
+
+
+      var echartPieCollapseAl = echarts.init(document.getElementById('echart_pie_globale'), theme);
+      echartPieCollapseAl.setOption(getOptionPieCol(libGlobale,dataGlobale));
+    }
+
+    //reloadDatatable();//reload des donnees datatable
+
+  }
+
+  /*fonction pour le changement de fennetre Div repartition par heure
+   * parametre fenetre
+   * 1=>tableau de valeur heure
+   * 2=>graphe de valeur heure
+   */
+
+  function change_heure(fenetre){
+    if(Number(fenetre)==1){
+
+      $("#div_heure").html(html_div_heure);
+
+      //rajouter les donnees de departement
+      for(var i = 0; i<data.length;i++){
+        $(".dep_"+data[i].id_pers).html(""+(data[i].libelle ||'-'));
+
+      }
+
+      //rajouter les valeurs par heure
+      for(var i = 0; i<data9h.length;i++){
+        var qt = Number(""+(data9h[i].qte ||'0'));
+        ////console.log("#9h_"+data9h[i].id_pers);
+        $("#9h_"+data9h[i].id_pers).html(""+(data9h[i].qte ||'0'));
+
+
+      }for(var i = 0; i<data11h.length;i++){
+        var qt = Number(""+(data11h[i].qte ||'0'));
+        ////console.log("#11h_"+data11h[i].id_pers);
+        $("#11h_"+data11h[i].id_pers).html(""+(data11h[i].qte ||'0'));
+
+
+      }for(var i = 0; i<data13h.length;i++){
+        var qt = Number(""+(data13h[i].qte ||'0'));
+        ////console.log("#13h_"+data13h[i].id_pers);
+        $("#13h_"+data13h[i].id_pers).html(""+(data13h[i].qte ||'0'));
+
+
+      }
+      ////console.log(data15h);
+      for(var i = 0; i<data15h.length;i++){
+        var qt = Number(""+(data15h[i].qte ||'0'));
+        ////console.log("#15h_"+data15h[i].id_pers);
+        $("#15h_"+data15h[i].id_pers).html(""+(data15h[i].qte ||'0'));
+
+
+      }for(var i = 0; i<dataPlush.length;i++){
+        var qt = Number(""+(dataPlush[i].qte ||'0'));
+        ////console.log("#plush_"+dataPlush[i].id_pers);
+        $("#plush_"+dataPlush[i].id_pers).html(""+(dataPlush[i].qte ||'0'));
+
+
+      }
+      reloadDatatableHeure();
+    }else if (Number(fenetre)==2){
+
+
+
+
+      var lib_heure = [];
+      var qte9h = [];
+      var qte9_11h = [];
+      var qte11_13h = [];
+      var qte13_15h = [];
+      var qte15_ph = [];
+      for(var i = 0; i<data.length;i++){
+        lib_heure.push(""+data[i].id_pers);
+        qte9h.push(Number($("#9h_"+data[i].id_pers).text()));
+        qte9_11h.push(Number($("#11h_"+data[i].id_pers).text()));
+        qte11_13h.push(Number($("#13h_"+data[i].id_pers).text()));
+        qte13_15h.push(Number($("#15h_"+data[i].id_pers).text()));
+        qte15_ph.push(Number($("#plush_"+data[i].id_pers).text()));
+
+      }
+
+      $("#div_heure").html(html_graphe_heure);
+      var echartSTKHeure = echarts.init(document.getElementById('graphe_heure'), theme);
+
+      var seriesList = [];
+      seriesList.push(
+        {
+          name:'< 9H',
+          type:'bar',
+          stack: '总量',
+          itemStyle : { normal: {label : {show: true, position: 'insideRight'}}},
+          data:qte9h
+        }
+      );
+
+      seriesList.push(
+        {
+          name:'9 - 11H',
+          type:'bar',
+          stack: '总量',
+          itemStyle : { normal: {label : {show: true, position: 'insideRight'}}},
+          data:qte9_11h
+        }
+      );
+
+      seriesList.push(
+        {
+          name:'11 - 13H',
+          type:'bar',
+          stack: '总量',
+          itemStyle : { normal: {label : {show: true, position: 'insideRight'}}},
+          data:qte11_13h
+        }
+      );
+
+      seriesList.push(
+        {
+          name:'13 - 15 H',
+          type:'bar',
+          stack: '总量',
+          itemStyle : { normal: {label : {show: true, position: 'insideRight'}}},
+          data:qte13_15h
+        }
+      );
+
+      seriesList.push(
+        {
+          name:'15H - plus',
+          type:'bar',
+          stack: '总量',
+          itemStyle : { normal: {label : {show: true, position: 'insideRight'}}},
+          data:qte15_ph
+        }
+      );
+
+      echartSTKHeure.setOption(getOptionSTKBar2_0(lib_heure,seriesList,['< 9H','9 - 11H','11 - 13H','13 - 15 H','15H - plus']));
+
+    }
+  }
+
+
+  /*fonction pour le changement de fennetre Div repartition quantite par sous specialite
+   * parametre fenetre
+   * 1=>tableau de valeur quantite
+   * 2=>graphe de valeur quantite
+   */
+  function change_qte(fenetre){
+    if(Number(fenetre)==1){
+
+      $("#div_qte").html(html_div_quantite);
+
+      for(var i = 0; i<data.length;i++){
+        $(".dep_"+data[i].id_pers).html(""+(data[i].libelle ||'-'));
+
+      }
+
+      for(var i = 0; i<datspe.length;i++){
+        var qt = Number(""+(datspe[i].qte ||'0'));
+        var duree = Number(""+(datspe[i].duree ||'0'));
+        var vitesse = 0;
+        $("#"+datspe[i].id_pers+"_"+datspe[i].id_lotclient).html(""+(datspe[i].qte ||'0'));
+        if(qt!=0){
+          $("#"+datspe[i].id_pers+"_"+datspe[i].id_lotclient).addClass("btn-success");
+        }
+      }
+      reloadDatatableHeure();
+    }else if (Number(fenetre)==2){
+      $("#div_qte").html(html_graphe_quantite);
+
+      reloadDatatableQte();
+    }
+  }
+
+  /*fonction pour le changement de fennetre Div repartition vitesse par sous specialite
+   * parametre fenetre
+   * 1=>tableau de valeur vitesse
+   * 2=>graphe de valeur vitesse
+   */
+  function change_vitesse(fenetre){
+    if(Number(fenetre)==1){
+
+      $("#div_vitesse").html(html_div_vitesse);
+      for(var i = 0; i<data.length;i++){
+        $(".dep_"+data[i].id_pers).html(""+(data[i].libelle ||'-'));
+      }
+
+      for(var i = 0; i<datspe.length;i++){
+        var qt = Number(""+(datspe[i].qte ||'0'));
+        var duree = Number(""+(datspe[i].duree ||'0'));
+        var vitesse = 0;
+        //$("#"+datspe[i].id_pers+"_"+datspe[i].id_lotclient).html(""+(datspe[i].qte ||'0'));
+        if(qt!=0){
+          //$("#"+datspe[i].id_pers+"_"+datspe[i].id_lotclient).addClass("btn-success");
+          if(duree!=0){
+            vitesse = qt/duree;
+          }
+        }
+
+
+        $("#vit_"+datspe[i].id_pers+"_"+datspe[i].id_lotclient).html(""+(vitesse).toFixed(2));
+
+        if(vitesse!=0){
+          $("#vit_"+datspe[i].id_pers+"_"+datspe[i].id_lotclient).addClass("btn-success");
+        }
+
+      }
+      reloadDatatableVitesse();
+    }else if (Number(fenetre)==2){
+      $("#div_vitesse").html(html_graphe_vitesse);
+    }
+  }
+
+// Fonction recuperation statistique
+  function loadData(){
+    var id_dossier = $("#specialite").val();
+    var datedeb = $("#datedeb").val();
+    var datefin = $("#datefin").val();
+
+    $.ajax({
+      type: "GET",
+      url: "/rp_data_vit?id_dossier="+id_dossier+"&date_deb="+datedeb+"&date_fin="+datefin,
+      beforeSend: function(xhr){
+        $( "#loadG").show();
+      },
+      success: function(msg){
+
+        //console.log();
+        libGlobale = [];
+        dataGlobale=[];
+
+        try {
+          var data2 = JSON.parse(msg);
+          data = data2.qte;
+          ssp = data2.souspec;
+          id_dossier = data2.id_dossier;
+          datspe = data2.qtesp;
+          data7_8h = data2.p7_8;
+          data8_9h = data2.p8_9;
+          data9_9h45 = data2.p9_9h45;
+          data10_11h = data2.p10_11;
+          data11_11h45 = data2.p11_11h45;
+          data12h30_14 = data2.p12h30_14;
+          data14_15h = data2.p14_15;
+          data15_16h = data2.p15_16;
+          data16_17h = data2.p16_17;
+          data17_18h = data2.p17_18;
+          /*
+          data9h = data2.m9;
+          data11h = data2.p9_11;
+          data13h = data2.p11_13;
+          data15h = data2.p13_15;
+          dataPlush = data2.p15;*/
+
+          //console.log(id_dossier);
+          var lib = [];
+          var vit = [];
+          var donnee = [];
+          var html_table_global = "<div class='col-md-12 col-sm-12 col-xs-12'>"+
+            "          <div class='x_panel'>"+
+            "            <div class='x_title'>"+
+            "            <h2>Valeur globale</h2>"+
+            "          <ul class='nav navbar-right panel_toolbox'>"+
+            "            <li><a class='collapse-link'><i class='fa fa-chevron-up'></i></a>"+
+            "            </li>"+
+            "            <li><a href='#' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><i class='fa fa-wrench'></i></a>" +
+            "                 <ul class='dropdown-menu' role='menu'>" +
+            "                     <li><a href='#' onclick='change_globale(1);'>Données</a> </li>" +
+            "                     <li><a href='#' onclick='change_globale(2)'>Graphe</a> </li>" +
+            "                  </ul>"+
+            "            </li>"+
+            ""+
+            "            <li><a class='close-link'><i class='fa fa-close'></i></a>"+
+            "            </li>"+
+            "            </ul>"+
+            "            <div class='clearfix'></div>"+
+            "            </div>"+
+            "            <div class='x_content' id='div_globale'>";
+          html_div_globale = "<table class='table table-bordered' id='datatable-buttons_g'>" +
+            "<thead>" +
+            "<tr>" +
+            "<th class='sorting_asc'>Matricule</th>" +
+            "<th>Departement</th>" +
+            "<th>Quantité <span class='fa fa-sort pull-right'></span> </th>" +
+            "<th>Vitesse <span class='fa fa-sort pull-right'></span></th>" +
+            "<th>Duree(en heure) <span class='fa fa-sort pull-right'></span></th></tr>"+
+            "</thead>" +
+            "<tbody>";
+          var html = "<table class='table table-bordered'>" +
+            "<thead>" +
+            "<tr>" +
+            "<th>Matricule</th>" +
+            "<th>Quantité</th>" +
+            "<th>Vitesse</th>" +
+            "<th>Duree(en heure)</th>";
+
+          var html_table_heure = "<div class='col-md-12 col-sm-12 col-xs-12'>"+
+            "          <div class='x_panel'>"+
+            "            <div class='x_title'>"+
+            "            <h2>Repartition par heure</h2>"+
+            "          <ul class='nav navbar-right panel_toolbox'>"+
+            "            <li><a class='collapse-link'><i class='fa fa-chevron-up'></i></a>"+
+            "            </li>"+
+            "            <li><a href='#' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><i class='fa fa-wrench'></i></a>" +
+            "                 <ul class='dropdown-menu' role='menu'>" +
+            "                     <li><a href='#' onclick='change_heure(1);'>Données</a> </li>" +
+            "                     <li><a href='#' onclick='change_heure(2);'>Graphe</a> </li>" +
+            "                  </ul>"+
+            "            </li>"+
+            ""+
+            ""+
+            "            <li><a class='close-link'><i class='fa fa-close'></i></a>"+
+            "            </li>"+
+            "            </ul>"+
+            "            <div class='clearfix'></div>"+
+            "            </div>"+
+            "            <div class='x_content' id='div_heure'>";
+          html_div_heure ="<table class='table table-bordered' id='datatable-buttons_h'>" +
+            "<thead>" +
+            "<tr>";
+          var html_table_ss = "<div class='col-md-12 col-sm-12 col-xs-12'>"+
+            "          <div class='x_panel'>"+
+            "            <div class='x_title'>"+
+            "            <h2>Quantite par Sous specialité</h2>"+
+            "          <ul class='nav navbar-right panel_toolbox'>"+
+            "            <li><a class='collapse-link'><i class='fa fa-chevron-up'></i></a>"+
+            "            </li>"+
+            /*  "            <li><a href='#' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><i class='fa fa-wrench'></i></a>" +
+             "                 <ul class='dropdown-menu' role='menu'>" +
+             "                     <li><a href='#' onclick=''>Données</a> </li>" +
+             "                     <li><a href='#' onclick=''>Graphe</a> </li>" +
+             "                  </ul>"+
+             "            </li>"+*/
+            ""+
+            "            <li><a class='close-link'><i class='fa fa-close'></i></a>"+
+            "            </li>"+
+            "            </ul>"+
+            "            <div class='clearfix'></div>"+
+            "            </div>"+
+            "            <div class='x_content' id='div_qte'>";
+          html_div_quantite ="<table class='table table-bordered' id='datatable-buttons_q'>" +
+            "<thead>" +
+            "<tr>"+
+            "<th>Matricule</th>"+
+            "<th>Departement</th>";
+
+          var html_table_ss_vit = "<div class='col-md-12 col-sm-12 col-xs-12'>"+
+            "          <div class='x_panel'>"+
+            "            <div class='x_title'>"+
+            "            <h2>Vitesse par Sous specialité</h2>"+
+            "          <ul class='nav navbar-right panel_toolbox'>"+
+            "            <li><a class='collapse-link'><i class='fa fa-chevron-up'></i></a>"+
+            "            </li>"+
+            /* "            <li><a href='#' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><i class='fa fa-wrench'></i></a>" +
+             "                 <ul class='dropdown-menu' role='menu'>" +
+             "                     <li><a href='#' onclick=''>Données</a> </li>" +
+             "                     <li><a href='#' onclick=''>Graphe</a> </li>" +
+             "                  </ul>"+
+             "            </li>"+*/
+            ""+
+            "            <li><a class='close-link'><i class='fa fa-close'></i></a>"+
+            "            </li>"+
+            "            </ul>"+
+            "            <div class='clearfix'></div>"+
+            "            </div>"+
+            "            <div class='x_content' id='div_vitesse'>";
+          html_div_vitesse = "<table class='table table-bordered' id='datatable-buttons_v'>" +
+            "<thead>" +
+            "<tr>"+
+            "<th>Matricule</th>"+
+            "<th>Departement</th>";
+          var html = "<table class='table table-bordered'>" +
+            "<thead>" +
+            "<tr>" +
+            "<th>Matricule</th>" +
+            "<th>Quantité</th>" +
+            "<th>Vitesse</th>" +
+            "<th>Duree(en heure)</th>";
+
+
+          var html_table_synthese = "<div class='col-md-12 col-sm-12 col-xs-12'>"+
+            "          <div class='x_panel'>"+
+            "            <div class='x_title'>"+
+            "            <h2>Synthese</h2>"+
+            "          <ul class='nav navbar-right panel_toolbox'>"+
+            "            <li><a class='collapse-link'><i class='fa fa-chevron-up'></i></a>"+
+            "            </li>"+
+            /* "            <li><a href='#' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><i class='fa fa-wrench'></i></a>" +
+             "                 <ul class='dropdown-menu' role='menu'>" +
+             "                     <li><a href='#' onclick=''>Données</a> </li>" +
+             "                     <li><a href='#' onclick=''>Graphe</a> </li>" +
+             "                  </ul>"+
+             "            </li>"+*/
+            ""+
+            "            <li><a class='close-link'><i class='fa fa-close'></i></a>"+
+            "            </li>"+
+            "            </ul>"+
+            "            <div class='clearfix'></div>"+
+            "            </div>"+
+            "            <div class='x_content' id='div_synthese'>";
+
+          var htm_div_synthese = "<table class='table table-bordered' id='datatable-buttons_sy'>"+
+            "<thead><tr><th>SOUS-SPECIALITE</th><th>REPARTITION</th><th>QUANTITE</th><th>TEMPS</th><th>VITESSE</th><th>NB OP</th></tr><thead><tbody>";
+
+
+          var styleA = "style='background-color: #fff8fd'";
+          var  styleB= "style='background-color: #b2e5ff'";
+          var stTemp = styleA;
+          for(var i = 0; i<ssp.length;i++){
+            html_div_quantite += "<th>"+ssp[i].libelle+" <span class='fa fa-sort pull-right' style='background-color: #b2e5ff'></span></th>";
+            html_div_vitesse += "<th>"+ssp[i].libelle+" <span class='fa fa-sort pull-right'></span></th>";
+            htm_div_synthese += "<tr>"+
+              "<td "+stTemp+">"+ssp[i].libelle+"</td>"+
+              "<td "+stTemp+">Titulaire</td>"+
+              "<td "+stTemp+" id='t_q_"+ssp[i].id_lotclient+"'>0</td>"+
+              "<td "+stTemp+" id='t_t_"+ssp[i].id_lotclient+"'>0</td>"+
+              "<td "+stTemp+" id='t_v_"+ssp[i].id_lotclient+"'>0</td>"+
+              "<td "+stTemp+" id='t_op_"+ssp[i].id_lotclient+"'>0</td>"+
+              "</tr>";
+            htm_div_synthese += "<tr>"+
+              "<td "+stTemp+"></td>"+
+              "<td "+stTemp+">Basculer</td>"+
+              "<td "+stTemp+" id='b_q_"+ssp[i].id_lotclient+"'>0</td>"+
+              "<td "+stTemp+" id='b_t_"+ssp[i].id_lotclient+"'>0</td>"+
+              "<td "+stTemp+" id='b_v_"+ssp[i].id_lotclient+"'>0</td>"+
+              "<td "+stTemp+" id='b_op_"+ssp[i].id_lotclient+"'>0</td>"+
+              "</tr>";
+            htm_div_synthese += "<tr>"+
+              "<td "+stTemp+"></td>"+
+              "<td "+stTemp+">Total</td>"+
+              "<td "+stTemp+" id='tot_q_"+ssp[i].id_lotclient+"'>0</td>"+
+              "<td "+stTemp+" id='tot_t_"+ssp[i].id_lotclient+"'>0</td>"+
+              "<td "+stTemp+" id='tot_v_"+ssp[i].id_lotclient+"'>0</td>"+
+              "<td "+stTemp+" id='tot_op_"+ssp[i].id_lotclient+"'>0</td>"+
+              "</tr>";
+
+            if(stTemp == styleA){
+              stTemp=styleB;
+            }else{
+              stTemp = styleA;
+            }
+
+
+
+
+          }
+
+          htm_div_synthese += "<tr>"+
+            "<td class='btn-info'>Total</td>"+
+            "<td class='btn-info'></td>"+
+            "<td class='btn-info' id='t_qte'>0</td>"+
+            "<td class='btn-info' id='t_temp'>0</td>"+
+            "<td class='btn-info' id='t_vitesse'>0</td>"+
+            "<td class='btn-info' id='t_op'>0</td>"+
+            "</tr>";
+
+          htm_div_synthese += "</tbody></table>";
+
+          html_div_quantite += "</tr>"+
+            "</thead>" +
+            "<tbody>";
+          html_div_vitesse += "</tr>"+
+            "</thead>" +
+            "<tbody>";
+
+          html_div_heure += "<th>Matricule</th><th>Departement</th><th>07 à 8h<span class='fa fa-sort pull-right'></span></th><th>08 à 9h <span class='fa fa-sort pull-right'></span></th><th>09 à 9h45<span class='fa fa-sort pull-right'></span></th><th>10 à 11h</th><th> 11 à 11h45<span class='fa fa-sort pull-right'></span></th>" +
+            "<th>12h30 à 14h<span class='fa fa-sort pull-right'></span></th><th>14 à 15h <span class='fa fa-sort pull-right'></span></th><th> 15 à 16h <span class='fa fa-sort pull-right'></span></th><th>16 à 17h</th><th> 17 à 18h <span class='fa fa-sort pull-right'></span></th>" +
+            "</tr>" +
+            "</thead>" +
+            "<tbody>";
+
+
+          var html_graphe = "";
+          for (var i = 0 ; i<data.length ; i++){
+            var m_html ="";
+            var m_html_vit ="";
+            /*for(var e = 0; e<ssp.length;e++){;
+             m_html += "<td id='"+data[i].id_pers+"_"+ssp[e].id_lotclient+"'>0</td>";
+             }*/
+            var vitesse = 0;
+            var cl = "btn-danger";
+            if(Number(data[i].qte || 0)!=0 && Number(data[i].duree || 0)!=0){
+              vitesse =(Number(data[i].qte)/Number(data[i].duree)).toFixed(2) ;
+              cl = "";
+            }
+            for(var e = 0; e<ssp.length;e++){;
+              m_html += "<td id='"+data[i].id_pers+"_"+ssp[e].id_lotclient+"' class='"+cl+"'>0</td>";
+              m_html_vit += "<td id='vit_"+data[i].id_pers+"_"+ssp[e].id_lotclient+"' class='"+cl+"'>0</td>";
+            }
+
+
+            libGlobale.push(""+data[i].id_pers);
+
+            lib.push(data[i].id_pers);
+            vit.push(vitesse);
+            var obj = {name:""+data[i].id_pers,value:vitesse};
+
+            dataGlobale.push(obj);
+            donnee.push(obj);
+            html_div_globale += "<tr>" +
+              "<td class='"+cl+"'>"+data[i].id_pers+"</td>" +
+              "<td class='"+cl+" dep_"+data[i].id_pers+"'></td>" +
+              "<td class='"+cl+"'>"+(data[i].qte || '0')+"</td>" +
+              "<td class='"+cl+"'>"+vitesse+"</td>"+
+              "<td class='"+cl+"'>"+Number(data[i].duree || '0').toFixed(2)+"</td>"+
+              "</tr>";
+            html_div_quantite += "<tr>" +
+              "<td class='"+cl+"'>"+data[i].id_pers+"</td><td class='"+cl+" dep_"+data[i].id_pers+"'></td>"  +m_html +"</tr>";
+            html_div_vitesse += "<tr>" +
+              "<td class='"+cl+"'>"+data[i].id_pers+"</td><td class='"+cl+" dep_"+data[i].id_pers+"' id='dep_"+data[i].id_pers+"'></td>"  +m_html_vit +"</tr>";
+            html_div_heure += "<tr>" +
+              "<td class='"+cl+"'>"+data[i].id_pers+"</td><td class='"+cl+" dep_"+data[i].id_pers+"'></td>" +
+              "<td class='"+cl+"' id='7_8"+data[i].id_pers+"'>0</td><td class='"+cl+"' id='8_9"+data[i].id_pers+"'>0</td><td class='"+cl+"' id='9_9h45"+data[i].id_pers+"'>0</td><td class='"+cl+"' id='10_11"+data[i].id_pers+"'>0</td><td class='"+cl+"' id='11_11h45"+data[i].id_pers+"'>0</td>" +
+              "<td class='"+cl+"' id='12h30_14"+data[i].id_pers+"'>0</td><td class='"+cl+"' id='14_15"+data[i].id_pers+"'>0</td><td class='"+cl+"' id='15_16"+data[i].id_pers+"'>0</td><td class='"+cl+"' id='16_17"+data[i].id_pers+"'>0</td><td class='"+cl+"' id='17_18"+data[i].id_pers+"'>0</td>" +
+              "</tr>"
+          }
+          html +="</tbody>" +
+            "</table>";
+
+          html_div_globale += "</tbody>" +
+            "</table>";
+          html_table_global += html_div_globale + "</div></div></div>";
+          html_div_heure += "</tbody>" +
+            "</table>";
+          html_table_heure += html_div_heure + "</div></div></div>";
+          html_div_quantite += "</tbody>" +
+            "</table>";
+          html_table_ss +=html_div_quantite + "</div></div></div>";
+          html_div_vitesse += "</tbody>" +
+            "</table>";
+          html_table_ss_vit += html_div_vitesse + "</div></div></div>";
+          html_table_synthese += htm_div_synthese + "</div></div></div>";
+
+          $("#divGraph").html(html_table_heure+html_table_global+html_table_ss+html_table_ss_vit+html_table_synthese);
+          $("#divGraphique").html(html_graphe);
+
+
+
+          for(var i = 0; i<data.length;i++){
+            $(".dep_"+data[i].id_pers).html(""+(data[i].libelle ||'-'));
+            ////console.log("#"+etat[i].idet+"_"+etat[i].id_pers);
+
+          }
+          var listQte = {};
+          var listVit = {};
+          var listDuree = {};
+
+          for(var i = 0; i<datspe.length;i++){
+            var qt = Number(""+(datspe[i].qte ||'0'));
+            var duree = Number(""+(datspe[i].duree ||'0'));
+            var vitesse = 0;
+            $("#"+datspe[i].id_pers+"_"+datspe[i].id_lotclient).html(""+(datspe[i].qte ||'0'));
+            if(qt!=0){
+              $("#"+datspe[i].id_pers+"_"+datspe[i].id_lotclient).addClass("btn-success");
+              if(duree!=0){
+                vitesse = qt/duree;
+              }
+            }
+
+
+            $("#vit_"+datspe[i].id_pers+"_"+datspe[i].id_lotclient).html(""+(vitesse).toFixed(2));
+
+            listQte[datspe[i].id_pers+"_"+datspe[i].id_lotclient] = ""+(datspe[i].qte ||'0');
+            listVit[datspe[i].id_pers+"_"+datspe[i].id_lotclient] = Number(""+(vitesse).toFixed(2));
+            listDuree[datspe[i].id_pers+"_"+datspe[i].id_lotclient] = duree;
+
+            if(vitesse!=0){
+              $("#vit_"+datspe[i].id_pers+"_"+datspe[i].id_lotclient).addClass("btn-success");
+            }
+
+          }
+
+          var totalQTE = 0;
+          var totalV = 0;
+          var totalTemp = 0;
+          var totalOp = 0;
+
+          ////console.log(JSON.stringify(listQte))
+          var departement = loadDep(id_dossier);
+          for(var iii = 0; iii<ssp.length;iii++){
+            /*On map les liste de Departement
+             * on recupere d'abordd les liste es ssp
+             * on calcule la quantite
+             * on calcule la vitesse
+             * on calcule la duree
+             * */
+            var qteTitulaire = 0;
+            var qteBasculer = 0;
+            var qteTotal = 0;
+
+            var vitTitulaire = 0;
+            var vitBasculer = 0;
+            var vitTotal = 0;
+
+            var dureeTitulaire = 0;
+            var dureeBasculer = 0;
+            var dureeTotal = 0;
+
+            var nbTitulaire = 0;
+            var nbBasculer = 0;
+            var nbTotal = 0;
+            var lastIdPers = null;
+            for (var ii = 0 ; ii<datspe.length ; ii++){
+
+
+              if(lastIdPers!=(datspe[ii].id_pers+"_"+ssp[iii].id_lotclient)){
+
+
+                var duree = 0;
+                if(!isNaN(Number(listDuree[datspe[ii].id_pers+"_"+ssp[iii].id_lotclient]))){
+                  duree = Number(listDuree[datspe[ii].id_pers+"_"+ssp[iii].id_lotclient]);
+                }
+                dureeTotal += duree;
+
+                var qtee = 0;
+                if(!isNaN(Number(listQte[datspe[ii].id_pers+"_"+ssp[iii].id_lotclient]))){
+                  qtee = Number(listQte[datspe[ii].id_pers+"_"+ssp[iii].id_lotclient]);
+                }
+                qteTotal = qteTotal + qtee;
+
+                ////console.log(datspe[ii].id_pers+"total:"+qteTotal);
+
+                var vit = 0;
+                if(!isNaN(Number(listVit[datspe[ii].id_pers+"_"+ssp[iii].id_lotclient]))){
+                  vit = Number(listVit[datspe[ii].id_pers+"_"+ssp[iii].id_lotclient]);
+                }
+                vitTotal += vit;
+
+                if(qtee!=0) nbTotal +=1;
+
+                var dep = $("#dep_"+datspe[ii].id_pers).text();
+
+                /*//console.log("dep1:"+dep);
+                 //console.log("dep2:"+departement);*/
+                if(dep.toLowerCase() == departement.toLowerCase()){
+                  qteTitulaire += qtee;
+                  vitTitulaire += vit;
+
+                  /*if(datspe[ii].id_lotclient ==ssp[iii].id_lotclient) */dureeTitulaire += duree;
+
+                  if(qtee!=0) nbTitulaire +=1;
+                }else{
+                  qteBasculer += qtee;
+                  vitBasculer += vit;
+                  /*if(datspe[ii].id_lotclient ==ssp[iii].id_lotclient) */dureeBasculer += duree;
+
+                  if(qtee!=0) nbBasculer +=1;
+                }
+                lastIdPers = datspe[ii].id_pers+"_"+ssp[iii].id_lotclient;
+              }
+
+
+
+            }
+            ////console.log("tot:"+qteTotal);
+            totalQTE += qteTotal;
+            totalV +=vitTotal;
+            totalTemp += dureeTotal;
+            totalOp += nbTotal;
+
+            $("#tot_q_"+ssp[iii].id_lotclient).html(""+qteTotal);
+            $("#tot_v_"+ssp[iii].id_lotclient).html(""+Number(vitTotal.toFixed(2)));
+            $("#tot_t_"+ssp[iii].id_lotclient).html(""+Number(dureeTotal.toFixed(2)));
+            $("#tot_op_"+ssp[iii].id_lotclient).html(""+nbTotal);
+
+            $("#t_q_"+ssp[iii].id_lotclient).html(""+qteTitulaire);
+            $("#t_v_"+ssp[iii].id_lotclient).html(""+Number(vitTitulaire.toFixed(2)));
+            $("#t_t_"+ssp[iii].id_lotclient).html(""+Number(dureeTitulaire.toFixed(2)));
+            $("#t_op_"+ssp[iii].id_lotclient).html(""+nbTitulaire);
+
+            $("#b_q_"+ssp[iii].id_lotclient).html(""+qteBasculer);
+            $("#b_v_"+ssp[iii].id_lotclient).html(""+Number(vitBasculer.toFixed(2)));
+            $("#b_t_"+ssp[iii].id_lotclient).html(""+Number(dureeBasculer.toFixed(2)));
+            $("#b_op_"+ssp[iii].id_lotclient).html(""+nbBasculer);
+
+
+            ////console.log(ssp[i].id_lotclient+":"+qteTotal+"_"+vitTotal);
+
+          }
+
+          $("#t_qte").html(""+totalQTE);
+          $("#t_vitesse").html(""+Number(totalV.toFixed(2)));
+          $("#t_temp").html(""+Number(totalTemp.toFixed(2)));
+          $("#t_op").html(""+totalOp);
+
+          for(var i = 0; i<data7_8h.length;i++){
+            var qt = Number(""+(data7_8h[i].qte ||'0'));
+            ////console.log("#9h_"+data9h[i].id_pers);
+            $("#7_8"+data7_8h[i].id_pers).html(""+(data7_8h[i].qte ||'0'));
+          }
+
+          for(var i = 0; i<data8_9h.length;i++){
+            var qt = Number(""+(data8_9h[i].qte ||'0'));
+            ////console.log("#9h_"+data9h[i].id_pers);
+            $("#8_9"+data8_9h[i].id_pers).html(""+(data8_9h[i].qte ||'0'));
+          }
+
+          for(var i = 0; i<data9_9h45.length;i++){
+            var qt = Number(""+(data9_9h45[i].qte ||'0'));
+            ////console.log("#9h_"+data9h[i].id_pers);
+            $("#9_9h45"+data9_9h45[i].id_pers).html(""+(Number(data9_9h45[i].qte)/0.75).toFixed(2) ||'0');
+          }
+
+          for(var i = 0; i<data10_11h.length;i++){
+            var qt = Number(""+(data10_11h[i].qte ||'0'));
+            ////console.log("#9h_"+data9h[i].id_pers);
+            $("#10_11"+data10_11h[i].id_pers).html(""+(data10_11h[i].qte ||'0'));
+          }
+
+          for(var i = 0; i<data11_11h45.length;i++){
+            var qt = Number(""+(data11_11h45[i].qte ||'0'));
+            ////console.log("#9h_"+data9h[i].id_pers);
+            $("#11_11h45"+data11_11h45[i].id_pers).html(""+((Number(data11_11h45[i].qte)/0.75).toFixed(2) ||'0'));
+          }
+
+          for(var i = 0; i<data12h30_14.length;i++){
+            var qt = Number(""+(data12h30_14[i].qte ||'0'));
+            ////console.log("#9h_"+data9h[i].id_pers);
+            $("#12h30_14"+data12h30_14[i].id_pers).html(""+((Number(data12h30_14[i].qte)/1.5).toFixed(2) ||'0'));
+          }
+
+          for(var i = 0; i<data14_15h.length;i++){
+            var qt = Number(""+(data14_15h[i].qte ||'0'));
+            ////console.log("#9h_"+data9h[i].id_pers);
+            $("#14_15"+data14_15h[i].id_pers).html(""+(data14_15h[i].qte ||'0'));
+          }
+
+          for(var i = 0; i<data15_16h.length;i++){
+            var qt = Number(""+(data15_16h[i].qte ||'0'));
+            ////console.log("#9h_"+data9h[i].id_pers);
+            $("#15_16"+data15_16h[i].id_pers).html(""+(data15_16h[i].qte ||'0'));
+          }
+
+          for(var i = 0; i<data16_17h.length;i++){
+            var qt = Number(""+(data16_17h[i].qte ||'0'));
+            ////console.log("#9h_"+data9h[i].id_pers);
+            $("#16_17"+data16_17h[i].id_pers).html(""+(data16_17h[i].qte ||'0'));
+          }
+
+          for(var i = 0; i<data17_18h.length;i++){
+            var qt = Number(""+(data17_18h[i].qte ||'0'));
+            ////console.log("#9h_"+data9h[i].id_pers);
+            $("#17_18"+data17_18h[i].id_pers).html(""+(data17_18h[i].qte ||'0'));
+          }
+
+          /*for(var i = 0; i<data9h.length;i++){
+            var qt = Number(""+(data9h[i].qte ||'0'));
+            ////console.log("#9h_"+data9h[i].id_pers);
+            $("#9h_"+data9h[i].id_pers).html(""+(data9h[i].qte ||'0'));
+
+
+          }
+          for(var i = 0; i<data11h.length;i++){
+            var qt = Number(""+(data11h[i].qte ||'0'));
+            ////console.log("#11h_"+data11h[i].id_pers);
+            $("#11h_"+data11h[i].id_pers).html(""+(data11h[i].qte ||'0'));
+
+
+          }
+          for(var i = 0; i<data13h.length;i++){
+            var qt = Number(""+(data13h[i].qte ||'0'));
+            ////console.log("#13h_"+data13h[i].id_pers);
+            $("#13h_"+data13h[i].id_pers).html(""+(data13h[i].qte ||'0'));
+
+
+          }
+          ////console.log(data15h);
+          for(var i = 0; i<data15h.length;i++){
+            var qt = Number(""+(data15h[i].qte ||'0'));
+            ////console.log("#15h_"+data15h[i].id_pers);
+            $("#15h_"+data15h[i].id_pers).html(""+(data15h[i].qte ||'0'));
+
+
+          }
+          for(var i = 0; i<dataPlush.length;i++){
+            var qt = Number(""+(dataPlush[i].qte ||'0'));
+            ////console.log("#plush_"+dataPlush[i].id_pers);
+            $("#plush_"+dataPlush[i].id_pers).html(""+(dataPlush[i].qte ||'0'));
+
+
+          }*/
+
+
+
+
+
+          $.getScript("/js/custom.min.js");
+
+          reloadDatatableGlobale();
+          reloadDatatableHeure();
+          reloadDatatableQte();
+          reloadDatatableVitesse();
+          reloadDatatableSynthese();
+          //reloadDatatable();//reload des donnees datatable
+
+          /*var echartSTKDossier = echarts.init(document.getElementById('echart_stk'), theme);
+
+           var seriesList = [];
+           seriesList.push(
+           {
+           name:'vitesse',
+           type:'bar',
+           stack: '总量',
+           itemStyle : { normal: {label : {show: true, position: 'insideRight'}}},
+           data:vit
+           }
+           )
+           echartSTKDossier.setOption(getOptionSTKBar(lib,[seriesList[0]]));*/
+
+
+        }
+        catch (e) {
+          /*idSouspec = [];
+           $("#sspecialite").html(html);
+           $("#divsspec").hide();*/
+          //console.log(e);
+          $("#divGraph").html("<p>aucun enregistrement effectué.</p>");
+        }
+        $( "#loadG").hide();
+        //alert(msg);
+      },
+      error: function (error) {
+        $( "#loadG").hide();
+        alert(error);
+      }
+    });
+  }
+
+
+  function loadDep(id_dossier){
+    var poleList = [
+      {
+        id : 41,
+        dep : 12,
+        lib : "DEV"
+      },{
+        id : 579,
+        dep : 19,
+        lib : "ALMERYS_TPS"
+      },{
+        id : 578,
+        dep : 20,
+        lib : "ALMERYS_HOSPI"
+      },{
+        id : 580,
+        dep : 22,
+        lib : "ALMERYS_OPTIQUE"
+      },{
+        id : 577,
+        dep : 38,
+        lib : "ALMERYS_SE"
+      },{
+        id : 29,
+        dep : 39,
+        lib : "ALMERYS_LDR"
+      },{
+        id : 583,
+        dep : 40,
+        lib : "ALMERYS_INTERIAL"
+      },{
+        id : 582,
+        dep : 49,
+        lib : "ALMERYS_DENTAIRE"
+      }
+    ];
+
+
+    var dep ="";
+
+    if(Number(id_dossier)==41)
+    {
+      dep = poleList[0].lib;
+    }
+    else if(Number(id_dossier)==579)
+    {
+      dep = poleList[1].lib;
+    }
+    else if(Number(id_dossier)==578)
+    {
+      dep = poleList[2].lib;
+    }else if(Number(id_dossier)==580)
+    {
+      dep = poleList[3].lib;
+    }
+    else if(Number(id_dossier)==577)
+    {
+      dep = poleList[4].lib;
+    }else if(Number(id_dossier)==29)
+    {
+      dep = poleList[5].lib;
+    }
+    else if(Number(id_dossier)==583)
+    {
+      dep = poleList[6].lib;
+    }
+    else if(Number(id_dossier)==582)
+    {
+      dep = poleList[7].lib;
+    }
+
+    return dep;
+  }
+
+  function loadDT() {
+    var id_lotclient = $("#sspecialite").val();
+    var id_dossier = $("#specialite").val();
+    loadDataL();
+    if(id_dossier!=""){
+      if(id_lotclient!=""){
+        // RECHERCHE STATS
+        //loadDataL();
+      }else{
+        //loadData();
+      }
+    }else{
+      alert("Choix du departement obligatoire");
+    }
+  }
+  function loadDataL(){
+    var id_lotclient = $("#sspecialite").val();
+    var id_dossier = $("#specialite").val();
+    var datedeb = $("#datedeb").val();
+    var datefin = $("#datefin").val();
+
+    $.ajax({
+      type: "GET",
+      url: "/solimu/statistique/getDonneeSaisie?id_dossier="+id_dossier+"&id_lot_client="+id_lotclient+"&date_deb="+datedeb+"&date_fin="+datefin,
+      beforeSend: function(xhr){
+        $( "#loadG").show();
+      },
+      success: function(msg){
+        try {
+          console.log("Here");
+          //console.log(msg);
+          var dt= JSON.parse(msg);
+
+          var html =  "<div class='col-md-12 col-sm-12 col-xs-12'>"+
+            "          <div class='x_panel'>"+
+            "            <div class='x_title'>"+
+            "            <h2>Statistique Saisie SOLIMU</h2>"+
+            "          <ul class='nav navbar-right panel_toolbox'>"+
+            "            <li><a class='collapse-link'><i class='fa fa-chevron-up'></i></a>"+
+            "            </li>"+
+            ""+
+            "            <li><a class='close-link'><i class='fa fa-close'></i></a>"+
+            "            </li>"+
+            "            </ul>"+
+            "            <div class='clearfix'></div>"+
+            "            </div>"+
+            "            <div class='x_content'>"+
+            "<table class='table table-bordered' id='detail-saisie'>" +
+            "<thead>" +
+            "<tr>" +
+            "<th>Date</th>" +
+            "<th>Matricule</th>" +
+            "<th>Quantité nombre pdf</th>" +
+            "<th>Quantité acte saisie</th>" +
+            "<th>Nombre facture rejet</th>" +
+            "<th>Nombre facture temporatiser</th>" +
+            "<th>Nombre Echantillon</th>" +
+            "<th>Nombre erreur</th>" +
+            "<th>Heure Prod</th>";
+          html += "<tbody>";
+          for(var i = 0; i< dt.length ; i++)
+          {
+            html+= "<tr>";
+            html+=  "<td>"+dt[i].date+"</td>" +
+                    "<td>"+dt[i].id_pers+"</td>" +
+                    "<td>"+dt[i].nombre_pdf_traite+"</td>" +
+                    "<td>"+dt[i].nombre_acte_traite+"</td>" +
+                    "<td>"+dt[i].nombre_pdf_temporaire+"</td>" +
+                    "<td>"+dt[i].nombre_pdf_rejeter+"</td>" +
+                    "<td>"+dt[i].nombre_echantillon+"</td>" +
+                    "<td>"+dt[i].nombre_erreur+"</td>" +
+                    "<td>"+dt[i].heure_prod+"</td>";
+            html+= "</tr>";
+          }
+          html += "</tbody></table></div></div></div>";
+          $("#divGraph").html(html);
+
+          var handleDataTableButtons_d = function() {
+            if ($("#detail-saisie").length) {
+              $("#detail-saisie").DataTable({
+                dom: "Bfrtip",
+                searching: false,
+                paging: false,
+                "aLengthMenu": [[25, 50, 75, -1], [25, 50, 75, "All"]],
+                "iDisplayLength": 25,
+                buttons: [
+                  {
+                    extend: "copy",
+                    className: "btn-sm"
+                  },
+                  {
+                    extend: "csv",
+                    className: "btn-sm"
+                  },
+                  {
+                    extend: "excel",
+                    className: "btn-sm"
+                  },
+                  {
+                    extend: "pdfHtml5",
+                    className: "btn-sm"
+                  },
+                  {
+                    extend: "print",
+                    className: "btn-sm"
+                  },
+                ],
+                responsive: true
+              });
+            }
+          };
+
+          TableManageButtons_d = function() {
+            "use strict";
+            return {
+              init: function() {
+                handleDataTableButtons_d();
+              }
+            };
+          }();
+
+
+          TableManageButtons_d.init();
+
+        }
+        catch (e) {
+          $("#divGraph").html("<p>aucun enregistrement effectué.</p>:"+e);
+        }
+
+        $( "#loadG").hide();
+      },
+      error: function (error) {
+        $( "#loadG").hide();
+        alert(error);
+      }
+    });
+  }
+  function reloadDatatableSynthese(){
+
+    var handleDataTableButtons_sy = function() {
+      if ($("#datatable-buttons_sy").length) {
+        $("#datatable-buttons_sy").DataTable({
+          dom: "Bfrtip",
+          searching: false,
+          ordering: false,
+          paging: false,
+          "aLengthMenu": [[25, 50, 75, -1], [25, 50, 75, "All"]],
+          "iDisplayLength": 25,
+          buttons: [
+            {
+              extend: "copy",
+              className: "btn-sm"
+            },
+            {
+              extend: "csv",
+              className: "btn-sm"
+            },
+            {
+              extend: "excel",
+              className: "btn-sm"
+            },
+            {
+              extend: "pdfHtml5",
+              className: "btn-sm"
+            },
+            {
+              extend: "print",
+              className: "btn-sm"
+            },
+          ],
+          responsive: true
+        });
+      }
+    };
+
+    TableManageButtons_sy = function() {
+      "use strict";
+      return {
+        init: function() {
+          handleDataTableButtons_sy();
+        }
+      };
+    }();
+    TableManageButtons_sy.init();
+  }
+
+
+  //rafraichissement de
+  function reloadDatatableGlobale(){
+
+    var handleDataTableButtons_g = function() {
+      if ($("#datatable-buttons_g").length) {
+        $("#datatable-buttons_g").DataTable({
+          dom: "Bfrtip",
+          searching: false,
+          paging: true,
+          "aLengthMenu": [[25, 50, 75, -1], [25, 50, 75, "All"]],
+          "iDisplayLength": 25,
+          buttons: [
+            {
+              extend: "copy",
+              className: "btn-sm"
+            },
+            {
+              extend: "csv",
+              className: "btn-sm"
+            },
+            {
+              extend: "excel",
+              className: "btn-sm"
+            },
+            {
+              extend: "pdfHtml5",
+              className: "btn-sm"
+            },
+            {
+              extend: "print",
+              className: "btn-sm"
+            },
+          ],
+          responsive: true
+        });
+      }
+    };
+
+    TableManageButtons_g = function() {
+      "use strict";
+      return {
+        init: function() {
+          handleDataTableButtons_g();
+        }
+      };
+    }();
+    TableManageButtons_g.init();
+  }
+
+  //rafraichessement de la table repartition par heure
+  function reloadDatatableHeure(){
+
+    var handleDataTableButtons_h = function() {
+      if ($("#datatable-buttons_h").length) {
+        $("#datatable-buttons_h").DataTable({
+          dom: "Bfrtip",
+          searching: false,
+          paging: true,
+          "aLengthMenu": [[25, 50, 75, -1], [25, 50, 75, "All"]],
+          "iDisplayLength": 25,
+          buttons: [
+            {
+              extend: "copy",
+              className: "btn-sm"
+            },
+            {
+              extend: "csv",
+              className: "btn-sm"
+            },
+            {
+              extend: "excel",
+              className: "btn-sm"
+            },
+            {
+              extend: "pdfHtml5",
+              className: "btn-sm"
+            },
+            {
+              extend: "print",
+              className: "btn-sm"
+            },
+          ],
+          responsive: true
+        });
+      }
+    };
+
+    TableManageButtons_h = function() {
+      "use strict";
+      return {
+        init: function() {
+          handleDataTableButtons_h();
+        }
+      };
+    }();
+
+    TableManageButtons_h.init();
+
+  }
+
+  //Rafraichissement du table quantite
+  function reloadDatatableQte(){
+    var handleDataTableButtons_q = function() {
+      if ($("#datatable-buttons_q").length) {
+        $("#datatable-buttons_q").DataTable({
+          dom: "Bfrtip",
+          searching: false,
+          paging: true,
+          "aLengthMenu": [[25, 50, 75, -1], [25, 50, 75, "All"]],
+          "iDisplayLength": 25,
+          buttons: [
+            {
+              extend: "copy",
+              className: "btn-sm"
+            },
+            {
+              extend: "csv",
+              className: "btn-sm"
+            },
+            {
+              extend: "excel",
+              className: "btn-sm"
+            },
+            {
+              extend: "pdfHtml5",
+              className: "btn-sm"
+            },
+            {
+              extend: "print",
+              className: "btn-sm"
+            },
+          ],
+          responsive: true
+        });
+      }
+    };
+
+    TableManageButtons_q = function() {
+      "use strict";
+      return {
+        init: function() {
+          handleDataTableButtons_q();
+        }
+      };
+    }();
+    TableManageButtons_q.init();
+  }
+
+
+  //rafraichissement de la table de vitesse
+  function reloadDatatableVitesse(){
+    var handleDataTableButtons_v = function() {
+      if ($("#datatable-buttons_v").length) {
+        $("#datatable-buttons_v").DataTable({
+          dom: "Bfrtip",
+          searching: false,
+          paging: true,
+          "aLengthMenu": [[25, 50, 75, -1], [25, 50, 75, "All"]],
+          "iDisplayLength": 25,
+          buttons: [
+            {
+              extend: "copy",
+              className: "btn-sm"
+            },
+            {
+              extend: "csv",
+              className: "btn-sm"
+            },
+            {
+              extend: "excel",
+              className: "btn-sm"
+            },
+            {
+              extend: "pdfHtml5",
+              className: "btn-sm"
+            },
+            {
+              extend: "print",
+              className: "btn-sm"
+            },
+          ],
+          responsive: true
+        });
+      }
+    };
+
+    TableManageButtons_v = function() {
+      "use strict";
+      return {
+        init: function() {
+          handleDataTableButtons_v();
+        }
+      };
+    }();
+
+
+    TableManageButtons_v.init();
+  }
+
+
+
+</script>

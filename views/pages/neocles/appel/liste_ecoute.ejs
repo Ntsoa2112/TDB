@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta name="generator" content="Bootply" />
+  <link rel="stylesheet" href="/styles/importer.css">
+  <link rel="stylesheet" href="/bootflat/css/bootflat.min.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/local.css">
+  <link rel="stylesheet" href="/css/Style_v3.css">
+
+  <link rel="stylesheet" href="/jquery-ui/jquery-ui.css">
+
+  <link rel="stylesheet" href="/css/bootstrap-duration-picker.css">
+
+  <!-- bootbox code -->
+  <script src="js/bootbox.min.js"></script>
+
+  <!-- check select -->
+  <link rel="stylesheet" href="/css/bootstrap-multiselect.css">
+
+  <style type="text/css">
+    .notation_almerys{
+    }
+    .colorTable{
+      background-color:red;
+    }
+    input[type=radio] {
+      display: block;
+      margin: 0 auto;
+    }
+    label {
+      display: inline-block;
+    }
+  </style>
+  <title>Notation Appel</title>
+</head>
+
+<body onload="loadAll();">
+<!-- HEADER -->
+<%
+var mapPonderation = {};
+if(req.session.droit==1){
+
+%>
+<% include ../../../includes/entete.ejs %>
+<% }else{
+
+%>
+<% include ../../../includes/enteteOperateur.ejs %>
+
+<% }%>
+<!-- /HEADER -->
+<div id="page-wrapper">
+
+	<div class="page-title" style="margin-left:25px">
+		<div class="title_left">
+		  <h3 style="color:#2B75A6;">
+			Liste enregistrement
+		  </h3>
+		</div>
+	</div>
+
+	<div class="panel-heading">
+		<div class="row">
+			<div class="panel panel-primary">
+				<div class="form-group col-md-2" style="margin-left:25px">
+				<label for="tc_select">Intervenant</label>
+				<select class="form-control" id="tc_select" name="tc_select"  required='required'>
+					<option value="">-</option>
+				</select>
+				</div>
+
+				<div class="form-group col-md-2" style="margin-left:25px">
+					<label for="type_masque">Type</label>
+					<select class="form-control" id="type_masque" name="type_masque"  required='required'>
+						<option value="">-</option>
+					</select>
+					</div>
+
+				<div class="form-group  col-xs-2 col-md-2 col-lg-2"  style="margin-left:25px">
+					<label for="date_enregistrement">Date</label>
+					<input type="text" class="form-control" tabindex="-1" id='date_enregistrement' name='date_enregistrement' >
+				</div>
+
+				<div class="form-group  col-xs-2 col-md-2 col-lg-2"  style="margin-left:25px">
+					<label for="date_enregistrement"></label>
+					<input type="button" class="form-control btn-primary" tabindex="-1" id='submit' name='submit' value="OK" onclick="go();">
+				</div>
+
+			</div>
+		</div>
+	</div>
+	
+	<div id="load1" class="col-md-4" style="display:none">
+		<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+		<span class="sr-only">Loading...</span>
+	</div>
+	
+	<div id="div"></div>
+
+</div>
+
+</body>
+
+<script src="/js/jquery-1.12.4.js"></script>
+<!--<script src="/js/base.min.js"></script>-->
+<!--<script src="/js/project.min.js"></script>-->
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/scripts.js"></script>
+
+<script src="/js/vendors/echarts.min.js"></script>
+<script src="/js/dependencies/sails.io.js"></script>
+<script src="/js/jquery-ui.min.js"></script>
+<script src="/js/echarts/theme.js"></script>
+<script src="/js/echarts/echarts.js"></script>
+<script src="/js/custom.min.js"></script><!--script customise-->
+<script src="/js/bootstrap-duration-picker-debug.js"></script>
+
+<script src="/js/bootstrap-multiselect.js"></script>
+
+<script language="javascript">
+
+
+	$(function() {
+		$("#date_enregistrement").datepicker({
+		dateFormat: 'yy/mm/dd'
+		}).datepicker("setDate", new Date());
+  	});
+
+	function isNumberKey(evt){
+    	var charCode = (evt.which) ? evt.which : evt.keyCode
+    	if (charCode > 31 && (charCode < 48 || charCode > 57))
+			return false;
+		
+		//seulement chiffre compris entre 1 et 5
+		if(evt.key > 5) return false;
+
+    	return true;
+	}
+
+	function loadAll(){
+		loadTC();
+		loadType();
+	}
+
+	function initializeSelection(){
+		var url_string = window.location.href
+		var url = new URL(url_string);
+
+		var id = url.searchParams.get("id");
+		var type = url.searchParams.get("type");
+		var date = url.searchParams.get("date");
+
+		$("#tc_select").val(id);
+		$("#type_masque").val(type);
+
+		if(date){
+			$("#date_enregistrement").val(date);
+		}
+
+		if($("#tc_select").val() && $("#type_masque").val()){
+			go();
+		}
+	}
+
+	function loadTC(callback){
+		$.ajax({
+		type: "GET",
+		url: "/neocles-user-list",
+
+		success: function(msg){
+			var html = "<option value=''></option>";
+			var data = JSON.parse(msg);
+
+			for (var i = 0 ; i<data.length ; i++){
+			html += "<option value='"+data[i].matricule+"'>"+data[i].matricule+" - "+data[i].appelation+"</option>";
+			}
+			$("#tc_select").html(html);
+
+			initializeSelection();
+
+		},
+		error: function (error) {
+
+		}
+		});
+	}
+	function loadType(){
+		$.ajax({
+		type: "GET",
+		url: "/neocles-type-list",
+
+		success: function(msg){
+			var html = "<option value=''></option>";
+			var data = JSON.parse(msg);
+
+			console.log(data);
+
+			for (var i = 0 ; i<data.length ; i++){
+				html += "<option value='"+data[i].id+"'>" + data[i].libelle + "</option>";
+			}
+
+			$("#type_masque").html(html);
+
+			initializeSelection();
+		},
+		error: function (error) {
+
+		}
+		});
+	}
+
+	function load_profile(id_pers) {
+		$.ajax({
+			type: "GET",
+			url: "/neocles-details-user?id= " + id_pers + "&id_ecoute=1" + "&date=" + $("#date_enregistrement").val() ,
+
+			success: function(msg){
+				var data = JSON.parse(msg);
+
+				console.log(data);
+				
+				$("#td_nom").html(data.infoRh.nom + " " + data.infoRh.prenom + " - " + data.listEcoutes.length + " sur " + data.infoRh.nb_echantillon);
+			},
+			error: function (error) {
+
+			}
+		});
+	}
+
+	function go(){
+		let id_type_masque = $("#type_masque").val();
+		let id_pers = $("#tc_select").val();
+		let date = $("#date_enregistrement").val();
+
+		$.ajax({
+			type: "GET",
+			url: "/neocles-get-list-ecoute?id= " + id_pers + "&id_type_masque="+ id_type_masque + "&date=" + date ,
+			beforeSend: function(xhr){
+        		$( "#load1").show();
+      		},
+			success: function(msg){
+				$( "#load1").hide();
+       			$("#div").html(msg);
+				//reloadDatatable();
+			},
+			error: function (error) {
+				$( "#load1").hide();
+			}
+		});
+	}
+
+</script>

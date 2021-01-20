@@ -1,0 +1,49 @@
+
+<html>
+<head lang="en">
+  <meta charset="UTF-8">
+  <title></title>
+  <script src="/js/d3/d3.v3.min.js" language="JavaScript"></script>
+  <script src="liquidFillGauge.js" language="JavaScript"></script>
+  <style>
+    .liquidFillGaugeText { font-family: Helvetica; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <div class="box-header">
+    <div class="box-name">
+      <span><%=title%></span></Br>
+      <span><%=titleChart%></span>
+    </div>
+
+    <div class="no-move"></div>
+  </div>
+  <div class="box-content">
+
+    <svg id="<%=idElement%>" width="100%" height="160" onclick="/*gauge1.update(NewValue());*/"></svg>
+  </div>
+</div>
+
+<script language="JavaScript">
+
+  var idEl="<%=idElement%>";
+  var donnee = <%=Number(data)%>;
+  function loadGauge(gauge) {
+
+    var config1 = liquidFillGaugeDefaultSettings();
+    config1.waveAnimateTime = 1000;
+    gauge = loadLiquidFillGauge(idEl, donnee,config1);
+    return gauge;
+  }
+  function NewValue(){
+    if(Math.random() > .5){
+      return Math.round(Math.random()*100);
+    } else {
+      return (Math.random()*100).toFixed(1);
+    }
+  }
+</script>
+</body>
+</html>

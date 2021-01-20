@@ -1,0 +1,1063 @@
+<link rel="stylesheet" href="/styles/importer.css">
+<link rel="stylesheet" href="/bootflat/css/bootflat.min.css">
+<link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/local.css">
+<link rel="stylesheet" href="/css/Style_v3.css">
+<link rel="stylesheet" href="/morris/morris.css">
+<link rel="stylesheet" href="/css/bootstrap-material-datetimepicker.css">
+<% include ../../includes/entete.ejs %>
+<!--link rel="stylesheet" href="/jquery-ui/jquery-ui.css">
+<script src="/js/jquery-1.12.4.js"></script>
+<script src="/js/jquery-ui.min.js"></script>
+<script src="/js/weekPicker.js"></script>
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css"-->
+<!--  TIMEPICKER NEW RONNY  -->
+<!--link rel="stylesheet" href="/timepicker_ui/jquery-ui-timepicker-addon.min.css"-->
+
+
+
+<script type="text/javascript" src="/timepicker_ui/jquery/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="/timepicker_ui/jquery/jquery-ui.min.js"></script>
+<script type="text/javascript" src="/timepicker_ui/jquery-ui-timepicker-addon.js"></script>
+<script type="text/javascript" src="/timepicker_ui/i18n/jquery-ui-timepicker-addon-i18n.min.js"></script>
+<script type="text/javascript" src="/timepicker_ui/jquery-ui-sliderAccess.js"></script>
+<script src="/js/weekPicker.js"></script>
+<link rel="stylesheet" media="all" type="text/css" href="/timepicker_ui/jquery/jquery-ui.css" />
+<link rel="stylesheet" href="/timepicker_ui/jquery-ui-timepicker-addon.min.css">
+<!--  ADDED LAYOUT MANUALLY -->
+<script src="/js/dependencies/sails.io.js"></script>
+<script src="/bootstrap/js/bootstrap.min.js"></script>
+<script src="/material/chart/highcharts.js"></script>
+<script src="/material/chart/exporting.js"></script>
+<script src="/js/dossierEtapeApp.js"></script>
+
+<script src="/js/material-modal.min.js"></script>
+<script src="/js/pikaday.js"></script>
+<style>
+  .sp_alert{
+    font-size: 18px;
+
+  }
+  #left {
+    font-size: 26px;
+
+  }
+
+  .sp_alert span {
+    min-width: 50px;
+
+  } #left span {
+      font-size: 26px;
+
+    }
+
+  #right span {
+    font-size: 26px;
+
+  }
+
+  #right {
+    font-size: 26px;
+  }
+  /*   CODE STICKY HEADING   */
+  .sticky-col {
+    position: sticky;
+    position: -webkit-sticky;
+    background-color: #edf7fc;
+  }
+
+  .first-col {
+    width: 100px;
+    min-width: 100px;
+    max-width: 100px;
+    left: 0px;
+  }
+/*
+  .second-col {
+    width: 150px;
+    min-width: 150px;
+    max-width: 150px;
+    left: 100px;
+  }
+  thead th { position: sticky; top: 50px; }
+
+*/
+  /* Styles go here */
+
+  .table-cont{
+    /**make table can scroll**/
+    max-height: 400px;
+    overflow: auto;
+    /** add some style**/
+    /*padding: 2px;*/
+/*    background: #ddd;*/
+    margin: 20px 10px;
+    box-shadow: 0 0 1px 3px #ddd;
+  }
+  thead{
+ /*   background-color: #ddd;*/
+  }
+  tbody{
+    height: 400px;
+  }
+</style>
+<%
+var html_pole= "";
+pole.forEach(function(p){
+  if(Number(p.id)===Number(poleid)){
+    html_pole += "<option value='"+p.id+"' selected>"+p.libelle+"</option>";
+  }else{
+    html_pole += "<option value='"+p.id+"'>"+p.libelle+"</option>";
+  }
+
+});
+
+var html_semaine= "";
+listsemaine.forEach(function(s){
+  if(Number(s.id)===Number(semid)){
+    html_semaine += "<option value='"+s.id+"' selected>SEMAINE "+s.num_semaine+" "+s.annee+"</option>";
+  }else{
+    html_semaine += "<option value='"+s.id+"'>SEMAINE "+s.num_semaine+" "+s.annee+"</option>";
+  }
+
+});
+%>
+<div class="col-md-12 col-sm-12 col-xs-12">
+  <div class="x_panel block">
+    <div class="x_title">
+      <h2></h2>
+      <ul class="nav navbar-right panel_toolbox">
+        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+        </li>
+        <li><a class="close-link"><i class="fa fa-close"></i></a>
+        </li>
+      </ul>
+      <div class="clearfix"></div>
+    </div>
+    <div class="x_content">
+
+      <form method="post" action="/gestion_hr">
+        <div class="form-groupe col-md-3">
+          <select  id="pole" name="pole" class="frm form-control">
+            <%-html_pole%>
+          </select>
+        </div>
+
+        <div class="form-groupe col-md-3">
+          <select id="sem" name="sem" class="frm form-control">
+            <%-html_semaine%>
+          </select>
+        </div>
+
+        <div class="form-groupe col-md-2">
+          <select class="frm form-control" tabindex="-1" id="grpDashAdmin" placeholder = "EQUIPE" name="idcp">
+            <option value="">Groupe</option>
+          </select>
+        </div>
+        <div class="form-groupe col-md-1">
+          <label for="sem"></label>
+          <input type="submit" value="OK" class="btnH"/>
+        </div>
+
+        <div class="form-groupe col-md-3">
+          <label for="validate"></label>
+          <!--a onclick="saveAllHS()" class="btnH ">ENREGISTRER</a-->
+          <a class="btnH" id="enregistrer_val">ENREGISTRER</a>
+        </div>
+      </form>
+
+
+    </div>
+  </div>
+</div>
+
+<div class="col-md-12 col-sm-12 col-xs-12">
+  <div class="x_panel">
+    <div class="x_title">
+      <h2></h2>
+      <ul class="nav navbar-right panel_toolbox">
+        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+        </li>
+        <li><a class="close-link"><i class="fa fa-close"></i></a>
+        </li>
+      </ul>
+      <div class="clearfix"></div>
+    </div>
+    <div class="x_content">
+      <div id="tableData" style="overflow-x:auto;">
+
+        <%
+        //recuperation de la liste des date
+        var debSplit = semaine[0].date_debut.split('/');
+        var finSplit = semaine[0].date_fin.split('/');
+
+        var thDate = "<th class=\"\"></th><th class=\"\">-</th>";
+        var thPrincipale = "<th class=\"\">-</th><th class=\"\"></th><th class=\"vh_head_conge\">SEMAINE "+semaine[0].num_semaine+" </th><th></th><th></th><th></th><th></th><th></th><th class=\"\"></th><th class=\"\"></th><th></th><th></th>";
+        var thSecondaire = "<th class=\"\">Matricule</th><th class=\"\">Nom et prénom</th><th class=\"vh_head_conge\">H Total</th><th class=\"vh_head_conge\">HS réel</th><th class=\"\">HS validé</th><th class=\"\">Heure Deduit</th><th class=\"\">Majoration Nuit</th>";
+        //var dateDeb = new Date();
+        if(have_majoration)
+        {
+          thPrincipale = "<th class=\"\">-</th><th class=\"\"></th><th class=\"vh_head_conge\">SEMAINE "+semaine[0].num_semaine+" </th><th></th><th></th><th></th><th></th><th></th><th class=\"\"></th><th class=\"\"></th><th></th><th></th>";
+          thSecondaire = "<th class=\"\">Matricule</th><th class=\"\">Nom et prénom</th><th class=\"vh_head_conge\">H Total</th><th class=\"vh_head_conge\">HS réel</th><th class=\"\">HS validé</th><th class=\"\">Heure Deduit</th><th class=\"\">Majoration Nuit</th><th class=\"\">Majoration 40%</th><th class=\"\">Majoration 100%</th>";
+        }
+        var dateDeb = new Date(""+debSplit[1]+"/"+debSplit[0]+"/"+debSplit[2]);
+        dateDeb.setDate(dateDeb.getDate()+1);
+        /*dateDeb.setMonth(Number(debSplit[0]));
+        dateDeb.setFullYear(Number(debSplit[2]));*/
+        //var dateFin = new Date();
+        var dateFin = new Date(""+finSplit[1]+"/"+finSplit[0]+"/"+finSplit[2]);
+        /*dateFin.setDate(Number(finSplit[1]));
+        dateFin.setMonth(Number(finSplit[0]));
+        dateFin.setFullYear(Number(finSplit[2]));*/
+
+        dateFin.setDate(dateFin.getDate()+1);
+        //console.log(semaine[0].date_debut);
+        //console.log(semaine[0].date_fin);
+        //console.log(dateDeb);
+        //console.log(dateFin);
+
+        var ct = 0;
+
+        var dateArray = [];
+        var currentDate = dateDeb;
+        var weekday = new Array(7);
+        weekday[0] = "Sam";
+        weekday[1] =  "Dim";
+        weekday[2] = "Lun";
+        weekday[3] = "Mar";
+        weekday[4] = "Mer";
+        weekday[5] = "Jeu";
+        weekday[6] = "Ven";
+
+        while (currentDate <= dateFin) {
+          var dat = currentDate.toISOString().replace(/-/,'/').replace(/-/,'/').substr(0,10);
+          //sails.log(currentDate.getDay());
+          var datSplt =dat.split('/');
+          dateArray.push(currentDate);
+          if(have_majoration)
+          {
+            thDate +="<th class=\"\">"+weekday[currentDate.getDay()]+"</th><th class=\"\">"+datSplt[2]+"/"+datSplt[1]+"</th><input id='date_"+ct+"' type=\"hidden\" value=\""+datSplt[2]+"/"+datSplt[1]+"/"+datSplt[0]+"\"/><th class=\"\"></th><th></th><th></th><th></th><th></th>";
+          }
+          else
+          {
+            thDate +="<th class=\"\">"+weekday[currentDate.getDay()]+"</th><th class=\"\">"+datSplt[2]+"/"+datSplt[1]+"</th><input id='date_"+ct+"' type=\"hidden\" value=\""+datSplt[2]+"/"+datSplt[1]+"/"+datSplt[0]+"\"/><th class=\"\"></th><th></th><th></th>";
+          }
+          currentDate = new Date(currentDate.setTime( currentDate.getTime() + 1 * 86400000 ));
+          if(ct>0){
+            if(have_majoration)
+            {
+              thPrincipale+="<th class=\"\"></th><th class=\"\"></th><th class=\"\"></th><th></th><th></th><th></th><th></th>";
+              thSecondaire+="<th class=\"vh_head_conge\">H Total </th><th class=\"\">HS réel</th><th class=\"\">HS validé</th><th class=\"\">Heure Deduit</th><th class=\"\">Majoration Nuit</th><th class=\"\">Majoration 40%</th><th class=\"\">Majoration 100%</th>";
+            }
+            else
+            {
+              thPrincipale+="<th class=\"\"></th><th class=\"\"></th><th class=\"\"></th>";
+              thSecondaire+="<th class=\"vh_head_conge\">H Total </th><th class=\"\">HS réel</th><th class=\"\">HS validé</th><th class=\"\">Heure Deduit</th><th class=\"\">Majoration Nuit</th>";
+            }
+          }
+          ct++;
+        }
+
+// <th></th>
+       // thDate += "<th></th><th></th><th></th></th>";
+
+        thPrincipale += "<th></th><th>heure Sup</th><th></th><th></th><th></th><th></th><th></th>";
+        //thSecondaire += "<th>Heure Total</th><th>30%</th><th>50%</th><th>HS total</th><th>HC</th>";
+
+
+
+        //sails.log(dateArray);
+
+        %>
+        <div class="row">
+          <div class="col-lg-1"><h3><span class="label label-info">conge en jour</span></h3></div>
+          <div class="col-lg-1"><h3><span class="label label-warning">Heure negative</span></h3></div>
+          <div class="col-lg-1"><h3><span class="label label-danger">Anomalie</span></h3></div>
+
+
+
+        </div>
+
+        <div class="pull-right">
+<          <form method="get" action="/export_gh">
+            <input type="hidden" name="sem" id="sem" value="<%=semid %>"/>
+            <input type="hidden" name="pole" id="pole"  value="<%=poleid  %>"/>
+            <input type="submit" class="btn btn-success" value="Exporter en excel"/>
+          </form>
+        </div>
+        <div class='table-cont' id='table-cont'>
+          <table class="table table-responsive">
+            <thead>
+
+            <tr>
+              <%-thPrincipale%>
+            </tr>
+
+            <tr>
+              <%-thDate%>
+            </tr>
+            <tr>
+              <%-thSecondaire%>
+            </tr>
+            </thead>
+            <tbody>
+
+            <%
+            var hs_reel = '00:00:00' ;
+            var hs_predef = '00:00:00' ;
+            var hs_predef_40 = '00:00:00';
+            var hs_predef_100 = '00:00:00';
+            var majoration_nuit = '00:00:00';
+            var heure_deduit = '00:00:00';
+            var hs_total_s_p = '00:00:00' ;
+
+            var listId = []
+            %>
+            <% result.forEach(function(resultat){
+
+              listId.push(resultat.id_pers);
+
+
+              var ghTable = resultat.gh;
+              //sails.log(resultat);
+              hs_reel = '00:00:00' ;
+              hs_predef = '00:00:00' ;
+              hs_predef_40 = '00:00:00';
+              hs_predef_100 = '00:00:00';
+              hs_total_s_p = '00:00:00' ;
+              majoration_nuit = '00:00:00';
+              heure_deduit = '00:00:00';
+
+
+
+              var heure_total = 0;
+              var heure_sup_total = 0;
+              var heure_complementaire = 0;
+              var heure_conge = 0;
+              var heure_contrat = '00:00:00' ;
+              var hs_total_duree_pointage = '00:00:00';
+
+
+
+            %>
+            <tr>
+              <td class="sticky-col first-col" align="right"><%= resultat.id_pers %></td>
+              <td  class="" align="right"><%= resultat.nom %> <%= resultat.prenom %></td>
+
+              <%
+                var ct_date = 0;
+              ghTable.forEach(function (resul) {
+                hs_reel = '00:00:00' ;
+                hs_predef = '00:00:00' ;
+                hs_predef_40 = '00:00:00';
+                hs_predef_100 = '00:00:00';
+                hs_total_s_p = '00:00:00' ;
+                majoration_nuit = '00:00:00';
+                heure_deduit = '00:00:00';
+                console.log(hc_pers.includes(resultat.id_pers)+"<-----> id_pers:"+resultat.id_pers);
+              if(resultat.categorie ==='HC' && hc_pers.includes(resultat.id_pers)==false){
+
+              if(typeof resul[0] !=='undefined'){
+                hs_total_s_p = resul[0].duree_prod_gpao || '00:00:00';
+                heure_conge = resul[0].conge || '0';
+                hs_total_duree_pointage = resul[0].duree_total || '00:00:00';
+                if((resul[0].hc || '00:00:00' !=='00:00:00') && resul[0].conge<0)heure_contrat = resul[0].hc || '00:00:00';
+
+                if (hs_total_s_p =='00:00:00' || hs_total_s_p ==null) hs_total_s_p = '';
+                var html_hpredef = ''+hs_total_s_p;
+                //&& hs_total_duree_pointage == '00:00:00'
+                if(hs_total_s_p==='' && hs_total_duree_pointage== '00:00:00'){
+                  if(Number(heure_conge)>0){
+                    html_hpredef = "<a class='sp_alert'><span class=\"label label-info\">"+heure_conge+"</span></a>";
+                  }else{
+                    html_hpredef = "<a class='sp_alert'><span class=\"label label-danger\">absence</span></a>";
+                  }
+                }
+
+
+              %>
+              <td><a onclick="detail('<%= resultat.id_pers %>','<%= resul[0].date %>')" class="vh_heure_conge vh_conge" href="#"  href="#" data-toggle="modal" data-target="#myModal"><%- html_hpredef %></a> </td>
+
+              <%
+              }else {
+              %>
+                <td>-</td>
+              <%
+              }
+              %>
+
+              <td>-</td>
+              <td>-</td>
+              <td>-</td>
+              <td>-</td>
+              <%
+              if(have_majoration)
+              {
+              %>
+                <td>-</td>
+                <td>-</td>
+              <%
+              }
+
+              }else{
+
+                //if(resultat.id_pers == 1241) console.log("ROnny => "+resul);
+                if(resul.length !== 0){
+
+                  hs_reel = resul[0].heure_sup_reel;
+                  hs_predef = resul[0].heure_sup || '00:00:00';
+                  hs_predef_40= resul[0].heure_sup_40 || '00:00:00';
+                  hs_predef_100= resul[0].heure_sup_100 || '00:00:00';
+                  hs_total_s_p = resul[0].duree_prod_gpao || '00:00:00';
+                  majoration_nuit =resul[0].maj_nuit ||'00:00:00';
+                  heure_deduit =resul[0].heure_deduit ||'00:00:00';
+                  hs_total_duree_pointage = resul[0].duree_total || '00:00:00';
+                  heure_conge = resul[0].conge || '0';
+                  heure_contrat = resul[0].hc || '00:00:00';
+                }else{
+                  hs_reel = ' 00:00:00';
+                  hs_predef = '00:00:00';
+                  hs_total_s_p = '00:00:00' ;
+                  //sails.log(resul[0].date);
+
+
+                }
+
+                if (hs_reel =='00:00:00' || hs_total_s_p =='00:00:00' || hs_reel ==null) hs_reel = '';
+                if (hs_total_s_p =='00:00:00' || hs_total_s_p ==null || typeof hs_total_s_p==='undefined') hs_reel = '',hs_total_s_p = '';
+                var html_hpredef = ''+hs_total_s_p;
+                //  && hs_total_duree_pointage == '00:00:00'
+                if(hs_total_s_p==='' && hs_total_duree_pointage== '00:00:00'){
+                  if(Number(heure_conge)>0){
+                    html_hpredef = "<a class='sp_alert' ><span class=\"label label-info\">"+heure_conge+"</span></a>";
+                  }else{
+                    html_hpredef = "<a class='sp_alert'><span class=\"label label-danger\">absence</span></a>";
+                  }
+                }
+
+              if(hs_total_s_p==='' && hs_total_duree_pointage== '00:00:00'){
+
+              %>
+                <td><a  class="vh_heure_conge vh_conge" ><%- " "+html_hpredef %></a> </td>
+                <td><a class="vh_heure_conge vh_conge"><%=  " "+hs_reel %></a> <input   class="vh_heure_conge vh_conge" id="hs_reel_<%=ct_date%>_<%= resultat.id_pers %>" type="hidden" size="8" value="<%= hs_reel %>" disabled/> </td>
+                <%
+                  // DELETE MODIF SI ABSENT
+                //&& hs_total_duree_pointage == '00:00:00'
+                if(hs_total_s_p==='' && hs_total_duree_pointage== '00:00:00'){
+                  //  if(resultat.id_pers==1712){ console.log(ct_date+"--------> Ronny  ===> "+hs_total_duree_pointage+""+hs_total_s_p+" hs reel"+hs_reel);}
+
+                %>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <%
+                if(have_majoration)
+                {
+                %>
+                  <td>-</td>
+                  <td>-</td>
+                <%
+                }
+                %>
+                <%
+
+                }
+                else
+                {
+                %>
+                <!--   LES HEURES SUP NORMALES SANS MAJORATION  -->
+                <!--td class=""><input name="rest_example_1"   class="vh_heure_conge timepicker" id="hs_predef_<%=ct_date%>_<%= resultat.id_pers %>" type="text" size="8" oninput="verifierFormatHeure(this);" value="<%= hs_predef %>"/></td>
+                      <td class=""><input name="rest_example_1"  class="vh_heure_conge timepicker HS 40" id="hs_predef40_<%=ct_date%>_<%= resultat.id_pers %>" type="text" size="8" oninput="verifierFormatHeure(this);" value="<%= hs_predef_40 %>"/></td>
+                      <td class=""><input name="rest_example_1"  class="vh_heure_conge timepicker HS 100" id="hs_predef100_<%=ct_date%>_<%= resultat.id_pers %>" type="text" size="8" oninput="verifierFormatHeure(this);" value="<%= hs_predef_100 %>"/></td-->
+                <td class=""><input name="rest_example_1" onclick="afficherBouttonEnregistrer();"   class="vh_heure_conge timepicker hs normal" id="hs_predef_<%=ct_date%>_<%= resultat.id_pers %>" type="text" size="8" onfocusout="changeDonneeHC('<%=ct_date%>','<%= resultat.id_pers %>')" oninput="verifierFormatHeure(this);" value="<%= hs_predef %>"/></td>
+                <td class=""><input name="rest_example_1" onclick="afficherBouttonEnregistrer();"  class="vh_heure_conge timepicker heure deduit" id="heure_deduit_<%=ct_date%>_<%= resultat.id_pers %>" type="text" size="8" onfocusout="changeDonneeHC('<%=ct_date%>','<%= resultat.id_pers %>')" oninput="verifierFormatHeure(this);" value="<%= heure_deduit %>"/></td>
+                <td class=""><input name="rest_example_1" onclick="afficherBouttonEnregistrer();" class="vh_heure_conge timepicker majoration nuit" id="maj_nuit_<%=ct_date%>_<%= resultat.id_pers %>" type="text" size="8" onfocusout="changeDonneeHC('<%=ct_date%>','<%= resultat.id_pers %>')" oninput="verifierFormatHeure(this);" value="<%= majoration_nuit %>"/></td>
+                <%
+                if(have_majoration)
+                {
+                %>
+                <td class=""><input name="rest_example_1" onclick="afficherBouttonEnregistrer();" class="vh_heure_conge timepicker HS 40" id="hs_predef40_<%=ct_date%>_<%= resultat.id_pers %>" type="text" size="8" onfocusout="changeDonneeHC('<%=ct_date%>','<%= resultat.id_pers %>')" oninput="verifierFormatHeure(this);" value="<%= hs_predef_40 %>"/></td>
+                <td class=""><input name="rest_example_1" onclick="afficherBouttonEnregistrer();" class="vh_heure_conge timepicker HS 100" id="hs_predef100_<%=ct_date%>_<%= resultat.id_pers %>" type="text" size="8" onfocusout="changeDonneeHC('<%=ct_date%>','<%= resultat.id_pers %>')" oninput="verifierFormatHeure(this);" value="<%= hs_predef_100 %>"/></td>
+                <%
+                }
+                %>
+                <%
+                }
+                %>
+
+
+
+              <%
+              }else{
+
+
+
+              if(typeof resul[0] !=='undefined'){
+
+                var classHs = '' ;
+
+                //sails.log(resul[0]);
+                if(resul[0].negative){
+                  classHs = 'btn-warning' ;
+                }
+
+              %>
+              <td><a onclick="detail('<%= resultat.id_pers %>','<%= resul[0].date %>')" class="vh_heure_conge vh_conge" href="#" data-toggle="modal" data-target="#myModal"><%- html_hpredef %></a> </td>
+              <td class=""  ondblclick="affectationValeurReel('<%=ct_date%>','<%= resultat.id_pers %>');"><a  onclick="detail('<%= resultat.id_pers %>','<%= resul[0].date %>')" class="vh_heure_conge vh_conge <%=classHs%>" href="#" data-toggle="modal" data-target="#myModal"><%= hs_reel %></a> <input   class="vh_heure_conge vh_conge" id="hs_reel_<%=ct_date%>_<%= resultat.id_pers %>" type="hidden" size="8" value="<%= hs_reel %>" disabled/> <a style="cursor: pointer;" onclick="affectationValeurReel('<%=ct_date%>','<%= resultat.id_pers %>');"><i class="fa fa-forward"></i> </a> </td>
+
+              <%
+                // DELETE MODIF SI ABSENT
+//|| hs_total_duree_pointage == '00:00:00'
+              if(hs_total_s_p==='' && hs_total_duree_pointage== '00:00:00'){
+              %>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <%
+                if(have_majoration)
+                {
+                %>
+                  <td>-</td>
+                  <td>-</td>
+                <%
+                }
+                %>
+              <%
+
+
+              }
+              else
+              {
+              %>
+              <!--   LES HEURES SUP NORMALES SANS MAJORATION  -->
+              <!--td class=""><input name="rest_example_1"   class="vh_heure_conge timepicker" id="hs_predef_<%=ct_date%>_<%= resultat.id_pers %>" type="text" size="8" oninput="verifierFormatHeure(this);" value="<%= hs_predef %>"/></td>
+                      <td class=""><input name="rest_example_1"  class="vh_heure_conge timepicker HS 40" id="hs_predef40_<%=ct_date%>_<%= resultat.id_pers %>" type="text" size="8" oninput="verifierFormatHeure(this);" value="<%= hs_predef_40 %>"/></td>
+                      <td class=""><input name="rest_example_1"  class="vh_heure_conge timepicker HS 100" id="hs_predef100_<%=ct_date%>_<%= resultat.id_pers %>" type="text" size="8" oninput="verifierFormatHeure(this);" value="<%= hs_predef_100 %>"/></td-->
+              <td class=""><input name="rest_example_1" onclick="afficherBouttonEnregistrer();"  class="vh_heure_conge timepicker hs normal" id="hs_predef_<%=ct_date%>_<%= resultat.id_pers %>" type="text" size="8" onfocusout="changeDonneeHC('<%=ct_date%>','<%= resultat.id_pers %>')" oninput="verifierFormatHeure(this);" value="<%= hs_predef %>"/></td>
+              <td class=""><input name="rest_example_1" onclick="afficherBouttonEnregistrer();"  class="vh_heure_conge timepicker heure deduit" id="heure_deduit_<%=ct_date%>_<%= resultat.id_pers %>" type="text" size="8" onfocusout="changeDonneeHC('<%=ct_date%>','<%= resultat.id_pers %>')" oninput="verifierFormatHeure(this);" value="<%= heure_deduit %>"/></td>
+              <td class=""><input name="rest_example_1" onclick="afficherBouttonEnregistrer();" class="vh_heure_conge timepicker majoration nuit" id="maj_nuit_<%=ct_date%>_<%= resultat.id_pers %>" type="text" size="8" onfocusout="changeDonneeHC('<%=ct_date%>','<%= resultat.id_pers %>')" oninput="verifierFormatHeure(this);" value="<%= majoration_nuit %>"/></td>
+              <%
+              if(have_majoration)
+              {
+              %>
+              <td class=""><input name="rest_example_1" onclick="afficherBouttonEnregistrer();"  class="vh_heure_conge timepicker HS 40" id="hs_predef40_<%=ct_date%>_<%= resultat.id_pers %>" type="text" size="8" onfocusout="changeDonneeHC('<%=ct_date%>','<%= resultat.id_pers %>')" oninput="verifierFormatHeure(this);" value="<%= hs_predef_40 %>"/></td>
+              <td class=""><input name="rest_example_1" onclick="afficherBouttonEnregistrer();" class="vh_heure_conge timepicker HS 100" id="hs_predef100_<%=ct_date%>_<%= resultat.id_pers %>" type="text" size="8" onfocusout="changeDonneeHC('<%=ct_date%>','<%= resultat.id_pers %>')" oninput="verifierFormatHeure(this);" value="<%= hs_predef_100 %>"/></td>
+              <%
+              }
+              %>
+              <%
+              }
+              %>
+              <%
+              }else{
+                //var classHs = 'btn-success' ;
+
+
+              %>
+              <td><a class="vh_heure_conge vh_conge" href="#" data-toggle="modal" data-target="#myModal"><%= hs_total_s_p %></a> </td>
+              <td   ondblclick="affectationValeurReel('<%=ct_date%>','<%= resultat.id_pers %>');"><a  class="vh_heure_conge vh_conge" href="#" data-toggle="modal" data-target="#myModal"><%= hs_reel %></a> <input   class="vh_heure_conge vh_conge" id="hs_reel_<%=ct_date%>_<%= resultat.id_pers %>" type="hidden" size="8" value="<%= hs_reel %>" disabled/> <a href="#" onclick="affectationValeurReel('<%=ct_date%>','<%= resultat.id_pers %>');"><i class="fa fa-forward"></i> </a> </td>
+
+
+
+              <%
+                // DELETE MODIF SI ABSENT
+              // && hs_total_duree_pointage == '00:00:00'
+              if(hs_total_s_p==='' && hs_total_duree_pointage== '00:00:00'){
+              %>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <%
+                if(have_majoration)
+                {
+                %>
+                  <td>-</td>
+                  <td>-</td>
+                <%
+                }
+                %>
+              <%
+              }
+              else
+              {
+              %>
+              <!--   LES HEURES SUP NORMALES SANS MAJORATION  -->
+              <!--td class=""><input name="rest_example_1"   class="vh_heure_conge timepicker" id="hs_predef_<%=ct_date%>_<%= resultat.id_pers %>" type="text" size="8" oninput="verifierFormatHeure(this);" value="<%= hs_predef %>"/></td>
+                      <td class=""><input name="rest_example_1"  class="vh_heure_conge timepicker HS 40" id="hs_predef40_<%=ct_date%>_<%= resultat.id_pers %>" type="text" size="8" oninput="verifierFormatHeure(this);" value="<%= hs_predef_40 %>"/></td>
+                      <td class=""><input name="rest_example_1"  class="vh_heure_conge timepicker HS 100" id="hs_predef100_<%=ct_date%>_<%= resultat.id_pers %>" type="text" size="8" oninput="verifierFormatHeure(this);" value="<%= hs_predef_100 %>"/></td-->
+              <td class=""><input name="rest_example_1" onclick="afficherBouttonEnregistrer();"  class="vh_heure_conge timepicker hs normal" id="hs_predef_<%=ct_date%>_<%= resultat.id_pers %>" type="text" size="8" onfocusout="changeDonneeHC('<%=ct_date%>','<%= resultat.id_pers %>')" oninput="verifierFormatHeure(this);" value="<%= hs_predef %>"/></td>
+              <td class=""><input name="rest_example_1" onclick="afficherBouttonEnregistrer();"  class="vh_heure_conge timepicker heure deduit" id="heure_deduit_<%=ct_date%>_<%= resultat.id_pers %>" type="text" size="8" onfocusout="changeDonneeHC('<%=ct_date%>','<%= resultat.id_pers %>')" oninput="verifierFormatHeure(this);" value="<%= heure_deduit %>"/></td>
+              <td class=""><input name="rest_example_1" onclick="afficherBouttonEnregistrer();" class="vh_heure_conge timepicker majoration nuit" id="maj_nuit_<%=ct_date%>_<%= resultat.id_pers %>" type="text" size="8" onfocusout="changeDonneeHC('<%=ct_date%>','<%= resultat.id_pers %>')" oninput="verifierFormatHeure(this);" value="<%= majoration_nuit %>"/></td>
+              <%
+              if(have_majoration)
+              {
+              %>
+              <td class=""><input name="rest_example_1" onclick="afficherBouttonEnregistrer();" class="vh_heure_conge timepicker HS 40" id="hs_predef40_<%=ct_date%>_<%= resultat.id_pers %>" type="text" size="8" onfocusout="changeDonneeHC('<%=ct_date%>','<%= resultat.id_pers %>')" oninput="verifierFormatHeure(this);" value="<%= hs_predef_40 %>"/></td>
+              <td class=""><input name="rest_example_1" onclick="afficherBouttonEnregistrer();" class="vh_heure_conge timepicker HS 100" id="hs_predef100_<%=ct_date%>_<%= resultat.id_pers %>" type="text" size="8" onfocusout="changeDonneeHC('<%=ct_date%>','<%= resultat.id_pers %>')" oninput="verifierFormatHeure(this);" value="<%= hs_predef_100 %>"/></td>
+              <%
+              }
+              %>
+              <%
+              }
+              %>
+
+              <%
+              }
+              }
+
+              }
+
+
+
+
+                if(hs_total_s_p!=='' && hs_total_s_p !=='00:00:00' ){
+                  var h_split_s = hs_total_s_p.split(":");
+                  heure_total += (Number(h_split_s[0])+(Number(h_split_s[1])/60)+(Number(h_split_s[2])/60/60));
+                }
+                if(hs_predef!=='' && hs_predef !=='00:00:00' ){
+                  //sails.log("hs:"+hs_predef);
+                  var h_split_hs = hs_predef.split(":");
+                  heure_sup_total += (Number(h_split_hs[0])+(Number(h_split_hs[1])/60)+(Number(h_split_hs[2])/60/60));
+                  //sails.log("tts"+heure_sup_total);
+                }
+
+
+
+                ct_date++;
+              });
+
+                var h_30 = heure_sup_total;
+                var h_50 = 0;
+                var h_c = 0;
+                var h_cont = 0;
+                var h_split = heure_contrat.split(":");
+                h_cont += (Number(h_split[0])+(Number(h_split[1])/60)+(Number(h_split[2])/60/60));
+
+                //sails.log(heure_sup_total);
+
+                if(h_30>8){
+                  h_30 = 8;
+                  h_50 = heure_sup_total - 8;
+                }else{
+                  h_30 = heure_sup_total;
+                }
+
+                sails.log("hc:::"+heure_contrat);
+                if(h_cont<7  && h_cont!==0){
+                  sails.log(h_cont<7);
+                  if(heure_total>40 || heure_total==40){
+                    h_c = 40-(h_cont*6);
+                  }else if(heure_total<40){
+
+                    h_c = heure_total-(h_cont*6);
+
+                    if(h_c<0){
+                      h_c= 0;
+                    }
+                  }
+
+                }
+              %>
+<!--              <td><%=Number(heure_total.toFixed(2))%></td>
+              <td><%=Number(h_30.toFixed(2))%></td>
+              <td><%=Number(h_50.toFixed(2))%></td>
+              <td><%=Number(heure_sup_total.toFixed(2))%></td>
+              <td><%=Number(h_c.toFixed(2))%></td>-->
+
+            </tr>
+            <% }) %>
+            </tbody>
+          </table>
+        </div>
+        <div class="col-md-4 col-sm-4 col-xs-4" style="margin-left:40%;margin-top:5%">
+          <!--<input class="btn btn-info" type="button" onclick="saveAllGH();" value="Insérer"/>-->
+        </div>
+        </form>
+      </div>
+    </div>
+
+
+  </div>
+</div>
+<div class="circle"></div>
+<div class="circle"></div>
+<div class="circle"></div>
+<div class="circle"></div>
+
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Heures Détailées</h4>
+      </div>
+      <div class="modal-body">
+        <!--
+        Debut corps
+        -->
+
+        <div id="exTab1" class="">
+          <ul  class="nav nav-pills">
+            <li class="active">
+              <a  href="#resume" data-toggle="tab">Resumé</a>
+            </li>
+
+            <li class="">
+              <a  href="#pt-pane" data-toggle="tab">Pointages</a>
+            </li>
+            <li><a href="#ldt-pane" data-toggle="tab">Lignes de temps</a>
+            </li>
+          </ul>
+
+          <div class="tab-content clearfix">
+            <div class="tab-pane active" id="resume">
+              <div id="loader_resume">
+                <i class="fa fa-spinner fa-3x"></i>
+              </div>
+
+              <div id="corp" class="row">
+                <div id="left" class="col-lg-6 col-md-6 col-xs-12">
+                  <a>heure bio total <span id="bio_tot" class="badge">--:--:--</span></a><br>
+                  <a>heure bio productif <span id="bio_prod"  class="badge">--:--:--</span></a><br>
+                  <a>heure pause bio <span  id="bio_pause"  class="badge">--:--:--</span></a><br>
+                  <a>entrée  <span  id="bio_ent"  class="badge">--:--:--</span></a><br>
+                  <a>sortie  <span id="bio_sort"  class="badge">--:--:--</span></a><br>
+
+                  <hr/>
+
+                  <a>heure contrat <span  id="h_contra"  class="badge">--:--:--</span></a><br>
+                </div>
+
+                <div id="right" class="col-lg-6 col-md-6 col-xs-12">
+                  <a>heure gpao total <span id="gpao_tot"  class="badge">--:--:--</span></a><br>
+                  <a>heure gpao productif <span id="gpao_prod" class="badge">--:--:--</span></a><br>
+                  <a>heure gpao autre <span id="gpao_autre" class="badge">--:--:--</span></a><br>
+                  <a>heure formation gpao <span  id="gpao_form" class="badge">--:--:--</span></a><br>
+                  <a>heure veille <span  id="gpao_veille" class="badge">--:--:--</span></a><br>
+
+                  <hr/>
+                  <a>Congé (en jour) <span  id="j_conge"  class="badge">0</span></a><br>
+                </div>
+              </div>
+            </div>
+
+            <div class="tab-pane" id="pt-pane">
+              <div id="loader_pointage">
+                <i class="fa fa-spinner fa-3x"></i>
+              </div>
+              <div id="pointage">
+                <h3>Aucune information disponible</h3>
+              </div>
+
+            </div>
+            <div class="tab-pane" id="ldt-pane">
+              <div id="loader_ldt">
+                <i class="fa fa-spinner fa-3x"></i>
+              </div>
+              <div id="ldt">
+                <h3>Aucune information disponible</h3>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+
+        <!--
+        Fin corps
+        -->
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Fermé</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="/js/index.js"></script>
+<script>
+  $(function() {
+    $( "#datedeb").datepicker({
+      dateFormat: 'dd/mm/yy'
+    }).datepicker("setDate", new Date());
+    /*
+           $('input[name="rest_example_1"]').timepicker({
+             timeFormat: "HH:mm:ss"
+           });
+    */
+    $('input[name="rest_example_1"]').on('keydown', function(event) {
+      // event.preventDefault();
+    });
+
+    //convertToWeekPicker($("#sem"));
+    //$('input.timepicker').timepicker({});
+    $.ajax({
+      type: "GET",
+      url: "/getLsEquipe",
+      success: function(msg){
+        $("#grpDashAdmin").html(msg);
+      },
+      error: function (error) {
+        //alert('error; ' +error);
+      }
+    });//regsvr32 zkemsdk.dll
+  } );
+
+  var date_deb = '';
+  var date_fin = '';
+  var result = <%-JSON.stringify(result)%>;
+  var dateArray = <%-JSON.stringify(dateArray)%>;
+  function saveAllHS(){
+    for(var i = 0;i<result.length;i++){
+
+      var data_gh = result[i].gh;
+      var id_pers = result[i].id_pers;
+
+      for(var y = 0;y<dateArray.length;y++){
+        saveHSById(id_pers,y);
+        console.log(id_pers+" "+y);
+      }
+
+
+    }
+  }
+
+  function affectationValeurReel(date_cible,id_pers){
+    //alert(date_cible);
+    //alert(""+$("#hs_reel_"+date_cible+"_"+id_pers).val());
+    var value = $("#hs_reel_"+date_cible+"_"+id_pers).val();
+
+    if(value===''){
+      value='00:00:00';
+    }
+    $("#hs_predef_"+date_cible+"_"+id_pers).val(value);
+    $("#hs_predef_"+date_cible+"_"+id_pers).addClass("btn-success");
+    saveHSById(id_pers,date_cible);
+  }
+
+  function saveHSById(id,ct_date) {
+
+    var value = $("#hs_predef_"+ct_date+"_"+id).val();
+    var value_40 = $("#hs_predef40_"+ct_date+"_"+id).val();
+    var value_100 = $("#hs_predef100_"+ct_date+"_"+id).val();
+    var heure_deduit = $("#heure_deduit_"+ct_date+"_"+id).val();
+    var maj_nuit = $("#maj_nuit_"+ct_date+"_"+id).val();
+    if (value == '') value = '0';
+
+    //alert(isNaN(Number(value)));
+    var date = $("#date_"+ct_date).val();
+
+    //console.log("/saveGh?id_pers="+id+"&date="+encodeURIComponent(date)+"&heure_travaille="+ghH+"&heure_conge="+ghC);
+
+
+    $.ajax({
+      type: "GET",
+      url: "/saveHS?id_pers="+id+"&date="+encodeURIComponent(date)+"&value="+value+"&value_40="+value_40+"&value_100="+value_100+"&heure_deduit="+heure_deduit+"&maj_nuit="+maj_nuit,
+
+      success: function(msg){
+      },
+      error: function (error) {
+      }
+    });
+
+
+  }
+  // Function Change HC
+  function changeDonneeHC(date,id) {
+    saveHSById(id,date);
+  }
+
+  function detail (id,date) {
+
+    clear();
+    var datSplit = date.split('/');
+
+
+    loadpointage(id,''+datSplit[2]+'/'+datSplit[1]+'/'+datSplit[0]);
+    load_resume(id,''+datSplit[2]+'/'+datSplit[1]+'/'+datSplit[0]);
+    loadldt(id,''+datSplit[2]+''+datSplit[1]+''+datSplit[0]);
+
+  }
+
+  function load_resume(id,date){
+
+
+    $("#loader_resume").show();
+    var url = "/get_r_pointage_jour?id_pers="+id+"&pdate="+date;
+
+    $.ajax({
+      type: "GET",
+      url: url,
+      success: function(msg){
+        // $("#pointage").html(msg);
+
+        console.log(msg);
+
+        var data = null;
+
+        try{
+          data = JSON.parse(msg);
+          $("#bio_tot").html(data[0].duree_total);
+          $("#bio_prod").html(data[0].duree_prod);
+          $("#bio_pause").html(data[0].duree_pause);
+          $("#bio_ent").html(data[0].entree);
+          $("#bio_sort").html(data[0].sortie);
+
+          $("#gpao_tot").html(data[0].duree_gpao_total);
+          $("#gpao_prod").html(data[0].duree_prod_gpao);
+          $("#gpao_autre").html(data[0].duree_autre);
+          $("#gpao_veille").html(data[0].duree_veille);
+          $("#gpao_form").html(data[0].duree_formation);
+
+
+          $("#h_contra").html(data[0].hc);
+          $("#j_conge").html(data[0].conge);
+          $("#loader_resume").hide();
+        }catch (e){
+
+        }
+        //$("#date").val(date);
+      },
+      error: function (error) {
+
+        $("#loader_resume").hide();
+        console.log(error);
+        //alert('error; ' +error);
+      }
+    });
+  }
+
+  function clear()
+  {
+    $("#bio_tot").html("...");
+    $("#bio_prod").html("...");
+    $("#bio_pause").html("...");
+    $("#bio_ent").html("...");
+    $("#bio_sort").html("...");
+
+    $("#gpao_tot").html("...");
+    $("#gpao_prod").html("...");
+    $("#gpao_autre").html("...");
+    $("#gpao_veille").html("...");
+    $("#gpao_form").html("...");
+
+
+    $("#h_contra").html("...");
+    $("#j_conge").html("...");
+  }
+
+
+  function loadpointage(idpers,date){
+    $("#loader_pointage").show();
+    var url = "/ajaxPointageDet?pdate="+date+"&id_pers="+idpers;
+
+
+    //alert("List pt de "+idpers+" du "+date);
+    $.ajax({
+      type: "GET",
+      url: url,
+      success: function(msg){
+        $("#pointage").html(msg);
+        $("#loader_pointage").hide();
+        //$("#date").val(date);
+      },
+      error: function (error) {
+        //alert('error; ' +error);
+        $("#loader_pointage").hide();
+      }
+    });
+  }
+
+
+
+  function loadldt(idpers,date){
+    $("#loader_ldt").show();
+    var action  = "getLstLdt";
+    var deb  = ""+date;
+    var fin  = "";
+    var dossier  = "";
+    var etape  = "";
+    var mat  = idpers;
+    var stat  = "";
+    var orderby  = "";
+    var dep  = "";
+
+    url = "http://gpao.easytech.mg/php/link.php?action="+action+"&deb="+deb+"&fin="+fin+"&dossier="+dossier+"&mat="+mat+"&stat="+stat+"&orderby="+orderby+"&dep="+dep+"&etape="+etape;
+
+    //alert("List pt de "+idpers+" du "+date);
+    $.ajax({
+      type: "GET",
+      url: url,
+      success: function(msg){
+        $("#ldt").html(msg);
+        $("#loader_ldt").hide();
+        //$("#date").val(date);
+      },
+      error: function (error) {
+        //alert('error; ' +error);
+        $("#loader_ldt").hide();
+      }
+    });
+  }
+
+  // Fonction verification type heure entré ,
+  var timeoutstop;
+  var old_element;
+  function verifierFormatHeure(element)
+  {
+    old_element= element.value;
+    clearTimeout(timeoutstop);
+    timeoutstop= setTimeout(function(){
+      var valeur_heure = element.value;
+      if((valeur_heure.split(":").length - 1)!=2)
+      {
+        alert("Format Heure Incorrect pour "+valeur_heure);
+      }
+      else
+      {
+        var tableau_Spliter = valeur_heure.split(":");
+        var heure = tableau_Spliter[0];
+        var min = tableau_Spliter[1];
+        var sec = tableau_Spliter[2];
+
+        if(parseInt(heure)>23 || (parseInt(min) || parseInt(sec))>59)
+        {
+          alert("Format Heure Incorrect pour "+valeur_heure+",veuillez verifier");
+          return;
+        }
+        /*if(parseInt(min)>59)
+        {
+
+        }
+        if(parseInt(sec)>59)
+        {
+
+        }*/
+      }
+    }, 900);
+
+  }
+  function afficherBouttonEnregistrer(){
+    $("#enregistrer_val").attr("style","z-index: 1");
+  }
+  'use strict'
+  window.onload = function(){
+    var tableCont = document.querySelector('#table-cont')
+    /**
+     * scroll handle
+     * @param {event} e -- scroll event
+     */
+    function scrollHandle (e){
+      var scrollTop = this.scrollTop;
+      this.querySelector('thead').style.transform = 'translateY(' + scrollTop + 'px)';
+    }
+
+    tableCont.addEventListener('scroll',scrollHandle)
+  }
+</script>

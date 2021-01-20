@@ -1,0 +1,464 @@
+ <% if(req.session.droit==1){
+
+%>
+<% include ../includes/entete.ejs %>
+<% }else{
+
+%>
+<% include ../includes/enteteOperateur.ejs %>
+
+<% }%>
+
+<div id="page-wrapper">
+<script>
+  var etape = [];
+  var dataetape = [];
+  var cars =[];
+  function round(value, decimals) {
+      return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
+  }
+
+  var cars = [<%
+                  for(var tt = 0; tt<courbe.length;tt++){
+                      if(tt!=0){
+              %>
+                 ,
+               <%
+                      }
+               %>
+                '<%=courbe[tt][0] %>'
+               <%
+                   }
+               %>];
+</script>
+
+<script>
+     var prod = [<%
+                   for(var tt = 0; tt<courbe.length;tt++){
+                        if(tt!=0){
+                 %>
+                              ,
+                 <%
+                         }
+                 %>
+
+                         round(<%=courbe[tt][1] %>,2)
+                 <%
+                   }
+                 %>];
+</script>
+
+                                              <script>
+                                              var hprod = [<%
+                                                  for(var tt = 0; tt<courbe.length;tt++){
+                                                    if(tt!=0){
+                                                      %>
+                                                      ,
+                                                      <%
+                                                    }
+                                                    %>
+                                                    round(<%=courbe[tt][2] %>,2)
+                                                    <%
+                                                  }
+                                              %>];
+                                              </script>
+      <div class="row">
+
+          <div class="col-md-12">
+              <div class="panel panel-primary">
+                  <div class="panel-heading">
+                      <h3 class="panel-title"><i class="fa fa-bar-chart-o"></i></h3>
+                  </div>
+                  <div class="panel-body">
+                     <div class="card-img" id="containerNow"> </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+              <!--<div class="card-inner">
+                                  <div class="table-responsive">
+                                    <table id="tableldt" class="table paginated" title="A basic table">
+                                      <thead>
+
+                                        <tr>
+                                          <th scope="col">Matricule</th>
+                                          <th scope="col">Vitesse</th>
+                                          <th scope="col">Quantité</th>
+                                          <th scope="col">Dossier</th>
+                                          <th scope="col">Duree</th>
+                                          <th scope="col">Libelle</th>
+                                          <th scope="col">heure debut</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+
+                                        <%
+
+                                          ldt.forEach(function(ldt){
+                                            var id_pers = ldt.id_pers;
+                                            var duree = (ldt.duree)/ 3600;
+
+                                            var qte = 0;
+                                            var num ;
+                                            var lib;
+                                            var vitesse =0;
+
+                                                num = ldt.num;
+                                                lib = ldt.lib;
+                                            if(ldt.qte!=null && ldt.qte!=0){
+                                                qte = ldt.qte;
+
+                                                vitesse = qte/duree;
+                                                ////console.log(vitesse);
+                                            }
+                                            var e = "fre";
+
+                                        %>
+                                        <tr>
+                                          <td><%=id_pers %></td>
+                                          <td><%=vitesse %></td>
+                                          <td><%=qte %></td>
+                                          <td><%=num %></td>
+                                          <td><%=duree %></td>
+                                          <td><%=lib %></td>
+                                          <td><%=ldt.h_deb %></td>
+
+                                        </tr>
+                                        <% }); %>
+                                      </tbody>
+                                    </table>
+
+
+                                  </div>
+                              </div>-->
+
+                                    <script>
+                                              var quantite = [<%
+                                                  for(var tt = 0; tt< courbe.length;tt++){
+                                                    if(tt!=0){
+
+                                                      %>
+                                                      ,
+                                                      <%
+                                                    }
+                                                    var qt = 0;
+                                                    if(courbe[tt][3]!=null){
+                                                      qt = courbe[tt][3];
+                                                    }
+                                                    %>
+
+                                                    <%=qt %>
+                                                    <%
+                                                  }
+                                              %>];
+                                              </script>
+
+                                            <script>
+                                              var vitesseb = [<%
+                                                  for(var tt = 0; tt<courbe.length;tt++){
+                                                    if(tt!=0){
+
+                                                      %>
+                                                      ,
+                                                      <%
+                                                    }
+                                                    var qt = 0;
+                                                    if(courbe[tt][3]!=null){
+                                                      qt = courbe[tt][3];
+                                                    }
+                                                    var vitb = qt/(courbe[tt][1]+courbe[tt][2])
+                                                    %>
+                                                    round(<%=vitb %>,2)
+                                                    <%
+                                                  }
+                                              %>];
+                                              </script>
+
+                                              <script>
+                                              var vitessen = [<%
+                                                  for(var tt = 0; tt<courbe.length;tt++){
+                                                    if(tt!=0){
+
+                                                      %>
+                                                      ,
+                                                      <%
+                                                    }
+                                                    var qt = 0;
+                                                    if(courbe[tt][3]!=null){
+                                                      qt = courbe[tt][3];
+                                                    }
+                                                    var vitb = qt/(courbe[tt][1])
+                                                    %>
+                                                    round(<%=vitb %>,2)
+                                                    <%
+                                                  }
+                                              %>];
+                                              </script>
+
+                                              <script>
+                                              var qualite = [<%
+                                                  for(var tt = 0; tt<courbe.length;tt++){
+                                                    if(tt!=0){
+
+                                                      %>
+                                                      ,
+                                                      <%
+                                                    }
+                                                    var qlt = 0;
+                                                    if(courbe[tt][4]!=null){
+                                                      qlt = courbe[tt][4];
+                                                    }
+                                                    var vitb = 100-((qlt/courbe[tt][3])*100);
+                                                    %>
+                                                    round(<%=vitb %>,2)
+                                                    <%
+                                                  }
+                                              %>];
+                                              </script>
+                                    <div class="row">
+
+                                    <div class="col-md-12">
+                                        <div class="panel panel-primary">
+                                            <div class="panel-heading">
+                                                <h3 class="panel-title"><i class="fa fa-bar-chart-o"></i></h3>
+                                            </div>
+                                            <div class="panel-body">
+                                              <div class="card-img" id="containerVitesseJournalier"> </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+
+          <div class="col-md-12">
+              <div class="panel panel-primary">
+                  <div class="panel-heading">
+                      <h3 class="panel-title"><i class="fa fa-bar-chart-o"></i></h3>
+                  </div>
+                  <div class="panel-body">
+                      <div class="table-responsive">
+                                    <table class="table paginated" title="A basic table">
+                                      <thead>
+
+                                        <tr>
+                                          <th scope="col">Matricule</th>
+                                          <th scope="col">Vitesse</th>
+                                          <th scope="col">Quantité</th>
+                                          <th scope="col">Dossier</th>
+                                          <th scope="col">Duree</th>
+                                          <th scope="col">Libelle</th>
+                                          <!--<th scope="col">heure debut</th>-->
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+
+                                        <%
+
+                                          ldt.forEach(function(ldt){
+                                            var id_pers = ldt.id_pers;
+                                            var duree = (ldt.duree)/ 3600;
+
+                                            var qte = 0;
+                                            var num ;
+                                            var lib;
+                                            var vitesse =0;
+
+                                                num = ldt.num;
+                                                lib = ldt.lib;
+                                            if(ldt.qte!=null && ldt.qte!=0){
+                                                qte = ldt.qte;
+
+                                                vitesse = qte/duree;
+                                                ////console.log(vitesse);
+                                            }
+                                            var e = "fre";
+
+                                        %>
+                                        <tr>
+                                          <td><%=id_pers %></td>
+                                          <td><%=vitesse %></td>
+                                          <td><%=qte %></td>
+                                          <td><%=num %></td>
+                                          <td><%=duree %></td>
+                                          <td><%=lib %></td>
+                                         <!-- <td><%=ldt.h_deb %></td>-->
+
+                                        </tr>
+                                        <% }); %>
+                                      </tbody>
+                                    </table>
+
+
+                                  </div>
+                  </div>
+              </div>
+          </div>
+        </div>
+
+
+
+
+
+
+</div>
+
+<!--<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+
+<script src="/material/chart/highcharts.js"></script>
+<script src="/material/chart/exporting.js"></script>-->
+<script src="/js/dependencies/sails.io.js"></script>
+<script type="text/javascript">
+
+
+
+
+  var id = <%=req.session.user %>
+  ///io.sails.url = 'http://127.0.0.1:9090';
+  io.sails.url = 'http://10.128.1.4:9090';
+  io.socket.on(id, function (msg) {
+    ////console.log(msg);
+    function round(value, decimals) {
+
+      return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
+    }
+    var production = [];
+    var quantite = [];
+    var qualite = [];
+    var vitessebrute = [];
+    var vitessenette = [];
+    var hproduction = [];
+    var dossier = [];
+    var response = msg;
+    for(var i=0; i<response.courbe.length;i++){
+      production[i]=round(response.courbe[i][1],2);
+      hproduction[i]=round(response.courbe[i][2],2);
+      dossier[i]=response.courbe[i][0];
+      quantite[i]=response.courbe[i][3];
+      vitessebrute[i]=quantite[i]/(production[i]+hproduction[i]);
+      vitessenette[i]=quantite[i]/(production[i]);
+      qualite[i]=100-((response.courbe[i][4]/response.courbe[i][3])*100);
+    }
+    //affichage du chart heure de production aujourdh'hui
+
+      $('#containerNow').highcharts({
+        chart: {
+          type: 'column'
+        },
+        title: {
+          text: 'Heure prod'
+        },
+        xAxis: {
+          categories: dossier
+        },
+        yAxis: {
+          min: 0,
+          title: {
+            text: 'Temps consomé'
+          },
+          stackLabels: {
+            enabled: true,
+            style: {
+              fontWeight: 'bold',
+              color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
+            }
+          }
+        },
+        legend: {
+          align: 'right',
+          x: -30,
+          verticalAlign: 'top',
+          y: 25,
+          floating: true,
+          backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || 'white',
+          borderColor: '#CCC',
+          borderWidth: 1,
+          shadow: false
+        },
+        tooltip: {
+          headerFormat: '<b>{point.x}</b><br/>',
+          pointFormat: '{series.name}: {point.y} heurs<br/>Total: {point.stackTotal} heurs'
+        },
+        plotOptions: {
+          column: {
+            stacking: 'normal',
+            dataLabels: {
+              enabled: true,
+              color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white',
+              style: {
+                textShadow: '0 0 3px black'
+              }
+            }
+          }
+        },
+        series: [{
+          name: 'Heure Prod',
+          data: production
+        }, {
+          name: 'Heure Hors Prod',
+          data: hproduction
+        }]
+      });
+
+
+
+    $('#containerVitesseJournalier').highcharts({
+      chart: {
+        type: 'column'
+      },
+      title: {
+        text: 'Recap dossier'
+      },
+      subtitle: {
+        text: 'Source: easytech.mg'
+      },
+      xAxis: {
+        categories: dossier,
+        crosshair: true
+      },
+      yAxis: {
+        min: 0,
+        title: {
+          text: ''
+        }
+      },
+      tooltip: {
+        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+        pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+        '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
+        footerFormat: '</table>',
+        shared: true,
+        useHTML: true
+      },
+      plotOptions: {
+        column: {
+          pointPadding: 0.2,
+          borderWidth: 0
+        }
+      },
+      series: [{
+        name: 'Vitesses Brute',
+        data: vitessebrute
+
+      }, {
+        name: 'Vitesses nettte',
+        data: vitessenette
+
+      }, {
+        name: 'Quantités',
+        data: quantite
+
+      }, {
+        name: 'Qualités',
+        data: qualite
+
+      }]
+    });
+
+  });
+
+
+
+</script>
+
+

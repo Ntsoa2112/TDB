@@ -1,0 +1,464 @@
+<title xmlns="http://www.w3.org/1999/html">Detourage Suivi</title>
+<head>
+
+
+  <!-- TIME PICKER INCLUDE  -->
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!--link rel="stylesheet" href="bootstrap.css" /-->
+  <link rel="stylesheet" href="/timepickerRonny/bootstrap-material-datetimepicker.css" />
+  <link href='/timepickerRonny/font1.css' rel='stylesheet' type='text/css'>
+  <link href="/timepickerRonny/font2.css" rel="stylesheet">
+
+
+
+  <!-- FIN TIME PICKER INCLUDE  -->
+
+  <link rel="stylesheet" href="/css/bootstrap-material-datetimepicker.css">
+
+  <!--script type='text/javascript' src='/js/jquery.min.js'></script-->
+  <!-- TEST BUG MENU -->
+
+
+  <script type='text/javascript' src="/TestNewFullcalendar/jquery.min.js"></script>
+  <link rel="stylesheet" href="/styles/importer.css">
+  <link rel="stylesheet" href="/bootflat/css/bootstrap.css">
+  <link rel="stylesheet" href="/bootflat/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/local.css">
+  <link rel="stylesheet" href="/css/Style_v3.css">
+
+  <link rel='stylesheet' type='text/css' href='/css/fullcalendar.css' />
+  <link rel='stylesheet' type='text/css' href='/css/fullcalendar.min.css' />
+  <link rel='stylesheet' type='text/css' href='/css/fullcalendar.print.css' media='print' />
+
+  <script src="/js/dependencies/sails.io.js"></script>
+  <script src="/js/jquery-1.10.2.min.js"></script>
+  <script src="/bootstrap/js/bootstrap.min.js"></script>
+  <script src="/material/chart/exporting.js"></script>
+  <script src="/js/dossierEtapeApp.js"></script>
+  <script src="/js/jquery-ui.min.js"></script>
+  <script src="/js/material-modal.min.js"></script>
+  <script src="/js/pikaday.js"></script>
+  <!--script type='text/javascript' src='/js/jquery-ui-1.8.23.custom.min.js'></script-->
+  <script type='text/javascript' src='/js/moment.min.js'></script>
+  <!--script type='text/javascript' src='/js/fullcalendar.min.js'></script-->
+  <script type="text/javascript">
+    $(document).ready(function(){
+      $("#submit").click(function(e){
+        e.preventDefault();
+       // ajax();
+      });
+      $("div #Show_OnceSaisiFIni").hide();
+    });
+
+    function Saisie_Terminer()
+    {
+      var date_h;
+      var Nombre_de_Visuels;
+      var Type_de_Traitement;
+      var Client;
+      var Objet_du_mail_de_réception;
+      date_h=document.getElementById("date-fr_saisie").value;
+     // Nombre_de_Visuels=document.getElementById("Nombre_De_Visuels").value;
+      Type_de_Traitement=document.getElementById("Type_Traitement").value;
+      //alert(Type_de_Traitement);
+      Client=document.getElementById("Client").value;
+      Objet_du_mail_de_réception=document.getElementById("Objet_Du_Mail_Reception").value;
+        if(date_h =="" || Nombre_de_Visuels==""||Type_de_Traitement==""||Client==""||Objet_du_mail_de_réception=="")
+        {
+              alert("Veuillez remplir tous les champs");
+        }
+        else
+        {
+      $(document).ready(function(){
+          var test="";
+          $("div #Show_OnceSaisiFIni").show();
+      });
+        }
+    }
+  </script>
+</head>
+<body>
+ <% include ../../includes/entete.ejs %>
+    <div class="container-fluid">
+      <div class="row">
+        <form action="/Detourage/Ajout_Nouveau_Saisi" method="post">
+        <div class="col-sm-6"  style="border:1px solid">
+          <h2>Saisie Information</h2>
+          <div class="form-group row">
+            <label class="col-xs-3 col-form-label" >Date/Heure</label>
+            <div class="form-group row">
+              <div class="col-xs-4">
+                <input type="text" id="date-fr_saisie" name="Date_Heure_Reception" class="form-control floating-label" placeholder="Date/Time" required>
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="form-inline">
+            <label class="col-xs-3 col-form-label">Type de Traitement et Nombre de Visuels</label>
+            <!--div class="col-xs-4"-->
+              <!--input class="form-control" id="Type_Traitement" type="text" name="type_traitement" id="" placeholder = "" value="" required-->
+              <select class="form-control" id="Type_Traitement" type="text" name="type_traitement" placeholder = "" value="" required>
+                <% traite.forEach (function(dep) { %>
+                <option value="<%= dep.id_det_type_traitement %>"><%= dep.libelle+"("+dep.nombre_visuels+")" %></option>
+                <% }) %>
+              </select>
+              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#Modal_Nouveau_Traite">Ajouter</button>
+              <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#Modal_Modifier_Traite">Modifier</button>
+              <button type="button" class="btn btn-danger"data-toggle="modal" data-target="#Modal_Supprimer_Traite">Supprimer</button>
+            </div>
+          </div>
+          <!--div class="form-group row">
+            <label class="col-xs-4 col-form-label"></label>
+            <div class="col-xs-4">
+              <input class="form-control" id="Nombre_De_Visuels" type="text" name="nombre_de_visuels" placeholder = "" value="" required>
+              <select class="form-control" id="Nombre_De_Visuels" type="text" name="nombre_de_visuels" id="Nombre" placeholder = "" value="" readonly required>
+              </select>
+            </div>
+          </div-->
+            <div class="form-group row">
+              <div class="form-inline">
+              <label class="col-xs-3 col-form-label">Client</label>
+
+              <!--div class="col-xs-4"-->
+
+                <!--input class="form-control" id="Client" type="text" name="client" id="" placeholder = "" value="" required-->
+                <select class="form-control" id="Client" type="text" name="client" id="" placeholder = "" value="" required>
+                  <% client.forEach (function(dep) { %>
+                  <option value="<%= dep.id_client_saisi %>"><%= dep.nom_saisi_client %></option>
+                  <% }) %>
+                </select>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#Modal_Nouveau_Client">Ajouter</button>
+                <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#Modal_Modifier_Client">Modifier</button>
+                <button type="button" class="btn btn-danger"data-toggle="modal" data-target="#Modal_Supprimer_Client">Supprimer</button>
+              <!--/div-->
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-xs-3 col-form-label">Objet du mail de réception</label>
+              <div class="col-xs-8">
+                <input class="form-control" id="Objet_Du_Mail_Reception" type="text" name="Objet_du_mail_reception" id="" placeholder = "" value="" required>
+              </div>
+            </div>
+          <div>
+            <center>
+              <input type="button" value="OK" class="btn btn-primary" onclick="Saisie_Terminer()">
+            </center>
+          </div>
+        </div>
+        <div id="Show_OnceSaisiFIni"class="col-sm-6" class="selection_div_interface_2">
+          <h2>Deuxieme Interface</h2>
+          <label class="col-xs-4 col-form-label" >Date/Heure</label>
+          <div class="form-group row">
+            <div class="col-xs-5">
+              <input type="text" id="date-fr_interface_2" name="Date_Heure_Envoi" class="form-control floating-label" placeholder="Date/Time" required>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-xs-4 col-form-label">Type de traitement et Nombre de visuels </label>
+            <div class="form-inline">
+              <!--input class="form-control" type="text" name="nombre_visuels_Envoi" id="nombre_visuels_interface_2" placeholder = "" value="" required-->
+              <select class="form-control" id="Type_Traitement" type="text" name="type_traitement_Envoi" placeholder = "" value="" required>
+                <% traite.forEach (function(dep) { %>
+                <option value="<%= dep.id_det_type_traitement %>"><%= dep.libelle+"("+dep.nombre_visuels+")" %></option>
+                <% }) %>
+              </select>
+              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#Modal_Nouveau_Traite">Ajouter</button>
+              <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#Modal_Modifier_Traite">Modifier</button>
+              <button type="button" class="btn btn-danger"data-toggle="modal" data-target="#Modal_Supprimer_Traite">Supprimer</button>
+            </div>
+          </div>
+          <!--div class="form-group row">
+            <label class="col-xs-4 colcol-form-label"></label>
+            <div class="col-xs-5">
+              <input class="form-control" type="text" name="type_traitement_Envoi" id="type_traitement_interface_2" placeholder = "" value="" required>
+            </div>
+          </div-->
+          <div class="form-group row">
+            <label class="col-xs-4 col-form-label">Objet du mail d’envoi</label>
+            <div class="col-xs-5">
+              <input class="form-control" type="text" name="Objet_mail_Envoi" id="Objet_mail_envoi" placeholder = "" value="" required>
+            </div>
+          </div>
+        <center>  <input type="submit" value="Terminer" class="btn btn-success"></center>
+        </div>
+        </form>
+        </div>
+      </div>
+    </div>
+ <!-----------------  MODAL CLIENT  -------------------->
+           <!-- Ajout CLIENT -->
+ <div id="Modal_Nouveau_Client" class="modal fade" role="dialog">
+   <div class="modal-dialog">
+     <!-- Modal content-->
+     <div class="modal-content">
+       <div class="modal-header">
+         <button type="button" class="close" data-dismiss="modal">&times;</button>
+         <h4 class="modal-title">AJOUT NOUVEAU CLIENT</h4>
+       </div>
+       <div class="modal-body">
+         <p>Ajout nouveau Client</p>
+         <form action="/Detourage/NouveauClient" method="post">
+           <div class="form-group row">
+             <label class="col-xs-4 col-form-label">Nom Client</label>
+             <div class="col-xs-5">
+               <input class="form-control" type="text" name="nouveau_client_saisi" id="" placeholder = "" value="" required>
+             </div>
+           </div>
+           <center><input type="submit" value="Ajouter Client" class="btn btn-success"></center>
+         </form>
+       </div>
+       <div class="modal-footer">
+         <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+       </div>
+     </div>
+   </div>
+ </div>
+         <!-- MODIF CLIENT -->
+ <div id="Modal_Modifier_Client" class="modal fade" role="dialog">
+   <div class="modal-dialog">
+     <!-- Modal content-->
+     <div class="modal-content">
+       <div class="modal-header">
+         <button type="button" class="close" data-dismiss="modal">&times;</button>
+         <h4 class="modal-title">MODIFIER CLIENT</h4>
+       </div>
+       <div class="modal-body">
+         <form action="/Detourage/ModifierClient" method="post">
+           <div class="form-group row">
+             <label class="col-xs-4 col-form-label">Selectionner le Client à modifier</label>
+             <div class="col-xs-4">
+           <select class="form-control" id="Client" type="text" name="id_client_modif" id="" placeholder = "" value="" required>
+             <% client.forEach (function(dep) { %>
+             <option value="<%= dep.id_client_saisi %>"><%= dep.nom_saisi_client %></option>
+             <% }) %>
+           </select>
+             </div>
+           </div>
+           <div class="form-group row">
+             <label class="col-xs-4 col-form-label">Nouveau Nom du Client</label>
+             <div class="col-xs-5">
+               <input class="form-control" type="text" name="modifier_client_saisi" id="" placeholder = "" value="" required>
+             </div>
+           </div>
+           <center><input type="submit" value="Modifier Client" class="btn btn-success"></center>
+         </form>
+       </div>
+       <div class="modal-footer">
+         <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+       </div>
+     </div>
+   </div>
+ </div>
+       <!-- SUPPRIMER CLIENT -->
+ <div id="Modal_Supprimer_Client" class="modal fade" role="dialog">
+   <div class="modal-dialog">
+     <!-- Modal content-->
+     <div class="modal-content">
+       <div class="modal-header">
+         <button type="button" class="close" data-dismiss="modal">&times;</button>
+         <h4 class="modal-title">SUPPRIMER CLIENT</h4>
+       </div>
+       <div class="modal-body">
+         <form action="/Detourage/SupprimerClient" method="post">
+           <p></p>
+           <div class="form-group row">
+             <label class="col-xs-4 col-form-label">Selectionner le Client à supprimer</label>
+             <div class="col-xs-5">
+               <select class="form-control" id="Client" type="text" name="id_client_supprimer" id="" placeholder = "" value="" required>
+                 <% client.forEach (function(dep) { %>
+                 <option value="<%= dep.id_client_saisi %>"><%= dep.nom_saisi_client %></option>
+                 <% }) %>
+               </select>
+             </div>
+           </div>
+           <center><input type="submit" value="Supprimer Client" class="btn btn-success"></center>
+         </form>
+       </div>
+       <div class="modal-footer">
+         <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+       </div>
+     </div>
+   </div>
+ </div>
+ <!----------------- FIN MODAL CLIENT ----------------->
+ <!-----------------  MODAL TRAITE  -------------------->
+ <!-- Ajout CLIENT -->
+ <div id="Modal_Nouveau_Traite" class="modal fade" role="dialog">
+   <div class="modal-dialog">
+     <!-- Modal content-->
+     <div class="modal-content">
+       <div class="modal-header">
+         <button type="button" class="close" data-dismiss="modal">&times;</button>
+         <h4 class="modal-title">AJOUT NOUVEAU TRAITEMENT</h4>
+       </div>
+       <div class="modal-body">
+         <p>Ajout nouveau Traitement</p>
+         <form action="/Detourage/NouveauTraite" method="post">
+           <div class="form-group row">
+             <label class="col-xs-4 col-form-label">Type de Traitement</label>
+             <div class="col-xs-5">
+               <input class="form-control" type="text" name="nouveau_type_traitement" id="" placeholder = "" value="" required>
+             </div>
+           </div>
+           <div class="form-group row">
+             <label class="col-xs-4 col-form-label">Nombre de Visuels</label>
+             <div class="col-xs-5">
+               <input class="form-control" type="text" name="nouveau_nombre_visuels" id="" placeholder = "" value="" required>
+             </div>
+           </div>
+           <center><input type="submit" value="Ajouter Traitement" class="btn btn-success"></center>
+         </form>
+       </div>
+       <div class="modal-footer">
+         <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+       </div>
+     </div>
+   </div>
+ </div>
+ <!-- MODIF TRAITE -->
+ <div id="Modal_Modifier_Traite" class="modal fade" role="dialog">
+   <div class="modal-dialog">
+     <!-- Modal content-->
+     <div class="modal-content">
+       <div class="modal-header">
+         <button type="button" class="close" data-dismiss="modal">&times;</button>
+         <h4 class="modal-title">MODIFIER TRAITE</h4>
+       </div>
+       <div class="modal-body">
+         <form action="/Detourage/ModifierTraite" method="post">
+           <div class="form-group row">
+             <label class="col-xs-4 col-form-label">Selectionner le Traitement à modifier</label>
+             <div class="col-xs-5">
+               <select class="form-control" id="Client" type="text" name="id_traite_modif" id="" placeholder = "" value="" required>
+                 <% traite.forEach (function(dep) { %>
+                 <option value="<%= dep.id_det_type_traitement %>"><%= dep.libelle+"("+dep.nombre_visuels+")" %></option>
+                 <% }) %>
+               </select>
+             </div>
+           </div>
+           <div class="form-group row">
+             <label class="col-xs-4 col-form-label">Nouveau Type de Traitement</label>
+             <div class="col-xs-5">
+               <input class="form-control" type="text" name="modifier_traite" id="" placeholder = "" value="" required>
+             </div>
+           </div>
+           <div class="form-group row">
+             <label class="col-xs-4 col-form-label">Nouveau Nombre de visuels</label>
+             <div class="col-xs-5">
+               <input class="form-control" type="text" name="modifier_nombre_visuels" id="" placeholder = "" value="" required>
+             </div>
+           </div>
+           <center><input type="submit" value="Modifier Traitement" class="btn btn-success"></center>
+         </form>
+       </div>
+       <div class="modal-footer">
+         <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+       </div>
+     </div>
+   </div>
+ </div>
+ <!-- SUPPRIMER TRAITE -->
+ <div id="Modal_Supprimer_Traite" class="modal fade" role="dialog">
+   <div class="modal-dialog">
+     <!-- Modal content-->
+     <div class="modal-content">
+       <div class="modal-header">
+         <button type="button" class="close" data-dismiss="modal">&times;</button>
+         <h4 class="modal-title">SUPPRIMER TRAITE</h4>
+       </div>
+       <div class="modal-body">
+         <form action="/Detourage/SupprimerTraite" method="post">
+           <p></p>
+           <div class="form-group row">
+             <label class="col-xs-4 col-form-label">Selectionner le Traitement à supprimer</label>
+             <div class="col-xs-5">
+               <select class="form-control" id="" type="text" name="id_traite_supprimer" id="" placeholder = "" value="" required>
+                 <% traite.forEach (function(dep) { %>
+                 <option value="<%= dep.id_det_type_traitement %>"><%= dep.libelle+"("+dep.nombre_visuels+")" %></option>
+                 <% }) %>
+               </select>
+             </div>
+           </div>
+           <center><input type="submit" value="Supprimer Traitement" class="btn btn-success"></center>
+         </form>
+       </div>
+       <div class="modal-footer">
+         <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+       </div>
+     </div>
+   </div>
+ </div>
+ <!----------------- FIN MODAL TRAITE ----------------->
+<script type="text/javascript" src="/timepickerRonny/material.js"></script>
+<script type="text/javascript" src="/timepickerRonny/moment_local.js"></script>
+<script type="text/javascript" src="/timepickerRonny/bootstrap-material-datetimepicker.js"></script>
+ <script src="/js/dependencies/sails.io.js"></script>
+
+
+
+
+
+<!--script src="/js/jquery-ui.min.js"></script-->
+<script>
+  (function(i, s, o, g, r, a, m) {
+    i['GoogleAnalyticsObject'] = r;
+    i[r] = i[r] || function() {
+        (i[r].q = i[r].q || []).push(arguments)
+      }, i[r].l = 1 * new Date();
+    a = s.createElement(o),
+      m = s.getElementsByTagName(o)[0];
+    a.async = 1;
+    a.src = g;
+    m.parentNode.insertBefore(a, m)
+  })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+  ga('create', 'UA-60343429-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('#date').bootstrapMaterialDatePicker
+    ({
+      time: false,
+      clearButton: true
+    });
+
+    $('#time_start').bootstrapMaterialDatePicker
+    ({
+      date: false,
+      shortTime: false,
+      format: 'HH:mm'
+    });
+    $('#time_end').bootstrapMaterialDatePicker
+    ({
+      date: false,
+      shortTime: false,
+      format: 'HH:mm'
+    });
+    $('#date-format').bootstrapMaterialDatePicker
+    ({
+      format: 'dddd DD MMMM YYYY - HH:mm'
+    });
+    $('#date-fr_interface_2').bootstrapMaterialDatePicker
+    ({
+      format: 'YYYY/MM/DD HH:mm',
+      lang: 'fr',
+      weekStart: 1,
+      cancelText: 'ANNULER',
+      nowButton: true,
+      switchOnClick: true
+    });
+    $('#date-fr_saisie').bootstrapMaterialDatePicker
+    ({
+      format: 'YYYY/MM/DD HH:mm',
+      lang: 'fr',
+      weekStart: 1,
+      cancelText: 'ANNULER',
+      nowButton: true,
+      switchOnClick: true
+    });
+  })
+</script>
+</body>

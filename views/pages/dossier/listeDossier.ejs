@@ -1,0 +1,401 @@
+<% if(req.session.droit==1){
+
+%>
+<% include ../../includes/entete.ejs %>
+<% }else{
+
+%>
+<% include ../../includes/enteteOperateur.ejs %>
+
+<% }%>
+<style>
+  #newDossierModal {
+    position: relative;
+  }
+
+  #newDossierModalLabel {
+    text-align: center;
+  }
+
+  .modal-header{
+    cursor: move;
+  }
+
+  .modal-body {
+    position: relative;
+    padding: 0px;
+  }
+
+  .modal-dialog {
+    position: fixed;
+    width: 60%;
+    margin-left: 20%;
+    margin-right: 20%;
+  }
+  .col-dossier {
+    min-height: 400px;
+    border-right: solid 2px #0b0b0b;
+    padding: 10px;
+  }
+
+  .col-form{
+    margin-left: 20px;
+    padding-top: 10px;
+  }
+
+  #example {
+    margin-left: -15px;
+    margin-right: -10px;
+    width: 100%;
+    max-height: 500px;
+    overflow-y: auto;
+    min-height: 300px;
+
+  }
+
+  .form-group{
+    padding-top: 20px;
+  }
+
+  .form-control {
+    height: 30px;
+    float: right;
+    width: 60%;
+  }
+
+  .form-left{
+    height: 30px;
+    float: left;
+    margin-left: -10px;
+    width: 60%;
+  }
+
+  .btn-right{
+    height: 30px;
+    width: 40px;
+    margin-right: 10px;
+    float: right;
+    margin-top: -0px;
+    width: 40%;
+  }
+
+  .col-form label {
+    float: left;
+    width: 40%;
+  }
+
+  .btn {
+    min-width: 180px;
+  }
+
+  #body_etape {
+
+  }
+
+  .divider {
+    margin-top: 100px;
+    margin-left: 20px;
+    height: 1px;
+    margin: 10px;
+    background-color: #020208;
+  }
+</style>
+<div id="page-wrapper">
+
+  <div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="x_panel">
+      <div class="x_title">
+        <h2 style="color:#2B75A6;">
+          Liste dossier
+        </h2>
+        <ul class="nav navbar-right panel_toolbox">
+          <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+          </li>
+          <li><a class="close-link"><i class="fa fa-close"></i></a>
+          </li>
+        </ul>
+        <div class="clearfix"></div>
+      </div>
+      <div class="x_content table-wrapper-scroll-y">
+        <button class="btn btn-primary" id="btn-new" data-toggle="modal" data-target="#newDossierModal" >Nouveau dossier</button>
+        <table class="table table-bordered  table-striped" id="exampl" style="max-width: 500px">
+          <thead>
+          <tr>
+            <th>ID</th>
+            <th>num_dossier</th>
+            <th>Atelier</th>
+            <th>Correspondance</th>
+            <th>Demarrage</th>
+            <th>Delai</th>
+            <th>Date_livr</th>
+            <th>vitesse_estime</th>
+            <th>vitesse_reelle</th>
+            <th>volume_prevue</th>
+            <th>resource_op</th>
+            <th>resource_cp</th>
+            <th>id_pers_cp</th>
+            <th>id_equipe</th>
+            <th>client</th>
+            <th>etat</th>
+          </tr>
+          </thead>
+          <tbody>
+          <% dossiers.forEach(function(dossier){ %>
+            <tr id="ligne" value = "<%= dossier.id_dossier %>">
+              <td class=" " id = "idDossier" ><%= dossier.id_dossier %></td>
+              <td class=" "><a href="#" onclick="click_dossier('<%= dossier.id_dossier %>')"><%= dossier.num_dossier || ""  %></a></td>
+              <td class=" "><%= dossier.atelier || ""  %></td>
+              <td class=" "><%= dossier.corresp || ""  %></td>
+              <td class=" "><%= dossier.demarrage || ""  %></td>
+              <td class=" "><%= dossier.delai || ""  %></td>
+              <td class=" "><%= dossier.date_livr || ""  %></td>
+              <td class=" "><%= dossier.vitesse_estime || ""  %></td>
+              <td class=" "><%= dossier.vitesse_reelle || ""  %></td>
+              <td class=" "><%= dossier.volume_prevue || ""  %></td>
+              <td class=" "><%= dossier.resource_op || ""  %></td>
+              <td class=" "><%= dossier.resource_cp || ""  %></td>
+              <td class=" "><%= dossier.id_pers_cp || ""  %></td>
+              <td class=" "><%= dossier.id_equipe || ""  %></td>
+              <td class=" "><%= dossier.client || ""  %></td>
+              <td class=" "><%= dossier.etat || "" %></td>
+            </tr>
+          <% }); %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+
+<!-- modal-->
+<div class="modal fade" id="newDossierModal" tabindex="-1" role="dialog" aria-labelledby="newDossierModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <!--Content-->
+    <form method="GET" action="#" >
+      <div class="modal-content">
+        <!--Header-->
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" id="newDossierModalLabel"><b>AJOUT / MODIFICATION D'UN DOSSIER</b></h4>
+        </div>
+        <!--Body-->
+        <div class="modal-body row">
+            <div class="col-lg-5 col-dossier">
+                <div class="form-group col-form">
+                  <label for="nom_dossier">Numéro dossier * :</label>
+                  <input class="form-control" id="nom_dossier"/>
+                </div>
+
+              <div class="form-group col-form">
+                <label for="client">Client :</label>
+                <select class="form-control" id="client">
+                  <option></option>
+                </select>
+              </div>
+
+              <div class="form-group col-form">
+                <label for="correspondant">Correspondant :</label>
+                <input class="form-control" id="correspondant"/>
+              </div>
+
+              <div class="form-group col-form">
+                <label for="atelier">Atelier :</label>
+                <input class="form-control" id="atelier"/>
+              </div>
+
+          <div class="form-group col-form">
+            <label for="demarrage">Démarrage :</label>
+            <input class="form-control" id="demarrage"/>
+          </div>
+
+          <div class="form-group col-form">
+            <label for="date_livraison">Date de livraison :</label>
+            <input class="form-control" id="date_livraison"/>
+          </div>
+
+          <div class="form-group col-form">
+            <label for="delai">Delai :</label>
+            <input class="form-control" id="delai"/>
+          </div>
+
+              <div class="form-group col-form">
+                <label for="estime">Vitesse estimé :</label>
+                <input class="form-control" id="estime"/>
+              </div>
+              <div class="form-group col-form">
+                <label for="réel">Vitesse reelle :</label>
+                <input class="form-control" id="reel"/>
+              </div>
+              <div class="form-group col-form">
+                <label for="prevu">Volume prévu :</label>
+                <input class="form-control" id="prevu"/>
+              </div>
+
+              <div class="form-group col-form">
+                <label for="recu">Volume récu :</label>
+                <input class="form-control" id="recu"/>
+              </div>
+
+              <div class="form-group col-form">
+                <label for="etat">Etat :</label>
+                <input class="form-control" id="etat"/>
+              </div>
+
+              <div class="form-group col-form">
+                <label for="op_res">Ressource opérateur :</label>
+                <input class="form-control" id="op_res"/>
+              </div>
+
+              <div class="form-group col-form">
+                <label for="cor_res">Ressource correspondant :</label>
+                <input class="form-control" id="cor_res"/>
+              </div>
+
+
+
+            </div>
+
+
+
+            <div class="col-lg-7">
+              <h4>Liste des étapes associées au dossier</h4>
+                <table id="example" class="table table-bordered table-responsive">
+                    <thead>
+                      <tr>
+                        <th>Nom etape</th>
+                        <th>Etape suivante</th>
+                        <th>Vitesse objectif</th>
+                        <th>Volume Journalier</th>
+                      </tr>
+                    </thead>
+                    <tbody id="body_etape">
+                        <tr>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+              <h4>Ajout Etape</h4>
+              <div class="form-group col-form">
+               <select class="form-control form-left" id="etape">
+                 <option></option>
+               </select>
+                <button type="button" class="btn btn-primary btn-right">Affecter</button>
+
+              </div>
+            </div>
+        </div>
+        <!--Footer-->
+        <div class="modal-footer" style="text-align: center">
+          <button type="button" class="btn btn-primary" >ok</button>
+          <button type="button" class="btn btn-secondary"  data-dismiss="modal">annuler</button>
+          <button type="button" class="btn btn-danger">supprimer</button>
+        </div>
+      </div>
+    </form>
+    <!--/.Content-->
+  </div>
+</div>
+
+ <script src="/js/jquery-1.10.2.min.js"></script>
+<script type="text/javascript">
+  $(document).ready(function() {
+    initDossier(0);
+    //var table = $('#example').DataTable();
+
+    //$('#example tbody').on('click', 'tr', function () {
+    /*var MyRows = $('table#example').find('tbody').find('tr');
+     for (var i = 0; i < MyRows.length; i++) {
+     var MyIndexValue = $(MyRows[i]).find('td:eq(0)').html();
+     alert(MyIndexValue);
+     }*/
+    $('#example tbody').on('click','tr',function(e){
+      e.preventDefault();
+      var id = $(this).attr('value');
+
+      //get host name
+      var host = window.location.hostname;
+      //alert("HOSTNAME  "+host);
+
+      window.document.location = "http://"+host+":9090/findDossierById?id="+id;
+      //alert(id);
+    });
+
+    $('#btn-new').click(function() {
+      // reset modal if it isn't visible
+      if (!($('.modal.in').length)) {
+        $('.modal-dialog').css({
+          top: 0,
+          left: 0
+        });
+      }
+      /*$('#newDossierModal').modal({
+        backdrop: false,
+        show: true
+      });*/
+
+      $('.modal-dialog').draggable({
+        handle: ".modal-header"
+      });
+    });
+
+    //var r = $("#idDossier").text();
+    //window.document.location = "http://localhost:1337/";
+    //} );
+  } );
+
+  function initDossier(id_dossier) {
+    var url = "/initDataDossier?id_dossier="+id_dossier;
+
+    /**
+    *web service d'initialization d'appel
+    **/
+    $.ajax({
+      type: "GET",
+      url: url,
+      success: function(msg){
+        var data = [];
+        try{
+          data = JSON.parse(msg);
+          console.log(data);
+          var clients = data.clients;
+          var options_client = '<option></option>';
+          for(var i = 0;  i<clients.length; i++)
+          {
+              options_client +='<option value="'+clients[i].id_cl+'">'+clients[i].nom+'</option>';
+          }
+          $("#client").html(options_client);
+
+          var non_affected = data.nonAffected;
+          var options_naffected = '<option></option>';
+          for(var i = 0;  i<non_affected.length; i++)
+          {
+            options_naffected +='<option value="'+non_affected[i].id_etape+'">'+non_affected[i].libelle+'</option>';
+          }
+          $("#etape").html(options_naffected);
+
+        }catch(e){
+          alert('JSON error: ' +e);
+        }
+      },
+      error: function (error) {
+        console.log(error);
+        alert('error: ' +JSON.stringify(error));
+      }
+    });
+
+  }
+
+  function click_dossier(id) {
+    var host = window.location.hostname;
+    //alert("HOSTNAME  "+host);
+
+    window.document.location = "http://"+host+":9090/findDossierById?id="+id;
+  }
+</script>

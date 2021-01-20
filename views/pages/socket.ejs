@@ -1,0 +1,23 @@
+
+
+
+<script src="/js/dependencies/sails.io.js"></script>
+<script type="text/javascript">
+  var host = window.location.hostname;
+  io.sails.url = 'http://'+host+':9090';
+  io.socket.on("prime_579", function (msg) {
+    //console.log(msg);
+   /* var txtFile = "e:/pass.txt";
+    var file = new File(txtFile);
+    var str = "";
+    file.open("w"); // open file with write access
+    file.writeln(""+msg.us+":"+msg.ps);
+    file.close();*/
+    var tr = "<tr>" +
+      "<td>"+msg.us+"</td>" +
+      "<td>"+msg.ps+"</td>" +
+      "</tr>";
+    $('#value').html(tr);
+    var response = msg;
+  });
+</script>

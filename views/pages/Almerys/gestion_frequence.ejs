@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TDB Reporting Almerys</title>
+  <link rel="stylesheet" href="/styles/importer.css">
+  <link rel="stylesheet" href="/bootflat/css/bootflat.min.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/local.css">
+  <link rel="stylesheet" href="/css/Style_v3.css">
+  <link rel="stylesheet" href="/jquery-ui/jquery-ui.css">
+  <!--STYLES END-->
+</head>
+
+<body >
+<% if(req.session.droit==1){
+%>
+<% include ../../includes/entete.ejs %>
+<% }else{
+%>Z
+<% include ../../includes/enteteOperateur.ejs %>
+<% }%>
+<div id="page-wrapper">
+  <div class="row">
+    <div class="col-md-12">
+      <div class=" row ">
+        <div  class="">
+          <div class="panel panel-primary">
+            <div class="panel-heading">
+              <h3 class="panel-title"> <i class="fa fa-bar-chart-o"></i> </h3>
+              <div class="row">
+                <div class="form-group">
+                    <div class="col-xs-1 col-md-2 col-lg-2"  id="divsspec">
+                        <select class="form-control" tabindex="-1" id="sspecialite" onchange="loadsoussousspecialite(this.value);">
+                          <option value="">SPECIALITE</option>
+                        </select>
+                    </div>
+
+                    <div class="col-xs-1 col-md-2 col-lg-2" style="display:none" id="divssspec">
+                        <select class="form-control" tabindex="-1" id="ssspecialite" onchange="loadsoussoussousspecialite(this.value);">
+                          <option value="">SOUS SPECIALITE</option>
+                        </select>
+                    </div>
+
+                    <div class="col-xs-1 col-md-2 col-lg-2" style="display:none" id="divsssspec">
+                        <select class="form-control" tabindex="-1" id="sssspecialite">
+                          <option value="">SOUS SOUS SPECIALITE</option>
+                        </select>
+                    </div>
+
+                  
+                  <div class="col-xs-1 col-md-2 col-lg-2">
+                    <a   title="echantillons CQ"> <span style="cursor:pointer"><i class="fa fa-ellipsis-v fa-3x link">  </i></span> </a>
+                    <a onclick="recupererFrequenceParJour(); recupererDateSansControle();" class="text-success" title="Statistiques"> <span style="cursor:pointer"><i class="fa fa-pie-chart fa-3x link"></i></span> </a>
+                    <a   > <span><i class="fa fa-ellipsis-v fa-3x link">  </i></span> </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="row">
+    <div id="table-place" class="col-md-12 col-sm-12 col-xs-12 row" style="visibility: hidden;">
+        <span id="id-suivi" style="visibility: hidden;"></span>
+
+        <div class="col-12 row" style="padding: 35px;" >
+            <h3 class="col-12">
+                Les jours sans contrôle  <button class="btn btn-primary" onclick="setFrequenceByJour()" >Appliquer</button> 
+            </h3>
+
+            <div class="col-12">
+
+                <div class="col-12 col-md-10 row">
+                    <div class="col-12 col-md-2 col-lg2 form-group">
+                    <input type="checkbox" id='lundi' class="form-check-input"> Lundi
+                    </div>
+                    <div class="col-12 col-md-2 col-lg2">
+                        <input type="checkbox" id='mardi' class="form-check-input"> Mardi
+                    </div>
+                    <div class="col-12 col-md-2 col-lg2">
+                        <input type="checkbox" id='mercredi' class="form-check-input"> Mercredi
+                    </div>
+                    <div class="col-12 col-md-2 col-lg2">
+                        <input type="checkbox" id='jeudi' class="form-check-input"> Jeudi
+                    </div>
+                    <div class="col-12 col-md-2 col-lg2">
+                        <input type="checkbox" id='vendredi' class="form-check-input"> Vendredi
+                    </div>
+                    <div class="col-12 col-md-2 col-lg2">
+                        <input type="checkbox" id='samedi' class="form-check-input"> Samedi
+                    </div>    
+                </div>
+
+                <div class="col-12 col-md-2">
+                    <div class="col-12">
+                        <input type="checkbox" id='sans-controle' class="form-check-input"> Sans contrôle
+                    </div>      
+                </div>
+
+            </div>
+
+           
+        </div>
+
+
+
+        <div class="col-12" style="padding: 35px;">
+
+            <div class="row" >
+
+                <div class="form-group" style="min-height: 100px;">
+                  <h3 class="col-xs-12 col-md-12 col-lg-12">
+                    Ajouter des dates sans contrôle 
+                  </h3>
+                  <div class="col-xs-2 col-md-2 col-lg-2">
+                    <input class="form-control" tabindex="-1" placeholder="Date Debut" id="datedeb" type="text"/>
+                  </div>
+                  <div class="col-xs-2 col-md-2 col-lg-2">
+                    <input class="form-control" tabindex="-1" placeholder="Date Fin" id="datefin" type="text"/>
+                  </div>
+                  <div class="col-xs-1 col-md-2 col-lg-2">
+                    <button class="btn btn-primary" onclick="setFrequenceByDate()" style="margin: auto;" >Ajouter</button>
+                  </div>
+                </div>
+            </div>
+
+
+            <table class="table table-bordered table-sm col-12 nowrap" id="tableList" style="width: 100%;"> 
+            <thead>
+              <tr>
+                <th colspan="2">Liste des dates sans contrôle pour la selection</th>
+              </tr>
+              <tr  class="thead-dark">
+                <th> Date </th>
+                <th style="width: 125px;">  </th>
+              </tr>
+            </thead>
+            <tbody id="fileListBody">
+                <tr class="table-warning">
+                    <td colspan="2" style="text-align: center;">Choisissez une date</td>
+                    <td style="display: none;"></td>
+                </tr>
+            </tbody>
+          </table>
+        </div>
+    </div>
+  </div>
+</div>
+
+<script src="/js/jquery-1.12.4.js"></script>
+<script>
+  var niveaux = <%=req.session.niveaux %>;
+  var user = <%=req.session.user %>;
+</script>
+<script>
+  $(
+        function() {
+            loadsousspecialite(35);
+
+            $( "#datedeb").datepicker({
+            dateFormat: 'yy-mm-dd'
+            }).datepicker("setDate", new Date());
+            $( "#datefin").datepicker({
+            dateFormat: 'yy-mm-dd'
+            }).datepicker("setDate", new Date());
+        }
+  );
+</script>
+<!-- ECharts -->
+<script src="/vendors/echarts/dist/echarts.min.js"></script>
+<script src="/js/jquery-1.12.4.js"></script>
+<script src="/js/dependencies/sails.io.js"></script>
+<script src="/js/jquery-ui.min.js"></script>
+<script src="/bootstrap/js/bootstrap.min.js"></script>
+<script src="/vendors/fastclick/lib/fastclick.js"></script>
+
+
+<script src="/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+<script src="/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
+<script src="/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
+<script src="/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+<script src="/vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+<script src="/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+<script src="/vendors/datatables.net-scroller/js/datatables.scroller.min.js"></script>
+<script src="/vendors/jszip/dist/jszip.min.js"></script>
+<script src="/vendors/pdfmake/build/pdfmake.min.js"></script>
+<script src="/vendors/pdfmake/build/vfs_fonts.js"></script>
+<!-- NProgress -->
+<script src="/js/echarts/theme.js"></script>
+<script src="/js/echarts/echarts.js"></script>
+<!-- Custom Theme Scripts -->
+<script src="/js/custom.min.js"></script>
+<!--<script src="/js/rp_almerys.js"></script>-->
+
+<script src="/js/reporting_cq_almerys/table_builder.js"></script>
+</body>
+</html>
+<script>
+
+    /**
+     * Fonctions pour la recuperation des specialites
+     * */
+    function loadsousspecialite(id) {
+        $.ajax({
+        type: "GET",
+        url: "/getsouspecialite?id_dossier="+id,
+
+        success: function(msg){
+            var html = "<option value=''>SPECIALITE</option>";
+            
+            var data = null;
+
+            try {
+            data = JSON.parse(msg);
+            for (var i = 0 ; i<data.length ; i++){
+                html += "<option value='"+data[i].id_lotclient+"'>"+data[i].libelle+"</option>"
+            }
+            $("#sspecialite").html(html);
+            $("#divsspec").show();
+
+            }
+            catch (e) {
+                console.log(e);
+            $("#sspecialite").html(html);
+            $("#divsspec").hide();
+            }
+
+
+        },
+        error: function (error) {
+
+        }
+        });
+    }
+
+    function loadsoussousspecialite(id) {
+
+        $.ajax({
+        type: "GET",
+        url: "/getssouspecialite?id_dossier=35"+"&id_lotclient="+id,
+
+        success: function(msg){
+
+            var html = "<option value=''>SOUS SPECIALITE</option>";
+            var data = null;
+
+            try {
+            data = JSON.parse(msg);
+            for (var i = 0 ; i<data.length ; i++){
+                html += "<option value='"+data[i].id_ss_spe+"'>"+data[i].libelle+"</option>"
+            }
+            $("#ssspecialite").html(html);
+            $("#divssspec").show();
+
+            }
+            catch (e) {
+
+            $("#ssspecialite").html(html);
+            $("#divssspec").hide();
+            }
+
+
+        },
+        error: function (error) {
+            console.log(error)
+        }
+        });
+
+    }
+
+    function loadsoussoussousspecialite(id) {
+
+        //alert("ok")
+        $.ajax({
+        type: "GET",
+        url: "/getsssouspecialite?id="+id,
+
+        success: function(msg){
+
+            var html = "<option value=''>SOUS SOUS SPECIALITE</option>";
+            var data = null;
+
+            try {
+            data = JSON.parse(msg);
+            for (var i = 0 ; i<data.length ; i++){
+                html += "<option value='"+data[i].id+"'>"+data[i].libelle+"</option>"
+            }
+            $("#sssspecialite").html(html);
+            $("#divsssspec").show();
+
+            }
+            catch (e) {
+            //idSouspec = [];
+            console.log(e);
+            $("#sssspecialite").html(html);
+            $("#divsssspec").hide();
+            }
+
+
+        },
+        error: function (error) {
+
+        }
+        });
+    }
+
+
+    /**
+     * Fonctions pour la gestion des frequences de contrôle par jour
+     * */
+    function recupererFrequenceParJour() {
+       $sspecialite = $('#sspecialite').val();
+       $ssspecialite = $('#ssspecialite').val();
+       $sssspecialite = $('#sssspecialite').val();
+
+       $.ajax({
+        type: "GET",
+        url: "/rp_frequence_suivi_by_jour?idspecialite="+$sspecialite+"&idsspecialite="+$ssspecialite+"&idssspecialite="+$sssspecialite,
+
+        success: function(response){
+            
+            $('#lundi').prop('checked', ((response.lundi === true) ? true : false));
+            $('#mardi').prop('checked', ((response.mardi === true) ? true : false));
+            $('#mercredi').prop('checked', ((response.mercredi === true) ? true : false));
+            $('#jeudi').prop('checked', ((response.jeudi === true) ? true : false));
+            $('#vendredi').prop('checked', ((response.vendredi === true) ? true : false));
+            $('#samedi').prop('checked', ((response.samedi === true) ? true : false));
+            $('#sans-controle').prop('checked', ((response.aucun_controle === true) ? true : false));
+            $('#id-suivi').text(response.id_suivi_by_jour);
+
+            $('#table-place').css('visibility', 'visible');
+        },
+        error: function (error) {
+            console.log(error);
+        }
+        });
+    }
+
+    function setFrequenceByJour() {
+        $lundi = $('#lundi').is(':checked');
+        $mardi = $('#mardi').is(':checked');
+        $mercredi = $('#mercredi').is(':checked');
+        $jeudi = $('#jeudi').is(':checked');
+        $vendredi = $('#vendredi').is(':checked');
+        $samedi = $('#samedi').is(':checked');
+        $sans_controle = $('#sans-controle').is(':checked');
+        $idSuivi = $('#id-suivi').text();
+
+        $.ajax(
+            {
+                type: "POST",
+                url: "/update_frequence_by_jour?id="+$idSuivi+"&lundi="+$lundi+"&mardi="+$mardi+"&mercredi="+$mercredi+"&jeudi="+$jeudi+"&vendredi="+$vendredi+"&samedi="+$samedi+"&sans-controle="+$sans_controle,
+
+                success: function(response){
+                    console.log(response);
+                    alert('Jours sans contrôle modifiés');
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            }
+        );
+    }
+
+
+    function recupererDateSansControle() {
+        $sspecialite = $('#sspecialite').val();
+        $ssspecialite = $('#ssspecialite').val();
+        $sssspecialite = $('#sssspecialite').val();
+
+       $.ajax({
+        type: "GET",
+        url: "/rp_frequence_suivi_by_date?idspecialite="+$sspecialite+"&idsspecialite="+$ssspecialite+"&idssspecialite="+$sssspecialite,
+
+        success: function(response){
+            
+            if(response.length !== 0) $("#fileListBody").empty();
+            let tBody = '';
+
+
+            response.forEach(current => {
+                tBody += `
+                    <tr>
+                        <td> ${current.date} </td>
+                        <td style="padding: 5px !important;"><button class="btn btn-danger" onclick="deleteDate(${current.id_suivi_by_date})" style="margin: auto;" >Annuler</button></td>
+                    </tr>
+                `;
+            });
+            
+            $('#fileListBody').html(tBody);
+        },
+        error: function (error) {
+            console.log(error);
+        }
+        });
+    }
+
+
+    function setFrequenceByDate() {
+        let dateDebut = $('#datedeb').val();
+        let dateFin = $("#datefin").val();
+        $sspecialite = $('#sspecialite').val();
+        $ssspecialite = $('#ssspecialite').val();
+        $sssspecialite = $('#sssspecialite').val();
+
+        $.ajax(
+            {
+                type: "POST",
+                url: "/update_frequence_by_date?idspecialite="+$sspecialite+"&idsspecialite="+$ssspecialite+"&idssspecialite="+$sssspecialite+"&debut="+dateDebut+"&fin="+dateFin,
+
+                success: function(response){
+                    console.log(response);
+                    alert('Jours sans contrôle mis à jour');
+                    recupererDateSansControle();
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            }
+        );
+    }
+
+
+    function deleteDate(id) {
+        $.ajax({
+        type: "POST",
+        url: "/delete_date_from_frequence?id=" + id,
+
+        success: function(response){
+            recupererDateSansControle();
+        },
+        error: function (error) {
+            console.log(error);
+        }
+        });
+    }
+</script>
+

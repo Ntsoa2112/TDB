@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TDB Almerys HM</title>
+
+  <link rel="stylesheet" href="/styles/importer.css">
+  <link rel="stylesheet" href="/bootflat/css/bootflat.min.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/local.css">
+  <link rel="stylesheet" href="/css/Style_v3.css">
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
+  <!--STYLES END-->
+</head>
+<body onload="getLsSpecialite();getHMortlmerys();getAllHmAlmerys();">
+
+<%
+var menu = [];
+menu["aceuil"]= "selected";
+menu["dossierAdmin"]= "";
+menu["gestionDossier"]= "";
+menu["statOpAdmin"]= "";
+menu["presence"]= "";
+menu["admin"]= "";
+%>
+<% include ../../includes/entete.ejs %>
+
+<script>
+  var cars = [];
+  var prod = [];
+  var etape = [];
+  var dataetape = [];
+  var hprod = [];
+  var vitesseb = 0;
+  var vitessen = 0;
+  var quantite = 0;
+  var qualite = 0;
+</script>
+
+
+
+  <div class="row">
+    <div class="form-group col-lg-2">
+      <label for="specDashAdmin">Spécialité</label>
+      <select class="form-control" id="specDashAdmin">
+        <option value="">SPECIALITE</option>
+      </select>
+    </div>
+    
+    
+    <div class="form-group col-lg-2">
+      <label for="date">Date</label>
+      <input type="text" class="form-control" id="date" aria-describedby="emailHelp" placeholder="Selectioner la date">
+    </div>
+    
+    
+    <div class="form-group col-lg-2">
+      <label for="typeHM">TYPE HEURE</label>
+      <select class="form-control" id="typeHM">
+        <option value=""></option>
+      </select>
+    </div>
+    
+    <div class="form-group col-lg-2">
+      <label for="valeur">NB personnes concernés</label>
+      <input type="number" class="form-control" id="nbpers" value="0" aria-describedby="emailHelp" placeholder="Entrer la valeur">
+      <small id="emailHelp" class="form-text text-muted">Les nombres des personnes concernées</small>
+    </div>
+    <div class="form-group col-lg-2">
+      <label for="valeur">Debut</label>
+      <input type="text" class="form-control" id="hdeb" value="" aria-describedby="emailHelp" placeholder="ex: 10:05">
+      <small id="emailHelp" class="form-text text-muted">Heures de debut</small>
+    </div>
+    
+     <div class="form-group col-lg-2">
+      <label for="valeur">Fin</label>
+      <input type="text" class="form-control" id="hfin" value="" aria-describedby="emailHelp" placeholder="ex: 10:05">
+      <small id="emailHelp" class="form-text text-muted">Heures de fin</small>
+    </div>
+  </div>
+  <button type="submit" class="btn btn-primary" onclick="saveData();">Enregistrer</button>
+
+<div id="table_hmorte">
+
+</div>
+
+
+<script src="/js/dependencies/sails.io.js"></script>
+<script src="/js/jquery-1.12.4.js"></script>
+<script src="/js/jquery-ui.min.js"></script>
+<script src="/js/dossierEtapeApp.js"></script>
+<script src="/bootstrap/js/bootstrap.min.js"></script>
+<!--
+<script>
+
+  function loadData(){
+    var dateDeb = $( "#datetimd" ).val();
+    var dateFin = $( "#datetimf" ).val();
+    $.ajax({
+      type: "GET",
+      url: "/ajaxAlm?datedeb="+dateDeb+"&datefin="+dateFin,
+      beforeSend: function(xhr){
+        $( "#load").show();
+      },
+      success: function(msg){
+        $("#table-response").html(msg);
+        $( "#load").hide();
+      },
+      error: function (error) {
+        alert('error; ' +error);
+      }
+    });
+  }
+
+
+  $(function() {
+    $( "#datetimd" ).datepicker({
+      dateFormat: 'yymmdd'
+    });
+    $( "#datetimf" ).datepicker({
+      dateFormat: 'yymmdd'
+    });
+  } );
+
+</script>-->
+
+<script>
+
+  var id_spec = 0;
+  var date_ajout = null;
+  var nbpers = 0;
+  var typeHM = 0;
+  var hdeb = "";
+  var hfin = "";
+
+  function saveData(){
+
+    id_spec = $( "#specDashAdmin" ).val();
+    date_ajout = $( "#date" ).val();
+    nbpers = $( "#nbpers" ).val();
+    typeHM = $( "#typeHM" ).val();
+    hdeb = $( "#hdeb" ).val();
+    hfin = $( "#hfin" ).val();
+      if(checkHeure(hdeb)!=false && checkHeure(hfin)!=false){
+          $.ajax({
+              type: "GET",
+              url: "/add_hmort?id_spec="+id_spec+"&date="+date_ajout+"&nbpers="+nbpers+"&typeHM="+typeHM+"&hdeb="+hdeb+"&hfin="+hfin,
+              success: function(msg){
+
+                //alert('ok');
+                //actualisation de la table
+                getAllHmAlmerys();
+              },
+              error: function (error) {
+                alert('Echec');
+              }
+            });
+      }
+    
+  }
+    
+    function checkHeure(heure){
+        var splitH = heure.split(":");
+        var ret = false;
+        if(splitH.length<2){
+            alert("format incorect de "+heure)
+        }else{
+            if(parseInt(splitH[0])>23 || parseInt(splitH[0])<0 ||  parseInt(splitH[1])>59 || parseInt(splitH[1])<0){
+             alert("Heure invalide "+heure)
+            }else{
+                ret = true;
+            }
+        }
+        return ret;
+    }
+
+
+
+  $(function() {
+
+    $( "#date" ).datepicker({
+      setDate: new Date(),
+      dateFormat: 'yymmdd'
+    });
+    $( "#dateEdit" ).datepicker({
+      setDate: new Date(),
+      dateFormat: 'yymmdd'
+    });
+  } );
+</script>
+
+</body>
+</html>

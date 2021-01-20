@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TDB Stat</title>
+
+  <link rel="stylesheet" href="/styles/importer.css">
+  <link rel="stylesheet" href="/bootflat/css/bootflat.min.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/local.css">
+  <link rel="stylesheet" href="/css/Style_v3.css">
+  <link rel="stylesheet" href="/jquery-ui/jquery-ui.css">
+  <!--STYLES END-->
+</head>
+
+<body onload="getLsDossierAdmin()" class="hold-transition skin-blue sidebar-mini">
+<% if(req.session.droit==1){
+
+%>
+<% include ../includes/entete.ejs %>
+<% }else{
+
+%>
+<% include ../includes/enteteOperateur.ejs %>
+
+<% }%>
+<script src="/js/jquery-1.12.4.js"></script>
+<script>
+  var cars = [];
+  var prod = [];
+  var hprod = [];
+  var vitesseb = 0;
+  var vitessen = 0;
+  var quantite = 0;
+  var qualite = 0;
+  var LiquiQdGlobal = null;
+  var LiquiQEtape = [];
+  var PowerVitesseG = null;
+  var PowerVEtape = [];
+  function loadRang(idd,ide,pdate,id_div){
+    $.ajax({
+      type: "GET",
+      url: "/rangAjax?id_dossier="+idd+"&id_etape="+ide+"&pdate="+pdate,
+      beforeSend: function(xhr){
+        //$( "#load2").show();
+      },
+      success: function(msg){
+        //$( "#load2").hide();
+        $("#"+id_div).html(msg);
+      },
+      error: function (error) {
+        //$( "#load2").hide();
+        //alert('error; ' +error);
+      }
+    });
+  }
+
+</script>
+
+
+
+<div id="page-wrapper">
+
+  <div class="row">
+    <div class="">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h3 class="panel-title"><i class="fa fa-bar-chart-o"></i></h3>
+          <div class="row">
+            <div class="form-group">
+              <form method="get" action="/management">
+                <%
+                var datedb = "";
+                var datefn = "";
+                var mat = "";
+                if(req.session.datedeb!=null){
+                  datedb = req.session.datedeb;
+                }if(req.session.mat!=null){
+                  mat = req.session.mat;
+                }if(req.session.datefin!=null){
+                  datefn = req.session.datefin;
+                }
+                %>
+                <div class="col-xs-2">
+                  <select class="form-control" tabindex="-1" id="dossierDashAdmin" placeholder = "Dossier" name="dossier" required="true">
+                    <option value="">Dossier</option>
+                  </select>
+
+                </div>
+                <div class="col-xs-2">
+                  <input class="form-control" type="text" id="datetim" name="datedeb" placeholder = "Date Debut" value="<%=datedb%>"/>
+                </div>
+
+                <div class="col-xs-2 hidden">
+                  <input class="form-control" type="date" id="datetim2" name="datefin" placeholder = "Date Fin" value="<%=datefn%>"/>
+                </div>
+
+
+                <div class="col-xs-2">
+                  <input class="form-control" type="number" name="matricule" placeholder = "Matricule" value="<%=mat%>"/>
+                </div>
+                <div class="col-xs-2">
+                  <button type="submit" class="btn btn-info btn-md">ok</button>
+                </div>
+
+                <!--<div class="col-xs-2 pull-right flat-blue">
+                  <a href="/suivisOp">
+                    <div class="card blue summary-inline">
+                      <div class="card-body">
+                        <i class="icon fa fa-users fa-2x"></i>
+                        <div class="content">
+                          <%
+                if(dossier!=null){
+                %>
+                          <div class="title"><%=persCon.length %></div>
+                          <%
+                }
+                %>
+
+
+                        </div>
+                        <div class="clear-both"></div>
+                      </div>
+                    </div>
+                  </a>
+                </div>-->
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <!--essai caroussel--------------->
+
+
+
+
+
+        <!--finessai caroussel--------------->
+
+
+
+        <div id="ajaxDossier" class="<%=display%>">
+          <div class="panel-body">
+
+            <%
+
+            var donnee = {
+              termine: dossierTermine ,
+              encours: dossierEnCours,
+              libre:dossierLibre
+            };
+
+            var categorieDate = [];
+            var dataQualite = [];
+            var dataQuantite = [];
+
+
+            var dureeTot = 0;
+            var vitCibleTot = 0;
+            var qteCibleTot = 0;
+
+            var qtTotal = 0;
+            for(var ii = 0; ii<qualiteQuantite.length;ii++){
+              categorieDate[ii]= qualiteQuantite[ii].date_deb_ldt;
+              dataQualite[ii]= qualiteQuantite[ii].err;
+              dataQuantite[ii]= qualiteQuantite[ii].qte;
+              /*//console.log("date:"+categorieDate[ii]);
+              //console.log("qualite:"+qualiteQuantite[ii].err);
+              //console.log("quantite:"+qualiteQuantite[ii].qte);*/
+              qtTotal += Number(dataQuantite[ii]);
+            }
+            if (dossier!=null ) {
+              for (var ii = 0; ii < vop.length; ii++) {
+                dureeTot += Number(vop[ii].duree);
+              }
+              for(var ii = 0; ii<etapes.length;ii++){
+                vitCibleTot += Number(etapes[ii].vitesse);
+                qteCibleTot += Number(etapes[ii].quantite_journalier);
+              }
+
+              //vitCibleTot=vitCibleTot/etapes.length;
+            }
+
+
+
+            var delai = "Indéterminé";
+            var livraison = "Indéterminé";
+            var vitessesetime = vitCibleTot;
+            var vitessereel = "Indéterminé";
+            var volumeprevue = 0;
+            var volumeactuelle = "Indéterminé";
+            var id_pers_cp = "Indéterminé";
+            if (dossier!=null ){
+
+              if(dossier.delai !=null && dossier.delai != ''){
+                delai =dossier.delai;
+              }
+              if(dossier.date_livr !=null && dossier.date_livr != ''){
+                livraison =dossier.date_livr;
+              }
+              if(dossier.vitesse_estime !=null && dossier.vitesse_estime != ''){
+                vitessesetime =''+dossier.vitesse_estime;
+              }
+              if(dossier.vitesse_reelle !=null && dossier.vitesse_reelle != ''){
+                vitessereel =''+dossier.vitesse_reelle;
+              }
+              if(dossier.volume_prevue !=null && dossier.volume_prevue != ''){
+                volumeprevue =''+dossier.volume_prevue;
+              }
+              if(dossier.id_pers_cp !=null && dossier.id_pers_cp != ''){
+                id_pers_cp =dossier.id_pers_cp;
+              }
+              if(doss!=null && doss.qte !=null && doss.qte!= ''){
+                volumeactuelle =doss.qte;
+                vitessereel = doss.qte/(doss.duree/3600);
+              }
+            %>
+            <!-- Delais:<%=delai %><br/>
+            Date livraison:<%=livraison %><br/>
+            Vitesse Estimée:<%=vitessesetime %><br/>
+            Vitèsse Reelle:<%=vitessereel %><br/>
+            Volume Prévue:<%=volumeprevue %><br/>
+            Volume Actuelle:<%=volumeactuelle %><br/>
+            id_pers_cp:<%=id_pers_cp %><br/>-->
+            <% }%>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row <%=display%>  flat-blue">
+
+    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+      <a href="/suivisOp">
+        <div class="card green summary-inline">
+          <div class="card-body">
+            <i class="icon fa fa-users fa-4x"></i>
+            <i class="icon fa fa-users fa-4x"></i>
+            <div class="content">
+
+              <%
+              if(dossier!=null){
+              %>
+              <div class="title"><%=persCon.length %></div>
+              <%
+              }
+              %><div class="sub-title">Utilisateurs Connectées</div>
+            </div>
+            <div class="clear-both"></div>
+          </div>
+        </div>
+      </a>
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+      <a href="/management">
+        <div id="myCarousel" class="carousel slide" data-ride="carousel">
+
+
+          <!-- Wrapper for slides -->
+          <div class="carousel-inner" role="listbox">
+
+            <%
+            var a = 0;
+            if(dossier!=null){
+            etapeData.forEach(function (data) {
+              var classNam = "item";
+              if(a==0){
+                classNam = "item active";
+                a++;
+              }else{
+                classNam = "item";
+              }
+            if(data.libelle){
+              var qte = 0;
+              if(data.qte!=null)qte= data.qte;
+            %>
+            <div class="<%=classNam%>">
+              <div class="card blue summary-inline">
+                <div class="card-body">
+                  <i class="icon fa fa-step-forward fa-4x"></i>
+                  <div class="content">
+                    <div class="title"><%=qte%></div>
+                    <div class="sub-title"><%=data.libelle%></div>
+                  </div>
+                  <div class="clear-both"></div>
+                </div>
+              </div>
+            </div>
+            <%
+            }});
+            if(etapeData.length==0){
+            %>
+            <div class="item active">
+              <div class="card blue summary-inline">
+                <div class="card-body">
+                  <i class="icon fa fa-step-forward fa-4x"></i>
+                  <div class="content">
+                    <div class="title">0</div>
+                    <div class="sub-title">Etape active</div>
+                  </div>
+                  <div class="clear-both"></div>
+                </div>
+              </div>
+            </div>
+
+            <%
+            }
+            }
+            %>
+
+            <!--<div class="item active">
+              <div class="card blue summary-inline">
+                <div class="card-body">
+                  <i class="icon fa fa-folder-open fa-4x"></i>
+                  <div class="content">
+                    <div class="title">36</div>
+                    <div class="sub-title">Dossier en cours de Traitement</div>
+                  </div>
+                  <div class="clear-both"></div>
+                </div>
+              </div>
+            </div>-->
+
+
+
+
+
+          </div>
+
+          <!-- Left and right controls -->
+          <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+            <!--<i class="fa fa-arrow-left" aria-hidden="true"></i>-->
+          </a>
+          <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+            <!--<i class="fa fa-arrow-right" aria-hidden="true"></i>-->
+          </a>
+        </div>
+      </a>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+
+  <div class="row <%=display%>">
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-bar-chart-o"></i></h3>
+
+      </div>
+      <div class="panel-body">
+        <%
+        if(dossier!=null){
+          var vitesGlobal = 0;
+          if(dureeTot!=0){
+            vitesGlobal = math.round(qtTotal/(dureeTot/3600),2);
+          }
+          var qte = 0;
+          var moyqte = 0;
+          if(qtTotal!=0 && qteCibleTot!=0){
+
+            qte =100-((qteCibleTot-qtTotal)/qteCibleTot)*100;
+            moyqte = qtTotal/etapes.length;
+            ////console.log('qte total='+qte);
+          }
+
+          var volp = qte;
+          var vitEs = Number(vitessesetime);
+          if(Number(qteCibleTot)==0){
+            volp =0;
+          }
+
+          var pVitG= 0;
+          if(vitesGlobal!=0){
+            if(vitCibleTot>=vitesGlobal){
+              pVitG = math.round(100-((vitCibleTot-vitesGlobal)/vitCibleTot)*100,2);
+            }else{
+              pVitG = 100;
+            }
+
+            //vitEtape = math.round(qteEtape/dureEtape,2);
+          }
+
+          if(vitEs<vitesGlobal || vitessesetime==null){
+            vitEs =vitesGlobal;
+          }
+        %>
+        <div class="row">
+          <div class="col-lg-6">
+
+            <%- partial ('chart/D3SpeedV2.ejs', {idElement : 'vittesse'+dossier.id_dossier,classeElement : ' ', title : ' Vitesse cible : '+vitCibleTot, titleChart : ' Vitesse : '+vitesGlobal,valu : pVitG, cible : 100  }) %>
+            <script>
+
+
+               PowerVitesseG = null;
+              PowerVitesseG = goPowerGauge();
+               PowerVEtape = [];
+            </script>
+
+          </div>
+          <div class="col-lg-6">
+
+            <%- partial ('chart/D3LiquidGauge.ejs', {idElement : 'quantite'+dossier.id_dossier,classeElement : ' ', title : 'Quantité cible : '+qteCibleTot, titleChart : 'Qantite : '+ qtTotal, data : volp }) %>
+            <script>
+
+               LiquiQdGlobal = loadGauge(LiquiQdGlobal);
+               LiquiQEtape = [];
+
+            </script>
+
+          </div>
+        </div>
+        <%}%>
+      </div>
+    </div>
+  </div>
+  <div class="row <%=display%>">
+
+    <%
+
+    if(dossier!=null && vop!=undefined) {
+
+
+
+    for (var tt = 0; tt < etapes.length; tt++) {
+      var qteEtape = 0;
+
+      var vitCibleEtap = 0;
+      vitCibleEtap = etapes[tt].vitesse;
+      var dureEtape = 0;
+      for (var cpt = 0; cpt<vop.length;cpt++){
+        if(etapes[tt]['libelle']==vop[cpt]['libelle']){
+          if(etapes[tt]['qte']!= null && etapes[tt]['qte']!='' ){
+            ////console.log('===============>'+etapes[tt]['id_lien']+':'+vop[cpt]['qte']);
+
+          }
+          qteEtape = qteEtape + Number(vop[cpt]['qte']);//Number(vop[cpt]['qte']);
+          dureEtape += Number(vop[cpt].duree);
+        }
+      }
+      var pqEtape = 0;
+      if(Number(etapes[tt].quantite_journalier)!=0){
+        if(qteEtape!=0 && Number(etapes[tt].quantite_journalier)!=0) {
+          pqEtape =100-(( Number(etapes[tt].quantite_journalier)-qteEtape) / Number(etapes[tt].quantite_journalier)) * 100;
+        }
+      }
+
+      dureEtape = dureEtape/3600;
+
+      var vitEtape = 0;
+      if(dureEtape!=0){
+        vitEtape = math.round(qteEtape/dureEtape,2);
+      }
+
+      var pVit = 0;
+      if(vitEtape!=0){
+        if(vitCibleEtap>=vitEtape){
+
+          pVit = math.round(100-((vitCibleEtap-vitEtape)/vitCibleEtap)*100,2);
+        }else{
+          pVit = 100;
+
+        }
+        //vitEtape = math.round(qteEtape/dureEtape,2);
+      }
+
+      ////console.log('===============>'+etapes[tt]['libelle']+':'+pqEtape);
+
+      ////console.log('===============>aaa');
+    if(vitEtape!=0 && qteEtape!=0){
+
+
+    %>
+    <div class="col-md-6">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h3 class="panel-title"><i class="fa fa-bar-chart-o"></i><%=etapes[tt]['libelle']%>
+          </h3>
+        </div>
+        <div class="panel-body">
+
+          <div class="row" >
+
+            <!--vitesse des etapes-->
+            <div class="col-lg-4">
+              <div class="box">
+                <div class="box-header">
+
+
+                  <div class="no-move"></div>
+                </div>
+                <div class="box-content">
+                  <%- partial ('chart/D3SpeedV2.ejs', {idElement : 'etape'+etapes[tt]['id_lien'],classeElement : ' ', title : ' Vitesse cible : '+vitCibleEtap, titleChart : ' Vitesse  : '+vitEtape,valu : pVit, cible : 100  }) %>
+                  <script>
+                    PowerVEtape[<%=tt%>] = null;
+                    PowerVEtape[<%=tt%>] = goPowerGauge();
+                  </script>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-4">
+              <div class="box">
+                <div class="box-header">
+
+
+                  <div class="no-move"></div>
+                </div>
+                <div class="box-content">
+
+                  <%- partial ('chart/D3LiquidGauge.ejs', {idElement : 'gauge2'+tt,classeElement : ' ', title : 'Quantité cible : '+etapes[tt].quantite_journalier, titleChart : 'Qantite : '+qteEtape , data : pqEtape }) %>
+
+                  <script>
+                    LiquiQEtape[<%=tt%>] = null;
+                    LiquiQEtape[<%=tt%>] = loadGauge(LiquiQEtape[<%=tt%>])
+                  </script>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-4">
+              <div class="box">
+                <div class="box-header">
+
+
+                  <div class="no-move"></div>
+                </div>
+                <div class="box-content" id="rang<%=tt%>">
+                    <script>
+
+                      loadRang("<%=dossie%>","<%=etapes[tt]['id_etape']%>","<%=datesock%>","rang<%=tt%>");
+                    </script>
+                </div>
+              </div>
+            </div>
+
+
+
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <%
+    }
+    }
+    }
+
+    %>
+
+
+  </div>
+  <div class="row  <%=display%>">
+    <div class="col-md-4">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h3 class="panel-title"><i class="fa fa-bar-chart-o"></i></h3>
+        </div>
+        <div class="panel-body">
+          <%
+
+
+
+
+
+
+
+
+          %>
+
+          <%- partial ('chart/PieChartHighchart.ejs', {idElement : 'idEtatHighchart',classeElement : 'pie_dossier', title : '', titleChart : 'Etat du Dossier' ,data : donnee}) %>
+
+          <!--<div class="card-img" id="conPieDossier1"> </div>-->
+        </div>
+      </div>
+    </div>
+
+
+
+
+    <script>
+
+      var etape = [
+        <% if(dossier!=null){
+        for(var tt = 0; tt<etapes.length;tt++){
+        if(tt!=0){
+
+        %>
+        ,
+        <%
+        }
+
+
+        %>
+        '<%=etapes[tt]['libelle'] %>'
+        <%
+        }}
+        %>];
+    </script>
+
+    <script>
+      var dataetape = [<%
+      if(dossier!=null){
+      for(var tt = 0; tt<etapes.length;tt++){
+      if(tt!=0){
+
+      %>
+        ,
+        <%
+        }
+          var duree = 0;
+          var qte = 0;
+          for (var cpt = 0; cpt<vop.length;cpt++){
+            if(etapes[tt]['libelle']==vop[cpt]['libelle']){
+              duree = duree+ vop[cpt]['duree'];
+
+            }
+          }
+          duree = duree/3600;
+
+
+        %>
+        <%=math.round(duree,2) %>
+        <%
+        }}
+        %>];
+
+      var quantit = [<% if(dossier!=null){
+      for(var tt = 0; tt<etapes.length;tt++){
+      if(tt!=0){
+
+      %>
+        ,
+        <%
+        }
+
+          var qte = 0;
+          for (var cpt = 0; cpt<vop.length;cpt++){
+            if(etapes[tt]['libelle']==vop[cpt]['libelle']){
+              qte = qte+ Number(vop[cpt]['qte']);
+
+            }
+          }
+
+
+        %>
+
+        <%=qte %>
+        <%
+        }}
+        %>];
+
+
+      var lib = "durée";
+      var vitess = [<% if(dossier!=null){
+      for(var tt = 0; tt<etapes.length;tt++){
+      if(tt!=0){
+
+      %>
+        ,
+        <%
+        }
+
+          var vit = 0;
+          var qte = 0;
+          var duree = 0;
+          for (var cpt = 0; cpt<vop.length;cpt++){
+            if(etapes[tt]['libelle']==vop[cpt]['libelle']){
+              qte = qte+ Number(vop[cpt]['qte']);
+              duree = duree+ vop[cpt]['duree'];
+
+            }
+          }
+          if(duree!=0){
+            vit = qte/(duree/3600);
+          }
+
+
+
+        %>
+        <%=math.round(vit,2) %>
+        <%
+        }}
+        %>];
+    </script>
+
+    <div class="col-md-8">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+
+          <h3 class="panel-title"><i class="fa fa-bar-chart-o"></i></h3>
+        </div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-md-2">
+
+              <select class="form-control" tabindex="-1"  placeholder = "" name="dossier" onchange="chartFuction(this.value)" required="true">
+                <option value="1">Durée</option>
+                <option value="2">Quantité</option>
+                <option value="3">Vitesse</option>
+              </select>
+            </div>
+          </div>
+          <div class="card-img" id="containerEtape"> </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class=" row <%=display%> hidden">
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-bar-chart-o"></i></h3>
+      </div>
+      <div class="panel-body">
+        <%- partial ('chart/CourbeHighchart.ejs', {idElement : 'idQualite', title : ' ', titleChart : 'Travail', labelY : 'Nombre' ,cat : categorieDate, qte : dataQuantite}) %>
+        <!--<div class="card-img" id="containerQualite"> </div>-->
+      </div>
+    </div>
+  </div>
+  <script>
+    var datatemp = [];
+    datatemp = dataetape;
+    function chartFuction(id) {
+
+      if(id==='2'){
+
+        dataetape = quantit;
+        lib = "quantité";
+      }else if(id==='3'){
+        dataetape = vitess;
+        lib = "vitesse";
+      }else{
+        dataetape = datatemp;
+        lib = "durée";
+      }
+
+      $('#containerEtape').highcharts({
+        chart: {
+          type: 'bar'
+        },
+        title: {
+          text: 'Avencement des Etapes du dossier'
+        },
+        xAxis: {
+          categories: etape//
+        },
+        yAxis: {
+          min: 0,
+          title: {
+            text: 'Pourcentage'
+          }
+        },
+        legend: {
+          reversed: true
+        },
+        plotOptions: {
+          series: {
+            stacking: 'normal'
+          }
+        },
+        series: [{
+          name: lib,
+          data: dataetape
+        }]
+      });
+    }
+  </script>
+
+
+
+
+</div>
+<script>
+  $(function() {
+    $( "#datetim" ).datepicker({
+      dateFormat: 'yymmdd'
+    });
+    $( "#datetim2" ).datepicker({
+      dateFormat: 'yymmdd'
+    });
+  } );
+
+
+
+</script>
+</div>
+<%
+if(dossier!=null){
+%>
+
+
+<script type="text/javascript">
+  var id_doss = "<%=dossie%>";
+  var pdate = "<%=datesock%>";
+  var mat = "<%=matricule%>";
+
+
+  //function loadRang(id_dossier,id_etape,pdate,id_div){
+
+</script>
+
+<%
+}
+%>
+
+<script src="/js/dependencies/sails.io.js"></script>
+
+<script src="/js/jquery-ui.min.js"></script>
+<script src="/bootstrap/js/bootstrap.min.js"></script>
+<script src="/material/chart/highcharts.js"></script>
+<script src="/material/chart/exporting.js"></script>
+<script src="/js/dossierEtapeApp.js"></script>
+<script src="/js/dash.dossier.js"></script>
+</body>
+</html>
+

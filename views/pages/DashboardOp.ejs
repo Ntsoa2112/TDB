@@ -1,0 +1,150 @@
+
+<% if(req.session.droit==1){
+
+%>
+<% include ../includes/entete.ejs %>
+<% }else{
+
+%>
+<% include ../includes/enteteOperateur.ejs %>
+
+<% }%>
+
+<script>
+  var cars = [];
+  var prod = [];
+  var hprod = [];
+  var vitesseb = 0;
+  var vitessen = 0;
+  var quantite = 0;
+  var qualite = 0;
+</script>
+
+<div id="page-wrapper" class="content">
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h3 class="panel-title"><i class="fa fa-bar-chart-o"></i></h3>
+          <div class="row">
+            <div class="form-group">
+              <form method="get" action="/dashboardOp">
+                <%
+                var datech = "";
+                if(req.session.datechoice!=null){
+                  datech = req.session.datechoice;
+                }
+                %>
+                <div class="col-xs-2">
+                  <input class="form-control" type="date" id="datetim" name="datedeb" placeholder = "Date Debut" value="<%=datech%>"/>
+                </div>
+
+                <button type="submit" class="btn btn-info btn-md">rechercher</button>
+
+
+              </form>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-4">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h3 class="panel-title"><i class="fa fa-bar-chart-o"></i></h3>
+        </div>
+        <div class="panel-body pie_panel">
+          <%
+            var vitesse = {};
+            var listEtape = [];
+
+            listeDossier.forEach(function (list) {
+              //console.log("lib:" + list.libelle + "-duree:" + list.duree + "_dossier:" + list.num + "-qte:" + list.qte + "-date:" + list.date_ldt);
+              var duree = 1;
+              var quantite = 0;
+              var vitesse = 0;
+
+              //calcul de vitesse
+              if(list.libelle!=null){
+                if(list.duree!=null){
+                  duree=list.duree;
+
+                }
+                if(list.qte!=null){
+                  quantite = list.qte;
+
+                }
+                vitesse = quantite/duree;
+
+              }
+
+            });
+              var Dossier = {
+              };
+              for(var tt = 0; tt<byDossier.length;tt++){
+                if(tt!=0){
+                }
+                Dossier[byDossier[tt][0]]=byDossier[tt][1]
+              }
+
+
+
+          %>
+
+
+
+          <%- partial ('chart/donutMorris.ejs', {idElement : 'idEtatHighchart',classeElement : 'pie_dossier', title : 'Temps passé', titleChart : 'Etat du Dossier' ,data : Dossier}) %>
+
+          <!--<div class="card-img" id="conPieDossier1"> </div>-->
+        </div>
+      </div>
+
+
+    </div>
+
+    <div class="col-md-8">
+      <div class="panel panel-primary" id="etapeDetail">
+
+
+      </div>
+    </div>
+
+    <div class="col-md-12">
+      <div class="panel panel-primary"  id="demo">
+
+
+      </div>
+    </div>
+
+
+
+
+  </div>
+
+
+
+
+
+
+</div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="/jquery-ui/jquery-ui.js"></script>
+<link rel="stylesheet" href="/jquery-ui/jquery-ui.css">
+<script>
+  $(function() {
+    $( "#datetim" ).datepicker({
+      dateFormat: 'yy-mm-dd'
+    });
+  } );
+
+</script>
+

@@ -1,0 +1,246 @@
+
+
+<script>
+  var cars = [];
+  var prod = [];
+  var etape = [];
+  var dataetape = [];
+  var hprod = [];
+  var vitesseb = 0;
+  var vitessen = 0;
+  var quantite = 0;
+  var qualite = 0;
+</script>
+<%
+
+var dataFinal = [];
+
+var lastId = null;
+
+var ii = 0;
+//console.log("test "+ldtSpec.length);
+ldtSpec.forEach(function (ldt) {
+  if(ldt.id_spec!=lastId){
+    dataFinal[ldt.id_spec]=[];
+    dataFinal[ldt.id_spec].specialite = ldt.libelle;
+    dataFinal[ldt.id_spec].qte = Number(ldt.qte);
+    dataFinal[ldt.id_spec].err = Number(ldt.err);
+    dataFinal[ldt.id_spec].hhprod = 0;
+    dataFinal[ldt.id_spec].hprod = 0;
+    if(ldt.id_type_ldt==0){
+      dataFinal[ldt.id_spec].hprod = Number(ldt.somme/3600);
+    }else{
+      dataFinal[ldt.id_spec].hhprod = Number(ldt.somme/3600);
+    }
+    lastId= ldt.id_spec;
+
+  }else{
+    dataFinal[ldt.id_spec].qte += Number(ldt.qte);
+    dataFinal[ldt.id_spec].err += Number(ldt.err);
+    if(ldt.id_type_ldt==0){
+      dataFinal[ldt.id_spec].hprod += Number(ldt.somme)/3600;
+    }else{
+      dataFinal[ldt.id_spec].hhprod += Number(ldt.somme/3600);
+    }
+  }
+})
+
+%>
+<div class="col-md-12 col-sm-12 col-xs-12">
+  <div class="x_panel">
+    <div class="x_title">
+
+      <div class="clearfix"></div>
+    </div>
+    <div class="x_content">
+      <table id="datatable-buttons" class="table table-striped table-bordered">
+        <thead>
+        <tr>
+          <th>SPECIALITE</th>
+          <th>OPS</th>
+          <th>CP</th>
+          <th>H prod</th>
+          <th>H hors prod</th>
+          <th>Volumes recus</th>
+          <th>Volumes traités</th>
+          <th>Stock</th>
+          <th>Cadence d'equilibre</th>
+          <th>Cadence moyenne</th>
+          <th>Objectif</th>
+          <th>% ISO</th>
+          <th>% global</th>
+        </tr>
+        </thead>
+
+
+        <tbody>
+        <%
+
+        // //console.log(dataFinal);
+        var i = 0;
+        spec.forEach(function (dat) {
+          var err_g = 0;
+          if(effectif[i].err!=null){
+            err_g = math.round(effectif[i].err,2);
+          }
+
+          var err_iso = 0;
+          if(effectif[i].err_iso!=null){
+            err_iso = math.round(effectif[i].err_iso,2);
+          }
+          var cadence = 0;
+          if(effectif[i].cadence!=null){
+            cadence = effectif[i].cadence;
+          }
+          var volume = 0;
+          if(effectif[i].volume!=null){
+            volume = effectif[i].volume;
+          }
+
+        if(typeof dataFinal[dat.id_spec] == 'undefined'){
+
+        %>
+        <tr>
+          <td><%=dat.libelle%></td>
+          <td> 0 </td>
+          <td> 0 </td>
+          <td> 0 </td>
+          <td> 0 </td>
+          <td> <%=volume %> </td>
+          <td> 0 </td>
+          <td> - </td>
+          <td> <%=cadence %> </td>
+          <td> - </td>
+          <td> - </td>
+          <td> - </td>
+          <td> 0 </td>
+        </tr>
+        <%
+        }else{
+
+          var cadence_moyenne = 0;
+          if((dataFinal[dat.id_spec].hhprod+dataFinal[dat.id_spec].hprod)!=0){
+            if(effectif[i].op+effectif[i].cp){
+              cadence_moyenne = math.round((dataFinal[dat.id_spec].qte/(dataFinal[dat.id_spec].hhprod+dataFinal[dat.id_spec].hprod))/(effectif[i].op+effectif[i].cp),2);
+            }
+
+          }
+
+
+        %>
+        <tr>
+          <td><%=dataFinal[dat.id_spec].specialite%></td>
+          <td> <%=effectif[i].op %> </td>
+          <td> <%=effectif[i].cp %> </td>
+          <td><%=math.round(dataFinal[dat.id_spec].hprod,2)%></td>
+          <td><%=math.round(dataFinal[dat.id_spec].hhprod,2)%></td>
+          <td> <%=volume %> </td>
+          <td><%=dataFinal[dat.id_spec].qte%></td>
+          <td> - </td>
+          <td> <%=cadence %> </td>
+          <td> <%=cadence_moyenne %>  </td>
+          <td> - </td>
+          <td> <%=err_iso%> </td>
+          <td><%=err_g%></td>
+
+        </tr>
+
+        <%
+          i++;
+        }
+
+
+        })
+
+        %>
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script src="/js/jquery-1.12.4.js"></script>
+<script src="/bootstrap/js/bootstrap.min.js"></script>
+
+<script>
+  $(document).ready(function() {
+    var handleDataTableButtons = function() {
+      if ($("#datatable-buttons").length) {
+        $("#datatable-buttons").DataTable({
+          dom: "Bfrtip",
+          buttons: [
+            {
+              extend: "copy",
+              className: "btn-sm"
+            },
+            {
+              extend: "csv",
+              className: "btn-sm"
+            },
+            {
+              extend: "excel",
+              className: "btn-sm"
+            },
+            {
+              extend: "pdfHtml5",
+              className: "btn-sm"
+            },
+            {
+              extend: "print",
+              className: "btn-sm"
+            },
+          ],
+          responsive: true
+        });
+      }
+    };
+
+    TableManageButtons = function() {
+      "use strict";
+      return {
+        init: function() {
+          handleDataTableButtons();
+        }
+      };
+    }();
+
+    $('#datatable').dataTable();
+    $('#datatable-keytable').DataTable({
+      keys: true
+    });
+
+    $('#datatable-responsive').DataTable();
+
+
+    var table = $('#datatable-fixed-header').DataTable({
+      fixedHeader: true
+    });
+
+    TableManageButtons.init();
+  });
+</script>
+
+<script src="/bootstrap/js/bootstrap.min.js"></script>
+<!-- FastClick -->
+<script src="/vendors/fastclick/lib/fastclick.js"></script>
+<!-- NProgress -->
+<script src="/vendors/nprogress/nprogress.js"></script>
+
+
+<script src="/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+<script src="/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
+<script src="/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
+<script src="/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+<script src="/vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+<script src="/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+<script src="/vendors/datatables.net-scroller/js/datatables.scroller.min.js"></script>
+<script src="/vendors/jszip/dist/jszip.min.js"></script>
+<script src="/vendors/pdfmake/build/pdfmake.min.js"></script>
+<script src="/vendors/pdfmake/build/vfs_fonts.js"></script>
+<script src="/js/custom.min.js"></script>

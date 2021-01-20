@@ -1,0 +1,368 @@
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TDB Stat</title>
+
+  <link rel="stylesheet" href="/styles/importer.css">
+  <link rel="stylesheet" href="/bootflat/css/bootflat.min.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/local.css">
+  <link rel="stylesheet" href="/css/Style_v3.css">
+  <link rel="stylesheet" href="/css/MonthPicker.css">
+  <link rel="stylesheet" href="/jquery-ui/jquery-ui.css">
+  <!--STYLES END-->
+</head>
+
+<%
+var html_pole= "";
+pole.forEach(function(p){
+  if(Number(p.id)===Number(poleid)){
+    html_pole += "<option value='"+p.id+"' selected>"+p.libelle+"</option>";
+  }else{
+    html_pole += "<option value='"+p.id+"'>"+p.libelle+"</option>";
+  }
+
+});
+
+var html_semaine= "";
+listsemaine.forEach(function(s){
+  if(Number(s.num_semaine)===Number(semid)){
+    html_semaine += "<option value='"+s.num_semaine+"' selected>SEMAINE "+s.num_semaine+"</option>";
+  }else{
+    html_semaine += "<option value='"+s.num_semaine+"'>SEMAINE "+s.num_semaine+"</option>";
+  }
+
+});
+%>
+<% include ../../includes/entete.ejs %>
+
+<script>
+  var cars = [];
+  var prod = [];
+  var etape = [];
+  var dataetape = [];
+  var hprod = [];
+  var vitesseb = 0;
+  var vitessen = 0;
+  var quantite = 0;
+  var qualite = 0;
+</script>
+
+
+<div id="page-wrapper" class="content">
+
+
+
+
+  <div class="">
+
+
+    <div class="col-md-12 col-sm-12 col-xs-12">
+      <div class="x_panel">
+        <div class="x_title">
+          <h2></h2>
+          <ul class="nav navbar-right panel_toolbox">
+            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+            </li>
+            <li><a class="close-link"><i class="fa fa-close"></i></a>
+            </li>
+          </ul>
+          <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+
+          <form method="get" action="/vueHoraire">
+            <div class="form-groupe col-md-3">
+              <label for="pole">Poles</label>
+              <select id="pole" name="pole" class="form-control">
+                <%-html_pole%>
+              </select>
+            </div>
+
+            <div class="form-groupe col-md-3">
+              <label for="sem">Mode</label>
+              <select id="mode" name="mode" class="form-control">
+                <option value="0">Hebdomadaire</option>
+                <option value="1">Mensuel</option>
+              </select>
+            </div>
+
+            <div class="form-groupe col-md-3" id="div-week">
+              <label for="sem">Semaines</label>
+              <input id="sem" class="Default form-control week-picker" type="text" value="" />
+             <!-- <select id="sem" name="sem" class="form-control">
+                <%-html_semaine%>
+              </select>-->
+            </div>
+
+            <div class="form-groupe col-md-3 hidden" id="div-month">
+              <label for="sem">Mois</label>
+              <input id="mois" class="Default form-control" type="text" value="12/2009" />
+            </div>
+
+            <div class="form-groupe col-md-3">
+              <label for="sem"></label>
+              <input type="submit" value="OK" class="btn btn-info form-control"/>
+            </div>
+
+          </form>
+
+          <label>Week :</label> <span id="startDate"></span> - <span id="endDate"></span>
+
+
+        </div>
+      </div>
+    </div>
+
+    <div class="clearfix"></div>
+
+
+    <div class="col-md-12 col-sm-12 col-xs-12">
+      <div class="x_panel">
+        <div class="x_title">
+          <h2></h2>
+          <ul class="nav navbar-right panel_toolbox">
+            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+            </li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+              <ul class="dropdown-menu" role="menu">
+                <li><div class="">
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                      <input type="number" id="timereload" required="required"  value="4">
+                    </div>
+                  </div>
+                </li>
+                </li>
+              </ul>
+            </li>
+            <li><a class="close-link"><i class="fa fa-close"></i></a>
+            </li>
+          </ul>
+          <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+
+          <div class="">
+            <div class="row top_tiles">
+
+              <!-- total --->
+
+              <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+
+                <div class="tile-stats">
+                  <div class="icon"><i class="fa fa-check-square-o"></i></div>
+
+                  <a href="#" data-toggle="modal" data-target="#myModalPers" onclick="refreshData (0)"><div class="count" id="nbactif"><%=0  %></div></a>
+                  <h3>Total Congé</h3>
+                  <p>Validée et non validée.</p>
+                </div>
+              </div>
+
+              <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+
+                <div class="tile-stats">
+                  <div class="icon"><i class="fa fa-check-square-o"></i></div>
+
+                  <a href="#" data-toggle="modal" data-target="#myModalPers" onclick="refreshData (1)"><div class="count" id="nbpointagebio"><%=0 %></div></a>
+                  <h3>Validation</h3>
+                  <p>N+1</p>
+                </div>
+              </div>
+
+              <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+
+                <div class="tile-stats">
+                  <div class="icon"><i class="fa fa-check-square-o"></i></div>
+
+                  <a href="#" data-toggle="modal" data-target="#myModalPers" onclick="refreshData (2)"><div class="count" id="nbpointage"><%=0 %></div></a>
+                  <h3>Validation</h3>
+                  <p>N +2</p>
+                </div>
+              </div>
+
+
+              <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <div class="tile-stats">
+                  <div class="icon"><i class="fa fa-comments-o"></i></div>
+                  <div class="count"><a href="#" data-toggle="modal" data-target="#myModalPers" onclick="refreshData (3)" id="nbgpao"><%=0 %>
+                    </a></div>
+                  <h3>Non Validée</h3>
+                  <p>En attente.</p>
+                </div>
+              </div>
+
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+
+    <div class="clearfix"></div>
+
+
+
+
+    <div class="col-md-6 col-sm-6 col-xs-12">
+      <div class="x_panel">
+        <div class="x_title">
+          <h2>Congés</h2>
+          <ul class="nav navbar-right panel_toolbox">
+            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+            </li>
+
+            <li><a class="close-link"><i class="fa fa-close"></i></a>
+            </li>
+          </ul>
+          <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+
+          <div id="echart_pie" style="height:350px;"></div>
+
+        </div>
+      </div>
+    </div>
+
+
+
+    <div class="col-md-6 col-sm-6 col-xs-12">
+      <div class="x_panel">
+        <div class="x_title">
+          <h2>Absent et retard</h2>
+          <ul class="nav navbar-right panel_toolbox">
+            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+            </li>
+
+            <li><a class="close-link"><i class="fa fa-close"></i></a>
+            </li>
+          </ul>
+          <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+
+          <div id="echart_donut" style="height:350px;"></div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-12 col-sm-12 col-xs-12">
+      <div class="x_panel">
+        <div class="x_title">
+          <h2 id="dbdosAL">Graphe de l'evolution</h2>
+          <ul class="nav navbar-right panel_toolbox">
+            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+            </li>
+
+            <li><a class="close-link"><i class="fa fa-close"></i></a>
+            </li>
+          </ul>
+          <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+
+          <div id="echart_pieAl" style="height:600px;"></div>
+
+        </div>
+      </div>
+    </div>
+
+
+
+  </div>
+
+</div>
+
+
+
+<!--modal Personnel-->
+<div id="myModalPers" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Listes des Personnels</h4>
+      </div>
+      <div class="modal-body">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+          <div class="x_panel">
+            <div class="x_title">
+
+              <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+              <table id="datatable-fixed-header" class="table table-striped table-bordered">
+                <thead>
+                <tr>
+                  <th>Nom</th>
+                  <th>Matricule</th>
+                  <th>Departement</th>
+                  <th>Dernière connexion</th>
+                  <th>GPAO(En Temp réel)</th>
+                  <th>Pointage BIO</th>
+                </tr>
+                </thead>
+
+                <div id="dvPers">
+
+                  <tbody id="tbPers"></tbody>
+                </div>
+
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+      </div>
+
+    </div>
+  </div>
+</div>
+<script src="/js/dependencies/sails.io.js"></script>
+<script src="/js/jquery-1.12.4.js"></script>
+<script src="/js/jquery-ui.min.js"></script>
+<script src="/js/MonthPicker.js"></script>
+<script src="/js/weekPicker.js"></script>
+<script src="/bootstrap/js/bootstrap.min.js"></script>
+
+
+<!-- FastClick -->
+<script src="/vendors/fastclick/lib/fastclick.js"></script>
+<!-- NProgress -->
+<script src="/vendors/nprogress/nprogress.js"></script>
+<!-- ECharts -->
+<script src="/vendors/echarts/dist/echarts.min.js"></script>
+<script src="/vendors/echarts/map/js/world.js"></script>
+<script src="/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+<script src="/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
+<script src="/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
+<script src="/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+<script src="/vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+<script src="/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+<script src="/vendors/datatables.net-scroller/js/datatables.scroller.min.js"></script>
+
+<!-- Custom Theme Scripts -->
+<script src="/js/custom.min.js"></script>
+
+
+<script src="/js/echarts/theme.js"></script>
+<script src="/js/echarts/echarts.js"></script>
+<script src="/js/gestion_conge/reporting_conge.js"></script>
+</body>
+</html>

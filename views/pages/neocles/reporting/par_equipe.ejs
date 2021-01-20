@@ -1,0 +1,532 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta name="generator" content="Bootply" />
+  <link rel="stylesheet" href="/styles/importer.css">
+  <link rel="stylesheet" href="/bootflat/css/bootflat.min.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/local.css">
+  <link rel="stylesheet" href="/css/Style_v3.css">
+
+  <link rel="stylesheet" href="/jquery-ui/jquery-ui.css">
+
+  <link rel="stylesheet" href="/css/bootstrap-duration-picker.css">
+
+  <!-- bootbox code -->
+  <script src="js/bootbox.min.js"></script>
+
+  <!-- check select -->
+  <link rel="stylesheet" href="/css/bootstrap-multiselect.css">
+
+  <style type="text/css">
+    .notation_almerys{
+    }
+    .colorTable{
+      background-color:red;
+    }
+    input[type=radio] {
+      display: block;
+      margin: 0 auto;
+    }
+    label {
+      display: inline-block;
+    }
+  </style>
+  <title>Notation Neocles</title>
+</head>
+
+<body onload="loadAll();">
+
+    <!-- HEADER -->
+<%
+
+if(req.session.droit==1){
+
+%>
+<% include ../../../includes/entete.ejs %>
+<% }else{
+
+%>
+<% include ../../../includes/enteteOperateur.ejs %>
+
+<% }%>
+<!-- /HEADER -->
+
+
+<div id="page-wrapper">
+
+<div class="panel-heading">
+    <div class="row">
+        <div class="panel panel-primary">
+            
+          <div class="form-group col-md-2" style="margin-left:25px">
+            <label for="tc_select">Equipe</label>
+            <select class="form-control" id="tc_select" name="tc_select"  required='required'>
+                <option value="">-</option>
+            </select>
+            </div>
+
+            <div class="form-group col-md-2" style="margin-left:25px">
+                <label for="type_masque">Type</label>
+                <select class="form-control" id="type_masque" name="type_masque"  required='required'>
+                    <option value="">-</option>
+                </select>
+                </div>
+
+            <div class="form-group  col-xs-2 col-md-2 col-lg-2"  style="margin-left:25px">
+                <label for="date_enregistrement">Date</label>
+                <input type="text" class="form-control" tabindex="-1" id='date_enregistrement' name='date_enregistrement' >
+            </div>
+
+            <div class="form-group  col-xs-2 col-md-2 col-lg-2"  style="margin-left:25px">
+                <label for="date_enregistrement"></label>
+                <input type="button" class="form-control btn-primary" tabindex="-1" id='submit' name='submit' value="OK" onclick="go();">
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div id="load1" class="col-md-4" style="display:none">
+    <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+    <span class="sr-only">Loading...</span>
+</div>
+
+
+<div id="listByOp">
+    <div class="x_panel">
+        <div class="x_title">
+        <h2> REPORTING </h2>
+        <ul class="nav navbar-right panel_toolbox">
+            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+            </li>
+
+            <li><a class="close-link"><i class="fa fa-close"></i></a>
+            </li>
+        </ul>
+        <div class="clearfix"></div>
+        </div>
+
+        <div class="x_content"></div>
+
+    </div>
+
+    <div class="x_panel">
+        <h4 class="h4" style="display:none"> Conformité Mensuelle </h4>
+        <div id="div-chartConformiteMensuelle" >
+            <canvas id="chartConformiteMensuelle" width="70" height="30"></canvas>
+        </div>
+        
+    
+        <br/>
+        <h4 class="h4" style="display:none"> Conformité Annuelle </h4>
+        <div id="div-chartConformiteAnnuelle" >
+            <canvas id="chartConformiteAnnuelle" width="70" height="30"></canvas>
+        </div>
+    
+    
+        <div id="chart" style="width: 500px; height: 350px;"></div>
+    </div>
+</div>
+
+    
+</div>
+
+</body>
+
+<script src="/js/jquery-1.12.4.js"></script>
+<!--<script src="/js/base.min.js"></script>-->
+<!--<script src="/js/project.min.js"></script>-->
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/scripts.js"></script>
+
+<script src="/js/vendors/echarts.min.js"></script>
+<script src="/js/dependencies/sails.io.js"></script>
+<script src="/js/jquery-ui.min.js"></script>
+<script src="/js/echarts/theme.js"></script>
+<script src="/js/echarts/echarts.js"></script>
+<script src="/js/custom.min.js"></script><!--script customise-->
+<script src="/js/bootstrap-duration-picker-debug.js"></script>
+
+<script src="/js/bootstrap-multiselect.js"></script>
+
+
+<script src="/vendors/Chart.js/dist/Chart.js"></script>
+
+<script language="javascript">
+
+	function loadAll(){
+		loadTC();
+		loadType();
+    }
+    
+	$(function() {
+		$("#date_enregistrement").datepicker({
+		dateFormat: 'yy/mm/dd'
+		}).datepicker("setDate", new Date());
+  	});
+
+
+    function loadTC(){
+		$.ajax({
+		type: "GET",
+		url: "/neocles-equipe-list",
+
+		success: function(msg){
+			var html = "<option value=''></option>";
+			var data = JSON.parse(msg);
+
+			for (var i = 0 ; i<data.length ; i++){
+			html += "<option value='" + data[i].id + "'>" + data[i].libelle + "</option>";
+			}
+			$("#tc_select").html(html);
+		},
+		error: function (error) {
+
+		}
+		});
+    }
+    
+	function loadType(){
+		$.ajax({
+		type: "GET",
+		url: "/neocles-type-list",
+
+		success: function(msg){
+			var html = "<option value=''></option>";
+			var data = JSON.parse(msg);
+
+			for (var i = 0 ; i<data.length ; i++){
+				html += "<option value='"+data[i].id+"'>" + data[i].libelle + "</option>";
+			}
+
+			$("#type_masque").html(html);
+		},
+		error: function (error) {
+
+		}
+		});
+    }
+    
+    function go(){
+        showReportingSimple();
+    }
+    
+	function showReportingSimple(){
+		let id_type_masque = $("#type_masque").val();
+		let id_pers = $("#tc_select").val();
+		let date = $("#date_enregistrement").val();
+
+		$.ajax({
+			type: "GET",
+			url: "/neocles-reporting-conformite-annuelle?id= " + id_pers + "&id_type_masque="+ id_type_masque + "&date=" + date ,
+			beforeSend: function(xhr){
+        		$( "#load1").show();
+      		},
+			success: function(msg){
+				$( "#load1").hide();
+
+                let json = JSON.parse(msg);
+
+                resetCanvas("chartConformiteMensuelle", true);
+                resetCanvas("chartConformiteAnnuelle", true);
+
+                if(json.data && json.data.length > 0){
+                    showConformiteMensuelle(json);
+                    showConformiteAnnuelle(json);
+                }
+			},
+			error: function (error) {
+				$( "#load1").hide();
+        }
+      });
+    }
+
+    function showConformiteMensuelle(json){
+
+      let date = new Date($("#date_enregistrement").val());
+      let month = date.getMonth() + 1;
+
+      let donneeDuMois = json.data.filter(ecoute => {
+        return ecoute.mois == month;
+      });
+      
+
+      let entete = [];
+      let dataErreur = [];
+      let dataIso = [];
+      let listSeuilles = [];
+
+
+      //calcul nombre NC par mois
+      donneeDuMois.forEach(function callback(ecoute) {
+        let addToCount = 0;
+        if(ecoute.note_total < ecoute.seuille){
+          addToCount = 1;
+        }
+
+        if(entete.includes(ecoute.appelation)){
+          let index = entete.findIndex(x => x == ecoute.appelation);
+          let erreur = addToCount + dataErreur[index];
+          dataErreur[index] = erreur;
+        }
+        else{
+          dataErreur.push(addToCount);
+          entete.push(ecoute.appelation);
+        }
+        
+      });
+
+
+      //calcul ISO correspondant
+      dataErreur.forEach(function callback(nbErreur, index) {
+          if(nbErreur != null){
+              let isoCorrespondant = json.iso.filter(isoElement => {
+                  return isoElement.nombre_erreur == nbErreur;
+              });
+
+              isoCorrespondant = isoCorrespondant[0];
+              let iso = 0;
+              if(isoCorrespondant){
+                  iso = isoCorrespondant.note_iso;
+              }
+
+              dataIso[index] = iso;
+          }
+
+          listSeuilles.push(98);
+      });
+
+
+      //destruction
+      resetCanvas("chartConformiteMensuelle");
+
+      //affichage chart
+      var ctx = document.getElementById('chartConformiteMensuelle').getContext('2d');
+        
+        let options = {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        max : 100,
+                        min : 86,
+                        callback: function(value, index, values) {
+                            return value + '%' ;
+                        }
+                    }
+                }],
+                xAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            },
+            legend: {
+                position: 'bottom',
+                display: true,
+
+            },
+        };
+
+        let data = {
+            labels: entete,
+            datasets: [
+                {
+                    type: 'line',
+                    label: 'Seuil conformité',
+                    backgroundColor: 'rgb(255, 99, 132)',
+                    borderColor: 'rgb(255, 0, 0)',
+                    borderWidth : 6,
+                    pointRadius : 0,
+                    lineTension : 0,
+                    data : listSeuilles,
+                    fill : false
+                },
+                {
+                    label: 'RESULTAT CONFORMITE ISO2859',
+                    backgroundColor: 'rgb(74, 140, 240, 0.8)',
+                    borderColor: 'rgb(0, 19, 46, 1)',
+                    borderWidth : 1,
+                    lineTension : 0,
+                    data: dataIso,
+                    barThickness : '20px',
+                    fill : false
+                }
+
+                
+            ]  
+        };
+
+        var myLineChart = new Chart(ctx, {
+            type: 'bar',
+            data: data,
+            options: options
+        });
+
+    }
+
+    function showConformiteAnnuelle(json){
+        let entete = [];
+        let dataErreur = [];
+        let dataConforme = [];
+        let listSeuilles = [];
+
+
+        //calcul nombre NC par mois
+        json.data.forEach(function callback(ecoute) {
+            let addToCountErreur = 0;
+            let addToCountConforme = 0;
+
+            if(ecoute.note_total < ecoute.seuille){
+                addToCountErreur = 1;
+                addToCountConforme = 0;
+            }
+            else{
+                addToCountErreur = 0;
+                addToCountConforme = 1;
+            }
+
+
+            if(entete.includes(ecoute.appelation)){
+                let index = entete.findIndex(x => x == ecoute.appelation);
+
+                let conforme = addToCountConforme + dataConforme[index];
+                let erreur = addToCountErreur + dataErreur[index];
+
+                dataErreur[index] = erreur;
+                dataConforme[index] = conforme;
+            }
+            
+            else{
+                dataErreur.push(addToCountErreur);
+                dataConforme.push(addToCountConforme);
+                entete.push(ecoute.appelation);
+            }
+            
+        });
+
+        //destruction
+        resetCanvas("chartConformiteAnnuelle");
+
+        //affichage chart
+        var ctx = document.getElementById('chartConformiteAnnuelle').getContext('2d');
+
+        let options = {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        //max : 260
+                    },
+                    stacked: true
+                }],
+                xAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    },
+                    stacked: true
+                }],
+
+            },
+            legend: {
+                position: 'bottom',
+                display: true,
+
+            },
+            
+            "animation": {
+                    "duration": 0.1,
+
+                "onComplete": function() {
+                    var chartInstance = this.chart,
+                    ctx = chartInstance.ctx;
+    
+                    ctx.font = Chart.helpers.fontString(Chart.defaults.global.defaultFontSize, Chart.defaults.global.defaultFontStyle, Chart.defaults.global.defaultFontFamily);
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'bottom';
+                    
+                    ctx.fillStyle = "#FFFFFF";
+    
+                    this.data.datasets.forEach(function(dataset, i) {
+                        var meta = chartInstance.controller.getDatasetMeta(i);
+                        meta.data.forEach(function(bar, index) {
+                            var data = dataset.data[index];
+
+                            ctx.fillText(data, bar._model.x, bar._model.y + 15);
+                        });
+                    });
+                }
+            },
+        };
+
+        let data = {
+            labels: entete,
+            datasets: [
+                {
+                    type: 'bar',
+                    label: 'Conforme',
+                    borderColor: 'rgb(0, 99, 255, 1)',
+                    backgroundColor: 'rgb(0, 99, 255, 0.7)',
+                    data: dataConforme
+                },
+
+                {
+                    type: 'bar',
+                    label: 'Non conforme',
+                    borderColor: 'rgb(255, 20, 20, 1)',
+                    backgroundColor: 'rgb(255, 20, 20, 0.9)',
+                    data : dataErreur
+                }
+            ]  
+        };
+
+        var myLineChart = new Chart(ctx, {
+            type: 'bar',
+            data: data,
+            options: options
+        });
+    }
+    
+    function resetCanvas(id, hide){
+        $('#' + id).remove(); 
+        $('#div-' + id).append('<canvas id='+ id +'><canvas>');
+        canvas = document.querySelector('#' + id);
+        ctx = canvas.getContext('2d');
+
+        ctx.canvas.width = 50; 
+        ctx.canvas.height = 15;
+
+        var x = canvas.width/2;
+        var y = canvas.height/2;
+        ctx.font = '10pt Verdana';
+        ctx.textAlign = 'center';
+        ctx.fillText('This text is centered on the canvas', x, y);
+
+        //show H4
+        $( ".h4").show();
+        $('#div-' + id).show();
+
+        if(hide == true){
+            $( ".h4").hide();
+            $('#div-' + id).hide();
+            console.log("hide "+ '#div-' + id);
+        }
+    };
+
+    function convertDate(inputFormat) {
+        function pad(s) { return (s < 10) ? '0' + s : s; }
+        var d = new Date(inputFormat)
+        return [pad(d.getDate()), pad(d.getMonth()+1), d.getFullYear()].join('/')
+    }
+
+    
+
+
+</script>
+  

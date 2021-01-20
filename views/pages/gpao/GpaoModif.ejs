@@ -1,0 +1,595 @@
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>GPAO Modification</title>
+
+  <link rel="stylesheet" href="/styles/importer.css">
+  <link rel="stylesheet" href="/bootflat/css/bootflat.min.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/local.css">
+  <link rel="stylesheet" href="/css/Style_v3.css">
+  <link rel="stylesheet" href="/jquery-ui/jquery-ui.css">
+
+  <style>
+    .list-group {
+      position:relative;
+      height: 300px;
+      overflow-y: scroll;
+    }
+  </style>
+  <!--STYLES END-->
+</head>
+
+<%
+var menu = [];
+menu["aceuil"]= "selected";
+menu["dossierAdmin"]= "";
+menu["gestionDossier"]= "";
+menu["statOpAdmin"]= "";
+menu["presence"]= "";
+menu["admin"]= "";
+  %>
+<% include ../../includes/entete.ejs %>
+
+
+<div id="page-wrapper" class="content">
+
+
+
+
+  <div class="">
+
+
+    <div class="clearfix"></div>
+
+
+    <div class="col-md-12 col-sm-12 col-xs-12">
+      <div class="x_panel">
+        <div class="x_title">
+          <h2>Departement</h2>
+          <ul class="nav navbar-right panel_toolbox">
+            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+            </li>
+
+            <li><a class="close-link"><i class="fa fa-close"></i></a>
+            </li>
+          </ul>
+          <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+
+          <div class="row">
+            <div class="col-md-4 col-sm-4 col-xs-12">
+              <select class="form-control" id="dossier" onchange="loadspecialite(this.value)">
+
+              </select>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+
+    <div class="clearfix"></div>
+
+
+
+
+    <div class="col-md-6 col-sm-6 col-xs-12">
+      <div class="x_panel">
+        <div class="x_title">
+          <h2>Spécialité</h2>
+          <ul class="nav navbar-right panel_toolbox">
+            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+            </li>
+
+            <li><a class="close-link"><i class="fa fa-close"></i></a>
+            </li>
+          </ul>
+          <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+
+          <div id="specialite" class="scrool"></div>
+
+        </div>
+      </div>
+    </div>
+
+
+
+    <div class="col-md-6 col-sm-6 col-xs-12">
+      <div class="x_panel">
+        <div class="x_title">
+          <h2>Sous Specialité</h2>
+          <ul class="nav navbar-right panel_toolbox">
+
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-edit"></i></a>
+              <ul class="dropdown-menu" role="menu">
+                <li>
+                  <a href="#">Ajouter</a>
+                </li>
+              </ul>
+            </li>
+            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+            </li>
+
+            <li><a class="close-link"><i class="fa fa-close"></i></a>
+            </li>
+          </ul>
+          <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+
+          <div id="sspecialite"></div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-sm-6 col-xs-12">
+      <div class="x_panel">
+        <div class="x_title">
+          <h2 id="dbdosAL">Sous sous specialité</h2>
+          <ul class="nav navbar-right panel_toolbox">
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-edit"></i></a>
+              <ul class="dropdown-menu" role="menu">
+                <li>
+                  <a href="#">Ajouter</a>
+                </li>
+              </ul>
+            </li>
+            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+            </li>
+
+            <li><a class="close-link"><i class="fa fa-close"></i></a>
+            </li>
+          </ul>
+          <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+
+          <div id="ssspecialite"></div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-sm-6 col-xs-12">
+      <div class="x_panel">
+        <div class="x_title">
+          <h2 id="dbdosCl">Etapes</h2>
+          <ul class="nav navbar-right panel_toolbox">
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-edit"></i></a>
+              <ul class="dropdown-menu" role="menu">
+                <li>
+                  <a href="#">Ajouter</a>
+                </li>
+              </ul>
+            </li>
+            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+            </li>
+            <li><a class="close-link"><i class="fa fa-close"></i></a>
+            </li>
+          </ul>
+          <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+
+          <div id="etape_restriction"></div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-sm-6 col-xs-12">
+      <div class="x_panel">
+        <div class="x_title">
+          <h2 id="dbdosCl">Taches</h2>
+          <ul class="nav navbar-right panel_toolbox">
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-edit"></i></a>
+              <ul class="dropdown-menu" role="menu">
+                <li>
+                  <a href="#">Ajouter</a>
+                </li>
+              </ul>
+            </li>
+            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+            </li>
+            <li><a class="close-link"><i class="fa fa-close"></i></a>
+            </li>
+          </ul>
+          <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+
+          <div id="tache_restriction"></div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-sm-6 col-xs-12">
+      <div class="x_panel">
+        <div class="x_title">
+          <h2 id="dbdosCl">Distinction</h2>
+          <ul class="nav navbar-right panel_toolbox">
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-edit"></i></a>
+              <ul class="dropdown-menu" role="menu">
+                <li>
+                  <a href="#">Ajouter</a>
+                </li>
+              </ul>
+            </li>
+            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+            </li>
+            <li><a class="close-link"><i class="fa fa-close"></i></a>
+            </li>
+          </ul>
+          <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+
+          <div id="dist_restriction"></div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+
+
+<!--modal Personnel-->
+<div id="myModalPers" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Listes des Personnels</h4>
+      </div>
+      <div class="modal-body">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+          <div class="x_panel">
+            <div class="x_title">
+
+              <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+              <table id="datatable-fixed-header" class="table table-striped table-bordered">
+                <thead>
+                <tr>
+                  <th>Nom</th>
+                  <th>Matricule</th>
+                  <th>Departement</th>
+                  <th>Dernière connexion</th>
+                  <th>GPAO(En Temp réel)</th>
+                  <th>Pointage BIO</th>
+                </tr>
+                </thead>
+
+                <div id="dvPers">
+
+                    <tbody id="tbPers"></tbody>
+                </div>
+
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+      </div>
+
+    </div>
+  </div>
+  </div>
+<script src="/js/dependencies/sails.io.js"></script>
+<script src="/js/jquery-1.12.4.js"></script>
+<script src="/js/jquery-ui.min.js"></script>
+<script src="/bootstrap/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme Scripts -->
+<script src="/js/custom.min.js"></script>
+
+<script>
+
+  var id_dossier = null;
+  var id_spec = null;
+  var id_s_spec = null;
+  var id__ss_spec = null;
+
+  load_departement();
+  function load_departement(){
+    $.ajax({
+      type: "GET",
+      url: "/getspecialite",
+
+      success: function(msg){
+
+        var html = "";
+        var data = null;
+
+        try {
+          data = JSON.parse(msg);
+          ////console.log(data)
+          for (var i = 0 ; i<data.length ; i++){
+            html += "<option value='"+data[i].id_dossier+"'>"+data[i].num_dossier+"</option>"
+          }
+          $("#dossier").html(html);
+        }
+        catch (e) {
+          $("#dossier").html(html);
+        }
+
+      },
+      error: function (error) {
+
+      }
+    });
+  }
+
+  function loadspecialite(id) {
+    id_dossier = id;
+    id_s_spec = null;
+    id_spec = null;
+    id__ss_spec = null;
+    $.ajax({
+      type: "GET",
+      url: "/getsouspecialite?id_dossier="+id,
+
+      success: function(msg){
+        spec =id;
+
+        var html = "";
+        var data = null;
+
+        try {
+          data = JSON.parse(msg);
+          ////console.log(msg);
+          html = "<div class='list-group'>";
+          for (var i = 0 ; i<data.length ; i++){
+            //idSouspec.push(data[i].id_lotclient);
+            //html += "<option value='"+data[i].id_lotclient+"'>"+data[i].libelle+"</option>"
+            html += "<a href='#' onclick='loadsousspecialite("+data[i].id_lotclient+")' class='list-group-item list-group-item-action'>"+data[i].libelle+" ("+(data[i].vitesse_equilibre || "-")+")</a>"
+          }
+          html += "</div>";
+          $("#specialite").html(html);
+          loadrestrictionetape();
+          loadrestrictiontache();
+          loadrestrictiondistinction();
+
+        }
+        catch (e) {
+          //idSouspec = [];
+          $("#specialite").html(html);
+        }
+
+
+      },
+      error: function (error) {
+
+      }
+    });
+  }
+
+  function loadsousspecialite(id){
+
+    id_s_spec = null;
+    id_spec = id;
+    id__ss_spec = null;
+
+    ////console.log("/getssouspecialite?id_dossier="+$("#dossier").val()+"&id_lotclient="+id);
+    $.ajax({
+      type: "GET",
+      url: "/getssouspecialite?id_dossier="+$("#dossier").val()+"&id_lotclient="+id,
+
+      success: function(msg){
+
+        var html = "";
+        var data = null;
+
+        //console.log(msg);
+
+        try {
+          data = JSON.parse(msg);
+          html = "<div class='list-group'>";
+          for (var i = 0 ; i<data.length ; i++){
+            //html += "<option value='"+data[i].id_ss_spe+"'>"+data[i].libelle+"</option>"
+            html += "<a href='#' onclick='loadsoussousspecialite("+data[i].id_ss_spe+")' class='list-group-item list-group-item-action'>"+data[i].libelle+" ("+(data[i].vitesse_equilibre || "-")+")</a>"
+
+          }
+
+          html += "</div>";
+          $("#sspecialite").html(html);
+          loadrestrictionetape();
+          loadrestrictiontache();
+          loadrestrictiondistinction();
+
+        }
+        catch (e) {
+          $("#sspecialite").html(html);
+        }
+
+
+      },
+      error: function (error) {
+
+      }
+    });
+  }
+
+  function setSSSpec(id) {
+    id__ss_spec = id;
+    loadrestrictionetape();
+    loadrestrictiontache();
+    loadrestrictiondistinction();
+  }
+
+  function loadsoussousspecialite(id){
+
+    id_s_spec = id;
+    id__ss_spec = null;
+    $.ajax({
+      type: "GET",
+      url: "/getsssouspecialite?id="+id,
+
+      success: function(msg){
+
+        var html = "";
+        var data = null;
+
+        try {
+          data = JSON.parse(msg);
+          html = "<div class='list-group'>";
+          for (var i = 0 ; i<data.length ; i++){
+            //html += "<option value='"+data[i].id_ss_spe+"'>"+data[i].libelle+"</option>"
+            html += "<a href='#' onclick='setSSSpec("+data[i].id+")' class='list-group-item list-group-item-action'>"+data[i].libelle+" ("+(data[i].vitesse_equilibre || "-")+")</a>"
+
+          }
+
+          html += "</div>";
+          $("#ssspecialite").html(html);
+          loadrestrictionetape();
+          loadrestrictiontache();
+          loadrestrictiondistinction();
+
+        }
+        catch (e) {
+          //idSouspec = [];
+          $("#ssspecialite").html(html);
+        }
+
+
+      },
+      error: function (error) {
+
+      }
+    });
+  }
+
+  function loadrestrictionetape(){
+    $.ajax({
+      type: "GET",
+      url: "/load_restriction_etape?id_lotclient="+id_spec+"&id_ss_spe="+id_s_spec+"&id_ss_spe2="+id__ss_spec,
+
+      success: function(msg){
+
+        var html = "";
+        var data = null;
+
+        try {
+          data = JSON.parse(msg);
+          html = "<div class='list-group'>";
+          for (var i = 0 ; i<data.length ; i++){
+            //html += "<option value='"+data[i].id_ss_spe+"'>"+data[i].libelle+"</option>"
+            html += "<a href='#'  class='list-group-item list-group-item-action'>"+data[i].libelle+"</a>"
+
+          }
+
+          html += "</div>";
+          $("#etape_restriction").html(html);
+
+        }
+        catch (e) {
+          //idSouspec = [];
+          $("#etape_restriction").html(html);
+        }
+
+
+      },
+      error: function (error) {
+
+      }
+    });
+  }
+
+  function loadrestrictiontache(){
+    $.ajax({
+      type: "GET",
+      url: "/load_restriction_tache?id_lotclient="+id_spec+"&id_ss_spe="+id_s_spec+"&id_ss_spe2="+id__ss_spec,
+
+      success: function(msg){
+
+        var html = "";
+        var data = null;
+
+        try {
+          data = JSON.parse(msg);
+          html = "<div class='list-group'>";
+          for (var i = 0 ; i<data.length ; i++){
+            //html += "<option value='"+data[i].id_ss_spe+"'>"+data[i].libelle+"</option>"
+            html += "<a href='#'  class='list-group-item list-group-item-action'>"+data[i].libelle+"</a>"
+
+          }
+
+          html += "</div>";
+          $("#tache_restriction").html(html);
+
+        }
+        catch (e) {
+          //idSouspec = [];
+          $("#tache_restriction").html(html);
+        }
+
+
+      },
+      error: function (error) {
+
+      }
+    });
+  }
+
+  function loadrestrictiondistinction(){
+    $.ajax({
+      type: "GET",
+      url: "/load_restriction_distinction?id_lotclient="+id_spec+"&id_ss_spe="+id_s_spec+"&id_ss_spe2="+id__ss_spec,
+
+      success: function(msg){
+
+        var html = "";
+        var data = null;
+
+        try {
+          data = JSON.parse(msg);
+          html = "<div class='list-group'>";
+          for (var i = 0 ; i<data.length ; i++){
+            //html += "<option value='"+data[i].id_ss_spe+"'>"+data[i].libelle+"</option>"
+            html += "<a href='#'  class='list-group-item list-group-item-action'>"+data[i].libelle+"</a>"
+
+          }
+
+          html += "</div>";
+          $("#dist_restriction").html(html);
+
+        }
+        catch (e) {
+          //idSouspec = [];
+          $("#dist_restriction").html(html);
+        }
+
+
+      },
+      error: function (error) {
+
+      }
+    });
+  }
+</script>
+</body>
+</html>

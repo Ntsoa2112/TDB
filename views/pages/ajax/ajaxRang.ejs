@@ -1,0 +1,30 @@
+
+<ul class="list-group scrollable-menu">
+  <div class="row">
+    <div class="col-lg-3 col-md-4 col-xs-6">Rang / <%=rangList.length%></div>
+    <div class="col-lg-3 col-md-4 col-xs-6">Nom</div>
+    <div class="col-lg-3 col-md-4 col-xs-6">Quantite</div>
+    <div class="col-lg-3 col-md-4 col-xs-6">Vitesse</div>
+  </div>
+
+
+
+  <%
+  var i = 1;
+  rangList.forEach(function (rang) {
+  %>
+
+  <li class="list-group-item list-group-item-info">
+    <div class="row">
+      <div class="col-lg-3 col-md-4 col-xs-6"><%=i%></div>
+      <div class="col-lg-3 col-md-4 col-xs-6"><%=rang.appelation %></div>
+      <div class="col-lg-3 col-md-4 col-xs-6"><%=rang.qte || 0 %></div>
+      <div class="col-lg-3 col-md-4 col-xs-6"><%=math.round(rang.vitesse,2) %></div>
+    </div>
+
+    </li>
+  <%
+    i++;
+  })
+  %>
+</ul>

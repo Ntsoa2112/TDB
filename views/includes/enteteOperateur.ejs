@@ -1,0 +1,383 @@
+<style>
+dropdown-submenu {
+	  position: relative;
+	}
+
+	.dropdown-submenu a::after {
+	  //transform: rotate(-90deg);
+	  position: absolute;
+	  right: 6px;
+	  top: .8em;
+	}
+
+	.dropdown-submenu .dropdown-menu {
+	  top: 0;
+	  left: 100%;
+	  margin-left: .1rem;
+	  margin-right: .1rem;
+	}
+</style>
+<div id="wrapper">
+		<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/ldtOp">Tableau de bord</a>
+            </div>
+            <div class="collapse navbar-collapse navbar-ex1-collapse">
+                <ul id="active" class="nav navbar-nav side-nav">
+                    <li class="<%=menu.aceuil %>"><a href="/ldtOp"><i class="fa fa-bullseye"></i> Accueil </a></li>
+                    <!--<li class="<%=menu.dossierAdmin %>"><a href="/dossier"><i class="fa fa-tasks"></i> Dossier </a></li>-->
+
+
+                  <li class="dropdown <%=menu.statOpAdmin %>">
+                    <a href="/statOp" class="dropdown-toggle">
+                      <i class="fa fa-bar-chart-o"></i>
+                      <span class="hidden-xs">Statistique OP</span>
+                    </a>
+
+                  </li>
+
+				<li class="">
+				  <a href="/toTDBOP?menu=tdb_op" class="dropdown-toggle">
+					<i class="fa fa-bar-chart-o"></i>
+					<span class="hidden-xs">TDB journaliere</span>
+				  </a>
+
+				</li>
+
+
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right navbar-user">
+
+				<%
+					  if(req.session.niveaux == 1){
+					  %>
+					  <li class="dropdown messages-dropdown" id="masque">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-dashboard fa-lg" style="color:#ada4b9"></i> Masque Call <b class="caret"></b></a>
+						<!--<ul class="dropdown-menu notifications">
+
+						  <li class=""><a href="/masqueDoctocare"> Ecoute Doctocare </a></li>
+						  <li class=""><a href="/masqueBriant"> Ecoute Jacques Briant </a></li>
+						  <li class=""><a href="/masqueCodelis"> Ecoute CODELIS </a></li>
+						  <li class=""><a href="/masque"> Ecoute AE </a></li>
+						  <li class=""><a href="/masqueAS"> Ecoute AS </a></li>
+
+						  <li class=""><a href="/masqueEole"> Ecoute Client Eole </a></li>
+						  <li class=""><a href="/masqueIsoEole"> Ecoute Iso Eole </a></li>
+
+						  <li class=""><a href="/listeEcouteDoctocare"> Liste écoute Doctocare </a></li>
+						  <li class=""><a href="/listeEcouteBriant"> Liste écoute Jacques Briant </a></li>
+						  <li class=""><a href="/listeEcouteCodelis"> Liste écoute CODELIS </a></li>
+						  <li class=""><a href="/listeEcoute"> Liste écoute AE </a></li>
+						  <li class=""><a href="/listeEcouteAS"> Liste écoute AS </a></li>
+
+						  <li class=""><a href="/import"> Importer </a></li>
+
+						  <li class=""><a href="/statistiqueDoctocare"> Stat Doctocare </a></li>
+						  <li class=""><a href="/statistiqueBriant"> Stat Jacques Briant </a></li>
+						  <li class=""><a href="/statistiqueCodelis"> Stat CODELIS </a></li>
+						  <li class=""><a href="/statistique"> Stat AE </a></li>
+						  <li class=""><a href="/statistiqueAS"> Stat AS </a></li>
+
+						  <li class=""><a href="/statistiqueEole"> Stat Ecoute Client Eole  </a></li>
+						  <li class=""><a href="/statistiqueIsoEole"> Stat Ecoute Iso Eole </a></li>
+
+						</ul>-->
+						<ul class="dropdown-menu notifications">
+
+						  <li class="dropdown-submenu">
+							<a class="dropdown-item dropdown-toggle" tabindex="-1" href="#">DOCTOCARE <i class="fa fa-caret-right fa-sm" style="color:white"></i></a>
+							<ul class="dropdown-menu">
+							  <li><a class="dropdown-item" href="/masqueDoctocare"> Ecoute Doctocare </a></li>
+							  <li><a class="dropdown-item" href="/listeEcouteDoctocare"> Liste écoute Doctocare </a></li>
+							  <li><a class="dropdown-item" href="/statistiqueDoctocare"> Statistique Doctocare </a></li>
+							</ul>
+						  </li>
+
+						  <!--<li class="dropdown-submenu">
+							<a class="test dropdown-item dropdown-toggle" tabindex="-1" href="#">JACQUES BRIANT <i class="fa fa-caret-right fa-sm" style="color:white"></i></a>
+							<ul class="dropdown-menu">
+							  <li><a class="dropdown-item" href="/masqueBriant"> Ecoute JB </a></li>
+							  <li><a class="dropdown-item" href="/listeEcouteBriant"> Liste écoute JB </a></li>
+							  <li><a class="dropdown-item" href="/statistiqueBriant"> Statistique JB </a></li>
+							</ul>
+						  </li>-->
+						  
+						  <li class="dropdown-submenu">
+							<a class="test dropdown-item dropdown-toggle" tabindex="-1" href="#">JB AE <i class="fa fa-caret-right fa-sm" style="color:white"></i></a>
+							<ul class="dropdown-menu">
+							  <li><a class="dropdown-item" href="/masqueBriant"> Ecoute JB AE </a></li>
+							  <li><a class="dropdown-item" href="/listeEcouteBriant"> Liste écoute JB AE </a></li>
+							  <li><a class="dropdown-item" href="/statistiqueBriant"> Statistique JB AE </a></li>
+							</ul>
+						  </li>
+						  
+						  <li class="dropdown-submenu">
+							<a class="test dropdown-item dropdown-toggle" tabindex="-1" href="#">JB AS <i class="fa fa-caret-right fa-sm" style="color:white"></i></a>
+							<ul class="dropdown-menu">
+							  <li><a class="dropdown-item" href="/masqueBriantAs"> Ecoute JB AS </a></li>
+							  <li><a class="dropdown-item" href="/listeEcouteBriantAs"> Liste écoute JB AS </a></li>
+							  <li><a class="dropdown-item" href="/statistiqueBriantAs"> Statistique JB AS </a></li>
+							</ul>
+						  </li>
+
+						  <li class="dropdown-submenu">
+							<a class="test dropdown-item dropdown-toggle" tabindex="-1" href="#">CODELIS <i class="fa fa-caret-right fa-sm" style="color:white"></i></a>
+							<ul class="dropdown-menu">
+							  <li><a class="dropdown-item" href="/masqueCodelis"> Ecoute CODELIS </a></li>
+							  <li><a class="dropdown-item" href="/listeEcouteCodelis"> Liste écoute CODELIS </a></li>
+							  <li><a class="dropdown-item" href="/statistiqueCodelis"> Statistique CODELIS </a></li>
+							</ul>
+						  </li>
+
+						  <li class="dropdown-submenu">
+							<a class="test dropdown-item dropdown-toggle" tabindex="-1" href="#">AE <i class="fa fa-caret-right fa-sm" style="color:white"></i></a>
+							<ul class="dropdown-menu">
+							  <li><a class="dropdown-item" href="/masque"> Ecoute AE </a></li>
+							  <li><a class="dropdown-item" href="/listeEcoute"> Liste écoute AE </a></li>
+							  <li><a class="dropdown-item" href="/statistique"> Statistique AE </a></li>
+							</ul>
+						  </li>
+
+						  <li class="dropdown-submenu">
+							<a class="test dropdown-item dropdown-toggle" tabindex="-1" href="#">AS <i class="fa fa-caret-right fa-sm" style="color:white"></i></a>
+							<ul class="dropdown-menu">
+							  <li><a class="dropdown-item" href="/masqueAS"> Ecoute AS </a></li>
+							  <li><a class="dropdown-item" href="/listeEcouteAS"> Liste écoute AS </a></li>
+							  <li><a class="dropdown-item" href="/statistiqueAS"> Statistique AS </a></li>
+							</ul>
+						  </li>
+
+						  <li class="dropdown-submenu">
+							<a class="test dropdown-item dropdown-toggle" tabindex="-1" href="#"> GGS <i class="fa fa-caret-right fa-sm" style="color:white"></i></a>
+							<ul class="dropdown-menu">
+							  <li><a class="dropdown-item" href="/masqueIsoEole"> Ecoute GGS </a></li>
+							  <li><a class="dropdown-item" href="/listeEcouteIsoEole"> Liste écoute GGS </a></li>
+							  <li><a class="dropdown-item" href="/statistiqueIsoEole"> Statistique GGS  </a></li>
+							  <li><a class="dropdown-item" href="/statistiqueSuiviCQ"> Suivi CQ  </a></li>
+							</ul>
+						  </li>
+						  
+						  <li class="dropdown-submenu">
+							<a class="test dropdown-item dropdown-toggle" tabindex="-1" href="#"> CSS <i class="fa fa-caret-right fa-sm" style="color:white"></i></a>
+							<ul class="dropdown-menu">
+							  <li><a class="dropdown-item" href="/masqueCss"> Ecoute CSS </a></li>
+							  <li><a class="dropdown-item" href="/listeEcouteCss"> Liste écoute CSS </a></li>
+							  <li><a class="dropdown-item" href="/statistiqueCss"> Statistique CSS  </a></li>
+							</ul>
+						  </li>
+						  
+						  <li class="dropdown-submenu">
+							<a class="test dropdown-item dropdown-toggle" tabindex="-1" href="#"> LAMIE <i class="fa fa-caret-right fa-sm" style="color:white"></i></a>
+							<ul class="dropdown-menu">
+							  <li><a class="dropdown-item" href="/masqueLamie"> Ecoute LAMIE </a></li>
+							  <li><a class="dropdown-item" href="/listeEcouteLamie"> Liste écoute LAMIE </a></li>
+							  <li><a class="dropdown-item" href="/statistiqueLamie"> Statistique LAMIE  </a></li>
+							</ul>
+						  </li>
+
+						  <li class="dropdown-submenu">
+							<a class="test dropdown-item dropdown-toggle" tabindex="-1" href="#">TPMEP <i class="fa fa-caret-right fa-sm" style="color:white"></i></a>
+							<ul class="dropdown-menu">
+							  <li><a class="dropdown-item" href="/masqueTpmep"> Ecoute TPMEP </a></li>
+							  <li><a class="dropdown-item" href="/listeEcouteTpmep"> Liste écoute TPMEP </a></li>
+							  <li><a class="dropdown-item" href="/statistiqueTpmep"> Statistique TPMEP  </a></li>
+							</ul>
+						  </li>
+
+						</ul>
+					  </li>
+
+					  <!--</li>-->
+                  <%}%>
+
+                  <%
+                  if(req.session.niveaux == 0 || req.session.niveaux == 1){
+
+                     %>
+                  <li class="dropdown messages-dropdown" id="message">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-envelope fa-lg" style="color:#ada4b9"></i> Almerys <b class="caret"></b></a>
+                    <ul class="dropdown-menu notifications">
+					  <li class=""><a href="/cq_almerys"> CQ </a></li>
+					  <%
+                      if(req.session.user == 3023 || req.session.user == 434){
+                      %>
+                      <li class=""><a href="/test_cq">Test grille CQ</a></li>
+                      <%}%>
+                    </ul>
+                  </li>
+
+                  <%
+
+                  }%>
+
+
+					<%
+					  if(req.session.user == 1308 || req.session.user == 1261 || req.session.user == 3 || req.session.user == 1019 || req.session.user == 536 || req.session.user == 244 || req.session.user == 1241){
+					%>
+					  <li class=""><a href="/listePersonnel"><i class="fa fa-user-circle fa-lg" style="color:#red"></i> Info personnel </a></li>
+					<%}%>
+
+
+
+                      <%
+                      if(req.session.user == 1698){
+                      %>
+                      <li class="dropdown messages-dropdown" id="masque">
+                          <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-dashboard fa-lg" style="color:#ada4b9"></i> Masque Call <b class="caret"></b></a>
+                          <ul class="dropdown-menu notifications">
+                          <li class=""><a href="/masqueDoctocare"> Ecoute Doctocare </a></li>
+                          <li class=""><a href="/listeEcouteDoctocare"> Liste écoute Doctocare </a></li>
+                          <li class=""><a href="/statistiqueDoctocare"> Stat Doctocare </a></li>
+                          </ul>
+                      </li>
+                          </li>
+
+                      <%}%>
+                      <%
+                      if(req.session.isUserSolimu === true){
+                      %>
+                          <li class="dropdown messages-dropdown" id="message">
+                              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-envelope fa-lg" style="color:#ada4b9"></i> SOLIMU <b class="caret"></b></a>
+                              <ul class="dropdown-menu notifications">
+                                  <li class=""><a href="/solimut/reporting_op/index"> Reporting Prod Saisie OP</a></li>
+                              </ul>
+                          </li>
+                      <%}%>
+					<% if(req.session.isUserRemonteCall) {
+					%>
+						<li class="dropdown messages-dropdown" id="message">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-envelope fa-lg" style="color:#ada4b9"></i> CALL Almerys <b class="caret"></b></a>
+							<ul class="dropdown-menu notifications">
+								<li class=""><a href="/call/ticketing/remonte/index"> Traitement Remontee </a></li>
+								<li class=""><a href="/call/ticketing/gestionuser/index"> Gestion Profil Utilisateur Traitement Remontee </a></li>
+							</ul>
+						</li>
+					<%}%>
+
+					
+				<%
+					if(req.session.id_departement == 12 || req.session.id_departement == 23){
+				%>
+						<!--NEOCLES-->
+
+				<li class="dropdown messages-dropdown dropdown-masque" id="neocles">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-dashboard fa-lg" style="color:#ff6f6f"></i> NEOCLES <b class="caret"></b></a>
+					<ul class="dropdown-menu notifications">
+
+						<% if(req.session.isFormateur || req.session.user == 551){ %>
+						<li class="dropdown-submenu">
+							<a class="dropdown-item dropdown-toggle" tabindex="-1" href="#">Notation <i class="fa fa-caret-right fa-sm" style="color:white"></i></a>
+							<ul class="dropdown-menu">
+								<li><a class="dropdown-item" href="/neocles-notation-appel"> Appel </a></li>
+								<li><a class="dropdown-item" href="/neocles-notation-mail-ticket"> Mail Ticket </a></li>
+								<li><a class="dropdown-item" href="/neocles-notation-mail-appel"> Mail Appel </a></li>
+								<li><a class="dropdown-item" href="/neocles-list-ecoute"> Liste enregistrement </a></li>
+								<li><a class="dropdown-item" href="/neocles-administration"> Paramètre </a></li>
+							</ul>
+						</li>
+						<%}%>
+
+						<li class=""><a href="/neocles-reporting-indiviuel"> Consultation individuelle</a></li>
+						<li class=""><a href="/neocles-reporting-equipe"> Consultation groupée </a></li>
+					</ul>
+				</li>
+				 <%
+						}
+				 %>
+					
+					
+					
+					<%
+					  if(req.session.niveaux == 2){
+					%>
+				  <li class="dropdown messages-dropdown" id="message">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-dashboard fa-lg" style="color:#ada4b9"></i> Reservation <b class="caret"></b></a>
+                    <ul class="dropdown-menu notifications">
+                      <li class=""><a href="/reservation/index"> Reservation Salle </a></li>
+					  <li class=""><a href="/reservation_ostie/index"> Reservation FUNHENCE </a></li>
+                    </ul>
+                  </li>
+					<%}%>
+					
+					
+				
+
+                  <li class="dropdown user user-menu">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                      <img src="data:image/png;base64, <%= req.session.pdp%>" class="user-image" alt="User Image">
+                      <span class="hidden-xs"><%= req.session.appelation%></span>
+                    </a>
+
+
+
+                    <ul class="dropdown-menu">
+                      <!-- User image -->
+                      <li class="user-header">
+                        <img src="data:image/png;base64, <%= req.session.pdp%>" class="img-circle" alt="User Image">
+
+                        <p>
+                          <%=req.session.nom%>
+                        </p>
+                      </li>
+                      <!-- Menu Footer-->
+                      <li class="user-footer">
+                        <div class="pull-right">
+                          <a href="/logout" class="btn btn-primary btn-flat">Déconnexion</a>
+                        </div>
+                      </li>
+                    </ul>
+
+                </ul>
+            </div>
+        </nav>
+
+  <script src="/js/dependencies/sails.io.js"></script>
+  <script type="text/javascript">
+
+    var host = window.location.hostname;
+    var id = '<%=req.session.user %>';
+    io.sails.url = 'http://'+host+':9090';
+    io.socket.on("connecting", function (msg) {
+      $.ajax({
+        type: "GET",
+        url: "/ImConnected?id_pers="+id+"&type=0",
+        success: function(msg){
+        },
+        error: function (error) {
+          //alert('error; ' +error);
+        }
+      });
+    });
+    //io.sails.url = 'http://127.0.0.1:9090';
+    /*io.sails.url = 'http://10.128.1.4:9090';
+    var a = 0;
+    var idsession = 0;
+     idsession = <%=req.session.user %>;
+
+    io.socket.on(idsession, function (msg) {
+      //console.log(msg);
+      var response = msg;
+      a = a + 1;
+
+      var html = "<a href='#' class='dropdown-toggle' data-toggle='dropdown'><i class='fa fa-envelope'></i> Notifications <span class='badge'>"+a+"</span> <b class='caret'></b></a>"+
+      "<ul class='dropdown-menu'>"+
+       "<li class='dropdown-header'>"+a+" New Notifications</li>"+
+
+       " </ul>";
+
+      document.getElementById("message").innerHTML = html;
+
+
+      //alert("c:"+response.courbe);
+    });*/
+  </script>
+
+
+<!-- /Header -->

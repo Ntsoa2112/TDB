@@ -1,0 +1,208 @@
+<div class="container">
+  <div id="myModal" role="dialog" class="modal fade">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" data-dismiss="modal" class="close">&times;</button>
+          <h4 class="modal-title">Nouveau reservation</h4>
+        </div>
+        <div class="modal-body">
+          <form method="post" action="/reservation/ajout_reservation">
+                <input class="form-control" type="hidden" value="<%= req.session.user %>" id="Matriculeinsert" name="matricule" required>
+            <div class="form-group row">
+              <label for="Objetreservation" class="col-xs-4 col-form-label">Objet</label>
+              <div class="col-xs-8">
+                <input class="form-control" type="text" value="" id="Objetreservation" onchange="EncodeUri()" name="object_first" required>
+                <input type="hidden" id="newvaluego" name="object">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="Departement" class="col-xs-4 col-form-label">Departement</label>
+              <div class="col-xs-8">
+                <select name="dep" class="form-control" data-id="<%= Departement.id_reservation %>" data-model="departement" id="Departement" required>
+                  <% Departement.forEach (function(dep) { %>
+                  <option value="<%= dep.id_departement %>,<%= dep.libelle%>"><%= dep.libelle %></option>
+                  <% }) %>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="salle" class="col-xs-4 col-form-label">Salle</label>
+              <div class="col-xs-8">
+                <select name="salle" class="form-control" onchange="check_disponibilite()" id="salle_modal" required >
+                  <option value="1er_étage_salle kijy">1er_étage_salle kijy</option>
+                  <option value="1er_étage_salle sohihy">1er_étage_salle sohihy</option>
+                  <option value="RDC_salle ambora">RDC_salle ambora</option>
+                  <option value="RDC_salle ramy">RDC_salle ramy</option>
+                  <option value="RDC_salle nato">RDC_salle nato</option>
+                  <option value="RDJ_salle merana">RDJ_salle merana</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-xs-4 col-form-label">Nombre personne</label>
+              <div class="col-xs-8">
+                <input class="form-control" type="text" name="nb_personne" placeholder = "" value="" required>
+              </div>
+
+            <div class="form-group row">
+              <label class="col-xs-4 col-form-label">Date</label>
+              <div class="col-xs-8">
+                <input class="form-control" type="text" name="date_reserv" id="myDate_reservation_onclick" placeholder = "Date Debut" value=""  readonly required>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-xs-4 col-form-label" >De</label>
+                <div class="form-group row">
+                  <div class="col-xs-4">
+                    <input type="text" id="time_start" name="time_debut" class="form-control floating-label" placeholder="Time" onchange="check_disponibilite()" required >
+                  </div>
+                </div>
+            </div>
+              <div class="form-group row">
+                <label class="col-xs-4 col-form-label" >à</label>
+                <div class="form-group row">
+                  <div class="col-xs-4">
+                    <input type="text" id="time_end" name="time_fin" class="form-control floating-label" placeholder="Time" onchange="check_disponibilite()" required >
+                  </div>
+                </div>
+              </div>
+              <input type="hidden" value="<%= req.session.nom %>" name="nom_personnel">
+			  <center><br><h4 style="color:red;" class="hidden" id="message_erreur"> Creneau horaire existant </h4></br></center>
+            </div>
+
+            <center><input type="submit" class="btn btn-primary" value="Reserver" id="submit_reservation" ></center>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" data-dismiss="modal" class="btn btn-default">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script type="text/javascript">
+  function EncodeUri() {
+    var uri = $("#Objetreservation").val();
+    var res = encodeURI(uri);
+    $("#newvaluego").val(res);
+  }
+	function getMinutes(str) {
+		var time = str.split(':');
+		return time[0]*60+time[1]*1;
+	}
+
+	function getMinutesNow() {
+		var timeNow = new Date();
+		return timeNow.getHours()*60+timeNow.getMinutes();
+	}
+
+	function check_if_between(time, start, end){
+		if((time >= start) && (time <= end)){
+			//alert( time +" IS BETWEEN "+ start +" and "+end);
+			return true;
+		}
+		else{
+			//alert( time +" IS NOT BETWEEN "+ start +" and "+end);
+			return false;
+		}
+	}
+
+	function check_disponibilite(){
+		var start = $("#time_start").val();
+		var end = $("#time_end").val();
+
+		var salle_res = $("#salle_modal option:selected").val();
+		//alert(salle_res);
+
+		//alert($("#time_start").val());
+		if(start !== "" && end !== ""){
+			//alert("Check   "+start + " =====> "+ end);
+
+			var date_reservation = $("#myDate_reservation_onclick").val(); //date
+			//alert(date_reservation);
+
+			$.ajax({
+			  type: "GET",
+			  url: "/getLsReservationDate?date_reserv="+date_reservation+"&salle_reserv="+salle_res,
+
+			  success: function(msg){
+				var data = JSON.parse(msg);
+
+						if(parseInt(data.lenght)!=0)
+        {
+     //       alert("ERROR data lenght");
+          $("#message_erreur").addClass("hidden");
+          $("#submit_reservation").attr("disabled", false);
+        }
+				for (var i = 0 ; i<data.length ; i++){
+					var deb = data[i].debut_reservation;
+					var fin = data[i].fin_reservation;
+
+					if (deb > fin) fin += getMinutes('24:00');
+
+					var temp_start = check_if_between(start, deb, fin);
+					var temp_end = check_if_between(end, deb, fin);
+
+					var temp_deb = check_if_between(deb, start, end);
+					var temp_fin = check_if_between(fin, start, end);
+
+					if ( temp_start == true || temp_end == true || temp_deb == true || temp_fin == true) {
+						//alert("INVALIDE  reservation : "+deb+" ====> "+ fin +"- New reservation :"+start+"   ====> "+end);
+						//alert("ERREUR : Creneau horaire existant");
+						$("#message_erreur").removeClass("hidden");
+						$("#submit_reservation").attr("disabled", true);
+						alert("END");
+						break;
+					}else{
+						$("#message_erreur").addClass("hidden");
+						$("#submit_reservation").attr("disabled", false);
+					//	alert("VALIDE reservation : "+deb+" ====> "+ fin +"- New reservation :"+start+"   ====> "+end);
+					}
+				}
+			  },
+			  error: function (error) {
+				alert("ERROR");
+			  }
+			});
+		}
+	}
+</script>
+<script src="/js/dependencies/sails.io.js"></script>
+<!--script src="/js/jquery-1.12.4.js"></script-->
+<!--script src="/js/jquery-ui.min.js"></script-->
+<script src="/bootstrap/js/bootstrap.min.js"></script>
+
+<!--script>
+
+  function loadData(){
+    var dateDeb = $( "#datetimd" ).val();
+    var dateFin = $( "#datetimf" ).val();
+    $.ajax({
+      type: "GET",
+      url: "/ajaxAlm?datedeb="+dateDeb+"&datefin="+dateFin,
+      beforeSend: function(xhr){
+        $( "#load").show();
+      },
+      success: function(msg){
+        $("#table-response").html(msg);
+        $( "#load").hide();
+      },
+      error: function (error) {
+        alert('error; ' +error);
+      }
+    });
+  }
+
+  $(function() {
+    $( "#datetimd" ).datepicker({
+      dateFormat: 'yy-mm-dd'
+    });
+    $( "#datetimf" ).datepicker({
+      dateFormat: 'yy-mm-dd'
+    });
+  } );
+
+</script-->

@@ -1,0 +1,362 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta name="generator" content="Bootply" />
+  <link rel="stylesheet" href="/styles/importer.css">
+  <link rel="stylesheet" href="/bootflat/css/bootflat.min.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/local.css">
+  <link rel="stylesheet" href="/css/Style_v3.css">
+
+  <link rel="stylesheet" href="/jquery-ui/jquery-ui.css">
+
+  <link rel="stylesheet" href="/css/bootstrap-duration-picker.css">
+
+  <!-- bootbox code -->
+  <script src="js/bootbox.min.js"></script>
+
+  <!-- check select -->
+  <link rel="stylesheet" href="/css/bootstrap-multiselect.css">
+
+  <style type="text/css">
+    .notation_almerys{
+    }
+    .colorTable{
+      background-color:red;
+    }
+    input[type=radio] {
+      display: block;
+      margin: 0 auto;
+    }
+    label {
+      display: inline-block;
+    }
+  </style>
+  <title>Paramètre</title>
+</head>
+
+<body onload="loadAll();">
+
+    <!-- HEADER -->
+<%
+
+if(req.session.droit==1){
+
+%>
+<% include ../../../includes/entete.ejs %>
+<% }else{
+
+%>
+<% include ../../../includes/enteteOperateur.ejs %>
+
+<% }%>
+<!-- /HEADER -->
+
+
+<div id="page-wrapper">
+<h3>PARAMETRAGE NIVEAU</h3>
+<div>
+  <button type="button" class = "btn btn-primary" data-toggle="modal" data-target="#addModal">Nouveau</button>
+</div>
+
+<div id="content">
+  <div id = "tableau"></div>
+</div>
+
+<div id="editModal" class="modal fade" tabindex="-1"  role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+
+    <!-- Modal MODIFICATION-->
+    <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h3 class="modal-title" id="titleEditModal">Modifier</h3>
+        </div>
+
+        <div class="modal-body">
+          <form>
+            <div class="form-group" style="margin-left:25px">
+              <label class="col-form-label" for="niveau">Niveau</label>
+              <select class="form-control" id="niveau" name="niveau"  required='required'>
+                <option value="">-</option>
+              </select>
+            </div>
+          
+            <div class="form-group"  style="margin-left:25px">
+              <label class="col-form-label" for="date_enregistrement">Date</label>
+              <input type="text" class="form-control" tabindex="-1" id='date_enregistrement' name='date_enregistrement' >
+            </div>
+
+ 
+
+          </form>
+          
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" onclick="save();">Enregistrer</button>
+        </div>
+
+    </div>
+    
+  </div>
+  </div>
+
+
+  <!-- MODAL AJOUT -->
+  <div id="addModal" class="modal fade" tabindex="-1"  role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+
+    <!-- Modal MODIFICATION-->
+    <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h3 class="modal-title">Nouveau</h3>
+        </div>
+
+        <div class="modal-body">
+          <form>
+            <div class="form-group" style="margin-left:25px">
+              <label class="col-form-label" for="tc_select">Intervenant</label>
+              <select class="form-control" id="tc_select" name="tc_select"  required='required'>
+                <option value="">-</option>
+              </select>
+            </div>
+
+            <div class="form-group" style="margin-left:25px">
+              <label class="col-form-label" for="niveau_add">Niveau</label>
+              <select class="form-control" id="niveau_add" name="niveau_add"  required='required'>
+                <option value="">-</option>
+              </select>
+            </div>
+          
+            <div class="form-group"  style="margin-left:25px">
+              <label class="col-form-label" for="date_enregistrement_add">Date</label>
+              <input type="text" class="form-control" tabindex="-1" id='date_enregistrement_add' name='date_enregistrement_add' >
+            </div>
+
+
+
+          </form>
+          
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" onclick="add();">Ajouter</button>
+        </div>
+
+    </div>
+    
+  </div>
+  </div>
+
+
+
+</div>
+
+</body>
+
+<script src="/js/jquery-1.12.4.js"></script>
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/scripts.js"></script>
+
+<script src="/js/vendors/echarts.min.js"></script>
+<script src="/js/dependencies/sails.io.js"></script>
+<script src="/js/jquery-ui.min.js"></script>
+<script src="/js/echarts/theme.js"></script>
+<script src="/js/echarts/echarts.js"></script>
+<script src="/js/custom.min.js"></script><!--script customise-->
+<script src="/js/bootstrap-duration-picker-debug.js"></script>
+
+<script src="/js/bootstrap-multiselect.js"></script>
+
+
+<script language="javascript">
+	function loadAll(){
+		loadUsers();
+    loadNiveau();
+    loadNotSuscribed();
+    }
+    
+	$(function() {
+		$("#date_enregistrement").datepicker({
+      dateFormat: 'yy/mm/dd'
+      }).datepicker("setDate", new Date());
+    });
+    
+  $(function() {
+    $("#date_enregistrement_add").datepicker({
+      dateFormat: 'yy/mm/dd'
+      }).datepicker("setDate", new Date());
+  });
+
+  function loadUsers(){
+    $.ajax({
+    type: "GET",
+    url: "/neocles-get-suscribed",
+
+    success: function(msg){
+      var html = '<table  id="datatable-buttons_h" class="table table-striped table-bordered">';
+      html += '<thead><tr>' ;
+        html += '<th class="th text-center">Matricule</th>';
+        html += '<th class="th text-center">Nom</th>';
+        html += '<th class="th text-center">Prénom</th>';
+        html += '<th class="th text-center">Droit</th>';
+        html += '<th class="th text-center">Modifier</th>';
+      html += '</tr></thead>';
+      html += '<tbody>';
+
+      var data = JSON.parse(msg);
+      window.listUsers = data;
+
+      console.log(this.listUsers);
+
+      for (var i = 0 ; i<data.length ; i++){
+        html += '<tr>';
+          html += '<td class="th text-center"> ' + data[i].id_pers + ' </td>';  
+          html += '<td class="th text-center"> ' + data[i].nom + ' </td>';  
+          html += '<td class="th text-center"> ' + data[i].prenom + ' </td>';  
+          html += '<td class="th text-center"> ' + data[i].niveau + ' </td>';  
+          html += '<td class="th text-center"><button type="button" class = "btn btn-primary" data-toggle="modal" data-target="#editModal" onClick="selectUser(' + data[i].id_pers + ');">Modifier</button></td>'; 
+          
+        html += '</tr>'
+      }
+
+      html += '</tbody>';
+      html += '</table>';
+      
+      $("#tableau").html(html);
+    },
+    error: function (error) {
+
+    }
+    });
+  }
+
+  function selectUser(id_pers){
+    window.selectedUser =  window.listUsers.filter(function (item) {
+      return  item.id_pers == id_pers;
+    })[0];
+
+    $("#niveau").val(window.selectedUser.id_niveau);
+    $("#titleEditModal").text("Modification - " + window.selectedUser.id_pers + " " + window.selectedUser.appelation );
+  }
+    
+	function loadNiveau(){
+		$.ajax({
+		type: "GET",
+		url: "/neocles-get-niveau",
+
+		success: function(msg){
+			var html = "<option value=''></option>";
+			var data = JSON.parse(msg);
+
+			console.log(data);
+
+			for (var i = 0 ; i<data.length ; i++){
+				html += "<option value='"+data[i].id+"'>" + data[i].libelle + "</option>";
+			}
+
+      $("#niveau").html(html);
+      $("#niveau_add").html(html);
+		},
+		error: function (error) {
+
+		}
+		});
+    }
+
+  function loadNotSuscribed(){
+    $.ajax({
+    type: "GET",
+    url: "/neocles-get-not-suscribed",
+
+    success: function(msg){
+      var html = "<option value=''></option>";
+      var data = JSON.parse(msg);
+
+      console.log(data);
+
+      for (var i = 0 ; i<data.length ; i++){
+        html += "<option value='"+data[i].id_pers+"'>" + data[i].id_pers + " - "+ data[i].nom + " " + data[i].prenom + "</option>";
+      }
+
+      $("#tc_select").html(html);
+    },
+    error: function (error) {
+
+    }
+    });
+  }
+    
+    
+	function save(){
+		let id_pers = window.selectedUser.id_pers;
+    let niveau = $("#niveau").val();
+    let date = $("#date_enregistrement").val();
+    
+    let data = {
+      id_pers : id_pers,
+      niveau : niveau,
+      date : date
+    };
+
+    if(window.selectedUser.id_niveau != niveau){
+      var request = $.ajax({
+        type: "POST",
+        url: "/neocles-add-niveau" ,
+        data : data,
+
+        success: function(msg){
+          loadUsers();editModal
+          $('#editModal').modal('toggle');
+        },
+
+        error: function (error) {
+          loadUsers();
+          $('#editModal').modal('toggle');
+        }
+      }); 
+    }  
+  }
+
+  function add(){
+		let id_pers = $("#tc_select").val();
+    let niveau = $("#niveau_add").val();
+    let date = $("#date_enregistrement_add").val();
+    
+    let data = {
+      id_pers : id_pers,
+      niveau : niveau,
+      date : date
+    };
+
+    if(data.id_pers > 0 && data.niveau > 0){
+      var request = $.ajax({
+        type: "POST",
+        url: "/neocles-add-niveau" ,
+        data : data,
+
+        success: function(msg){
+          loadUsers();
+          loadNotSuscribed();
+          $('#addModal').modal('toggle');
+        },
+
+        error: function (error) {
+          loadUsers();
+          loadNotSuscribed();
+          $('#addModal').modal('toggle');
+        }
+      }); 
+    }  
+  }
+    
+
+</script>
+  

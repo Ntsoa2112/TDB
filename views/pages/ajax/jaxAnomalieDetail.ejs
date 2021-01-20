@@ -1,0 +1,143 @@
+
+
+
+
+
+<div class="x_panel">
+  <div class="x_title">
+    <h2>Anomalies du  <%=mat %></h2>
+    <ul class="nav navbar-right panel_toolbox">
+      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+      </li>
+
+      <li><a class="close-link"><i class="fa fa-close"></i></a>
+      </li>
+    </ul>
+    <div class="clearfix"></div>
+  </div>
+  <div class="x_content">
+
+    <div id="tableFiltre">
+      <table  id="datatable-buttons" class="table table-striped table-bordered">
+        <thead>
+        <tr class=''>
+          <th id='date_deb_ldt' class='th text-center'>MATRICULE</td>
+          <th id='date_deb_ldt' class='th text-center'>DATE</td>
+          <th id='date_deb_ldt' class="text-center">DUREE PROD</th>
+          <th id='date_deb_ldt' class="text-center">DUREE PAUSE</th>
+          <th id='date_fin_ldt' class="text-center">DUREE TOTAL</th>
+          <th id='appelation' class="text-center">DUREE GPAO</th>
+          <th id='appelation' class="text-center">MOTIF</th>
+          <th id='appelation' class="text-center"></th>
+          <th id='appelation' class="text-center">OPTION</th>
+        </tr>
+        </thead>
+        <tbody>
+        <%
+
+        anomal.forEach(function (anom) {
+        var type = 0;
+          if(anom.anomalie == "Anomalie GPAO"){
+            type = 1;
+          }
+
+        if(anom.anomalie != "Conge"){
+
+          var clas = "text-success";
+        if((anom.duree_prod < '04:00:00' &&  anom.duree_prod_gpao < '04:00:00') || anom.anomalie == "Absent"){
+          clas = "text-danger";
+        }
+        %>
+
+          <tr class=''  >
+            <td><%=anom.id_util%></td>
+            <td><%=anom.pdate%></td>
+            <td><%=anom.duree_prod || '00:00:00'%></td>
+            <td><%=anom.duree_pause || '00:00:00'%></td>
+            <td><%=anom.duree_total || '00:00:00'%></td>
+            <td><%=anom.duree_prod_gpao || '00:00:00' %></td>
+            <td><%=anom.anomalie %></td>
+            <td><i class="fa fa-exclamation-triangle <%=clas%>" aria-hidden="true"></i></td>
+            <td><a class="btn" data-toggle="modal" data-target="#myModalPers" onclick="loadpointage(<%=anom.id_util%>,'<%=anom.pdate%>',<%=type%>)">Details</a></td>
+          </tr>
+
+
+        <%
+        }
+        });
+
+        %>
+        </tbody>
+      </table>
+
+
+    </div>
+
+
+
+  </div>
+</div>
+<div id="myModalPers" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Listes des Pointages</h4>
+      </div>
+      <div class="modal-body">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+          <div id="load3" class="col-md-4" style="display:none">
+            <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+            <span class="sr-only">Loading...</span>
+          </div>
+             <div id="tbPt">
+
+             </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+      </div>
+
+    </div>
+  </div>
+</div>
+<script src="/js/jquery-1.10.2.min.js"></script>
+<script src="/js/jquery-ui.min.js"></script>
+<script src="/bootstrap/js/bootstrap.min.js"></script>
+<script>
+  function loadpointage(idpers,date,type){
+    var url = "/ajaxPointageDet?pdate="+date+"&id_pers="+idpers;
+    if(Number(type)!=0){
+        var action  = "getLstLdt";
+        var deb  = ""+date;
+        var fin  = "";
+        var dossier  = "";
+        var etape  = "";
+        var mat  = idpers;
+        var stat  = "";
+        var orderby  = "";
+        var dep  = "";
+
+        url = "http://gpao.easytech.mg/php/link.php?action="+action+"&deb="+deb+"&fin="+fin+"&dossier="+dossier+"&mat="+mat+"&stat="+stat+"&orderby="+orderby+"&dep="+dep+"&etape="+etape;
+    }
+
+    //alert("List pt de "+idpers+" du "+date);
+    $.ajax({
+      type: "GET",
+      url: url,
+      beforeSend: function(xhr){
+        $( "#load3").show();
+      },
+      success: function(msg){
+        $( "#load3").hide();
+        $("#tbPt").html(msg);
+        //$("#date").val(date);
+      },
+      error: function (error) {
+        //alert('error; ' +error);
+      }
+    });
+  }
+</script>

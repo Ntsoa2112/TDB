@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TDB Stat</title>
+ 
+  <link rel="stylesheet" href="/styles/importer.css">
+  <link rel="stylesheet" href="/bootflat/css/bootflat.min.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/local.css">
+  <link rel="stylesheet" href="/css/Style_v3.css">
+  <link rel="stylesheet" href="/jquery-ui/jquery-ui.css">
+  <!--STYLES END-->
+</head>
+ 
+<body onLoad="loadspecialite();loadetat();loadcategorie();loadSAT();loadspecialiteMod();loaddistinction();">
+<% if(req.session.droit==1){
+ 
+%>
+<% include ../includes/entete.ejs %>
+<% }else{
+ 
+%>
+<% include ../includes/enteteOperateur.ejs %>
+ 
+<% }%>
+<div id="page-wrapper">
+  <div class="row">
+    <div class="col-md-12">
+      <div class=" row ">
+ 
+          <div  class="">
+ 
+            <div class="panel panel-primary">
+              <div class="panel-heading">
+                <h3 class="panel-title"> <i class="fa fa-bar-chart-o"></i> </h3>
+                <div class="row">
+                  <div class="form-group">
+ 
+                      <div class="col-xs-1 col-md-1 col-lg-1">
+                        <select class="form-control" tabindex="-1" id="specialite" onchange="loadsousspecialite(this.value);loadTache(this.value);loadtypeFav(this.value);loadsat(this.value);loadetape(this.value);">
+                          <option value="">POLE</option>
+                        </select>
+ 
+                      </div>
+                    <div class="col-xs-1 col-md-1 col-lg-1" style="display:none" id="divsspec">
+                        <select class="form-control" tabindex="-1" id="sspecialite" onchange="loadMotif(this.value);loadsoussousspecialite(this.value);">
+                          <option value="">SPECIALITE</option>
+                        </select>
+ 
+                      </div>
+ 
+                    <div class="col-xs-1 col-md-1 col-lg-1" style="display:none" id="divssspec">
+                        <select class="form-control" tabindex="-1" id="ssspecialite" onchange="loadsoussoussousspecialite(this.value);">
+                          <option value="">SOUS SPECIALITE</option>
+                        </select>
+ 
+                      </div>
+ 
+                    <div class="col-xs-1 col-md-1 col-lg-1" style="display:none" id="divsssspec">
+                        <select class="form-control" tabindex="-1" id="sssspecialite">
+                          <option value="">SOUS SOUS SPECIALITE</option>
+                        </select>
+ 
+                      </div>
+ 
+                    <!--<div class="col-xs-1 col-md-1 col-lg-" style="display:none" id="divtraitement">
+                        <select class="form-control" tabindex="-1" id="traitement">
+                          <option value="">TRAITEMENT</option>
+                        </select>
+ 
+                      </div>-->
+                    <div class="col-xs-1 col-md-1 col-lg-1">
+                      <select class="form-control" tabindex="-1" id="etape">
+                        <option value="">ETAPE</option>
+                      </select>
+ 
+                    </div>
+ 
+                    <div class="col-xs-1 col-md-1 col-lg-1">
+                      <select class="form-control" tabindex="-1" id="distinction">
+                        <option value="">DISTICTION</option>
+                      </select>
+ 
+                    </div>
+ 
+                    <div class="col-xs-1 col-md-1 col-lg-1" id="divtache">
+                        <select class="form-control" tabindex="-1" id="tache">
+                          <option value="">TACHES</option>
+                        </select>
+ 
+                      </div>
+                      <div class="col-xs-1 col-md-1 col-lg-1" >
+                        <select class="form-control" tabindex="-1" id="etat">
+                          <option value="">STATUS</option>
+                        </select>
+ 
+                      </div>
+                    <div class="col-xs-1 col-md-1 col-lg-1" id="divsat">
+                      <select class="form-control" tabindex="-1" id="sat">
+                        <option value="">SAT</option>
+                      </select>
+ 
+                    </div>
+                    <div class="col-xs-1 col-md-1 col-lg-1" style="display:none" id="divmot">
+                    <select class="form-control" tabindex="-1" id="motif">
+                          <option value="">MOTIF</option>
+                        </select>
+ 
+                      </div>
+ 
+                    <div class="col-xs-1 col-md-1 col-lg-1"  style="display:none" id="divfav">
+                    <select class="form-control" tabindex="-1" id="typefav">
+                      <option value="">TYPE FAV</option>
+                      <option value="1">FAV_A</option>
+                      <option value="2">FAV_B</option>
+                      <option value="3">FAV_C</option>
+                      <option value="4">NON_FAV</option>
+                    </select>
+ 
+                      </div>
+                    <div class="col-xs-1 col-md-1 col-lg-1"   style="display:none" id="divcat">
+                    <select class="form-control" tabindex="-1" id="categorie">
+                          <option value="1">CATEGORIE</option>
+                        </select>
+ 
+                      </div>
+ 
+ 
+ 
+ 
+                    <div class="col-xs-1 col-md-1 col-lg-1">
+                      <select class="form-control" tabindex="-1" id="contr">
+                        <option value="">TYPE CQ</option>
+                        <option value="1">FAV</option>
+                        <option value="2">CIBLE</option>
+                        <option value="3">ISO</option>
+                      </select>
+ 
+                    </div>
+                    <div class="col-xs-1 col-md-1 col-lg-1">
+                      <input class="form-control" tabindex="-1" placeholder="Date Debut" id="datedeb" type="text"/>
+ 
+                      </div>
+                    <div class="col-xs-1 col-md-1 col-lg-1">
+                    <input class="form-control" tabindex="-1" placeholder="Date Fin" id="datefin" type="text"/>
+ 
+                      </div>
+                    <div class="col-xs-1 col-md-1 col-lg-1">
+                      <input class="form-control" tabindex="-1" placeholder="Matricule" id="matr" type="text"/>
+ 
+                          </div>
+                      <div class="col-xs-1 col-md-2 col-lg-2">
+					  <a   title="echantillons CQ"> <span style="cursor:pointer"><i class="fa fa-ellipsis-v fa-3x link">  </i></span> </a>
+                        <a onclick="searchCQalm(0);" class="text-warning" title="recherche globale"><span style="cursor:pointer" class="gray"><i class="fa fa-search fa-3x link"> </i></span></a>
+						<a   > <span><i class="fa fa-ellipsis-v fa-3x link">  </i></span> </a>
+                        <a onclick="searchCQalm(1);" class="text-info" title="echantillons CQ"> <span style="cursor:pointer"><i class="fa fa-filter fa-3x link">  </i></span> </a>
+                        <a> <span><i class="fa  fa-ellipsis-v fa-3x link">  </i></span> </a>
+                        <a onclick="loadGraph();" class="text-success" title="Statistiques"> <span style="cursor:pointer"><i class="fa fa-pie-chart fa-3x link"></i></span> </a>
+						<a   > <span><i class="fa fa-ellipsis-v fa-3x link">  </i></span> </a>
+                        <a href='#' data-toggle='modal' data-target='#myModalQte' onclick="//params();" class="" title="Parametre"> <span style="cursor:pointer"><i class="fa fa-cog fa-3x link"></i></span> </a>
+						<a   > <span><i class="fa fa-ellipsis-v fa-3x link">  </i></span> </a>
+                      </div>
+                  </div>
+ 
+ 
+                </div>
+              </div>
+            </div>
+ 
+ 
+          </div>
+ 
+ 
+ 
+ 
+        </div>
+      </div>
+ 
+ 
+ 
+ 
+    </div>
+  </div>
+<div id="loadG" class="col-md-4" style="display:none">
+  <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+  <span class="sr-only">Loading...</span>
+</div>
+<div id="divGraph" class="col-md-12 col-sm-12 col-xs-12">
+ 
+</div>
+<div id="loadC" class="col-md-4" style="display:none">
+  <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+  <span class="sr-only">Loading...</span>
+</div>
+<div id="div" class="col-md-12 col-sm-12 col-xs-12">
+</div>
+ 
+ 
+</div>
+<!-- MODAL POUR FAIRE LA CQ DEPARTEMENT ALMERYS  -->
+<div id="myModalCq" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-md">
+ 
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title text-primary" id="titre" ></h4>
+      </div>
+      <div class="modal-body">
+            <form class="form-horizontal">
+              <div class="form-group">
+                <label class="control-label col-sm-2" for="email">MATRICULE:</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" placeholder="" id="matricule">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-sm-2" for="" id="lib_fact">NUMERO FACTURE:</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" id="nfact" placeholder="">
+                </div>
+              </div>
+ 
+              <div class="form-group">
+                <label class="control-label col-sm-2" for="pwd" id="lib_nuo">NUMERO NUO:</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" id="nnuo" placeholder="">
+                </div>
+              </div>
+ 
+              <input type="hidden" class="form-control" id="is_int" placeholder="" value="false">
+ 
+              <div class="form-group">
+                <label class="control-label col-sm-2" for="pwd" >NUMERO PS:</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" id="nps" placeholder="">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-sm-2" for="mont">MONTANT:</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" id="mont" placeholder="">
+                </div>
+              </div>
+ 
+              <!--<div class="form-group" style="display: none;" id="div_etat">
+                <label class="control-label col-sm-2" for="mont">ETAT:</label>
+                <div class="col-sm-10">
+                  <select  class="form-control" id="etat" onchange="">
+                    <option value=""></option>
+                    <option value=""></option>
+                    <option value=""></option>
+                    <option value=""></option>
+                  </select>
+                </div>
+              </div>-->
+              <div class="form-group" style="display: none" id="div_int_etat">
+                <label class="control-label col-sm-2" for="statut">ETAT:</label>
+                <div class="col-sm-10">
+                  <select class="form-control" id="eta_int">
+                    <option value=""></option><option value="a_controler">a_controler</option><option value="en_cours">en_cours</option><option value="en_instance">en_instance</option>
+ 
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-sm-2" for="statut">STATUT:</label>
+                <div class="col-sm-10">
+                  <select  class="form-control" id="statut" onchange="loadMotifMod(this.value)">
+ 
+                  </select>
+                </div>
+              </div>
+ 
+ 
+ 
+              <div class="form-group">
+                <label class="control-label col-sm-2" for="statut">MOTIF:</label>
+                <div class="col-sm-10">
+                  <select  class="form-control" id="motifmodal" onchange="onNew(this.value)">
+ 
+                  </select>
+                </div>
+              </div>
+ 
+              <div class="form-group hidden" id="new">
+                <label class="control-label col-sm-2" for="statut"></label>
+                <div class="col-sm-10">
+                  <input  class="form-control" id="new_motif" type="text"/>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-sm-2" for="statut">TYPE DE CONTROLE:</label>
+                <div class="col-sm-10">
+                  <select  class="form-control" id="type_controle">
+ 
+                  </select>
+                </div>
+              </div>
+ 
+              <div class="form-group">
+                <label class="control-label col-sm-2" for="statut">LISTE CLIENT :</label>
+                <div class="col-sm-10">
+                  <select  class="form-control" id="alm_client">
+ 
+                  </select>
+                </div>
+              </div>
+              <!--  ETAT OPERATEUR SAISIE -->
+              <div class="form-group">
+                <label class="control-label col-sm-2" for="statut">Status Operateur Saisie :</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" id="status_op_saisie" placeholder="" disabled>
+                </div>
+              </div>
+              <!--  ETAT OPERATEUR SAISIE -->
+              <div class="form-group">
+                <label class="control-label col-sm-2" for="statut">Detail Operateur Saisie :</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" id="commentaire_op_saisie" placeholder="" disabled>
+                </div>
+              </div>
+              <!--  ETAT REPRISE  -->
+              <div class="form-group">
+                <label class="control-label col-sm-2" for="statut">ETAT REPRISE:</label>
+                <div class="col-sm-10">
+                  <select  class="form-control" id="reprise_fini">
+                    <option value="true">TERMINER REPRISE</option>
+                    <option value="false">NE PAS TERMINER REPRISE</option>
+                  </select>
+                </div>
+              </div>
+            </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" onclick="updateCQ()" data-dismiss="modal">OK</button>
+ 
+ 
+ 
+      </div>
+ 
+    </div>
+  </div>
+</div>
+ 
+ 
+<div id="myModalQte" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-md">
+ 
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title text-primary" id="titre" ></h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal">
+ 
+ 
+          <div class="form-group">
+            <label class="control-label col-sm-2" for="statut">DEPARTEMENT</label>
+            <div class="col-sm-10">
+              <select  class="form-control" id="depmodal" onchange="loadsousspecialiteMod(this.value)">
+ 
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="control-label col-sm-2" for="statut">SOUS SPECIALITE</label>
+            <div class="col-sm-10">
+              <select  class="form-control" id="sspecmodal" onchange="loadPopuMod(this.value)">
+ 
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="control-label col-sm-2" for="statut">QUANTITE</label>
+            <div class="col-sm-10">
+              <input  class="form-control" id="qtemod" value="">
+            </div>
+          </div>
+ 
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" onclick="updateQte()" data-dismiss="modal">OK</button>
+ 
+ 
+ 
+      </div>
+ 
+    </div>
+  </div>
+</div>
+</div>
+ 
+<!-- ECharts -->
+<script src="/vendors/echarts/dist/echarts.min.js"></script>
+<script src="/js/jquery-1.12.4.js"></script>
+<script src="/js/dependencies/sails.io.js"></script>
+<script src="/js/jquery-ui.min.js"></script>
+<script src="/bootstrap/js/bootstrap.min.js"></script>
+<script src="/vendors/fastclick/lib/fastclick.js"></script>
+<!-- NProgress -->
+<script src="/vendors/nprogress/nprogress.js"></script>
+<script src="/js/dossierEtapeApp.js"></script>
+<script src="/js/echarts/theme.js"></script>
+<script src="/js/echarts/echarts.js"></script>
+ 
+<!-- Custom Theme Scripts -->
+<script src="/js/custom.min.js"></script>
+ 
+<script>
+ 
+  function loaddistinction() {
+    $.ajax({
+      type: "GET",
+      url: "/loadDistinction",
+ 
+      success: function(msg){
+ 
+        var html = "<option value=''>DISTINCTION</option>";
+        var data = null;
+ 
+        try {
+          data = JSON.parse(msg);
+          for (var i = 0 ; i<data.length ; i++){
+            html += "<option value='"+data[i].id_distinction+"'>"+data[i].libelle+"</option>"
+          }
+          $("#distinction").html(html);
+        }
+        catch (e) {
+          $("#distinction").html(html);
+        }
+ 
+      },
+      error: function (error) {
+ 
+      }
+    });
+  }
+  var niveaux = <%=req.session.niveaux %>;
+  var user = <%=req.session.user %>;
+ 
+ 
+  //alert(niveaux);
+</script>
+<script src="/js/cq_almerys.js"></script>
+ 
+ 
+</body>
+</html>

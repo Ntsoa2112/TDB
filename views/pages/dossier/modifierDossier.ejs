@@ -1,0 +1,423 @@
+
+<% include ../../includes/entete.ejs %>
+
+<div class="container-fluid">
+  <!-- modal-->
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <!--Content-->
+      <form method="GET" action="/modifierQV" >
+      <div class="modal-content">
+        <!--Header-->
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" id="myModalLabel">Modification etape</h4>
+        </div>
+        <!--Body-->
+        <div class="modal-body">
+          <div class="form-group col-lg-12">
+            <label class="control-label col-lg-4" for="last-name">Vitesse :<span class="required"></span>
+            </label>
+            <div class="col-lg-6">
+              <input type="text"  id="vit" name="vit" required="required" class="form-control col-md-7 col-xs-12 input-sm" value="">
+            </div>
+          </div>
+          <div class="form-group col-lg-12">
+            <label class="control-label col-lg-4" for="last-name">Quantité journalière :<span class="required"></span>
+            </label>
+            <div class="col-lg-6">
+              <input type="text"  id="qte" name="qte" required="required" class="form-control col-md-7 col-xs-12 input-sm" value="">
+            </div>
+          </div>
+          <input type="text"  id="idLien" name="id" required="required"  class="hidden" value="">
+          <input type="text"  id="idEtape" name="idetape" required="required"  class="hidden" value="">
+        </div>
+        <!--Footer-->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermé</button>
+          <button type="submit" class="btn btn-primary">Sauvegardé</button>
+        </div>
+      </div>
+      </form>
+      <!--/.Content-->
+    </div>
+  </div>
+
+  <!--fin  modal-->
+  <div class="row col-lg-12"> <!-- CONTAINER -->
+
+
+    <div class="row col-lg-12">
+
+
+      <div class="page-title" style="margin-left:30px">
+        <div class="title_left">
+          <h2 style="color:#2B75A6;">
+            Gestion dossier
+          </h2>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+
+
+        </br>
+
+   <!--<div class="panel panel-default">
+          <div class="panel-heading">Modification dossier</div>
+          <div class="panel-body">
+            </br>
+            <form method="GET" action="/modifierDossier" id="demo-form2" data-parsley-validate class="form-horizontal form-label-left">
+
+              <%/* dossiers.forEach(function(dossier){ %>
+              <div class="form-group col-lg-12">
+                <label class="control-label col-lg-4" for="first-name">Numéro dossier :<span class="required"></span>
+                </label>
+                <input type="hidden" id="id_dossier" name="id_dossier" value="<%= dossier.id_dossier %>">
+                <div class="col-lg-6"> <!-- col-md-6 col-sm-6 col-xs-12 -->
+                  <input type="text" id="num_dossier" required="required" name="num_dossier" class="form-control col-md-7 col-xs-12 input-sm" value="<%= dossier.num_dossier %>">
+                </div>
+              </div>
+
+              <div class="form-group col-lg-12">
+                <label class="control-label col-lg-4" for="last-name">Client :<span class="required"></span>
+                </label>
+                <div class="col-lg-6">
+                  <input type="text"  id="client" name="client" required="required" class="form-control col-md-7 col-xs-12 input-sm" value="<%= dossier.client %>">
+                </div>
+              </div>
+
+              <div class="form-group col-lg-12">
+                <label class="control-label col-lg-4" for="first-name">Correspondant :<span class="required"></span>
+                </label>
+                <div class="col-lg-6">
+                  <input type="text" id="corresp" required="required" name="corresp" class="form-control col-md-7 col-xs-12 input-sm" value="<%= dossier.corresp %>">
+                </div>
+              </div>
+
+              <div class="form-group col-lg-12">
+                <label class="control-label col-lg-4" for="first-name">Atelier :<span class="required"></span>
+                </label>
+                <div class="col-lg-6">
+                  <input type="text" id="atelier" required="required" name="atelier" class="form-control col-md-7 col-xs-12 input-sm" value="<%= dossier.atelier %>">
+                </div>
+              </div>
+
+              <div class="form-group col-lg-12">
+                <label class="control-label col-lg-4" for="last-name">Démarrage :<span class="required"></span>
+                </label>
+                <div class="col-lg-6">
+                  <input type="text"  id="demarrage" name="demarrage" required="required" class="form-control col-md-7 col-xs-12 input-sm" value="<%= dossier.demarrage %>">
+                </div>
+              </div>
+
+              <div class="form-group col-lg-12">
+                <label class="control-label col-lg-4" for="last-name">Date de livraison :<span class="required"></span>
+                </label>
+                <div class="col-lg-6">
+                  <input type="text"  id="date_livr" name="date_livr" required="required" class="form-control col-md-7 col-xs-12 input-sm" value="<%= dossier.date_livr %>">
+                </div>
+              </div>
+
+              <div class="form-group col-lg-12">
+                <label class="control-label col-lg-4" for="last-name">Delai :<span class="required"></span>
+                </label>
+                <div class="col-lg-6">
+                  <input type="text"  id="delai" name="delai" required="required" class="form-control col-md-7 col-xs-12 input-sm" value="<%= dossier.delai %>">
+                </div>
+              </div>
+
+              <hr width="100%"> <!-- ============================================================================================================================================================== -->
+              </br>
+
+              <div class="form-group col-lg-12">
+                <label class="control-label col-lg-4" for="last-name">Vitesse estimée :<span class="required"></span>
+                </label>
+                <div class="col-lg-6">
+                  <input type="text"  id="vitesse_estime" name="vitesse_estime" required="required" class="form-control col-md-7 col-xs-12 input-sm" value="<%= dossier.vitesse_estime %>">
+                </div>
+              </div>
+              <div class="form-group col-lg-12">
+                <label class="control-label col-lg-4" for="last-name">Vitesse réelle :<span class="required"></span>
+                </label>
+                <div class="col-lg-6">
+                  <input type="text"  id="vitesse_reelle" name="vitesse_reelle" required="required" class="form-control col-md-7 col-xs-12 input-sm" value="<%= dossier.vitesse_reelle %>">
+                </div>
+              </div>
+              <div class="form-group col-lg-12">
+                <label class="control-label col-lg-4" for="last-name">Volume prévu :<span class="required"></span>
+                </label>
+                <div class="col-lg-6">
+                  <input type="text"  id="volume_prevue" name="volume_prevue" required="required" class="form-control col-md-7 col-xs-12 input-sm" value="<%= dossier.volume_prevue %>">
+                </div>
+              </div>
+
+              <hr width="100%"> <!-- ============================================================================================================================================================== -->
+              </br>
+
+              <div class="form-group col-lg-12">
+                <label class="control-label col-lg-4" for="last-name">Etat :<span class="required"></span>
+                </label>
+                <div class="col-lg-6">
+                  <input type="text"  id="etat" name="etat" required="client" class="form-control col-md-7 col-xs-12 input-sm" value="<%= dossier.etat %>">
+                </div>
+              </div>
+
+              <div class="form-group col-lg-12">
+                <label class="control-label col-lg-4" for="last-name">Ressource op :<span class="required"></span>
+                </label>
+                <div class="col-lg-6">
+                  <input type="text"  id="ressource_op" name="ressource_op" required="required" class="form-control col-md-7 col-xs-12 input-sm" value="<%= dossier.resource_cp %>">
+                </div>
+              </div>
+              <div class="form-group col-lg-12">
+                <label class="control-label col-lg-4" for="last-name">Ressource cp:<span class="required"></span>
+                </label>
+                <div class="col-lg-6">
+                  <input type="text"  id="ressource_cp" name="ressource_cp" required="required" class="form-control col-md-7 col-xs-12 input-sm" value="<%= dossier.resource_op %>">
+                </div>
+              </div>
+              <!--<div class="form-group col-lg-12">
+								<label class="control-label col-lg-4" for="last-name">ID pers cp :<span class="required"></span>
+								</label>
+								<div class="col-lg-6">
+									<input type="text"  id="id_pers_cp" name="id_pers_cp" required="required" class="form-control col-md-7 col-xs-12" value="<%= dossier.id_pers_cp %>">
+								</div>
+							</div>
+							<div class="form-group col-lg-12">
+								<label class="control-label col-lg-4" for="last-name">ID equipe :<span class="required"></span>
+								</label>
+								<div class="col-lg-6">
+									<input type="text"  id="id_equipe" name="id_equipe" required="required" class="form-control col-md-7 col-xs-12" value="<%= dossier.id_equipe %>">
+								</div>
+							</div>-->
+
+
+              </br>
+              <div class="form-group col-lg-12">
+                <div class="col-lg-6" style="">
+                  <button type="submit" class="btn btn-primary btn-block btn-sm">Modifier</button>
+                </div>
+              </div>
+              <% }); */%>
+
+            </form>
+          </div>
+        </div>-->
+      </div>
+
+      <!-- LISTE ETAPE -->
+      <!--<div class="row" style="margin-right:700px; float:right">
+				<div class="x_content">
+					<h3>Liste etape dosier <%= dossiers.num_dossier %></h3>
+					<table class="table table-striped table-bordered table-hover table-condensed">
+						<thead>
+							<tr>
+								<td>ID</td>
+								<td>Libelle</td>
+								<td>Parent etape</td>
+								<td>Ajouter</td>
+								<td>Supprimer</td>
+							</tr>
+						</thead>
+						<tbody>
+						<% etapes.forEach(function(etape){ %>
+						<tr>
+							<td class=" "><%= etape.id_etape %></td>
+							<td class=" "><%= etape.libelle %></td>
+							<td class=" "><%= etape.parent_etape %></td>
+							<td class = " "><a href="/testById?id=<%= etape.id_etape %>">Ajouter</a></td>
+							<td class = " "><a href="#" onclick="sup(<%= etape.id_etape %>)"  id="supression" name="supression" value="<%= etape.id_etape %>">Supprimer</a>
+							</td>
+						</tr>
+						<% }); %>
+						</tbody>
+					</table>
+				</div>
+			</div>-->
+      <div class="col-lg-6">
+        <!--<div class="page-title" style="">
+                    <div class="title_left">
+                        <h2 style="color:#2B75A6;">
+                          Etape dossier
+                        </h2>
+                    </div>
+                </div>-->
+        </br>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">Liste des opérations associées au dossier</div>
+          <div class="panel-body">
+
+            <table class="table table-bordered">
+              <thead>
+              <tr>
+                <th>Etape</th>
+                <th>Vitesse</th>
+                <th>Quantite journalier</th>
+              </tr>
+              </thead>
+              <tbody>
+
+              <% etapes.forEach(function(etape){ %>
+              <tr>
+                <td><a href="#" data-toggle="modal" data-target="#myModal" onclick="setDataModal('<%=  etape.libelle %>','<%=  etape.id_lien %>','<%=  etape.vitesse %>','<%=  etape.quantite_journalier %>','<%=  etape.id_dossier %>')"> <%=  etape.libelle %></a></td>
+                <td><%=  etape.vitesse %></td>
+                <td><%=  etape.quantite_journalier %></td>
+              </tr>
+              <% }); %>
+
+
+              </tbody>
+            </table>
+
+          </div>
+        </div>
+
+        <table style="">
+          <thead>
+          <tr style="color:black;">
+            <td><strong>ETAPES DOSSIER</strong></td>
+            <td><strong>ETAPES</strong></td>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td>
+              <select name="menu_content"  id="menu_content"   size="15"  data-draggable="target" min-width="300">
+
+                <% etapes.forEach(function(etape){ %>
+                <option  data-draggable="item"  value="<%= etape.id_etape %>" > <%=  etape.libelle %> </option>
+                <% }); %>
+
+              </select>
+            </td>
+            <td>
+              <select name="id_enseigne"  id="id_enseigne"   size="15" class="vcenter"   data-draggable="target">
+                <% etapesAll.forEach(function(etapeAll){ %>
+                <option  data-draggable="item"  value="<%= etapeAll.id_etape %>" > <%=  etapeAll.libelle %> </option>
+                <% }); %>
+              </select>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+        </br>
+       <!-- <div class="panel panel-default">
+          <div class="panel-heading">Gestion opération</div>
+          <div class="panel-body">
+            </br>
+            <form method="GET" action="" id="demo-form2" data-parsley-validate class="form-horizontal form-label-left">
+
+              <div class="form-group col-lg-12">
+                <div class="col-lg-8">
+                  <input type="text" id="num_dossier" required="required" name="num_dossier" class="form-control col-md-7 col-xs-12 input-sm" value="">
+                </div>
+                <div class="col-lg-4" style="">
+                  <button type="submit" class="btn btn-primary btn-block btn-sm">Affectation opération</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+
+        <form method="GET" action="" id="demo-form2" data-parsley-validate class="form-horizontal form-label-left">
+
+          <div class="form-group col-lg-12">
+            <div class="col-lg-6">
+              <button type="submit" class="btn btn-success btn-block btn-sm">Supprimer</button>
+            </div>
+            <div class="col-lg-6" style="">
+              <button type="submit" class="btn btn-primary btn-block btn-sm">Valider</button>
+            </div>
+          </div>
+        </form>-->
+
+      </div>
+    </div>
+    <br />
+    <br />
+    <br />
+  </div>
+
+
+</div>
+
+
+<script src="/js/jquery-1.10.2.min.js"></script>
+<script src="/js/jquery-ui.min.js"></script>
+<script>
+
+  (function()  {
+    if    (  !document.querySelectorAll  || !('draggable' in document.createElement('span')) || window.opera )   { return; }
+    for(var  items = document.querySelectorAll('[data-draggable="item"]'),  len = items.length,     i = 0; i < len; i ++)
+    {
+      items[i].setAttribute('draggable', 'true');
+    }
+
+    var item = null;
+
+    //dragstart event to initiate mouse dragging
+    document.addEventListener('dragstart', function(e)
+    {
+      item = e.target;
+      e.dataTransfer.setData('text', '');
+
+    }, false);
+
+    //dragover event to allow the drag by preventing its default
+    //ie. the default action of an element is not to allow dragging
+    document.addEventListener('dragover', function(e)
+    {
+      if(item)
+      {
+        e.preventDefault();
+      }
+
+    }, false);
+
+    //drop event to allow the element to be dropped into valid targets
+    document.addEventListener('drop', function(e)
+    {
+      //if this element is a drop target, move the item here
+      //then prevent default to allow the action (same as dragover)
+      if(e.target.getAttribute('data-draggable') == 'target')
+      {
+        e.target.appendChild(item);
+        e.preventDefault();
+
+        var liste_produits = '';
+        $('#menu_content').children().each(function()  {
+          //alert($(this).prop('checked') );
+          liste_produits += ',' + $(this).prop('value');
+
+        });
+        $('#liste_produit').val (liste_produits.substr(1, liste_produit.length)) ;
+        //alert('ok');
+      }
+    }, false);
+
+    //dragend event to clean-up after drop or abort
+    //which fires whether or not the drop target was valid
+    document.addEventListener('dragend', function(e)
+    {
+      item = null;
+    }, false);
+
+  })();
+
+  function setDataModal(libelle,id,vit,qte,et){
+      document.getElementById("idLien").value =''+id;
+      document.getElementById("myModalLabel").innerHTML='Modification de '+libelle;
+      if(vit!='' && vit!=null){
+        document.getElementById("vit").value =''+vit;
+      }
+      document.getElementById("qte").value =''+qte;
+      document.getElementById("idEtape").value =''+et;
+  }
+</script>
+<!-- /CONTAINER -->
+

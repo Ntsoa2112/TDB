@@ -1,0 +1,157 @@
+<div class="col-xs-12 col-sm-12">
+  <div class="box">
+    <div class="box-header">
+      <div class="box-name">
+        <i class="fa fa-circle"></i>
+        <span><%= title %></span>
+      </div>
+
+      <div class="no-move"></div>
+    </div>
+    <div class="box-content">
+      <div id="<%= idElement %>" class="<%= classeElement %>"></div>
+    </div>
+  </div>
+</div>
+
+<script src="js/helper.js"></script>
+<link rel="stylesheet" href="/css/grapheStyle.css">
+
+<script>
+
+  function round(value, decimals) {
+
+    return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
+  }
+
+  function refresh(type) {
+
+    var donnee = {};
+    var donnee2 = {};
+
+    //construction des donnees
+    //le format collection du serveur vers format collection coté client
+    //array de la forme {clé : value}
+    <% 	for(var key in data){%>
+
+    var hprd = <%= data2[key]%>;
+    var duree = <%= data[key]%>;
+
+    if(Number(type)==1){
+
+      donnee["<%= key%>"] = <%= data[key]%>;
+
+      donnee2["<%= key%>"] = <%= data2[key]%>;
+    }else if(Number(type)==2){
+      if(duree<8){
+        donnee["<%= key%>"] = <%= data[key]%>;
+
+        donnee2["<%= key%>"] = <%= data2[key]%>;
+      }
+    }else{
+      if(hprd>1){
+        donnee["<%= key%>"] = <%= data[key]%>;
+
+        donnee2["<%= key%>"] = <%= data2[key]%>;
+      }
+    }
+
+    <% } %>
+
+    stackHigh("<%= idElement %>", "<%= titleChart %>", donnee,donnee2);;
+  }
+  function stackHigh(idElement, titre, data, data2){
+    var mat = [];
+    var hp = [];
+    var p = [];
+
+
+    //convertir les donnees
+    for(var key in data){
+      var prod = data[key] - data2[key];
+      mat.push(key);
+      hp.push(round(data2[key],2));
+      p.push(round(prod,2));
+    }
+
+    var option = {
+      chart: {
+        type: 'column'
+      },
+      title: {
+        text: 'STAT HEURE OP'
+      },
+      xAxis: {
+        categories: mat
+      },
+      yAxis: {
+        min: 0,
+        title: {
+          text: 'Temps consomé'
+        },
+        stackLabels: {
+          enabled: true,
+          style: {
+            fontWeight: 'bold',
+            color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
+          }
+        }
+      },
+      legend: {
+        align: 'right',
+        x: -30,
+        verticalAlign: 'top',
+        y: 25,
+        floating: true,
+        backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || 'white',
+        borderColor: '#CCC',
+        borderWidth: 1,
+        shadow: false
+      },
+      tooltip: {
+        headerFormat: '<b>{point.x}</b><br/>',
+        pointFormat: '{series.name}: {point.y} heurs<br/>Total: {point.stackTotal} heurs'
+      },
+      plotOptions: {
+        column: {
+          stacking: 'normal',
+          dataLabels: {
+            enabled: true,
+            color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white',
+            style: {
+              textShadow: '0 0 3px black'
+            }
+          }
+        }
+      },
+      series: [{
+        name: 'Heure Prod',
+        data: p
+      }, {
+        name: 'Heure Hors Prod',
+        data: hp
+      }]
+    };
+    Highcharts.chart(idElement,option);
+    //$('#'+idElement).highcharts();
+  }
+</script>
+<script>
+  $(document).ready(function() {
+    var donnee = {};
+    var donnee2 = {};
+
+    //construction des donnees
+    //le format collection du serveur vers format collection coté client
+    //array de la forme {clé : value}
+    <% 	for(var key in data){%>
+    donnee["<%= key%>"] = <%= data[key]%>;
+    <% } %>
+    <% 	for(var key in data2){%>
+    donnee2["<%= key%>"] = <%= data2[key]%>;
+    <% } %>
+
+    stackHigh("<%= idElement %>", "<%= titleChart %>", donnee,donnee2);
+  });
+
+</script>

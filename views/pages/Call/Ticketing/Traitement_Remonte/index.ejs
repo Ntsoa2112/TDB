@@ -1,0 +1,1590 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TDB Traitement Remontee Call</title>
+
+    <link rel="stylesheet" href="/styles/importer.css">
+    <link rel="stylesheet" href="/bootflat/css/bootflat.min.css">
+    <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/local.css">
+    <link rel="stylesheet" href="/css/Style_v3.css">
+    <link rel="stylesheet" href="/jquery-ui/jquery-ui.css">
+    <style>
+        hr {
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            border: 0;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+    </style>
+    <!--STYLES END-->
+</head>
+
+<body onLoad="loadClientCallTicket();loadActionCallTicket();loadDemandeCallTicket();loadNatureErreurCallTicket();">
+<% if(req.session.droit==1){
+
+%>
+    <% include ../../../../includes/entete.ejs %>
+<% }else{
+
+%>
+    <% include ../../../../includes/enteteOperateur.ejs %>
+
+<% }%>
+<div id="page-wrapper">
+    <!--         MENU  FILTRE         -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class=" row ">
+                <div  class="">
+
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"> <i class="fa fa-bar-chart-o"></i> </h3>
+                            <div class="row">
+                                <form action="/call/ticketing/saisie/get-reporting-saisie" method="post">
+                                    <div class="form-group">
+                                        <div class="col-xs-2 col-md-2 col-lg-2">
+                                            <label> DEMANDE </label>
+                                            <select class="form-control" tabindex="-1" onchange="loadEtatDemandeCallTicket();" name="id_demande" id="demande_ticket">
+                                                <option value=""></option>
+                                            </select>
+                                        </div>
+                                        <div class="col-xs-2 col-md-2 col-lg-2">
+                                            <label> SPECIALITE </label>
+                                            <select class="form-control" tabindex="-1" id="specialite" name="specialite">
+                                                <option value=""></option>
+                                            </select>
+                                        </div>
+                                        <div class="col-xs-2 col-md-2 col-lg-2">
+                                            <label> ETAT </label>
+                                            <select class="form-control" tabindex="-1" id="etat" name="id_etat">
+                                                <option value=""></option>
+                                            </select>
+                                        </div>
+                                        <div class="col-xs-1 col-md-1 col-lg-2">
+                                            <label> CLIENT </label>
+                                            <select class="form-control" tabindex="-1" id="client" name="client">
+                                                <option value=""></option>
+                                            </select>
+                                        </div>
+                                        <div class="col-xs-1 col-md-1 col-lg-1">
+                                            <label> FINESS </label>
+                                            <input class="form-control" tabindex="-1" placeholder="N° FINESS" id="num_finess" type="text" name="num_finess"/>
+                                        </div>
+                                        <div class="col-xs-1 col-md-1 col-lg-1">
+                                            <label> DATE DEBUT </label>
+                                            <input class="form-control" tabindex="-1" placeholder="Date Debut" id="datedeb" name="date_deb" type="text"/>
+                                        </div>
+                                        <div class="col-xs-1 col-md-1 col-lg-1">
+                                            <label> DATE FIN </label>
+                                            <input class="form-control" tabindex="-1" placeholder="Date Fin" id="datefin" name="date_fin" type="text"/>
+                                        </div>
+                                        <div class="col-xs-1 col-md-1 col-lg-1">
+                                            <label> MATRICULE </label>
+                                            <input class="form-control" tabindex="-1" placeholder="Matricule" id="matricule" name="matricule" type="text"/>
+                                        </div>
+                                        <div class="col-xs-1 col-md-2 col-lg-2" style="padding-top: 1%">
+                                            <!-- Etat Remontee -->
+                                            <a onclick="loadDataRemonter();" class="text-warning col-md-3" title="recherche remonte"><span style="cursor:pointer" class="gray"><i class="fa fa-search fa-3x link"> </i></span></a>
+                                            <span></span>
+                                            <!-- Statistique Remonte -->
+                                            <div id="boutton_reporting_view"></div>
+                                        </div>
+
+
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--         DONNEE TRAITEMENT REMONTEE         -->
+    <div id="loadG" class="col-md-4" style="display:none">
+        <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+        <span class="sr-only">Loading...</span>
+    </div>
+    <div id="divGraph" class="col-md-12 col-sm-12 col-xs-12">
+
+    </div>
+    <div id="loadC" class="col-md-4" style="display:none">
+        <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+        <span class="sr-only">Loading...</span>
+    </div>
+    <div id="div" class="col-md-12 col-sm-12 col-xs-12">
+    </div>
+    <!--       MODAL TRAITEMENT REMONTEE    -->
+    <div id="myModalTraiteRemonte" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-md" style="width:100%;max-width:1250px">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title text-primary" id="titre" >Traitement Remontee</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <!-- SECTION FORMULAIRE HORIZONTAL -->
+                        <div class="col-sm-6">
+                            <form class="form-horizontal">
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3" for="modal_remonte_tc">TC :</label>
+                                    <div class="col-sm-9">
+                                        <input  class="form-control" id="modal_remonte_tc" value="">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3" for="modal_remonte_finess">FINESS :</label>
+                                    <div class="col-sm-9">
+                                        <input  class="form-control" id="modal_remonte_finess" value="">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3" for="modal_remonte_nni">NNI :</label>
+                                    <div class="col-sm-9">
+                                        <input  class="form-control" id="modal_remonte_nni" value="">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3" for="modal_remonte_num_facture">N° FACTURE :</label>
+                                    <div class="col-sm-9">
+                                        <input  class="form-control" id="modal_remonte_num_facture" value="">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3" for="modal_remonte_num_pec">N° PEC :</label>
+                                    <div class="col-sm-9">
+                                        <input  class="form-control" id="modal_remonte_num_pec" value="">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3" for="pertinence">Pertinence :</label>
+                                    <div class="col-sm-9">
+                                        <select  class="form-control" id="pertinence" onchange="ModifierPertinence(this.value)">
+                                            <option value=""></option>
+                                            <option value="1">OUI</option>
+                                            <option value="2">NON</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group" id="div_liste_traitement_modal">
+                                    <label class="control-label col-sm-3" for="liste_traitement_modal">Traitement :</label>
+                                    <div class="col-sm-9">
+                                        <select  class="form-control" id="liste_traitement_modal" onchange="ModifierTraitementModal(this.value)">
+                                        </select>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <!-- SECTION COMMENTAIRE  -->
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3" for="modal_remonte_commentaire">COMMENTAIRE :</label>
+                                    <div class="col-sm-8">
+                                        <textarea id="modal_remonte_commentaire" class="form-control" cols="48" rows="10"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--   DIV SECTION HISTORIQUE REMONTEE  -->
+                            <div id="HistoriqueDataRemontee">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" id="boutton_annuler_traitement_modaltraiteremonte" onclick="AnnulerTraitementRemonte()" data-dismiss="modal">Annuler</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--       MODAL TRAITEMENT ACTION REMONTEE -->
+    <div id="myModalTraiteActionRemonte" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-md" style="width:100%;max-width:1250px">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title text-primary" id="titre" >Validation Traitement Remontee</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <!-- SECTION COMMENTAIRE ADMIN  -->
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3" for="modal_traitement_commentaire">COMMENTAIRE :</label>
+                                    <div class="col-sm-8">
+                                        <textarea id="modal_traitement_commentaire" class="form-control" cols="50" rows="10"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- SECTION ACTION -->
+                        <div class="col-sm-6" id="div_action_ticketnew">
+                            <form class="form-horizontal">
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3" for="action_ticket">Action :</label>
+                                    <div class="col-sm-9">
+                                        <select  class="form-control" id="action_ticket" onchange="">
+                                        </select>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" onclick="ValiderTraitementRemonte()" data-dismiss="modal">Valider</button>
+                    <button type="button" class="btn btn-danger" onclick="AnnulerTraitementRemonte()" data-dismiss="modal">Annuler</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--        MODAL DOUBLONS NUM FINESS       -->
+    <div id="myModalAffichageDoublonsRemonte" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-md" style="width:100%;max-width:1250px">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title text-primary" id="titre" >Affichage Doublons Num finess </h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <!-- SECTION DIV TABLEAU  -->
+                        <div id="tableauDoublonsRemonte"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" onclick="ContinuerTraitementDoublons()" data-dismiss="modal">Continuer</button>
+                    <button type="button" class="btn btn-danger" onclick="AnnulerTraitementRemonte()" data-dismiss="modal">Annuler</button>
+                </div>
+            </div>
+        </div>
+    </div>
+<!--                MODAL AFFICHER MODIFICATION SAISIE       -->
+    <div id="myModalTraiteSaisie" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-md" style="width:100%;max-width:1250px">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title text-primary" id="titre" >Traitement Saisie</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <!-- SECTION FORMULAIRE HORIZONTAL -->
+                        <div class="col-sm-6">
+                            <form class="form-horizontal">
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3" for="modal_saisie_tc">TC :</label>
+                                    <div class="col-sm-9">
+                                        <input  class="form-control" id="modal_saisie_tc" value="">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3" for="modal_saisie_specialite">SPECIALITE :</label>
+                                    <div class="col-sm-9">
+                                        <select  class="form-control" id="modal_saisie_specialite" onchange="">
+                                            <option value=""></option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3" for="modal_saisie_finess">FINESS :</label>
+                                    <div class="col-sm-9">
+                                        <input  class="form-control" id="modal_saisie_finess" value="">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3" for="modal_saisie_nuo">NUO :</label>
+                                    <div class="col-sm-9">
+                                        <input  class="form-control" id="modal_saisie_nuo" value="">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3" for="modal_saisie_num_fac">N° FACTURE :</label>
+                                    <div class="col-sm-9">
+                                        <input  class="form-control" id="modal_saisie_num_fac" value="">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3" for="modal_saisie_num_pec">N° PEC :</label>
+                                    <div class="col-sm-9">
+                                        <input  class="form-control" id="modal_saisie_num_pec" value="">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3" for="modal_saisie_nni">NNI :</label>
+                                    <div class="col-sm-9">
+                                        <input  class="form-control" id="modal_saisie_nni" value="">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3" for="modal_saisie_date_nais">Date de Naissance :</label>
+                                    <div class="col-sm-9">
+                                        <input  class="form-control" id="modal_saisie_date_nais" value="">
+                                    </div>
+                                </div>
+                                <div class="form-group" id="show_nature_erreur">
+                                    <label class="control-label col-sm-3" for="modal_saisie_date_nais">Nature d'erreur :</label>
+                                    <div class="col-sm-9">
+                                        <select  class="form-control" id="modal_saisie_nature_erreur">
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group" id="div_liste_traitement_modal_saisie">
+                                    <label class="control-label col-sm-3" for="liste_traitement_saisie_modal">Traitement :</label>
+                                    <div class="col-sm-9">
+                                        <select  class="form-control" id="liste_traitement_saisie_modal" onchange="ModifierTraitementModalSaisie(this.value)">
+                                        </select>
+                                    </div>
+                                </div>
+                                <hr/>
+                                <!--   TRAITEMENT SAISIE ++  -->
+                                <div id="div_traitement_suite_saisie">
+                                    <h3 style="color: #4e342e"">Formulaire de validation</h3>
+                                    <br>
+                                    <!--   Action Enregistrer -->
+                                    <div class="row">
+                                        <div id="div_form_saisie_traitement">
+                                            <label class="control-label col-sm-3" for="action_saisie_modal">Action :</label>
+                                            <div class="col-sm-9" id="div Modal">
+                                                <select  class="form-control" id="action_saisie_modal" onchange="">
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <!--   Action Fin -->
+                                    <div class="row">
+                                        <label class="control-label col-sm-3" for="modal_saisie_commentaire_action">COMMENTAIRE :</label>
+                                        <div class="col-sm-9">
+                                            <textarea id="modal_saisie_commentaire_action" class="form-control" cols="54" rows="10"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <!-- SECTION COMMENTAIRE  -->
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3" for="modal_saisie_commentaire">COMMENTAIRE :</label>
+                                    <div class="col-sm-8">
+                                        <textarea id="modal_saisie_commentaire" class="form-control" cols="48" rows="10"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr/>
+                            <!--   DIV SECTION HISTORIQUE REMONTEE  -->
+                            <div id="HistoriqueDataSaisie">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="boutton_valider_traitement_modaltraitesaisie" onclick="ValiderTraitementSaisie()" >Valider</button>
+                    <button type="button" class="btn btn-danger" id="boutton_annuler_traitement_modaltraitesaisie" onclick="AnnulerTraitementSaisie()" data-dismiss="modal">Annuler</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+
+<!-- ECharts -->
+<script src="/vendors/echarts/dist/echarts.min.js"></script>
+<script src="/js/jquery-1.12.4.js"></script>
+<script src="/js/dependencies/sails.io.js"></script>
+<script src="/js/jquery-ui.min.js"></script>
+<script src="/bootstrap/js/bootstrap.min.js"></script>
+<script src="/vendors/fastclick/lib/fastclick.js"></script>
+<!-- NProgress -->
+<script src="/vendors/nprogress/nprogress.js"></script>
+<script src="/js/dossierEtapeApp.js"></script>
+<script src="/js/echarts/theme.js"></script>
+<script src="/js/echarts/echarts.js"></script>
+
+<!-- Custom Theme Scripts -->
+<script src="/js/custom.min.js"></script>
+
+
+<script src="/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+<script src="/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
+<script src="/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
+<script src="/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+<script src="/vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+<script src="/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+<script src="/vendors/datatables.net-scroller/js/datatables.scroller.min.js"></script>
+<script src="/vendors/jszip/dist/jszip.min.js"></script>
+<script src="/vendors/pdfmake/build/pdfmake.min.js"></script>
+<script src="/vendors/pdfmake/build/vfs_fonts.js"></script>
+<!-- CHART INJECT -->
+<script src="/js/echarts/theme.js"></script>
+<!--<script src="/js/echarts/echarts.js"></script>-->
+<script src="/vendors/Chart.js/dist/Chart.js"></script>
+<!-- Custom Theme Scripts -->
+<script src="/js/custom.min.js"></script>
+
+<script src="/js/moment.min.js"></script>
+<script src="/js/cq_almerys.js"></script>
+<!--script src="/js/almerys_heure.js"></script-->
+<script>
+    // GLOBAL VARIABLE
+    var dataIdNiveauGlobal = parseInt('<%- req.session.UserRemonteCall.id_niveau %>');
+    var dataListeEtatAutoriserGlobal = '<%- req.session.UserRemonteCall.etat_afficher %>';
+    //-- Variable Remontee
+    var dataRemonteGlobal = [];
+    var valeurHistorique = {};
+    var fullDataRemonteGlobal = {};
+    var canModif = false;
+    var valeurTicket = {};
+    //-- Variable Saisie
+    var dataSaisieGlobal = [];
+    var fullDataSaisieGlobal = {};
+    var valeurHistoriqueSaisieGlobal = {};
+    var valeurSaisieGlobal = {};
+    var etatDenandeSaisieGlobal = [];
+    // IS VIEW CHAT CHANGE
+    function changeSecondToBasicHourFormat(seconds){
+        /*var formatcorrect=  moment("2015-01-01").startOf('day')
+          .seconds(seconds)
+          .format('HH:mm:ss');*/
+        var dur = moment.duration(seconds, "seconds");
+        var formatcorrect = Math.floor(dur.asHours()) + moment.utc(dur.asMilliseconds()).format(":mm:ss");
+        if(parseInt(Math.floor(dur.asHours()))<10)
+        {
+            formatcorrect = "0"+Math.floor(dur.asHours()) + moment.utc(dur.asMilliseconds()).format(":mm:ss");
+        }
+        return formatcorrect.toString();
+    }
+
+    // GET LISTE SPECIALITE TICKETING CALL
+    function loadspecialiteCallTicket(id_demande)
+    {
+        $.ajax({
+            type: "GET",
+            url: "/call/ticketing/get-specialite",
+
+            success: function(msg){
+
+                var html = "<option value=''></option>";
+                var data = null;
+
+                try {
+                    data = JSON.parse(msg);
+                    for (var i = 0 ; i<data.length ; i++){
+                        html += "<option value='"+data[i].libelle+"'>"+data[i].libelle+"</option>"
+                    }
+                    // ajout filtre recherche
+                    console.log(id_demande);
+                    if(id_demande.toString() === '2')
+                    {
+                        var html_autre = ""
+                        html_autre = "<option value=''></option>";
+                        html_autre += "<option value='OPTIQUE'>OPTIQUE</option>";
+                        html_autre += "<option value=\"DENTAIRE','AUDIO\">AUDIO/DENTAIRE</option>";
+                        html_autre += "<option value='HOSPI'>HOSPI</option>";
+                        html_autre += "<option value=\"Auxiliaires','Labo','MG','MS','Pharma','Radiologue','Soins Externes','Soins dentaires','Transport\">TPS/SE</option>";
+                        $("#specialite").html(html_autre);
+                    }
+                    else
+                    {
+                        $("#specialite").html(html);
+                    }
+                    // ajout filtre modal saisie
+                    $("#modal_saisie_specialite").html(html);
+                }
+                catch (e) {
+                    $("#specialite").html(html);
+                }
+
+            },
+            error: function (error) {
+
+            }
+        });
+    }
+    // GET LISTE Nature Erreur TICKETING CALL
+    function loadNatureErreurCallTicket()
+    {
+        $.ajax({
+            type: "GET",
+            url: "/call/ticketing/get-nature-erreur",
+
+            success: function(msg){
+
+                var html = "<option value=''></option>";
+                var data = null;
+
+                try {
+                    data = JSON.parse(msg);
+                    for (var i = 0 ; i<data.length ; i++){
+                        html += "<option value='"+data[i].libelle+"'>"+data[i].libelle+"</option>"
+                    }
+                    // ajout filtre modal nature erreur
+                    $("#modal_saisie_nature_erreur").html(html);
+                }
+                catch (e) {
+                    //$("#specialite").html(html);
+                }
+
+            },
+            error: function (error) {
+
+            }
+        });
+    }
+    // GET LISTE SPECIALITE TICKETING CALL
+    function loadEtatDemandeCallTicket()
+    {
+        $("#specialite").html("");
+        let id_demande_ticket = $("#demande_ticket").val();
+        let html_reporting = '<a onclick="loadReportingEtat();" class="text-success col-md-3" title="Statistiques"> <span style="cursor:pointer"><i class="fa fa-pie-chart fa-3x link"></i></span> </a>';
+        if(id_demande_ticket === "")
+        {
+            $("#etat").html("<option value=''></option>");
+            return;
+        }
+        if(id_demande_ticket.toString() === '2')
+        {
+            html_reporting = '<button type="submit" class="text-success col-md-3" title="Statistiques"> ' +
+                '<span style="cursor:pointer">' +
+                '<i class="fa fa-pie-chart fa-3x link"></i></span> </button>';
+            $("#boutton_reporting_view").html(html_reporting);
+        }
+        else
+        {
+            $("#boutton_reporting_view").html(html_reporting);
+        }
+        loadspecialiteCallTicket(id_demande_ticket);
+        $.ajax({
+            type: "GET",
+            url: "/call/ticketing/get-etat-demande?id_demande_ticket="+id_demande_ticket,
+
+            success: function(msg){
+
+                var html = "<option value=''></option>";
+                var html_modal_etat = "<option value=''></option>";
+                var data = null;
+
+                try {
+                    data = JSON.parse(msg);
+                    etatDenandeSaisieGlobal = [];
+                    for (var i = 0 ; i<data.length ; i++){
+                        html += "<option value='"+data[i].id+"'>"+data[i].libelle+"</option>";
+                        if(data[i].id !== 2 && id_demande_ticket.toString() === '1')
+                        {
+                            html_modal_etat+=  "<option value='"+data[i].id+"'>"+data[i].libelle+"</option>";
+                        }
+                        // assignation Etat Global Saisie;
+                        etatDenandeSaisieGlobal.push(data[i]);
+                    }
+                    $("#etat").html(html);
+                    console.log(html_modal_etat);
+                    $("#liste_traitement_modal").html(html_modal_etat);
+                }
+                catch (e) {
+                    $("#etat").html(html);
+                }
+
+            },
+            error: function (error) {
+                alert("Erreur lors de la recuperation des données");
+            }
+        });
+    }
+    // GET LISTE ACTION TICKETING CALL
+    function loadActionCallTicket()
+    {
+        $.ajax({
+            type: "GET",
+            url: "/call/ticketing/get-action-ticket",
+
+            success: function(msg){
+
+                var html = "<option value=''></option>";
+                var data = null;
+
+                try {
+                    data = JSON.parse(msg);
+                    for (var i = 0 ; i<data.length ; i++){
+                        html += "<option value='"+data[i].id+"'>"+data[i].libelle+"</option>"
+                    }
+                    $("#action_ticket").html(html);
+                    // Assignation Modal
+                    $("#action_saisie_modal").html(html);
+                }
+                catch (e) {
+                    $("#action_ticket").html(html);
+                }
+
+            },
+            error: function (error) {
+                alert("Erreur lors de la recuperation des données");
+            }
+        });
+    }
+    // GET LISTE DEMANDE TICKETING CALL
+    function loadDemandeCallTicket()
+    {
+        $.ajax({
+            type: "GET",
+            url: "/call/ticketing/get-demande-ticket",
+
+            success: function(msg){
+
+                var html = "<option value=''></option>";
+                var data = null;
+
+                try {
+                    data = JSON.parse(msg);
+                    for (var i = 0 ; i<data.length ; i++){
+                        html += "<option value='"+data[i].id+"'>"+data[i].libelle+"</option>"
+                    }
+                    $("#demande_ticket").html(html);
+                }
+                catch (e) {
+                    $("#demande_ticket").html(html);
+                }
+
+            },
+            error: function (error) {
+                alert("Erreur lors de la recuperation des données");
+            }
+        });
+    }
+    // GET LISTE CLIENT TICKETING CALL
+    function loadClientCallTicket()
+    {
+        $.ajax({
+            type: "GET",
+            url: "/call/ticketing/get-client",
+
+            success: function(msg){
+
+                var html = "<option value=''></option>";
+                var data = null;
+
+                try {
+                    data = JSON.parse(msg);
+                    for (var i = 0 ; i<data.length ; i++){
+                        html += "<option value='"+data[i].nom+"'>"+data[i].nom+"</option>"
+                    }
+                    $("#client").html(html);
+                }
+                catch (e) {
+                    $("#client").html(html);
+                }
+
+            },
+            error: function (error) {
+                alert("Erreur lors de la recuperation des données");
+            }
+        });
+    }
+    // AFFICHAGE DONNEE REPORTING
+    function loadReportingEtat() {
+        var dtdb = $("#datedeb").datepicker().val();
+        var dtfn = $("#datefin").datepicker().val();
+        var sp = $("#specialite").val();
+        var etat = $("#etat").val();
+        var client = $("#client").val();
+        var num_finess = $("#num_finess").val();
+        var matricule= $("#matricule").val();
+        if(isNaN(parseInt(matricule.toString())) && matricule!="")
+        {
+            alert("Veuillez entrer un matricule valide!");
+            return;
+        }
+        if(isNaN(parseInt(num_finess.toString())) && num_finess!="")
+        {
+            alert("Veuillez entrer un num_finess valide!");
+            return;
+        }
+        if(matricule == "") matricule="0";
+        if(sp.toString() == "")
+        {
+            //alert("Veuillez selectionner un Dossier!");
+            //return;
+        }
+        if(dtdb.toString() == "" || dtfn.toString() == "")
+        {
+            //alert("Veuillez selectionner les deux dates!");
+            //return;
+        }
+        $("#div").html("");
+        $.ajax({
+            type: "POST",
+            url: "/call/ticketing/remonte/get-reporting",
+            data: {
+                date_deb: dtdb,
+                date_fin: dtfn,
+                specialite: sp,
+                matricule: matricule,
+                id_etat: etat,
+                client: client,
+                num_finess: num_finess,
+            },
+            beforeSend: function (xhr) {
+                $("#loadC").show();
+                $("#tableFiltre").remove();
+            },
+            success: function (msg) {
+                $("#loadC").hide();
+                //dataRemonteGlobal = [];
+                var data = msg;
+                //dataRemonteGlobal = data;
+                //  console.log(data);
+                var html ="<div class='col-md-12 col-sm-12 col-xs-12'>"+
+                    "          <div class='x_panel'>"+
+                    "            <div class='x_title'>"+
+                    "            <h2>REPORTING REMONTE CALL</h2>"+
+                    "          <ul class='nav navbar-right panel_toolbox'>"+
+                    "            <li><a class='collapse-link'><i class='fa fa-chevron-up'></i></a>"+
+                    "            </li>"+
+                    ""+
+                    "            <li><a class='close-link'><i class='fa fa-close'></i></a>"+
+                    "            </li>"+
+                    "            </ul>"+
+                    "            <div class='clearfix'></div>"+
+                    "            </div>"+
+                    "            <div class='x_content'>"+
+                    "       " +
+                    "   <div id='tableFiltre'>" +
+                    "<h2></h2>"+
+                    "";
+                // Boucle Donnee Remonte
+                let nombre_etat_encours = 0;
+                let nombre_etat_non_traiter = 0;
+                let nombre_etat_traite = 0;
+                let nombre_etat_aglae = 0;
+                let nombre_pertinence_oui = 0;
+                let nombre_pertinence_non = 0;
+                for(let i=0,maxlenReporting=data.length; i<maxlenReporting;i++)
+                {
+                    let etat = "";
+                    let pertinence = "";
+                    if(data[i].id_etat_demande)
+                    {
+                        etat = data[i].id_etat_demande.toString();
+                    }
+                    if(data[i].id_pertinence)
+                    {
+                        pertinence = data[i].id_pertinence.toString();
+                    }
+                    // Assigner pertienece
+                    if(pertinence === '1')
+                    {
+                        nombre_pertinence_oui++;
+                    }
+                    else if(pertinence === '2')
+                    {
+                        nombre_pertinence_non++;
+                    }
+                    // assigne etat
+                    if(etat === '' || etat === '2')
+                    {
+                        nombre_etat_non_traiter++;
+                    }
+                    else if(etat === '1' || etat === '4' || etat === '5')
+                    {
+                        nombre_etat_encours++;
+                    }
+                    else if(etat === '6')
+                    {
+                        nombre_etat_traite++;
+                    }
+                    else if(etat === '3')
+                    {
+                        nombre_etat_aglae++;
+                    }
+                }
+                var objReportingEtat = {
+                    nombre_etat_encours: nombre_etat_encours,
+                    nombre_etat_non_traiter: nombre_etat_non_traiter,
+                    nombre_etat_traite: nombre_etat_traite,
+                    nombre_etat_aglae: nombre_etat_aglae,
+                };
+                var objReportingPertinence = {
+                    nombre_pertinence_oui: nombre_pertinence_oui,
+                    nombre_pertinence_non: nombre_pertinence_non,
+                };
+                console.log(objReportingEtat);
+                console.log(objReportingPertinence);
+                // AFFICHER PIE CHART
+                html +="<div class ='row'>";
+                html +="<div class='col-sm-6'><canvas id=\"pie-chart-etat\" width=\"800\" height=\"450\"></canvas></div>";
+                html +="<div class='col-sm-6'><canvas id=\"pie-chart-pertinence\" width=\"800\" height=\"450\"></canvas></div>";
+                html +="</div>";
+                html += "</div></div></div>";
+                $("#div").append(html);
+                showPieChartReporting(objReportingEtat,objReportingPertinence);
+            },
+            error: function (error) {
+                alert(error);
+            }
+        });
+    }
+    // AFFICHAGE DONNEE REMONTEE
+    function loadDataRemonter() {
+        // donneAll = [];
+        //fltr = a;
+        var dtdb = $("#datedeb").datepicker().val();
+        var dtfn = $("#datefin").datepicker().val();
+        var id_demande = $("#demande_ticket").val();
+        var sp = $("#specialite").val();
+        var etat = $("#etat").val();
+        var client = $("#client").val();
+        var num_finess = $("#num_finess").val();
+        var matricule= $("#matricule").val();
+        // Verification droit REMONTE
+        if(dataIdNiveauGlobal !== 1)
+        {
+            if(id_demande.toString() === '1' && dataIdNiveauGlobal>5)
+            {
+                alert("Il faut avoir un droit N1/N2/N3/TC/Admin pour acceder à ces informations");
+                return;
+            }
+            else if(id_demande.toString() === '2' && dataIdNiveauGlobal<5)
+            {
+                alert("Il faut avoir un droit SAISI CALL pour acceder à ces informations");
+                return;
+            }
+        }
+        if(id_demande === "")
+        {
+            alert("Veuillez selectionner une demande!");
+            return;
+        }
+        if(isNaN(parseInt(matricule.toString())) && matricule!="")
+        {
+            alert("Veuillez entrer un matricule valide!");
+            return;
+        }
+        if(isNaN(parseInt(num_finess.toString())) && num_finess!="")
+        {
+            alert("Veuillez entrer un num_finess valide!");
+            return;
+        }
+        if(matricule == "") matricule="0";
+        if(sp.toString() == "")
+        {
+            //alert("Veuillez selectionner un Dossier!");
+            //return;
+        }
+        if(dtdb.toString() == "" || dtfn.toString() == "")
+        {
+            alert("Veuillez selectionner les deux dates!");
+            return;
+        }
+        $("#div").html("");
+        $.ajax({
+            type: "POST",
+            url: "/call/ticketing/remonte/get-donnee-remonte",
+            data: {
+                id_demande: id_demande,
+                date_deb: dtdb,
+                date_fin: dtfn,
+                specialite: sp,
+                matricule: matricule,
+                id_etat: etat,
+                client: client,
+                num_finess: num_finess,
+            },
+            beforeSend: function (xhr) {
+                $("#loadC").show();
+                $("#tableFiltre").remove();
+            },
+            success: function (msg) {
+                $("#loadC").hide();
+                dataRemonteGlobal = [];
+                var data_response = msg;
+                if(id_demande.toString() === '1')
+                {
+                    afficherTableauRemonte(data_response);
+                }
+                else
+                {
+                    afficherTableauSaisie(data_response);
+                }
+                reloadDatatableHeure();
+            },
+            error: function (error) {
+                alert(error);
+            }
+        });
+    }
+    // AFFICHAGE TABLEAU REMONTEE
+    function afficherTableauRemonte(data)
+    {
+        dataRemonteGlobal = data;
+        //  console.log(data);
+        var html ="<div class='col-md-12 col-sm-12 col-xs-12'>"+
+            "          <div class='x_panel'>"+
+            "            <div class='x_title'>"+
+            "            <h2>TRAITEMENT PROFIL REMONTE CALL</h2>"+
+            "          <ul class='nav navbar-right panel_toolbox'>"+
+            "            <li><a class='collapse-link'><i class='fa fa-chevron-up'></i></a>"+
+            "            </li>"+
+            ""+
+            "            <li><a class='close-link'><i class='fa fa-close'></i></a>"+
+            "            </li>"+
+            "            </ul>"+
+            "            <div class='clearfix'></div>"+
+            "            </div>"+
+            "            <div class='x_content'>"+
+            "       " +
+            "   <div id='tableFiltre'>" +
+            "<h2></h2>"+
+            "          <table  id='datatable-remonte-buttons' class='table table-striped table-bordered'>" +
+            "          <thead>" +
+            "          <tr class=''>" +
+            "           <th id='Date' class='th text-center'>DATE</th>" +
+            "           <th id='TC' class='text-center'>TC</th>" +
+            "           <th id='CLIENT' class='text-center'>	CLIENT</th>" +
+            "           <th id='Numero FINESS' class='text-center'>	Numero FINESS</th>" +
+            "           <th id='Specialite' class='text-center'>	Specialite</th>" +
+            "           <th id='NNI' class='text-center'> NNI</th>" +
+            "           <th id='Numero Facture' class='text-center'>	Numero Facture</th>" +
+            "           <th id='Numero PEC' class='text-center'>	Numero PEC</th>" +
+            "           <th id='ETAT' class='text-center'>ETAT</th>" +
+            "           <th id='boutton' class=''></th>" +
+            "          </tr>" +
+            "          </thead>" +
+            "          <tbody>" +
+            "";
+        // Boucle Donnee Remonte
+        for(var i=0,maxlength=data.length;i<maxlength;i++)
+        {
+            let date_insert_string = data[i].date_insert;
+            if(date_insert_string.length === 9)
+            {
+                date_insert_string = "0"+date_insert_string;
+            }
+            let html_bouttonTraite = "<td></td>";
+            let stringValueEtatNouveau = "";
+            if(data[i].libelle_etat)
+            {
+                stringValueEtatNouveau = data[i].libelle_etat;
+            }
+            else
+            {
+                stringValueEtatNouveau = "Non Traité";
+            }
+            // Verification Action EN COURS APPEL
+            if(data[i].id_action)
+            {
+                if(data[i].id_action.toString() === '1' || data[i].id_action.toString() === '2')
+                {
+                    stringValueEtatNouveau = data[i].libelle_etat +" ("+data[i].libelle_action+")";
+                }
+            }
+            // BLOCKER BOUTTON TRAITEMENT SI UTILISATEUR
+            if(data[i].id_etat_demande) {
+                /*if (data[i].id_etat_demande.toString() !== '6' && data[i].id_etat_demande.toString() != '3') {*/
+                html_bouttonTraite = "<td><button class='btn btn-info' onclick='launchModalTraitementRemonte(" + i + ")'>Details</button></td>";
+                /*                        }*/
+            }
+            else
+            {
+                html_bouttonTraite = "<td><button class='btn btn-info' onclick='launchModalTraitementRemonte(" + i + ")'>Details</button></td>";
+            }
+            html+="<tr>" +
+                "   <td>"+date_insert_string+"</td>" +
+                "   <td>"+nullsetEmpty(data[i].prenom_fr)+"</td>" +
+                "   <td>"+data[i].client+"</td>" +
+                "   <td>"+data[i].ps+"</td>" +
+                "   <td>"+data[i].specialite+"</td>" +
+                "   <td>"+data[i].nni+"</td>" +
+                "   <td>"+data[i].num_facture+"</td>" +
+                "   <td>"+data[i].num_pec+"</td>" +
+                "   <td>"+stringValueEtatNouveau+"</td>" +
+                "  "+html_bouttonTraite+" " +
+                "</tr>";
+        }
+        html += "</tbody></table></div></div></div>";
+        $("#div").append(html);
+    }
+    // DATATABLE ET CALCULE
+    function reloadDatatableHeure(){
+        var handleDataTableButtons_v = function() {
+            if ($("#datatable-remonte-buttons").length) {
+                $("#datatable-remonte-buttons").DataTable({
+                    dom: "Bfrtip",
+                    searching: false,
+                    paging: false,
+                    "aLengthMenu": [[25, 50, 75, -1], [25, 50, 75, "All"]],
+                    "iDisplayLength": 25,
+                    buttons: [
+                        {
+                            extend: "copy",
+                            className: "btn-sm"
+                        },
+                        {
+                            extend: "csv",
+                            className: "btn-sm"
+                        },
+                        {
+                            extend: "excel",
+                            className: "btn-sm"
+                        },
+                        {
+                            extend: "pdfHtml5",
+                            className: "btn-sm"
+                        },
+                        {
+                            extend: "print",
+                            className: "btn-sm"
+                        },
+                    ],
+                    responsive: true
+                });
+            }
+        };
+
+        TableManageButtons_v = function() {
+            "use strict";
+            return {
+                init: function() {
+                    handleDataTableButtons_v();
+                }
+            };
+        }();
+        TableManageButtons_v.init();
+    }
+    // Fonction Lancement Traitement Remonte
+    function launchModalTraitementRemonte(index_global) {
+        var objetJson = dataRemonteGlobal[index_global];
+        if(objetJson.date_insert.length === 9)
+        {
+            objetJson.date_insert = "0"+objetJson.date_insert;
+        }
+        valeurHistorique = {};
+        valeurTicket = {};
+        fullDataRemonteGlobal = {};
+        canModif = true;
+        $.ajax({
+            type: "POST",
+            url: "/call/ticketing/remonte/init-traitement-remonte",
+            data: objetJson,
+            beforeSend: function (xhr) {
+            },
+            success: function (msg) {
+                //$("#loadC").hide();
+                var data = msg;
+                fullDataRemonteGlobal = data;
+                console.log(data);
+                //alert("Debut Traitement Remontée");
+                let tempEtatCompare = "";
+                if(data.dataDoublons.isDoublons && data.status !== 'ec_vue_tc')
+                {
+                    alert("Doublons detectée");
+                    ShowTableauDoublonsRemonte(data.dataDoublons.listeDoublons);
+                }
+                else
+                {
+                    if(data.status === 'ec_vue_tc')
+                    {
+                        data.dataTicket =objetJson;
+                        canModif = false;
+                        showModalRemontee(data);
+                    }else if(data.status === 'ok')
+                    {
+                        // Affichage Modal Traitement
+                        showModalRemontee(data);
+                    }
+                    else if(data.status === 'ec')
+                    {
+                        // Affichage ETAT
+                        alert("Remontée Deja En Cours de traitement");
+                    }
+                    else if(data.status === 'ec_me')
+                    {
+                        alert("Vous avez encore un traitement remontée non terminé");
+                        showModalRemontee(data);
+                    }
+                }
+            },
+            error: function (error) {
+                alert("Echec Initialisation Donnee Remonter!")
+                //alert(JSON.stringify(error));
+            }
+        });
+    }
+    // Afficher Modal Traitement Remontée
+    function showModalRemontee(dataRemonte) {
+
+        // Initialisation Traitement Remonte
+        $("#pertinence").removeAttr('disabled');
+        $("#liste_traitement_modal").removeAttr('disabled');
+        $("#pertinence").val("");
+        $("#liste_traitement_modal").val("");
+
+        // Assignation Donnee Remontee
+        valeurHistorique = dataRemonte.dataHistorique;
+        valeurTicket = dataRemonte.dataTicket;
+        //console.log(valeurHistorique);
+        $("#modal_remonte_tc").val(dataRemonte.dataTicket.prenom_fr);
+        $("#modal_remonte_finess").val(dataRemonte.dataTicket.ps);
+        $("#modal_remonte_nni").val(dataRemonte.dataTicket.nni);
+        $("#modal_remonte_num_facture").val(dataRemonte.dataTicket.num_facture);
+        $("#modal_remonte_num_pec").val(dataRemonte.dataTicket.num_pec);
+        $("#modal_remonte_commentaire").val(dataRemonte.dataTicket.value_demande.replace("$separator$",""));
+        $("#div_liste_traitement_modal").hide();
+// CHECK DROIT MODIFICATION
+        // Verif Etat Demande
+        if(valeurTicket.id_etat_demande === 6)
+        {
+            alert("Traitement deja terminé!");
+            //return;
+        }
+        // ----- Verif N1  --
+        if(dataIdNiveauGlobal < 2)
+        {
+            //alert("Il faut au minimum avoir un droit profil N1 pour faire le traitement sur cette ligne!");
+            //return;
+            if(valeurTicket.id_etat_demande)
+            {
+                if(valeurTicket.id_etat_demande.toString() === '4' ||
+                    valeurTicket.id_etat_demande.toString() === '5')
+                {
+                    // MODIFICATION INTERDIT
+                    $("#pertinence").attr('disabled', 'disabled');
+                    $("#liste_traitement_modal").attr('disabled', 'disabled');
+                    canModif = false;
+                }
+                else
+                {
+                    // OK CONTINUE
+                }
+            }
+        }
+        // ---- Verif N2
+        if(dataIdNiveauGlobal < 3)
+        {
+            //alert("Il faut au minimum avoir un droit profil N2 pour faire le traitement sur cette ligne!");
+            //return;
+            if(valeurTicket.id_etat_demande)
+            {
+                if(valeurTicket.id_etat_demande.toString() === '4' ||
+                    valeurTicket.id_etat_demande.toString() === '5')
+                {
+                    // MODIFICATION INTERDIT
+                    $("#pertinence").attr('disabled', 'disabled');
+                    $("#liste_traitement_modal").attr('disabled', 'disabled');
+                    canModif = false;
+                }
+                else
+                {
+                    // OK CONTINUE
+                }
+            }
+        }
+        // ---- Verif N3
+        if(dataIdNiveauGlobal < 4)
+        {
+            //alert("Il faut au minimum avoir un droit profil N3 pour faire le traitement sur cette ligne!");
+            //return;
+            if(valeurTicket.id_etat_demande)
+            {
+                if(valeurTicket.id_etat_demande.toString() === '5')
+                {
+                    // MODIFICATION INTERDIT
+                    $("#pertinence").attr('disabled', 'disabled');
+                    $("#liste_traitement_modal").attr('disabled', 'disabled');
+                    canModif = false;
+                }
+                else
+                {
+                    // OK CONTINUE
+                }
+            }
+        }
+        // Assignation Valeur TICKET DERNIER ETAT
+        //alert(valeurTicket.id_pertinence);
+        if(valeurTicket.id_pertinence)
+        {
+            if(valeurTicket.id_pertinence.toString() === '1')
+            {
+                // Pertinent Assignation Valeur OLD
+                $("#pertinence").val('1');
+                if(valeurTicket.id_etat_demande)
+                {
+                    $("#liste_traitement_modal").val(valeurTicket.id_etat_demande);
+                }
+                $("#div_liste_traitement_modal").show();
+            }
+            else
+            {
+                $("#pertinence").val('2');
+                $("#div_liste_traitement_modal").hide();
+            }
+        }
+        // Assigner Tableau Historique Remonte Call
+        if(dataRemonte.dataHistoriqueRemonte.length > 0)
+        {
+            ShowTableauHistoriqueRemonte(dataRemonte.dataHistoriqueRemonte);
+        }
+        if(!canModif)
+        {
+            $("#pertinence").attr('disabled', 'disabled');
+            $("#liste_traitement_modal").attr('disabled', 'disabled');
+            $("#boutton_annuler_traitement_modaltraiteremonte").hide();
+        }
+        // Affichage Modal Info Et Traitement
+        $("#myModalTraiteRemonte").modal('show');
+    }
+    // GESTION AFFICHAGE PERTINENCE
+    function ModifierPertinence(domvalue) {
+        $("#modal_traitement_commentaire").val("");
+        $("#div_action_ticketnew").show();
+        if(domvalue)
+        {
+            if(domvalue === "")
+            {
+                // Force Retour;
+                return;
+            }
+            if(domvalue === "2")
+            {
+                $("#div_liste_traitement_modal").hide();
+                $("#myModalTraiteRemonte").modal('hide');
+                $("#myModalTraiteActionRemonte").modal('show');
+            }
+            else
+            {
+                $("#div_liste_traitement_modal").show();
+            }
+        }
+        else
+        {
+            alert("Valeur pertinence erroner")
+        }
+    }
+    // ANNULATION TRAITEMENT REMONTE
+    function AnnulerTraitementRemonte() {
+        // Debut Annulation
+        let valeurEtatPrecedentAction;
+        //alert(JSON.stringify(fullDataRemonteGlobal.dataHistorique));
+        if(fullDataRemonteGlobal.dataHistorique.id_etat_precedent)
+        {
+            valeurEtatPrecedentAction = fullDataRemonteGlobal.dataHistorique.id_etat_precedent;
+        }
+        else
+        {
+            valeurEtatPrecedentAction = 2;
+        }
+        if(!fullDataRemonteGlobal.dataTicket.id_pertinence)
+        {
+            fullDataRemonteGlobal.dataTicket.id_pertinence = "";
+        }
+        if(fullDataRemonteGlobal.dataTicket.id_pertinence.toString() === "")
+        {
+            fullDataRemonteGlobal.dataTicket.id_pertinence = "0";
+        }
+        var jsonAnnlulation = {
+            id_etat: valeurEtatPrecedentAction,
+            pertinence: fullDataRemonteGlobal.dataTicket.id_pertinence,
+            id_action: 5,
+            id_historique: fullDataRemonteGlobal.dataHistorique.id,
+            id_ticket: fullDataRemonteGlobal.dataTicket.id_ticket,
+            commentaire: 'traitement annuler',
+        };
+        $.ajax({
+            type: "POST",
+            url: "/call/ticketing/remonte/annuler-traitement-remonte",
+            data: jsonAnnlulation,
+            beforeSend: function (xhr) {
+            },
+            success: function (msg) {
+                //$("#loadC").hide();
+                alert("Traitement Remontée Annulée");
+                loadDataRemonter();
+            },
+            error: function (error) {
+                alert("Echec Initialisation Donnee Remontée!")
+                //alert(JSON.stringify(error));
+            }
+        });
+    }
+    // VALIDATION TRAITEMENT REMONTE
+    function ValiderTraitementRemonte() {
+
+        // Debut Validation Remontee
+        var commentaire = $("#modal_traitement_commentaire").val();
+        var action = $("#action_ticket").val();
+        var pertinence= $("#pertinence").val();
+        var new_etat = $("#liste_traitement_modal").val();
+        if(pertinence === "2")
+        {
+                new_etat = "6";
+        }
+        if(commentaire === "")
+        {
+            alert("Veuillez  renseigner le champs commentaire!");
+            return;
+        }
+        if(action === "")
+        {
+            alert("Veuillez renseigner le champs action!");
+            return;
+        }
+        if(pertinence === "")
+        {
+            alert("Pertinence erroner!");
+            return;
+        }
+        if(new_etat === "")
+        {
+            alert("Traitement non renseigner");
+            return;
+        }
+        var jsonValidation = {
+            id_etat: new_etat,
+            pertinence: pertinence,
+            id_action: action,
+            id_historique: valeurHistorique.id,
+            id_ticket: valeurTicket.id_ticket,
+            commentaire: commentaire.replace(/'/g,"''"),
+        };
+        $.ajax({
+            type: "POST",
+            url: "/call/ticketing/remonte/valider-traitement-remonte",
+            data: jsonValidation,
+            beforeSend: function (xhr) {
+            },
+            success: function (msg) {
+                //$("#loadC").hide();
+                alert("Traitement Remontée Valider");
+                loadDataRemonter();
+            },
+            error: function (error) {
+                alert("Echec Initialisation Donnée Remontée!")
+                //alert(JSON.stringify(error));
+            }
+        });
+    }
+    function ModifierTraitementModal(valeur_listeTraitementModal) {
+        $("#div_action_ticketnew").show();
+        if(valeur_listeTraitementModal.toString() != "" && valeur_listeTraitementModal.toString() != "1")
+        {
+            if(valeur_listeTraitementModal.toString() === "3" || valeur_listeTraitementModal.toString() === "4" || valeur_listeTraitementModal.toString() === "5")
+            {
+                $("#action_ticket").val("3");
+                $("#div_action_ticketnew").hide();
+            }
+            $("#modal_traitement_commentaire").val("");
+            $("#myModalTraiteRemonte").modal('hide');
+            $("#myModalTraiteActionRemonte").modal('show');
+        }
+    }
+    // Affichage Tableau Historique Remontee
+    function ShowTableauHistoriqueRemonte(dataHistoriqueRemonte) {
+        $("#HistoriqueDataRemontee").html("");
+        var html ="          <table  id='datatable-remonte-buttons' class='table table-striped table-bordered'>" +
+            "          <thead>" +
+            "          <tr class=''>" +
+            "           <th id='date_action' class='th text-center'>Date action</th>" +
+/*            "           <th id='h_deb' class='text-center'>Heure debut</th>" +
+            "           <th id='h_fin' class='text-center'>Heure fin</th>" +*/
+            "           <th id='id_pers' class='text-center'>Matricule</th>" +
+/*            "           <th id='pertinence' class='text-center'>Pertinence</th>" +*/
+            "           <th id='etat' class='text-center'>Etat</th>" +
+            "           <th id='action' class='text-center'>Action</th>" +
+            "           <th id='commentaire' class='text-center'>Commentaire</th>" +
+            "          </tr>" +
+            "          </thead>" +
+            "          <tbody>" +
+            "";
+        // Boucle Donnee Remonte
+        for(var i=0,maxlength=dataHistoriqueRemonte.length;i<maxlength;i++)
+        {
+            let pertinence_valuetemp = "";
+            if(dataHistoriqueRemonte[i].pertinence.toString() === '1')
+            {
+                pertinence_valuetemp = "OUI";
+            }
+            if(dataHistoriqueRemonte[i].pertinence.toString() === '2')
+            {
+                pertinence_valuetemp = "NON";
+            }
+            html+="<tr>" +
+                "   <td>"+dataHistoriqueRemonte[i].date_action+"</td>" +
+/*                "   <td>"+dataHistoriqueRemonte[i].h_deb+"</td>" +
+                "   <td>"+dataHistoriqueRemonte[i].h_fin+"</td>" +*/
+                "   <td>"+dataHistoriqueRemonte[i].id_pers+"</td>" +
+/*                "   <td>"+pertinence_valuetemp+"</td>" +*/
+                "   <td>"+dataHistoriqueRemonte[i].libelle_etat+"</td>" +
+                "   <td>"+dataHistoriqueRemonte[i].libelle_action+"</td>" +
+                "   <td>"+dataHistoriqueRemonte[i].commentaire+"</td>" +
+                "</tr>";
+        }
+        html += "</tbody></table>";
+        $("#HistoriqueDataRemontee").append(html);
+    }
+    // Affichage Tableau Historique Remontee
+    function ShowTableauDoublonsRemonte(data) {
+        //console.log(data);
+        $("#tableauDoublonsRemonte").html("");
+        var html =
+            "          <table class='table table-striped table-bordered'>" +
+            "          <thead>" +
+            "          <tr class=''>" +
+            "           <th id='Date' class='th text-center'>DATE</th>" +
+            "           <th id='TC' class='text-center'>TC</th>" +
+            "           <th id='CLIENT' class='text-center'>	CLIENT</th>" +
+            "           <th id='Numero FINESS' class='text-center'>	Numero FINESS</th>" +
+            "           <th id='Specialite' class='text-center'>	Specialite</th>" +
+            "           <th id='NNI' class='text-center'> NNI</th>" +
+            "           <th id='Numero Facture' class='text-center'>	Numero Facture</th>" +
+            "           <th id='Numero PEC' class='text-center'>	Numero PEC</th>" +
+            "           <th id='ETAT' class='text-center'>ETAT</th>" +
+            "          </tr>" +
+            "          </thead>" +
+            "          <tbody>" +
+            "";
+        // Boucle Donnee Remonte
+        for(var i=0,maxlength=data.length;i<maxlength;i++)
+        {
+            let date_insert_string = data[i].date_insert;
+            if(date_insert_string.length === 9)
+            {
+                date_insert_string = "0"+date_insert_string;
+            }
+            let stringValueEtatNouveau = "";
+            if(data[i].libelle_etat)
+            {
+                stringValueEtatNouveau = data[i].libelle_etat;
+            }
+            else
+            {
+                stringValueEtatNouveau = "Non Traité";
+            }
+            // BLOCKER BOUTTON TRAITEMENT SI UTILISATEUR
+            html+="<tr>" +
+                "   <td>"+date_insert_string+"</td>" +
+                "   <td>"+nullsetEmpty(data[i].prenom_fr)+"</td>" +
+                "   <td>"+data[i].client+"</td>" +
+                "   <td>"+data[i].ps+"</td>" +
+                "   <td>"+data[i].specialite+"</td>" +
+                "   <td>"+data[i].nni+"</td>" +
+                "   <td>"+data[i].num_facture+"</td>" +
+                "   <td>"+data[i].num_pec+"</td>" +
+                "   <td>"+stringValueEtatNouveau+"</td>" +
+                "</tr>";
+        }
+        html += "</tbody></table>";
+        $("#tableauDoublonsRemonte").append(html);
+        $("#myModalAffichageDoublonsRemonte").modal('show');
+
+    }
+    // Fonction Continuer Traitement Doublons
+    function ContinuerTraitementDoublons() {
+        showModalRemontee(fullDataRemonteGlobal);
+    }
+
+    /**
+     * Fonction pour Rafraichir une ligne de tableau
+     * @param valeur_listeTraitementModal
+     * @constructor
+     */
+    function RefreshLine(valeur_listeTraitementModal) {
+
+    }
+
+    /**
+     * Fonction Utilitaire Retour Vide Si NUll
+     * @param value
+     * @returns {string|*}
+     */
+    function nullsetEmpty(value){
+        if(!value) return "";
+        if(value.toString()=="null")
+            return "";
+        return value;
+    }
+    function showPieChartReporting(objEtat, objPertinence){
+        new Chart(document.getElementById("pie-chart-etat"), {
+            type: 'pie',
+            data: {
+                labels: ["En cours", "Non traités", "Traité", "AGLAE"],
+                datasets: [{
+                    label: "nombre",
+                    backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9"],
+                    data: [objEtat.nombre_etat_encours,objEtat.nombre_etat_non_traiter
+                        ,objEtat.nombre_etat_traite,objEtat.nombre_etat_aglae]
+                }]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: ''
+                },
+                onAnimationProgress: drawSegmentValues
+            },
+
+        });
+        new Chart(document.getElementById("pie-chart-pertinence"), {
+            type: 'pie',
+            data: {
+                labels: ["Pertinente", "Non pertinente"],
+                datasets: [{
+                    label: "nombre",
+                    backgroundColor: ["#cd721a", "#251aa2"],
+                    data: [objPertinence.nombre_pertinence_oui,objPertinence.nombre_pertinence_non]
+                }]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: ''
+                }
+            }
+        });
+    }
+    // FONCTION ECRITURE PIE cHART
+    function drawSegmentValues() {
+        for (var i = 0; i < myPieChart.segments.length; i++) {
+            ctx.fillStyle = "white";
+            var textSize = canvas.width / 10;
+            ctx.font = textSize + "px Verdana";
+            // Get needed variables
+            var value = myPieChart.segments[i].value;
+            var startAngle = myPieChart.segments[i].startAngle;
+            var endAngle = myPieChart.segments[i].endAngle;
+            var middleAngle = startAngle + ((endAngle - startAngle) / 2);
+
+            // Compute text location
+            var posX = (radius / 2) * Math.cos(middleAngle) + midX;
+            var posY = (radius / 2) * Math.sin(middleAngle) + midY;
+
+            // Text offside by middle
+            var w_offset = ctx.measureText(value).width / 2;
+            var h_offset = textSize / 4;
+
+            ctx.fillText(value, posX - w_offset, posY + h_offset);
+        }
+    }
+</script>
+<!-- Code Traitement Saisie -->
+<script src="/js/call/traitement_saisie.js"></script>
+</body>
+</html>

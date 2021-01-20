@@ -1,0 +1,327 @@
+<script>
+  function lodProgressBar(id_pers,pdate)
+  {
+    $.ajax({
+      type: "GET",
+      url: "/ajax_progress?id_pers="+id_pers+"&pdate="+pdate,
+      success: function(msg){
+        $("#request").append(msg);
+      },
+      error: function (error) {
+        //alert('error; ' +error);
+      }
+    });
+  }
+</script>
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TDB Stat</title>
+
+  <link rel="stylesheet" href="/styles/importer.css">
+  <link rel="stylesheet" href="/bootflat/css/bootflat.min.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/local.css">
+  <link rel="stylesheet" href="/css/Style_v3.css">
+  <!--STYLES END-->
+</head>
+<body onLoad="onLoadDossierStat();getLsDossierAdmin();getLsDepartement();getLsGroupe();getLsSpecialite();getLsEquipe(0,0);">
+<% if(req.session.droit==1){
+
+%>
+<% include ../includes/entete.ejs %>
+<% }else{
+
+%>
+<% include ../includes/enteteOperateur.ejs %>
+
+<% }%>
+<div id="request">
+
+</div>
+<div id="page-wrapper">
+  <div class="row">
+    <div class="col-md-6">
+      <div class=" row ">
+
+        <div  class="">
+
+          <div class="panel panel-primary">
+            <div class="panel-heading">
+              <h3 class="panel-title"> <i class="fa fa-bar-chart-o"></i> </h3>
+            </div>
+            <div class="clearfix"></div>
+
+
+            <div class="row">
+              <div class="col-md-12">
+                <div class="x_panel">
+                  <div class="x_title">
+                    <h2>Top Profiles</h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                      </li>
+                      <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                        <ul class="dropdown-menu" role="menu">
+                          <li><a href="#">Settings 1</a>
+                          </li>
+                          <li><a href="#">Settings 2</a>
+                          </li>
+                        </ul>
+                      </li>
+                      <li><a class="close-link"><i class="fa fa-close"></i></a>
+                      </li>
+                    </ul>
+
+                    <div class="clearfix"></div>
+                  </div>
+                  <div class="x_content">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                      <div>
+
+                        <ul class="list-unstyled top_profiles scroll-view" id="listConected">
+
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+
+
+
+
+
+
+          </div>
+        </div>
+
+
+
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+
+
+
+
+
+<script src="/js/jquery-1.10.2.min.js"></script>
+<link rel="stylesheet" href="/jquery-ui/jquery-ui.css">
+<script src="/js/dependencies/sails.io.js"></script>
+<script src="/js/jquery-ui.min.js"></script>
+<script src="/bootstrap/js/bootstrap.min.js"></script>
+<script src="/material/chart/highcharts.js"></script>
+<script src="/material/chart/exporting.js"></script>
+<script src="/js/dossierEtapeApp.js"></script>
+
+<script type="text/javascript">
+  var matricule  = [];
+  var nom = [];
+  var dapartement = [];
+  var type = [];
+  var host = window.location.hostname;
+  io.sails.url = 'http://'+host+':9090';
+  io.socket.on("dashboard", function (msg) {
+    //console.log(msg);
+    var html = '';
+
+    if(matricule.indexOf(""+msg.id)==-1){
+      matricule.push(msg.id);
+      nom.push(""+msg.data.appelation);
+      dapartement.push(""+msg.data.libelle);
+      type.push(msg.type);
+    }
+    /**
+     * <li class='media event'>
+     <a class='pull-left border-green profile_thumb'>
+     <i class='fa fa-user green'></i>
+     </a>
+     <div class='media-body'>
+     <a class='title' href='#'>Ms. Mary Jane</a>
+     <p><strong>$2300. </strong> Agent Avarage Sales </p>
+     <p> <small>12 Sales Today</small>
+     </p>
+     </div>
+     </li>
+     * */
+    for(var i = 0 ; i< matricule.length ; i++){
+      var st = "TDB OP";
+      if(Number(type[i])==1){
+        st = "TDB CP";
+      }
+      html += "<li class='media event'>" +
+        "<a class='pull-left border-green profile_thumb'>" +
+        "<i class='fa fa-user green'></i>" +
+        "</a>" +
+        "<div class='media-body'>" +
+        " <a class='title' href='#'>"+nom[i]+"  </a>" +
+        " <a><strong>"+matricule[i]+"</strong>   "+dapartement[i]+"</a>" +
+        " <a> <small> " +st+" </small>" +
+        " </a> </div> </li>";
+    }
+
+    $('#listConected').html(html);
+
+    io.socket.on("connecting", function (msg) {
+      matricule = [];
+      nom=[];
+      dapartement = [];
+      type = [];
+    });
+
+  });
+</script>
+
+<!-- Custom Theme Scripts -->
+<script src="/js/custom.min.js"></script>
+<script>
+  $(function() {
+    $( "#datetim" ).datepicker({
+      dateFormat: 'yy-mm-dd'
+    });
+  } );
+
+  function getLsDepartementGroupe(id)
+  {
+    $.ajax({
+      type: "GET",
+      url: "/getLsGroupeDep?groupe="+id,
+      success: function(msg){
+
+        $("#departDashAdmin").html(msg);
+      },
+      error: function (error) {
+        //alert('error; ' +error);
+      }
+    });
+  }
+
+  function getLsEquipe(id,type)
+  {
+    $.ajax({
+      type: "GET",
+      url: "/getLsEquipe?groupe="+id+"&type="+type,
+      success: function(msg){
+        $("#equipeDashAdmin").html(msg);
+      },
+      error: function (error) {
+        //alert('error; ' +error);
+      }
+    });
+  }
+
+  function getLdtOp(id,date)
+  {
+    $.ajax({
+      type: "GET",
+      url: "/ajax_ldt?id_pers="+id+"&pdate="+date,
+      success: function(msg){
+        $("#tableLdt").html(msg);
+      },
+      error: function (error) {
+        //alert('error; ' +error);
+      }
+    });
+  }
+
+
+  //function ajaxFiltreTable
+
+
+
+</script>
+
+ <script type="text/javascript">
+  $(document).ready(function() {
+    var handleDataTableButtons = function() {
+      if ($("#datatable-buttons").length) {
+        $("#datatable-buttons").DataTable({
+          pageLength: 25,
+          dom: "Bfrtip",
+          buttons: [
+            {
+              extend: "copy",
+              className: "btn-sm"
+            },
+            {
+              extend: "csv",
+              className: "btn-sm"
+            },
+            {
+              extend: "excel",
+              className: "btn-sm"
+            },
+            {
+              extend: "pdfHtml5",
+              className: "btn-sm"
+            },
+            {
+              extend: "print",
+              className: "btn-sm"
+            },
+          ],
+          responsive: true
+        });
+      }
+    };
+
+    TableManageButtons = function() {
+      "use strict";
+      return {
+        init: function() {
+          handleDataTableButtons();
+        }
+      };
+    }();
+
+    $('#datatable').dataTable();
+    $('#datatable-keytable').DataTable({
+      keys: true
+    });
+
+    $('#datatable-responsive').DataTable();
+
+
+    var table = $('#datatable-fixed-header').DataTable({
+      fixedHeader: true
+    });
+
+    TableManageButtons.init();
+  });
+</script>
+
+<!-- FastClick -->
+<script src="/vendors/fastclick/lib/fastclick.js"></script>
+<!-- NProgress -->
+<script src="/vendors/nprogress/nprogress.js"></script>
+
+
+<script src="/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+<script src="/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
+<script src="/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
+<script src="/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+<script src="/vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+<script src="/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+<script src="/vendors/datatables.net-scroller/js/datatables.scroller.min.js"></script>
+<script src="/vendors/jszip/dist/jszip.min.js"></script>
+<script src="/vendors/pdfmake/build/pdfmake.min.js"></script>
+<script src="/vendors/pdfmake/build/vfs_fonts.js"></script>
+</body>
+</html>

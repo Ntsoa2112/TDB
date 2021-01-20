@@ -1,0 +1,483 @@
+<title xmlns="http://www.w3.org/1999/html">Reservation</title>
+<head>
+
+
+         <!-- TIME PICKER INCLUDE  -->
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!--link rel="stylesheet" href="bootstrap.css" /-->
+  <link rel="stylesheet" href="/timepickerRonny/bootstrap-material-datetimepicker.css" />
+  <link href='/timepickerRonny/font1.css' rel='stylesheet' type='text/css'>
+  <link href="/timepickerRonny/font2.css" rel="stylesheet">
+
+
+
+        <!-- FIN TIME PICKER INCLUDE  -->
+
+  <!--link rel="stylesheet" href="/css/bootstrap-material-datetimepicker.css"-->
+
+  <!--script type='text/javascript' src='/js/jquery.min.js'></script-->
+  <script type='text/javascript' src="/TestNewFullcalendar/jquery.min.js"></script>
+  <link rel="stylesheet" href="/styles/importer.css">
+  <link rel="stylesheet" href="/bootflat/css/bootstrap.css">
+  <link rel="stylesheet" href="/bootflat/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/local.css">
+  <link rel="stylesheet" href="/css/Style_v3.css">
+  <link rel="stylesheet" href="/css/Legende_Reservation_Salle.css">
+
+  <link rel='stylesheet' type='text/css' href='/css/fullcalendar.css' />
+  <link rel='stylesheet' type='text/css' href='/css/fullcalendar.min.css' />
+  <link rel='stylesheet' type='text/css' href='/css/fullcalendar.print.css' media='print' />
+
+  <!--script type='text/javascript' src='/js/jquery-ui-1.8.23.custom.min.js'></script-->
+  <script type='text/javascript' src='/js/moment.min.js'></script>
+  <script type='text/javascript' src='/js/fullcalendar.js'></script>
+  <!--script type='text/javascript' src='/js/fullcalendar.min.js'></script-->
+  <script type='text/javascript' src='/js/fr.js'></script>
+
+  <!-- *******************Debut Recuperation Valeur ReservationSalle ******************-->
+  <script>
+<% //console.log('========> reservation salle OK')%>
+   var res_reservation = <%-reservationsalle %>;
+var lengh_reservation=<%= lenght_reservation%>;
+//alert(lengh_reservation);
+      var Objet_reservation=[];
+      var departement=[];
+      var Salle=[];
+    var date = new Date();
+    var d = date.getDate();
+    var m = date.getMonth();
+    var y = date.getFullYear();
+      var Annee_reservation=[];
+      var Mois_reservation=[];
+      var Jour_reservation=[];
+var id_reservation=[];
+var nom=[];
+var prenom=[];
+var demandeur=[];
+var nombre_personne=[];
+            for(var i=0;i<lengh_reservation;i++)
+          {
+            nombre_personne[i]=res_reservation[i].nb_personne;
+            demandeur[i]=res_reservation[i].appellation;
+            Objet_reservation[i]=res_reservation[i].objet;
+            departement[i]=res_reservation[i].libelle;
+            Salle[i]=res_reservation[i].salle;
+            id_reservation[i]=parseInt(res_reservation[i].id_reservation);
+          //  alert('identifiant'+id_reservation);
+          var dat=res_reservation[i].date_reserv;
+          var dureeSplit = dat.split("-");
+            Annee_reservation[i]=parseInt(Number(dureeSplit[0]));
+             Mois_reservation[i]=parseInt(Number(dureeSplit[1]));
+             Jour_reservation[i]=parseInt(Number(dureeSplit[2]));
+//alert(nombre_personne[i]);
+          }
+//alert(demandeur[i]);
+//alert(Objet_reservation);
+  var heure_deb_reservation=[];
+  var min_deb_reservation=[];
+  var heure_fin_reservation=[];
+  var min_fin_reservation=[];
+            for(var i=0;i<lengh_reservation;i++)
+          {
+            //*********************************duree_debut***********************************//
+            var duree_deb= res_reservation[i].debut_reservation;
+            var duree_deb_Split=duree_deb.split(":");
+            heure_deb_reservation[i]=parseInt(Number(duree_deb_Split[0]));
+            min_deb_reservation[i]=parseInt(Number(duree_deb_Split[1]));
+          //***********************************duree_fin*************************************//
+            var duree_fin=res_reservation[i].fin_reservation;
+            var duree_fin_Split=duree_fin.split(":");
+            heure_fin_reservation[i]=parseInt(Number(duree_fin_Split[0]));
+            min_fin_reservation[i]=parseInt(Number(duree_fin_Split[1]));
+            if(heure_deb_reservation[i]==heure_fin_reservation[i])
+            {
+              //alert("trouver 1");
+              min_fin_reservation[i]=parseInt(min_fin_reservation[i]);
+            }
+          }
+  </script>
+  <!-- *******************Fin Recuperation Valeur ReservationSalle ******************-->
+  <!-- *******************DEBUT SCRIPT INSERTION VALEUR ReservationSAlle dans Template Full calendar ******************-->
+  <script>
+    var date = new Date();
+    var d = date.getDate();
+    var m = date.getMonth();
+    var y = date.getFullYear();
+
+    var dat = [];
+
+    for(var i=0;i<lengh_reservation;i++)
+    {
+    var tmp= {};
+      tmp["id"]=id_reservation[i];
+      tmp["className"]="ronny_class";
+    tmp["title"] ='"'+demandeur[i]+ '" ' +
+      'Departement:"'+departement[i]+''+
+      '  nombres personnes: '+nombre_personne[i]+'' ;
+    tmp["start"] =new Date(Annee_reservation[i], Mois_reservation[i]-1, Jour_reservation[i], heure_deb_reservation[i], min_deb_reservation[i]);
+//      alert('i=====>'+i+'  ====>> '+heure_deb_reservation[i]);
+    tmp["end"] =new Date(Annee_reservation[i], Mois_reservation[i]-1, Jour_reservation[i], heure_fin_reservation[i], min_fin_reservation[i]);
+      tmp["allDay"]=false;
+      if(Salle[i]=="1er_étage_salle kijy")
+      {
+        tmp["color"]='blue';
+      }else
+        {
+          if(Salle[i]=="1er_étage_salle sohihy"){
+            tmp["color"]='orange';
+          }else{
+            if(Salle[i]=="RDJ_salle merana"){
+              tmp["color"]='green';
+            }else{
+              if(Salle[i]=="RDC_salle nato"){
+                tmp["color"]='gray';
+              }else{
+                if(Salle[i]=="RDC_salle ramy"){
+                  tmp["color"]='red';
+                }else{
+                    if(Salle[i]=="RDC_salle ambora"){
+                        tmp["color"]='aqua';
+                    }
+
+                }
+              }
+            }
+          }
+        }
+      tmp["type"]='GET';
+      //tmp["url"]='localhost:9090/reservation/nouveau';
+    //tmp["color"]='green';
+ //   tmp['allDay'] =false;
+      dat.push(tmp);
+    }
+    var event = {events:dat};
+
+   // alert(JSON.stringify(event.events));
+
+    $(document).ready(function() {
+      //alert('TEST CALENDAR');
+      $('#calendar').fullCalendar(
+        {
+
+          lang: 'fr',
+        header: {
+          left: 'prev,next today',
+          center: 'title',
+          right: 'month,agendaWeek,agendaDay,listWeek'
+        },
+          timeFormat:'HH:mm',
+          eventClick: function(calEvent, jsEvent, view) {
+            var id_reservation=calEvent.id;
+            var VerifIdPers="";
+            var currentUser=<%= req.session.user %>;
+            document.getElementById("id_tost").value = parseInt(id_reservation);
+            getPersonneReservation(id_reservation,function(id_pers_reservation){
+                if(id_pers_reservation==currentUser)
+                {
+                  $('#myModalDelete').appendTo("body").modal('show');
+                }
+                else
+                {
+                  alert("Vous ne pouvez pas modifier cette reservation!!!");
+                }
+
+            });
+
+
+
+
+            },
+
+            /*
+             var event_id=calEvent.id;
+             // alert(event_id);
+             //document.getElementById("id_reservation").value = parseInt(event_id);
+
+             var start=moment(calEvent.start).format('DD/MM/YYYYRhh:mm');
+                   var start_split=start.split('R');
+                   var valeur_date_Split=start_split[0];
+                   var valeur_start_duree=start_split[1];
+                   var end=moment(calEvent.end).format('DD/MM/YYYYRhh:mm');
+                   //alert(end);
+                   //alert(start_split[1]);
+                   var end=moment(calEvent.end).format('DD/MM/YYYYRhh:mm');
+                   var test=calEvent.color;
+                   //alert('Event: ' + calEvent.title);
+                  // alert('Coordinates: ' +start);
+                  // alert('End: '+end);
+                  // alert('View: ' + view.name);
+       */
+            // change the border color just for fun
+          //  $(this).css('border-color', 'red');
+
+
+
+          dayClick: function(date, jsEvent, view) {
+            //$.noConflict(true);
+            $('#myModal').appendTo("body").modal('show');
+            var valeur_date = date.format().toString();
+            var valeur_date_Split=valeur_date.split('T');
+            //alert(valeur_date_Split[1]);
+              var date_value=valeur_date_Split[0].toString();
+            //alert('date===>'+date_value);
+            document.getElementById("myDate_reservation_onclick").value = date_value;
+              var duree_value="";
+            var splitduree_value="";
+            var heure="";
+            var minute="";
+                duree_value=valeur_date_Split[1];
+                splitduree_value=duree_value.split(':');
+             heure=splitduree_value[0];
+             minute=splitduree_value[1];
+            //alert('Heure ====>'+heure+' Heure =====>'+minute);
+
+            document.getElementById("Heure_reservation_onclick").value = parseInt(heure);
+            document.getElementById("Minute_reservation_onclick").value = parseInt(minute);
+
+
+            //alert('Clicked on: ' + date.format());
+
+            // alert('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
+
+            //  alert('Current view: ' + view.name);
+
+            // change the day's background color just for fun
+            // $(this).css('background-color', 'red');
+
+          },
+        defaultDate: date,
+        navLinks: true, // can click day/week names to navigate views
+        editable: false,
+        eventLimit: true, // allow "more" link when too many events
+        events: event.events
+
+
+
+      });
+function getPersonneReservation(id_reservation,fn)
+{
+  $.ajax({
+    type: "GET",
+    url: "/getLsPersonneReservation?id_reservation="+id_reservation,
+    success: function(msg){
+      var data = JSON.parse(msg);
+      fn(data[0].id_pers);
+    },
+    error: function (error) {
+      alert("ERROR");
+    }
+  });
+}
+
+    });
+  </script>
+  <!--  *****************DEBUT FORM MODAL MODIFICATION RESERVATION *****************-->
+  <%- partial('RecuperationDonne_graph.ejs') %>
+  <!--  *****************FIN FORM MODAL MODIFICATION RESERVATION *****************-->
+  <!-- *******************FIN SCRIPT INSERTION VALEUR ReservationSAlle dans Template Full calendar ******************-->
+  <style>
+
+    body {
+      margin: 40px 10px;
+      padding: 0;
+      font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
+      font-size: 14px;
+    }
+    #calendar {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    h2
+    {
+      padding: 0 20px 10px 20px;
+      font-size: 20px;
+      font-weight: 400;
+    }
+    h1
+    {
+      color: blue;
+    }
+
+    .form-control-wrapper
+    {
+      margin: 10px 20px;
+    }
+    code
+    {
+      padding: 10px;
+      background: #eee!important;
+      display: block;
+      color: #000;
+    }
+    code > p
+    {
+      font-weight: bold;
+      color: #000;
+      font-size: 1.5em;
+    }
+    @media(max-width: 300px)
+    {
+      .well { margin : 0}
+    }
+    .dtp div.dtp-picker  {
+      z-index: 100000 !important;
+      display: block;
+    }
+
+   .Gray
+    {
+      background: gray!important;
+    }
+
+    .Yellow
+    {
+      background: yellowgreen!important;
+    }
+  </style>
+</head>
+<body>
+
+
+<% if(req.session.droit==1){
+
+%>
+<% include ../../includes/entete.ejs %>
+<% }else{
+
+%>
+<% include ../../includes/enteteOperateur.ejs %>
+
+<% }%>
+
+<div id="page-wrapper">
+  <div class="row">
+    <div class="col-md-12">
+      <div class=" row ">
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+            <h3 class="panel-title"> <i class="fa fa-bar-chart-o"></i> </h3>
+            <div class="row">
+        <form method="post" action="/reservation/filtre">
+              <div class="form-group">
+                <div class="col-xs-2">
+                  <select name="filtre" class="form-control" id="salle" required >
+                    <option value="Tous">Tous</option>
+                    <option value="1er_étage_salle kijy">1er_étage_salle kijy</option>
+                    <option value="1er_étage_salle sohihy">1er_étage_salle sohihy</option>
+                    <option value="RDJ_salle merana">RDJ_salle merana</option>
+                    <option value="RDC_salle nato">RDC_salle nato</option>
+                    <option value="RDC_salle ramy">RDC_salle ramy</option>
+                    <option value="RDC_salle ambora">RDC_salle ambora</option>
+
+                  </select>
+                </div>
+                <button type="submit" class="btn btn-info btn-md">ok</button>
+              </div>
+        </form>
+            </div>
+          </div>
+          <div class="panel-body" id="grapheResponse">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="Legend">
+  <div class="Blue">&nbsp;</div>
+  <span>1er_étage_salle kijy </span>
+  <div class="Orange">&nbsp;</div>
+  <span>1er_étage_salle sohihy</span>
+  <div class="Aqua">&nbsp;</div>
+  <span>RDC_salle ambora</span>
+  <div class="RedRed">&nbsp;</div>
+  <span>RDC_salle ramy</span>
+  <div class="Gray">&nbsp;</div>
+  <span>RDC_salle nato</span>
+  <div class="Green">&nbsp;</div>
+  <span>RDJ_salle merana</span>
+
+</div>
+<div id="container_semaine_graph" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto"></div>
+      <div class="" style="margin-top: 65px">
+
+          <div id='calendar'></div>
+      </div>
+<!--  *****************DEBUT FORM MODAL NOUVEAU RESERVATION ET SUPPRESSIon*********************-->
+<%- partial('Nouveau_reservation.ejs') %>
+<%- partial('Supprimer_reservation.ejs') %>
+<!--  *****************FIN FORM MODAL NOUVEAU RESERVATION *************************************-->
+
+<!--script src="/js/jquery-1.10.2.min.js"></script-->
+
+<script src="/material/chart/highcharts.js"></script>
+<script src="/material/chart/exporting.js"></script>
+
+
+
+<body>
+
+
+<!--script type="text/javascript" src="/timepickerRonny/integ.js"></script-->
+<!--script type="text/javascript" src="/timepickerRonny/bootstrap.js"></script-->
+  <script type="text/javascript" src="/timepickerRonny/material.js"></script>
+  <script type="text/javascript" src="/timepickerRonny/moment_local.js"></script>
+  <script type="text/javascript" src="/timepickerRonny/bootstrap-material-datetimepicker.js"></script>
+<!--script src="/js/jquery-ui.min.js"></script-->
+  <script>
+    (function(i, s, o, g, r, a, m) {
+      i['GoogleAnalyticsObject'] = r;
+      i[r] = i[r] || function() {
+          (i[r].q = i[r].q || []).push(arguments)
+        }, i[r].l = 1 * new Date();
+      a = s.createElement(o),
+        m = s.getElementsByTagName(o)[0];
+      a.async = 1;
+      a.src = g;
+      m.parentNode.insertBefore(a, m)
+    })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+    ga('create', 'UA-60343429-1', 'auto');
+    ga('send', 'pageview');
+  </script>
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $('#date').bootstrapMaterialDatePicker
+      ({
+        time: false,
+        clearButton: true
+      });
+
+      $('#time_start').bootstrapMaterialDatePicker
+      ({
+        date: false,
+        shortTime: false,
+        format: 'HH:mm'
+      });
+      $('#time_end').bootstrapMaterialDatePicker
+      ({
+        date: false,
+        shortTime: false,
+        format: 'HH:mm'
+      });
+      $('#date-format').bootstrapMaterialDatePicker
+      ({
+        format: 'dddd DD MMMM YYYY - HH:mm'
+      });
+      $('#date-fr').bootstrapMaterialDatePicker
+      ({
+        format: 'DD/MM/YYYY HH:mm',
+        lang: 'fr',
+        weekStart: 1,
+        cancelText: 'ANNULER',
+        nowButton: true,
+        switchOnClick: true
+      });
+    })
+  </script>
+</body>

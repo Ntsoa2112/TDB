@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta name="generator" content="Bootply" />
+  <link rel="stylesheet" href="/styles/importer.css">
+  <link rel="stylesheet" href="/bootflat/css/bootflat.min.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/local.css">
+  <link rel="stylesheet" href="/css/Style_v3.css">
+
+  <link rel="stylesheet" href="/jquery-ui/jquery-ui.css">
+
+  <link rel="stylesheet" href="/css/bootstrap-duration-picker.css">
+
+  <!-- bootbox code -->
+  <script src="js/bootbox.min.js"></script>
+
+  <!-- check select -->
+  <link rel="stylesheet" href="/css/bootstrap-multiselect.css">
+
+  <style type="text/css">
+    .notation_almerys{
+    }
+    .colorTable{
+      background-color:red;
+    }
+    input[type=radio] {
+      display: block;
+      margin: 0 auto;
+    }
+    label {
+      display: inline-block;
+    }
+  </style>
+  <title>Modification</title>
+</head>
+
+<body onload="loadAll();">
+<!-- HEADER -->
+<%
+var mapPonderation = {};
+if(req.session.droit==1){
+
+%>
+<% include ../../../includes/entete.ejs %>
+<% }else{
+
+%>
+<% include ../../../includes/enteteOperateur.ejs %>
+
+<% }%>
+<!-- /HEADER -->
+<div id="page-wrapper">
+
+	<div class="page-title h3 title1" >
+		<div class="title_left" style="margin-left:25px">
+		  <h3 style="color:#2B75A6;">
+			Modification
+			</h3>
+		</div>
+	</div>
+
+	<%
+	function formattedDate(d = new Date) {
+		let month = String(d.getMonth() + 1);
+		let day = String(d.getDate());
+		const year = String(d.getFullYear());
+	
+		if (month.length < 2) month = '0' + month;
+		if (day.length < 2) day = '0' + day;
+	
+		return `${year}/${month}/${day}`;
+	}
+
+	%>
+
+	<div>
+		<form method="POST" action="/neocles-update-notation-appel" data-parsley-validate class="form-horizontal" id = "MyForm">
+			<input type='text' id='id_pers' name='id_pers' class='form-control hidden' value="">
+			<input type="hidden" name="id_ecoute" value="<%- ecoute.id %>">
+			<input type="hidden" name="tc_select" value="<%- ecoute.id_pers %>">
+			<div class="panel-heading">
+				<div class="row">
+					<div class="panel panel-primary">
+						<div class="form-group  col-xs-2 col-md-2 col-lg-2"  style="margin-left:25px">
+							<label for="nom_intervenant">Intervenant</label>
+							<input type="text" disabled class="form-control" tabindex="-1" id='nom_intervenant' name='nom_intervenant' value="<%- ecoute.id_pers + ' ' + ecoute.appelation %>">
+						</div>
+
+
+						<div class="form-group  col-xs-2 col-md-2 col-lg-2"  style="margin-left:25px">
+							<label for="date_enregistrement">Date</label>
+							<input type="text" class="form-control" tabindex="-1" id='date_enregistrement' name='date_enregistrement' value="<%- formattedDate(ecoute.date_enregistrement) %>">
+						</div>
+
+
+						
+						<div class="form-group  col-xs-2 col-md-2 col-lg-2"  style="margin-left:25px">
+							<label for="id_client">ID client</label>
+							<input type='text' id='id_client' placeholder="Identifiant client" name='id_client' class='form-control' value="<%- ecoute.id_client %>">
+						</div>
+
+
+
+						<div class="form-group  col-xs-2 col-md-2 col-lg-2"  style="margin-left:25px">
+							<label for="id_ticket">ID ticket</label>
+							<input type='text' id='id_ticket' placeholder="Identifiant ticket"  name='id_ticket'  class='form-control'  value="<%- ecoute.id_ticket %>">
+						</div>
+
+
+					</div>
+				</div>
+			</div>
+
+			<!-- DETAILS UTILISATEUR -->
+			<div class="form-group">
+				<div class="col-md-5">
+					<div  class="gray"><span id="td_nom"></span> <span id="td_prenom"></span></div>
+					</div>
+			</div>
+
+			<!-- CREATION DYNAMIQUE COLONNE-->
+			<div>
+			<%
+				let lastID = "";
+				let hidden = "";
+
+				if(det_notation){
+				det_notation.forEach(function (notation) {
+					if(lastID != notation.id_colonne_categorie + ""){
+						//creer nouveaux
+						lastID = notation.id_colonne_categorie + "";
+						//console.log(lastID);
+
+					//gestion hidden
+					
+					if(id_hidden_categorie){
+						if(notation.id_colonne_categorie == id_hidden_categorie){
+							hidden = "hidden";
+						}
+						else{
+							hidden = "";
+						}
+					}
+
+			%>
+
+			</div>
+
+			<div class="panel panel-default" <%- hidden %>>
+				<h3 class='h3 title1' style="padding-top: 10px; padding-bottom: 10px; padding-left: 20px;"><%- notation.categorie %></h3>
+				<br />
+					<% } %>
+
+					<div  class="row">
+						<h4 class="col-md-5 col-lg-2 col-xs-12"><%- notation.colonne %> </h4>
+						
+						<%
+							let required = '';
+							if(notation.required == true) required = 'required';
+						%>
+
+						<div class="col-md-1 col-lg-1 col-xs-2">
+							<input class="form-control"  type="text" name=<%- notation.id_colonne %> id=<%- notation.id_colonne %> value="<%- notes[notation.id_colonne + ""].note%>" <%- required %> style="text-align:center;"  min="0" max="5" onkeypress="return isNumberKey(event)" maxlength = "1">
+						</div>
+						<div class="col-md-8 col-lg-8 col-xs-8">
+							<input class="form-control" type="text" placeholder="Commentaire" tabindex="-1" name=<%- 'commentaire' + notation.id_colonne %> id=<%- 'commentaire' + notation.id_colonne %> value="<%- notes[notation.id_colonne + ""].commentaire%>">
+						</div>
+					</div>
+
+			<%	})}
+			%>
+
+			<br/>
+			<div class="form-check">
+				<h3>
+				<% 
+				let check = "";
+				if(ecoute.situation_inacceptable == true) {
+					check = "checked";
+				}
+				%>
+				<input type='checkbox' id='situation_inacceptable' name='situation_inacceptable' class='form-check-input' style="width: 19px; height: 19px;"  value="Non conforme" <%- check %> >
+				
+				<label for="situation_inacceptable" class="form-check-label">Situation inacceptable</label>
+				</h3>
+			</div>
+
+			<div class='form-group'>
+				<div class='col-md-12' style='padding-top:20px;'>
+				  <button type='submit' class='btn btn-primary btn-lg pull-left' id='bouton_enregistrer'>  Enregistrer  </button>
+				</div>
+			</div>
+
+			</div>
+
+		</div>
+		</form>
+	</div>
+</div>
+
+</body>
+
+<script src="/js/jquery-1.12.4.js"></script>
+<!--<script src="/js/base.min.js"></script>-->
+<!--<script src="/js/project.min.js"></script>-->
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/scripts.js"></script>
+
+<script src="/js/vendors/echarts.min.js"></script>
+<script src="/js/dependencies/sails.io.js"></script>
+<script src="/js/jquery-ui.min.js"></script>
+<script src="/js/echarts/theme.js"></script>
+<script src="/js/echarts/echarts.js"></script>
+<script src="/js/custom.min.js"></script><!--script customise-->
+<script src="/js/bootstrap-duration-picker-debug.js"></script>
+
+<script src="/js/bootstrap-multiselect.js"></script>
+
+<script language="javascript">
+
+
+	$(function() {
+		$("#date_enregistrement").datepicker({
+		dateFormat: 'yy/mm/dd'
+		});
+  	});
+
+	function isNumberKey(evt){
+    	var charCode = (evt.which) ? evt.which : evt.keyCode
+    	if (charCode > 31 && (charCode < 48 || charCode > 57))
+			return false;
+		
+		//seulement chiffre compris entre 1 et 5
+		if(evt.key > 5) return false;
+
+    	return true;
+	}
+
+</script>

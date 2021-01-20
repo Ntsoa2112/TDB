@@ -1,0 +1,108 @@
+<script>
+                                              var qte = [<%
+                                                  for(var tt = 0; tt< courbe.length;tt++){
+                                                    if(tt!=0){
+
+                                                      %>
+                                                      ,
+                                                      <%
+                                                    }
+                                                    var qt = 0;
+                                                    if(courbe[tt][3]!=null){
+                                                      qt = courbe[tt][3];
+                                                    }
+                                                    %>
+                                                    
+                                                    <%=qt %>
+                                                    <%
+                                                  }
+                                              %>];
+                                              </script>
+
+                                            <script>
+                                              var vb = [<%
+                                                  for(var tt = 0; tt<courbe.length;tt++){
+                                                    if(tt!=0){
+                                                      
+                                                      %>
+                                                      ,
+                                                      <%
+                                                    }
+                                                    var qt = 0;
+                                                    if(courbe[tt][3]!=null){
+                                                      qt = courbe[tt][3];
+                                                    }
+                                                    var vitb = qt/(courbe[tt][1]+courbe[tt][2])
+                                                    %>
+                                                    round(<%=vitb %>,2)
+                                                    <%
+                                                  }
+                                              %>];
+                                              </script>
+
+                                              <script>
+                                              var vn = [<%
+                                                  for(var tt = 0; tt<courbe.length;tt++){
+                                                    if(tt!=0){
+                                                      
+                                                      %>
+                                                      ,
+                                                      <%
+                                                    }
+                                                    var qt = 0;
+                                                    if(courbe[tt][3]!=null){
+                                                      qt = courbe[tt][3];
+                                                    }
+                                                    var vitb = qt/(courbe[tt][1])
+                                                    %>
+                                                    round(<%=vitb %>,2)
+                                                    <%
+                                                  }
+                                              %>];
+                                              </script>
+
+                                              <script>
+                                              var qlte = [<%
+                                                  for(var tt = 0; tt<courbe.length;tt++){
+                                                    if(tt!=0){
+                                                      
+                                                      %>
+                                                      ,
+                                                      <%
+                                                    }
+                                                    var qlt = 0;
+                                                    if(courbe[tt][4]!=null){
+                                                      qlt = courbe[tt][4];
+                                                    }
+                                                    var vitb = 100-((qlt/courbe[tt][3])*100);
+                                                    %>
+                                                    round(<%=vitb %>,2)
+                                                    <%
+                                                  }
+                                              %>];
+                                              </script>
+
+                                              <script>
+                                              var dte = [<%
+                                                  for(var tt = 0; tt<courbe.length;tt++){
+                                                    if(tt!=0){
+                                                      
+                                                      %>
+                                                      ,
+                                                      <%
+                                                    }
+                                                    %>
+                                                    <%=courbe[tt][0] %>
+                                                    <%
+                                                  }
+                                              %>];
+                                              </script>
+
+
+
+
+
+
+<div class="card-img" id="containerByDossie">
+</div>
+<script src="/js/chart/chartDossierByDate.js"></script>

@@ -1,0 +1,141 @@
+<% if(Number(val) == 0 ){//Mensuel
+  %>
+    <div class="col-md-4 col-sm-4 col-xs-4">
+      <select id="mois" class="form-control">
+        <option value="01">Janvier</option>
+        <option value="02">Février</option>
+        <option value="03">Mars</option>
+        <option value="04">Avril</option>
+        <option value="05">Mai</option>
+        <option value="06">Juin</option>
+        <option value="07">Juillet</option>
+        <option value="08">Août</option>
+        <option value="09">Septembre</option>
+        <option value="10">Octobre</option>
+        <option value="11">Novembre</option>
+        <option value="12">Décembre</option>
+      </select>
+    </div>
+    <div class="col-md-4 col-sm-4 col-xs-4">
+      <input  type="submit" class=" btn-success" onclick="loadDataMensuel();"  value="Valider"/>
+    </div>
+<%
+}else if (Number(val)==1){
+%>
+    <div class="col-md-4 col-sm-4 col-xs-4">
+      <select id="sem" class="form-control">
+<%
+  for(var i = 1; i<=53;i++){//Par semaine
+    %>
+        <option value="<%=i%>">SEM<%=i%></option>
+<%
+  }
+
+  %>
+
+          </select>
+        </div>
+    <div class="col-md-4 col-sm-4 col-xs-4">
+      <input  type="submit" class=" btn-success" onclick="loadDataHebdomadaire();"  value="Valider"/>
+    </div>
+        <%
+  }else {
+    %>
+
+    <div class="col-md-4 col-sm-4 col-xs-4">
+      <input class="form-control" type="text" id="datetimd" name="datedeb" placeholder = "Date" value=""/>
+    </div>
+    <div class="col-md-4 col-sm-4 col-xs-4">
+      <input  type="submit" class=" btn-success" onclick="loadDataJournalier();"  value="Valider"/>
+    </div>
+
+<%
+  }%>
+
+<script src="/js/dateformat.js"></script>
+
+<script>
+
+  function getFirstDateOfWeek(w, y) {
+    var d = (1 + (w - 1) * 7); // 1st of January + 7 days for each week
+
+    return new Date(y, 0, d);
+  }
+
+  function getLastDateOfWeek(w, y) {
+    var d = (1 + (w - 1) * 7)+7; // 1st of January + 7 days for each week
+
+    return new Date(y, 0, d);
+  }
+  function loadDataJournalier(){
+    var dateDeb = $( "#datetimd" ).val();
+    var dateFin = $( "#datetimd" ).val();
+    $.ajax({
+      type: "GET",
+      url: url+"?datedeb="+dateDeb+"&datefin="+dateFin+"&label="+dateDeb,
+      beforeSend: function(xhr){
+        $( "#load").show();
+      },
+      success: function(msg){
+        $("#table-response").html(msg);
+        $( "#load").hide();
+      },
+      error: function (error) {
+        alert('error; ' +error);
+      }
+    });
+  }
+
+  function loadDataHebdomadaire(){
+    var week = $( "#sem" ).val()
+    var dtLastWeek = getLastDateOfWeek(parseInt(week),2016);
+    var dtFirstWeek = getFirstDateOfWeek(parseInt(week),2016);
+    ////console.log('week:'+dateFormat(dt, "yyyymmdd"));
+    var dateDeb = dateFormat(dtFirstWeek, "yyyymmdd");
+    var dateFin = dateFormat(dtLastWeek, "yyyymmdd");
+    $.ajax({
+      type: "GET",
+      url: url+"?datedeb="+dateDeb+"&datefin="+dateFin+"&label=SEM"+week,
+      beforeSend: function(xhr){
+        $( "#load").show();
+      },
+      success: function(msg){
+        $("#table-response").html(msg);
+        $( "#load").hide();
+      },
+      error: function (error) {
+        alert('error; ' +error);
+      }
+    });
+  }
+
+  function loadDataMensuel(){
+    var mounth = $( "#mois" ).val()
+    var dtLast = "2016"+mounth+"31";
+    var dtFirst = "2016"+mounth+"01";
+    ////console.log('week:'+dateFormat(dt, "yyyymmdd"));
+    var dateDeb = dtFirst;
+    var dateFin = dtLast;
+    $.ajax({
+      type: "GET",
+      url: url+"?datedeb="+dateDeb+"&datefin="+dateFin+"&label="+mounth+"/2016",
+      beforeSend: function(xhr){
+        $( "#load").show();
+      },
+      success: function(msg){
+        $("#table-response").html(msg);
+        $( "#load").hide();
+      },
+      error: function (error) {
+        alert('error; ' +error);
+      }
+    });
+  }
+
+  $( document ).ready(function() {
+    $( "#datetimd" ).datepicker({
+      dateFormat: 'yymmdd'
+    });
+  });
+
+</script>

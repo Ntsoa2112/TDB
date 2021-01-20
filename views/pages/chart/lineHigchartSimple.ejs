@@ -1,0 +1,73 @@
+<div class="col-xs-12 col-sm-12">
+  <div class="box">
+    <div class="box-header">
+      <div class="box-name">
+        <i class="fa fa-circle"></i>
+        <span><%= title %></span>
+      </div>
+
+      <div class="no-move"></div>
+    </div>
+    <div class="box-content">
+      <div id="<%= idElement %>" class="<%= classeElement %>"></div>
+    </div>
+  </div>
+</div>
+
+<script src="js/helper.js"></script>
+<link rel="stylesheet" href="/css/grapheStyle.css">
+
+<script>
+
+  function round(value, decimals) {
+
+    return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
+  }
+
+
+  function lineHigh(idElement, titre){
+
+
+
+    //$('#containerEvoHeure').highcharts();
+
+    var optionEvoVit = {
+      title: {
+        text: 'Evolution Vitesse'
+      },
+
+      xAxis: {
+        categories: datedeb,
+        crosshair: true
+      },
+
+      yAxis: {
+        type: 'logarithmic',
+        minorTickInterval: 0.1
+      },
+
+      tooltip: {
+        headerFormat: '<b>{series.name}</b><br />',
+        pointFormat: 'x = {point.x}, y = {point.y}'
+      },
+
+      series: [{
+        name: 'Brute',
+        data: vitesseBrute
+      },{
+        name: 'Nette',
+        data: vitesseNette
+      }
+      ]
+    };
+    Highcharts.chart(''+idElement, optionEvoVit);
+    //$('#'+idElement).highcharts();
+  }
+</script>
+<script>
+  $(document).ready(function() {
+
+    lineHigh("<%= idElement %>", "<%= titleChart %>");
+  });
+
+</script>

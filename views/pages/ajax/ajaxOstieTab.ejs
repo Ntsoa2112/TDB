@@ -1,0 +1,137 @@
+<div class="x_panel">
+  <div class="x_title">
+    <h2></h2>
+    <ul class="nav navbar-right panel_toolbox">
+      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+      </li>
+
+      <li><a class="close-link"><i class="fa fa-close"></i></a>
+      </li>
+    </ul>
+    <div class="clearfix"></div>
+  </div>
+
+    <div class="x_content">
+
+      <div id="tableFiltre">
+        <table  id="datatable-buttons" class="table table-striped table-bordered">
+          <thead>
+          <tr class=''>
+            <th id='date_deb_ldt' class='th text-center'>MATRICULE</td>
+            <th id='date_deb_ldt' class='th text-center'>NOM</td>
+            <th id='date_deb_ldt' class='th text-center'>DEPARTEMENT</td>
+            <th id='date_deb_ldt' class='th text-center'>DATE</td>
+            <th id='date_deb_ldt' class="text-center">HEURE DEBUT</th>
+            <th id='date_deb_ldt' class="text-center">HEURE FIN</th>
+          </tr>
+          </thead>
+          <tbody>
+          <%
+
+          ostie.forEach(function (ostie) {
+
+          %>
+
+          <tr class=''>
+            <td><%=ostie.id_pers %></td>
+            <td><%=ostie.appelation %></td>
+            <td><%=ostie.libelle %></td>
+            <td><%=ostie.date_reservation%></td>
+            <td><%=ostie.debut_reservation || '00:00:00'%></td>
+            <td><%=ostie.fin_reservation || '00:00:00'%></td>
+          </tr>
+
+
+          <%
+          });
+
+          %>
+          </tbody>
+        </table>
+
+
+      </div>
+
+
+
+    </div>
+  </div>
+
+<script src="/js/jquery-1.10.2.min.js"></script>
+<script type="text/javascript">
+  $(document).ready(function() {
+    var handleDataTableButtons = function() {
+      if ($("#datatable-buttons").length) {
+        $("#datatable-buttons").DataTable({
+          pageLength: 25,
+          dom: "Bfrtip",
+          buttons: [
+            {
+              extend: "copy",
+              className: "btn-sm"
+            },
+            {
+              extend: "csv",
+              className: "btn-sm"
+            },
+            {
+              extend: "excel",
+              className: "btn-sm"
+            },
+            {
+              extend: "pdfHtml5",
+              className: "btn-sm"
+            },
+            {
+              extend: "print",
+              className: "btn-sm"
+            },
+          ],
+          responsive: true
+        });
+      }
+    };
+
+    TableManageButtons = function() {
+      "use strict";
+      return {
+        init: function() {
+          handleDataTableButtons();
+        }
+      };
+    }();
+
+    $('#datatable').dataTable();
+    $('#datatable-keytable').DataTable({
+      keys: true
+    });
+
+    $('#datatable-responsive').DataTable();
+
+
+    var table = $('#datatable-fixed-header').DataTable({
+      fixedHeader: true
+    });
+
+    TableManageButtons.init();
+  });
+</script>
+
+<script src="/vendors/fastclick/lib/fastclick.js"></script>
+<!-- NProgress -->
+<script src="/vendors/nprogress/nprogress.js"></script>
+<script src="/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+<script src="/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
+<script src="/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
+<script src="/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+<script src="/vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+<script src="/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+<script src="/vendors/datatables.net-scroller/js/datatables.scroller.min.js"></script>
+<script src="/vendors/jszip/dist/jszip.min.js"></script>
+<script src="/vendors/pdfmake/build/pdfmake.min.js"></script>
+<script src="/vendors/pdfmake/build/vfs_fonts.js"></script>

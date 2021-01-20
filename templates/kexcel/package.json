@@ -1,0 +1,159 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "kexcel@^3.0.12",
+        "scope": null,
+        "escapedName": "kexcel",
+        "name": "kexcel",
+        "rawSpec": "^3.0.12",
+        "spec": ">=3.0.12 <4.0.0",
+        "type": "range"
+      },
+      "D:\\UPDATE db 07 12 2016\\TableauDeBord2.0"
+    ]
+  ],
+  "_from": "kexcel@>=3.0.12 <4.0.0",
+  "_id": "kexcel@3.1.4",
+  "_inCache": true,
+  "_location": "/kexcel",
+  "_nodeVersion": "6.5.0",
+  "_npmOperationalInternal": {
+    "host": "packages-12-west.internal.npmjs.com",
+    "tmp": "tmp/kexcel-3.1.4.tgz_1477375653769_0.8339375448413193"
+  },
+  "_npmUser": {
+    "name": "keetraxx",
+    "email": "kt@compile.ch"
+  },
+  "_npmVersion": "3.10.3",
+  "_phantomChildren": {
+    "bl": "1.1.2",
+    "buffer-crc32": "0.2.13",
+    "buffer-shims": "1.0.0",
+    "core-util-is": "1.0.2",
+    "detect-file": "0.1.0",
+    "end-of-stream": "1.1.0",
+    "fs.realpath": "1.0.0",
+    "inflight": "1.0.6",
+    "inherits": "2.0.3",
+    "is-glob": "2.0.1",
+    "micromatch": "2.3.11",
+    "minimatch": "3.0.3",
+    "mkdirp": "0.5.1",
+    "normalize-path": "2.0.1",
+    "once": "1.4.0",
+    "path-is-absolute": "1.0.1",
+    "process-nextick-args": "1.0.7",
+    "resolve-dir": "0.1.1",
+    "rimraf": "2.5.4",
+    "string_decoder": "0.10.31",
+    "util-deprecate": "1.0.2",
+    "xtend": "4.0.1"
+  },
+  "_requested": {
+    "raw": "kexcel@^3.0.12",
+    "scope": null,
+    "escapedName": "kexcel",
+    "name": "kexcel",
+    "rawSpec": "^3.0.12",
+    "spec": ">=3.0.12 <4.0.0",
+    "type": "range"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/kexcel/-/kexcel-3.1.4.tgz",
+  "_shasum": "1953b3c33964e8597c8cd2a991b06dad2ec85754",
+  "_shrinkwrap": null,
+  "_spec": "kexcel@^3.0.12",
+  "_where": "D:\\UPDATE db 07 12 2016\\TableauDeBord2.0",
+  "author": {
+    "name": "Khôi Tran",
+    "email": "kt@compile.ch",
+    "url": "http://tran-engineering.ch"
+  },
+  "bugs": {
+    "url": "https://github.com/KeeTraxx/kexcel/issues"
+  },
+  "config": {
+    "blanket": {
+      "pattern": [
+        "js"
+      ],
+      "data-cover-never": [
+        "node_modules",
+        "tests"
+      ]
+    }
+  },
+  "dependencies": {
+    "@types/archiver": "^0.15.33",
+    "@types/bluebird": "^3.0.35",
+    "@types/lodash": "^4.14.37",
+    "@types/node": "^6.0.45",
+    "@types/rimraf": "0.0.28",
+    "@types/xml2js": "0.0.28",
+    "archiver": "^1.0.0",
+    "awesome-typescript-loader": "^2.2.4",
+    "bluebird": "^3.3.5",
+    "clean-webpack-plugin": "^0.1.13",
+    "dev-null": "^0.1.1",
+    "extract-zip": "^1.5.0",
+    "findup-sync": "^0.4.3",
+    "fs": "0.0.1-security",
+    "fstream": "^1.0.8",
+    "lodash": "^4.11.1",
+    "rimraf": "^2.4.4",
+    "temp": "^0.8.3",
+    "typescript": "^2.0.3",
+    "unzip": "^0.1.11",
+    "webpack": "^1.13.2",
+    "webpack-node-externals": "^1.5.4",
+    "xml2js": "^0.4.15"
+  },
+  "description": "Create or open and then edit existing XLSX files",
+  "devDependencies": {
+    "chai": "^3.4.1",
+    "coveralls": "^2.11.9",
+    "istanbul": "^0.4.3",
+    "mocha": "^3.1.2",
+    "remap-istanbul": "^0.7.0",
+    "tslint": "^3.15.1"
+  },
+  "directories": {},
+  "dist": {
+    "shasum": "1953b3c33964e8597c8cd2a991b06dad2ec85754",
+    "tarball": "https://registry.npmjs.org/kexcel/-/kexcel-3.1.4.tgz"
+  },
+  "gitHead": "e022081d22c383b1f3f34e31fd854262745cd7cf",
+  "homepage": "https://github.com/KeeTraxx/kexcel#readme",
+  "keywords": [
+    "xlsx",
+    "excel",
+    "spreadsheet"
+  ],
+  "license": "MIT",
+  "main": "dist/kexcel.bundle.js",
+  "maintainers": [
+    {
+      "name": "keetraxx",
+      "email": "kt@compile.ch"
+    }
+  ],
+  "name": "kexcel",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KeeTraxx/kexcel.git"
+  },
+  "scripts": {
+    "build": "webpack",
+    "coverage": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec && remap-istanbul --exclude kexcel/webpack,kexcel/~ -i coverage/coverage.json -o coverage/report -t html",
+    "install": "webpack",
+    "localtest": "mocha",
+    "test": "istanbul cover _mocha --report lcovonly -- -R spec && remap-istanbul --exclude kexcel/webpack,kexcel/~ -i coverage/coverage.json -o coverage/coverage-remapped.lcov -t lcovonly && cat ./coverage/coverage-remapped.lcov | coveralls"
+  },
+  "version": "3.1.4"
+}

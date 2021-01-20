@@ -1,0 +1,422 @@
+<% if(req.session.droit==1){
+
+%>
+  <% include ../../includes/entete.ejs %>
+<% }else{
+
+%>
+  <% include ../../includes/enteteOperateur.ejs %>
+<%}%>
+
+<link rel="stylesheet" href="/jquery-ui/jquery-ui.css">
+<script src="/js/jquery-1.10.2.min.js"></script>
+<script src="/js/jquery-ui.min.js"></script>
+<script src="/js/table-scroll.min.js"></script>
+
+<style>
+  .livree {
+    background: grey;
+    color: white;
+  }
+
+  .pers_th {
+     background: #4F3E3A !important;
+     color: white;
+   }
+
+  .pers_th_dossier1 {
+    background: #4E5C63 !important;
+    color: white;
+  }
+
+  .pers_th_dossier2 {
+    background: #20171F !important;
+    color: white;
+  }
+
+  .pers_th_etape1 {
+    background: #261625   !important;
+    color: white;
+  }
+  .pers_th_etape2 {
+    background: #16261C !important;
+    color: white;
+  }
+
+  .pers_th_etape3 {
+    background: #261916 !important;
+    color: white;
+  }
+
+  #content_data_table {
+    overflow-x: scroll;
+    width: 100%;
+  }
+
+  .frm {
+    border: 1px solid #24C6DC;
+    border-radius: 0px;
+    padding: 10px;
+  }
+
+  .td_tab {
+    background: white !important;
+  }
+</style>
+<div class="col-md-12 col-sm-12 col-xs-12">
+  <div class="x_panel block">
+    <div class="x_title">
+      <h2></h2>
+      <ul class="nav navbar-right panel_toolbox">
+        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+        </li>
+        <li><a class="close-link"><i class="fa fa-close"></i></a>
+        </li>
+      </ul>
+      <div class="clearfix"></div>
+    </div>
+    <div class="x_content">
+
+      <form method="get" action="/gestion_hr">
+        <div class="form-groupe col-md-2">
+          <select  id="projet" name="projet" class="frm form-control">
+            <%-html_project%>
+          </select>
+        </div>
+
+        <div class="form-groupe col-md-2">
+          <input type="text" class="frm form-control" id="dateDeb" placeholder="Debut"/>
+        </div>
+
+        <div class="form-groupe col-md-2">
+          <input type="text" class="frm form-control" id="dateFin" placeholder="Fin"/>
+        </div>
+
+        <div class="form-groupe col-md-2">
+          <input type="number" class="frm form-control" id="id_pers" placeholder="matricule"/>
+        </div>
+
+        <div class="frm form-groupe col-md-2" style="width: 50px;padding: 5px;background: #0b2e13;color: white">
+          <a href="#" onclick="loadData()"><i class="fa fa-search fa-3x"></i> </a>
+        </div>
+
+        <div class="frm form-groupe col-md-2" style="width: 50px;padding: 5px;background: #23903c;color: white">
+          <a href="#" onclick="loadData()"><i class="fa fa-file-excel-o fa-3x"></i> </a>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>
+
+<div class="col-md-12 col-sm-12 col-xs-12">
+  <div class="x_panel block">
+    <div class="x_title">
+      <h2>Resultat</h2>
+      <ul class="nav navbar-right panel_toolbox">
+        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+        </li>
+        <li><a class="close-link"><i class="fa fa-close"></i></a>
+        </li>
+      </ul>
+      <div class="clearfix"></div>
+    </div>
+    <div class="x_content" id="content_data_table">
+
+
+    </div>
+  </div>
+</div>
+
+<script>
+
+  function loadData() {
+    var id_dossier = $("#projet").val();
+    var id_pers= $("#id_pers").val();
+    var dateDeb = $("#dateDeb").val();
+    var dateFin = $("#dateFin").val();
+
+    var url = '/centralisation/ajaxData?id_dossier='+id_dossier+'&id_pers='+id_pers+'&dateDeb='+dateDeb+'&dateFin='+dateFin;
+    //alert(url);
+    $.ajax({
+      type: "GET",
+      url: url,
+      success: function(msg){
+
+        //console.log(msg);
+
+        var dt_str= {};
+        var last_id_dossier = 0;
+        var last_id_etape = 0;
+        var last_id_pers = 0;
+
+        var html_thead_dossier = '';
+        var html_thead_etape = '';
+
+        var html_thead_template= '<th>Volume</th><th>H. Cons</th><th>Vitesse</th><th>Nb Fichiers</th><th>Nb Erreurs</th><th>Gain H.</th>';
+
+        var dossier = [];
+        var etape= [];
+        var pers = [];
+        try {
+          var temp_dossier = [];
+          var temp_etape= [];
+          var temp_etape_dossier= [];
+          var temp_pers = {};
+          var data = JSON.parse(msg);
+
+          for(var i=0; i<data.length; i++){
+              // si id_dossier != last_id_dossier ou last_idedossier = 0;
+            if(data[i].id_pers!==last_id_pers || last_id_pers===0) {
+              temp_pers[data[i].id_pers] = {};
+              temp_pers[data[i].id_pers].appelation = data[i].appelation;
+              temp_pers[data[i].id_pers].dossiers = [];
+              last_id_pers = data[i].id_pers;
+            }
+          }
+
+          for(var i=0; i<data.length; i++){
+            // si id_dossier != last_id_dossier ou last_idedossier = 0;
+            if(data[i].id_dossier!==last_id_dossier || last_id_dossier===0) {
+              temp_dossier[data[i].id_dossier] = {};
+              temp_dossier[data[i].id_dossier].etapes = [];
+              temp_dossier[data[i].id_dossier].num_dossier = data[i].num_dossier;
+              last_id_dossier = data[i].id_dossier;
+            }
+          }
+
+          for(var i=0; i<data.length; i++) {
+            // si id_dossier != last_id_dossier ou last_idedossier = 0;          }
+
+            if(typeof temp_etape[data[i].id_etape] === 'undefined') {
+              temp_etape[data[i].id_etape] = {};
+            }
+            temp_etape[data[i].id_etape][data[i].id_pers] = {};
+            //temp_etape[data[i].id_etape].id_pers = data[i].id_pers;
+            temp_etape[data[i].id_etape][data[i].id_pers].id_etape = data[i].id_etape;
+            temp_etape[data[i].id_etape][data[i].id_pers].id_dossier = data[i].id_dossier;
+            temp_etape[data[i].id_etape][data[i].id_pers].libelle = data[i].libelle;
+            temp_etape[data[i].id_etape][data[i].id_pers].qte = data[i].qte;
+            temp_etape[data[i].id_etape][data[i].id_pers].duree = data[i].duree || 0;
+            temp_etape[data[i].id_etape][data[i].id_pers].err = data[i].err || 0;
+            temp_etape[data[i].id_etape][data[i].id_pers].vitesse = data[i].vitesse || 0;
+            temp_etape[data[i].id_etape][data[i].id_pers].qte_jour = data[i].qte_jour || 0;
+
+
+            temp_etape_dossier[data[i].id_etape] = {};
+            temp_etape_dossier[data[i].id_etape].id_pers = data[i].id_pers;
+            temp_etape_dossier[data[i].id_etape].id_etape = data[i].id_etape;
+            temp_etape_dossier[data[i].id_etape].id_dossier = data[i].id_dossier;
+            temp_etape_dossier[data[i].id_etape].libelle = data[i].libelle;
+            temp_etape_dossier[data[i].id_etape].qte = data[i].qte;
+            temp_etape_dossier[data[i].id_etape].duree = data[i].duree || 0;
+            temp_etape_dossier[data[i].id_etape].err = data[i].err || 0;
+            temp_etape_dossier[data[i].id_etape].vitesse = data[i].vitesse || 0;
+            temp_etape_dossier[data[i].id_etape].qte_jour = data[i].qte_jour || 0;
+
+            console.log(temp_etape);
+          }
+
+          /*for(var index in temp_dossier) {
+            console.log("=======>"+index);
+            for(var ix in temp_etape) {
+
+              if(Number(index) === Number(temp_etape[ix].id_dossier))
+              {
+                temp_dossier[index].etapes.push(temp_etape[ix]);
+               // console.log("===============>"+temp_etape[ix].id_dossier);
+
+              }
+            }*/
+            for(var index in temp_dossier) {
+              console.log("=======>"+index);
+              for(var ix in temp_etape_dossier) {
+
+                if(Number(index) === Number(temp_etape_dossier[ix].id_dossier))
+                {
+                  temp_dossier[index].etapes.push(temp_etape_dossier[ix]);
+                  // console.log("===============>"+temp_etape[ix].id_dossier);
+
+                }
+              }
+          }
+
+          for(var index in temp_pers) {
+            temp_pers[index].dossiers.push(temp_dossier);
+          }
+          console.log(temp_pers);
+
+          // ici on genere le template
+          var cpt_pers = 0;
+
+          var html_table = "<tbody>";
+          var html_head = "<tr><th colspan='2' class='pers_th'>Dossiers</th>";
+          var html_head_etape = "<tr><th colspan='2'class='pers_th'>Etapes</th>";
+          var html_head_vitesse= "<tr><th colspan='2'class='pers_th'>Objectifs de vitesse</th>";
+          var html_head_detail = "<tr><th class='pers_th'>Matricule</th><th class='pers_th'>Appelation</th>";
+          var html_body= "";
+
+          var class_dossier = 'pers_th_dossier2';
+          var class_etape = 'pers_th_etape1';
+          for(var index in temp_pers) {
+            html_body += "<tr>"+'<td class="td_tab">'+index+'</td>'+'<td class="td_tab">'+temp_pers[index].appelation+'</td>';
+            for(var ix in temp_pers[index].dossiers[0]) {
+                if(cpt_pers===0)
+                {
+                  var colspan=6*(temp_pers[index].dossiers[0][ix].etapes.length);
+                  switch(class_dossier)
+                  {
+                    case 'pers_th_dossier2':
+                      class_dossier = 'pers_th_dossier1';
+                    break;
+                    case 'pers_th_dossier1':
+                      class_dossier = 'pers_th_dossier2';
+                      break;
+                  }
+                 // console.log(temp_pers[index].dossiers[0][ix].etapes);
+                  if(temp_pers[index].dossiers[0][ix].etapes.length>0)
+                    html_head +='<th colspan="'+colspan+'" class="'+class_dossier+'">'+temp_pers[index].dossiers[0][ix].num_dossier+'</th>';
+                }
+
+                for(var ie in temp_pers[index].dossiers[0][ix].etapes){
+                  if(cpt_pers===0)
+                  {
+                    switch(class_etape)
+                    {
+                      case 'pers_th_etape1':
+                        class_etape = 'pers_th_etape2';
+                        break;
+                      case 'pers_th_etape2':
+                        class_etape = 'pers_th_etape3';
+                        break;
+                      case 'pers_th_etape3':
+                        class_etape = 'pers_th_etape1';
+                        break;
+                    }
+                    var colspan = 6;
+                    html_head_etape +='<th colspan="'+colspan+'" class="'+class_etape+'">'+temp_pers[index].dossiers[0][ix].etapes[ie].libelle+'</th>';
+
+                    var vit_obj = '-';
+                    if(isNaN(temp_pers[index].dossiers[0][ix].etapes[ie].vitesse) || Number(temp_pers[index].dossiers[0][ix].etapes[ie].vitesse)<=0)
+                    {}
+                      //vit_obj = temp_pers[index].dossiers[0][ix].etapes[ie].vitesse;
+                    else {
+                      vit_obj = temp_pers[index].dossiers[0][ix].etapes[ie].vitesse;
+                    }
+                    html_head_vitesse +='<th colspan="'+colspan+'" class="'+class_etape+'">'+vit_obj+'</th>';
+                    html_head_detail += html_thead_template;
+                  }
+                }
+              //for(var ie in temp_pers[index].dossiers[0][ix].etapes) {
+              for(var ie in temp_etape) {
+                console.log("=====================================");
+                console.log(temp_etape[ie][index]);
+                if(typeof temp_etape[ie][index] !== 'undefined')
+                {
+
+                  //if(Number(temp_pers[index].dossiers[0][ix].etapes[ie][index].id_pers) === Number(index) && Number(ix)===Number(temp_pers[index].dossiers[0][ix].etapes[ie].id_dossier))
+                  if(Number(ix)===Number(temp_etape[ie][index].id_dossier))
+                  {
+                    var duree = Number((Number(temp_etape[ie][index].duree)/3600).toFixed(2));
+                    var vitesse = Number((Number(temp_etape[ie][index].qte || 0)/duree).toFixed(2));
+                    var vol_obj = 0;
+                    var gain_temp = 0;
+                    if(!isNaN(temp_etape[ie][index].vitesse)){
+                      vol_obj = Number(temp_etape[ie][index].vitesse) * duree;
+                      vol_obj = Number(vol_obj.toFixed(2));
+                      var gain_volume = Number(temp_etape[ie][index].qte || 0)- vol_obj
+                      if(Number(temp_etape[ie][index].vitesse)>0)
+                      {
+                        gain_temp = gain_volume / Number(temp_etape[ie][index].vitesse);
+                        gain_temp = Number(gain_temp.toFixed(2));
+                      }
+                    }
+
+
+                    html_body +='<td class="livree">'+(temp_etape[ie][index].qte || 0)+'</td>'+'<td class="livree">'+duree+'</td>'+'<td class="livree">'+vitesse+'</td>'+'<td class="livree"></td><td class="livree">'+temp_etape[ie][index].err+'</td><td class="livree">'+gain_temp+'</td>';
+
+                  }
+                  else
+                    html_body +='<td class="td_tab">-</td><td class="td_tab">-</td><td class="td_tab">-</td><td class="td_tab">-</td><td class="td_tab">-</td><td class="td_tab">-</td>';
+
+                  /*for(var i=0; i<data.length; i++){
+                    if(Number(data[i].id_pers) === Number(index) && Number(ix)===Number(data[i].id_dossier) && Number(temp_pers[index].dossiers[0][ix].etapes[ie].id_etape)===Number(data[i].id_etape))
+                    {
+                      var duree = Number((Number(temp_pers[index].dossiers[0][ix].etapes[ie].duree)/3600).toFixed(2));
+                      html_body +='<td class="livree">'+temp_pers[index].dossiers[0][ix].etapes[ie].qte+'</td>'+'<td class="livree">'+temp_pers[index].dossiers[0][ix].etapes[ie].vitesse+'</td>'+'<td class="livree">'+duree+'</td>'+'<td class="td_tab"></td><td class="td_tab">'+temp_pers[index].dossiers[0][ix].etapes[ie].err+'</td><td class="td_tab"></td>';
+
+                    }
+                    else
+                      html_body +='<td class="td_tab">-</td><td class="td_tab">-</td><td class="td_tab">-</td><td class="td_tab">-</td><td class="td_tab">-</td><td class="td_tab">-</td>';
+
+                  }*/
+                }else{
+                  html_body +='<td class="td_tab">-</td><td class="td_tab">-</td><td class="td_tab">-</td><td class="td_tab">-</td><td class="td_tab">-</td><td class="td_tab">-</td>';
+                }
+                //if(temp_etape[ie][index])
+
+              }
+            }
+
+            html_body += "</tr>";
+
+
+            cpt_pers +=1;
+
+
+          }
+          html_table += "</tbody>";
+          html_head += "</tr>";
+          html_head_etape += "</tr>";
+          html_head_vitesse += "</tr>";
+          html_head_detail += "</tr>";
+
+          var html_final = "<table id='table_id'>" +
+            "<thead>" +
+            html_head +
+            html_head_etape +
+            html_head_vitesse +
+            html_head_detail +
+            "</thead>" +
+            "<tbody>" +
+            html_body +
+            "</tbody>" +
+            "</table>";
+
+            $("#content_data_table").html(html_final);
+
+         /* $('table').table_scroll({
+              fixedColumnsLeft: 2,
+              columnsInScrollableArea: 12,
+              scrollX: 5,
+              scrollY: 10
+          });*/
+
+          //alert(html_head);
+
+
+
+        }catch (e) {
+          console.error(e);
+        }
+
+
+        //$('#dataglobale').html(html_data);
+      },
+      error: function (error) {
+        console.log(error);
+      }
+    });
+  }
+
+  $(function() {
+    $("#dateDeb").datepicker({
+      dateFormat: 'yymmdd'
+
+    });
+
+    $("#dateFin").datepicker({
+      dateFormat: 'yymmdd'
+    });
+});
+</script>

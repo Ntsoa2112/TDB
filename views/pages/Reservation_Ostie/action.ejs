@@ -1,0 +1,83 @@
+<div class="container">
+  <div id="myModal_modif" role="dialog" class="modal fade">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" data-dismiss="modal" class="close">&times;</button>
+          <h4 class="modal-title">Action reservation</h4>
+        </div>
+        <div class="modal-body">
+          <div class="col-sm-4"><a href="#" class="btn btn-danger" onclick="annulerReservation();">Annuler rendez vous</a></div>
+          <div class="col-sm-4"><a href="#" class="btn btn-success" onclick="commencerReservation();">Commencer</a></div>
+          <div class="cal-sm-4"><a href="#" class="btn btn-warning" onclick="modifierReservation();">Rendez vous Terminer</a></div>
+
+      </div>
+        <div class="modal-footer">
+          <button type="button" data-dismiss="modal" class="btn btn-default">Close</button>
+        </div>
+    </div>
+    </div>
+  </div>
+</div>
+
+</div>
+<script>
+  function annulerReservation(){
+    $.ajax({
+      type: "GET",
+      url: "/annuler_ostie_reservation/?id="+selectId+"&ip="+ips,
+      success: function(msg){
+        //console.log(msg);
+        //alert("Annulation effectuer" );
+        notifyOstie();
+        window.location = "/reservation_ostie/index";
+      },
+      error: function (error) {
+        //console.log(error);
+      }
+    });
+  }
+  function notifyOstie(){
+    $.ajax({
+      type: "GET",
+      url: "/notification_ostie",success: function(msg){
+        //console.log(msg);
+      },
+      error: function (error) {
+        //console.log(error);
+      }
+    });
+  }
+
+  function commencerReservation(){
+    $.ajax({
+      type: "GET",
+      url: "/commencer_ostie_reservation/?id="+selectId+"&ip="+ips,
+      success: function(msg){
+        //console.log(msg);
+        notifyOstie();
+        window.location = "/reservation_ostie/index";
+      },
+      error: function (error) {
+        //console.log(error);
+      }
+    });
+  }
+
+  function modifierReservation(){
+    $.ajax({
+      type: "GET",
+      url: "/update_ostie_reservation/?id="+selectId+"&idldt="+selectIdLdt+"&ip="+ips,
+      success: function(msg){
+        //console.log(msg);
+        notifyOstie();
+        window.location = "/reservation_ostie/index";
+      },
+      error: function (error) {
+        //console.log(error);
+      }
+    });
+  }
+
+
+</script>

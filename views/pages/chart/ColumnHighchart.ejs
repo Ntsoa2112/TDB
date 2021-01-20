@@ -1,0 +1,98 @@
+	<div class="col-xs-12 col-sm-12">
+		<div class="box">
+			<div class="box-header">
+				<div class="box-name">
+					<i class="fa fa-circle"></i>
+					<span><%= title %></span>
+				</div>
+
+				<div class="no-move"></div>
+			</div>
+			<div class="box-content">
+				<div id="<%= idElement %>" style="min-height: 400px;"></div>
+			</div>
+		</div>
+    </div>
+    <script src="/js/jquery-1.10.2.min.js"></script>
+    <script>
+		$(document).ready(function() {
+			var donnee = {};
+
+			//construction des donnees
+			//le format collection du serveur vers format collection coté client
+			//array de la forme {clé : value}
+			<% 	for(var key in data){%>
+				donnee["<%= key%>"] = <%= data[key]%>;
+			<% } %>
+
+			ColomnRotatedLabelHighchart("<%= idElement %>", "<%= titleChart %>",  "<%= labelY %>",<%= maxY %>, donnee);
+		});
+
+        //fonction affichage du colomn
+        function ColomnRotatedLabelHighchart(idElement, titre, lableY, maxY,data){
+
+            var dataConvert = [];
+
+            //convertir les donnees
+            for(var key in data){
+                dataConvert.push([key, data[key]]);
+            }
+          //declarer les options
+            var option ={
+              chart: {
+                type: 'column'
+              },
+              title: {
+                text: titre
+              },
+              subtitle: {
+                text: ''
+              },
+              xAxis: {
+                type: 'category',
+                labels: {
+                  rotation: -45,
+                  style: {
+                    fontSize: '9px',
+                    fontFamily: 'Verdana, sans-serif'
+                  }
+                }
+              },
+              yAxis: {
+                min: 0,
+                max: maxY,
+                title: {
+                  text: lableY
+                }
+              },
+              legend: {
+                enabled: false
+              },
+              tooltip: {
+                //pointFormat: 'Population in 2008: <b>{point.y:.1f} millions</b>'
+                pointFormat:  titre + ' : <b>{point.y}</b>'
+              },
+              series: [{
+                name: titre,
+                data: dataConvert,
+                dataLabels: {
+                  enabled: true,
+                  rotation: -90,
+                  color: '#FFFFFF',
+                  align: 'right',
+                  format: '{point.y:.1f}', // one decimal
+                  y: 10, // 10 pixels down from the top
+                  style: {
+                    fontSize: '12px',
+                    fontFamily: 'Verdana, sans-serif'
+                  }
+                }
+              }]
+            };
+
+  //show Column highchart
+            Highcharts.chart(''+idElement, option);
+
+
+        }
+    </script>

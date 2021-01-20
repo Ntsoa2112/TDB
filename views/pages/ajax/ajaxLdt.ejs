@@ -1,0 +1,313 @@
+<%
+
+var vitesse=0;
+
+var hprod = 0;
+var hhprod = 0;
+var qteTot = 0;
+ldtOne.forEach(function (ldtO) {
+  if(ldtO.quantite!=0 && ldtO.quantite!=null)
+  {
+    vitesse=ldtO.quantite/(ldtO.duree/3600);
+  }else
+    vitesse=0;
+
+
+
+  qteTot += Number(ldtO.quantite);
+var classe = "";
+if(ldtO.type!=null){
+  hhprod = hhprod+(ldtO.duree/3600);
+}else{
+
+  classe = "btn-success";
+  hprod = hprod+(ldtO.duree/3600);
+}
+
+%>
+<tr>
+
+<td id="<%=ldtO.matricule %>" class="<%=classe%>"><%=ldtO.matricule %></td>
+  <% if(ldtO.num_dossier!=null)
+  {%>
+  <td id="<%=ldtO.num_dossier %>" class="<%=classe%>"><%=ldtO.num_dossier %></td>
+  <% }else { %>
+  <td id="<%=ldtO.num_dossier %>" class="<%=classe%>"> - </td><%}
+  if(ldtO.lib!=null)
+  {
+  %>
+  <td id="<%=ldtO.lib %>" class="<%=classe%>"><%=ldtO.lib %></td>
+  <% }else { %>
+  <td id="<%=ldtO.lib %>" class="<%=classe%>"> - </td><%}
+  if(ldtO.ldg)
+  {
+  %>
+  <td id="<%=ldtO.ldg %>" class="<%=classe%>"><%=ldtO.ldg %></td>
+  <%} else { %>
+  <td id="<%=ldtO.ldg %>" class="<%=classe%>"> - </td>
+  <% } if(ldtO.type!=null)
+  {%>
+  <td id="<%=ldtO.type %>" class="<%=classe%>"><%=ldtO.type %></td>
+  <% }else { %>
+  <td id="<%=ldtO.type %>" class="<%=classe%>"> - </td><%}%>
+
+
+  <td id="<%=ldtO.h_deb %>" class="<%=classe%>"><%=ldtO.h_deb %></td>
+  <% if(ldtO.h_fin!=null){ %>
+  <td id="<%=ldtO.matricule %>_h_fin" class="<%=classe%>"><%=ldtO.h_fin %></td>
+  <%} else { %><td class="<%=classe%>"> - </td> <% }
+  if(ldtO.duree!=null){
+  %>
+  <td id="<%=ldtO.matricule_duree %>" class="<%=classe%>"><%=(ldtO.duree/3600).toFixed(2) %></td>
+  <%} else { %><td class="<%=classe%>"> - </td> <% }
+  if(ldtO.quantite!=null){
+  %>
+  <td id="<%=ldtO.matricule_quantite %>" class="<%=classe%>"><%=ldtO.quantite %></td>
+  <%} else { %><td> - </td> <% }
+  %>
+  <td id="<%=ldtO.matricule_vitesse %>" class="<%=classe%>"><%=(vitesse).toFixed(2) %></td>
+  <% if(ldtO.nbre_erreur!=null)
+  {%>
+  <td id="<%=ldtO.matricule_nbre_erreur %>" class="<%=classe%>"><%=ldtO.nbre_erreur %></td>
+  <% }else { %>
+  <td id="<%=ldtO.matricule %>" class="<%=classe%>"> - </td><%}%>
+  <td id="<%=ldtO.matricule %>" class="<%=classe%>"><%=ldtO.statu %></td>
+ <!-- <td  id="<%=ldtO.id_ldt %>" class="<%=classe%>">><a onclick="getOnLdt(<%=ldtO.id_ldt %>)" class="fa fa-pencil-square-o fa2x FAV_B"  style="cursor:pointer" title="EDIT:" href="#" data-toggle="modal" data-target="#modalEditLdt"></a></td>-->
+<td id="<%=ldtO.id_ldt %>" class="<%=classe%>"><a onclick="updateLdtForm(<%=ldtO.id_ldt %>)" class="fa fa-pencil-square-o fa2x FAV_B"  style="cursor:pointer" title="EDIT:" href="#" data-toggle="modal" data-target="#modalEditLdt"></a></td>
+  <td class="<%=classe%>"><!--<a onclick="" class="fa fa-times fa2x FAV_B text-danger"  style="cursor:pointer" title="EDIT:" href="#"></a>--></td>
+
+</tr>
+<%
+});
+
+%>
+
+<tr>
+  <th>TOTAL</th>
+  <th></th>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td>HHP: <%=math.round(hhprod,2)%></td>
+  <td class="btn-success">HP: <%=math.round(hprod,2)%></td>
+  <td>QTE: <%=qteTot%></td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+</tr>
+
+<script>
+    //recuperation par id ldt
+
+	function getOnLdt(idLdt){
+		$.ajax({
+            type: "GET",
+            url: "/ajaxOneLdt?id_ldt=" + idLdt,
+            success: function (msg) {
+				//console.log(msg);
+				var data = JSON.parse(msg);
+				  var tk = msg.split('|');
+
+          var tk2=msg.split('<');
+				var html = "<input type=\"\hidden\" value=" + tk2[0] + " id=\"tempdoss\"><table style=\"margin-top: 20px;margin-left: 7px;\"><tr><td class='noBreak'>Statut : </td><td><select  class='sel' id='statut'><option  value=''></option><option  value='1'>EN COURS</option><option  value='2'>TERMINE</option></select></td></tr>"+
+				"<tr><td class='noBreak'>Dossier : </td><td><select  class='sel' id='dossier' ><option  value=''> " + tk[0] + "</option>" + tk[14] + " </option></select></td></tr>"+
+				"<tr><td class='noBreak'>Etape : </td><td><select  class='sel' id='etapeEdit'><option  value=''> " + tk[1] + "</option></select></td></tr>"+
+				"<tr><td class='noBreak'>Date Deb : </td><td><input type='text' id='dDeb'  class='sel' value ='"+tk[9]+"' ></td></tr>"+
+				"<tr><td class='noBreak'>Date Fin : </td><td><input type='text' id='dFin'  class='sel' value ='"+tk[10]+"' ></td></tr>"+
+				"<tr><td class='noBreak'>Heure Debut : </td><td><input type='text' id='hDeb'  class='sel' value =' "+ tk[2]+"' ></td></tr>"+
+				"<tr><td class='noBreak'>Heure fin : </td><td><input type='text' id='hFin'  class='sel' value =' "+ tk[3]+"' ></td></tr>"+
+				"<tr><td class='noBreak'>Quantite : </td><td><input type='text' id='qt'  class='sel'  value ='"+ tk[4]+"' ></td></tr>"+
+				"<tr><td class='noBreak'>Nb Erreur : </td><td><input type='text' id='err'  class='sel'  value ='"+ tk[5]+"' ></td></tr>"+
+				"<tr><td class='noBreak'>Comment : </td><td><input type='text' id='com'  class='sel'  value =' "+ tk[11]+"  ' ></td></tr>"+
+				"<tr><td colspan='2'><br /><center><input id='modifier' type='button' value='Annuler' onclick='document.getElementById('root').style.display = 'none' ;'><input type='button' value='Modifier' onclick=updateLdt('" + idLdt + "');></center></td></tr>";
+
+				$("#tableLdt").html(html);
+
+			}
+			});
+	}
+
+  function updateLdtForm(id)
+  {
+
+
+    $.ajax({
+      type: "GET",
+      url: "/ajaxOneLdt?id_ldt=" + id,
+      success: function(msg) {
+        if (msg == "")
+          return;
+        else
+        {
+					var tk = msg.split('|');
+                    var tk2=msg.split('<');
+                    var strHTML = "";
+                    strHTML += "<input type=\"\hidden\" value=" + tk[0] + " id=\"tempdoss\"><table style=\"margin-top: 20px;margin-left: 7px;\">";
+                    strHTML += "<tr><td class=\"noBreak\">Statut : </td><td><select  class=\"sel\" id=\"statut\"><option  value=''></option><option  value='1'>EN COURS</option><option  value='2'>TERMINE</option></select></td></tr>";
+                    if (tk[13] == 487 || tk[13] == 212) {
+                        strHTML += "<tr><td class=\"noBreak\">Dossier : </td><td><select  class=\"sel\" id=\"dossier\" ><option  value=''>" + tk[0] + "</option>" + tk[14] + "</select></td></tr>";
+                        strHTML += "<tr><td class=\"noBreak\">Etape : </td><td><select  class=\"sel\" id=\"etapeEdit\"><option  value=''>" + tk[1] + "</option></select></td></tr>";
+                    }
+                    strHTML += "<tr><td class=\"noBreak\">Date Deb : </td><td><input type=\text\" id=\"dDeb\"  class=\"sel\" value =" + tk[9] + " ></td></tr>";
+                    strHTML += "<tr><td class=\"noBreak\">Date Fin : </td><td><input type=\text\" id=\"dFin\"  class=\"sel\" value =" + tk[10] + " ></td></tr>";
+                    strHTML += "<tr><td class=\"noBreak\">Heure Deb : </td><td><input type=\text\" id=\"hDeb\"  class=\"sel\"  value =" + tk[2] + " ></td></tr>";
+                    strHTML += "<tr><td class=\"noBreak\">Heure Fin : </td><td><input type=\text\" id=\"hFin\"  class=\"sel\" value =" + tk[3] + " ></td></tr>";
+                    strHTML += "<tr><td class=\"noBreak\">Quantite : </td><td><input type=\text\" id=\"qt\"  class=\"sel\"  value =" + tk[4] + " ></td></tr>";
+                    strHTML += "<tr><td class=\"noBreak\">Nb Erreur : </td><td><input type=\text\" id=\"err\"  class=\"sel\"  value =" + tk[5] + " ></td></tr>";
+                    strHTML += "<tr><td class=\"noBreak\">Comment : </td><td><input type=\text\" id=\"com\"  class=\"sel\"  value = ></td></tr>";
+
+          strHTML += "<tr><td colspan=\"2\"><br /><center><input id=\"modifier\" type=\"button\" value=\"Annuler\" data-dismiss='modal'  data-toggle='modal' data-target='#modalLdtEdit' onclick=\"document.getElementById(\'root\').style.display = 'none' ;\"><input type=\"button\" value=\"Modifier\" onclick=\"updateLdt(" + id + ");\"></center></td></tr></table>";
+
+          document.getElementById('divflottant').innerHTML = strHTML;
+          document.getElementById('handle').innerHTML = '<div id=\"handleTtl\" style=\"text-align: center\">' + tk[7] + " | " + tk[0] + " | " + tk[1] + '</div><img src="img/cl.png" class = "closeX" style="float: right; margin-right: 5px;clear: none;margin-top: -25px; position: relative;" onclick="document.getElementById(\'root\').style.display = \'none\' ;">';
+
+          if (tk[6] == 'EN COURS')
+          {
+            $('#statut option[value="1"]').attr('selected', 'true');
+          }
+          else
+            $('#statut option[value="2"]').attr('selected', 'true');
+        }
+      }
+    });
+  }
+
+  function updateLdt(id)
+  {
+   var deb = $("#hDeb").val();
+        var fin = $("#hFin").val();
+        var qt = $("#qt").val();
+        var err = $("#err").val();
+        var statut= $("#statut").val();
+        var dDeb = $("#dDeb").val();
+        var dFin = $("#dFin").val();
+        var com = $("#com").val();
+        var dossier = ($("#dossier").val() == undefined) ? '' : $("#dossier").val(); //valeur choisi dans danssier
+        var etape = $("#etapeEdit").val();
+        var tempdoss = $("#tempdoss").val();
+    if (!isHeureValid(deb))
+    {
+      alert("heure debut invalide!");
+      return;
+    }
+
+    if (!isHeureValid(fin))
+    {
+      alert("heure fin invalide!");
+      return;
+    }
+
+
+    if (fin != "" && fin.replace(new RegExp("/", "g"), "") < deb.replace(new RegExp("/", "g"), ""))
+    {
+      alert("l'heure fin doit etre supperieur a l'heure de debut!");
+      return;
+    }
+    if (dFin != "" && dFin < dDeb)
+    {
+      alert("la date fin doit etre supperieur a la date debut!");
+      return;
+    }
+    if (deb == "")
+    {
+      alert("Heure debut obligatoire!");
+      return;
+    }
+
+	//var url1 = "http://localhost/GPAOproject/php/link.php?action=updateLdt&deb=" + deb + "&fin=" + fin + "&qt=" + qt + "&err=" + err + "&stat=" + statut+ "&id=" + id + "&ddeb=" + dDeb + "&dfin=" + dFin + "&com=" + com + "_$$$$$$$$$$$$$$$$$$$$$_" + dossier + "_$$$$$$$$$$$$$$$$$$$$$_" + etape + "_$$$$$$$$$$$$$$$$$$$$$_" ;
+   //   alert(url1);
+    $.ajax({
+      type: "GET",
+      url: "http://gpao.easytech.mg/php/link.php?action=updateLdt&deb=" + deb + "&fin=" + fin + "&qt=" + qt + "&err=" + err + "&stat=" + statut+ "&id=" + id + "&ddeb=" + dDeb + "&dfin=" + dFin + "&com=" + com + "_" + dossier + "_" + etape + "_" + tempdoss,
+      success: function(msg) {
+
+
+			//var target = $(this).attr("href");
+
+			// load the url and show modal on success
+		//	$("#modalLdtOnepers .modal-body").load(target, function() {
+			//	 $("#modalLdtOnepers").modal("show");
+		//	});
+
+		 // alert(msg);
+		  // window.location.reload(true);
+
+        //$("#divflottant").hide();
+        loadpointage(idPers,pdate,1);
+        updatePtJ(idPers,pdate);
+
+                  // $("#tableLdt").hide("slow");
+				 //$('#modalLdtOnepers').modal('show');
+				// $(this).removeData('#modalLdtOnepers');
+			//	$('#tableLdt').modal('show');
+				// $(this).hide().show();
+      }
+    });
+
+  }
+
+  function openmodal(id){
+    var id=id;
+    //No need to hide here
+    $('#tableLdt').modal('show');
+    $("#target_title").text(id);
+}
+
+$("#tableLdt").on("shown.bs.modal",function(){
+   //will be executed everytime #item_modal is shown
+   $(this).hide().show(); //hide first and then show here
+});
+
+    //scrool de etape dans choix
+    $("#tableLdt").on('change', '#dossier', function () {
+        var idDoss = $("#dossier").val();
+        getLstEtapeEdit(idDoss);
+    });
+
+	  //fill etapeEdit
+    function getLstEtapeEdit(idDossier)
+    {
+        $.ajax({
+            type: "GET",
+            url: "http://gpao.easytech.mg/php/link.php?action=getLstEtape&doss=" + idDossier,
+            success: function (msg) {
+                $("#etapeEdit").html(msg);
+
+				//$("#sorting_1).html = msg.sorting;
+            }
+        });
+    }
+
+
+  	    function isHeureValid(heure)
+    {
+        if (heure.split(':').length == 3)
+        {
+            if (heure.split(':')[0] < 24 && heure.split(':')[1] < 60 && heure.split(':')[2] < 60)
+                return true;
+        } else
+        {
+            return false;
+        }
+    }
+
+    function updatePtJ(id_pers,pdate) {
+
+      var url = "/update_pointage?id_pers="+id_pers+"&pdate="+pdate;
+      $.ajax({
+        type: "GET",
+        url: url,
+        success: function(msg){
+        },
+        error: function (error) {
+          //alert('error; ' +error);
+
+        }
+      });
+
+    }
+</script>

@@ -1,0 +1,17 @@
+.Legend div{
+    margin-left:15px;
+    width:50px;
+    border:1px solid #808080;
+    display:inline-block;
+}
+
+.ie7 .Legend div{
+    display:none;
+    zoom:1;
+}
+.Orange {background-color:orange;}
+.Green {background-color:green;}
+.Blue {background-color:blue;}
+.RedRed {background-color:red;}
+.Aqua {background-color: aqua;}
+

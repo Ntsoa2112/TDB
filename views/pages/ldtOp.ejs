@@ -1,0 +1,636 @@
+
+<% if(req.session.droit==1){ %>
+	<% include ../includes/entete.ejs %>
+<% }else{%>
+	<% include ../includes/enteteOperateur.ejs %>
+<% }%>
+
+<script>
+  var cars = [];
+  var prod = [];
+  var hprod = [];
+  var etape = [];
+  var dataetape = [];
+  var vitesseb = 0;
+  var vitessen = 0;
+  var quantite = 0;
+  var qualite = 0;
+
+</script>
+
+
+<div id="page-wrapper" class="content">
+
+
+  <div class="row">
+    <div class="col-md-12 col-sm-12 ">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h3 class="panel-title"><i class="fa fa-bar-chart-o"></i>Repartition par type</h3>
+        </div>
+        <div class="panel-body">
+          <table class='table table-bordered'>
+            <thead>
+            <tr class="text-center">
+              <th>MATRICULE</th>
+              <th>VITESSE NETTE</th>
+              <th>VITESSE BRUTE</th>
+              <th>QTE</th>
+              <th>PROD&#176; BRUTE</th>
+              <th>PROD&#176; NETTE</th>
+              <th>HORS PROD</th>
+            </tr>
+            </thead>
+            <tbody>
+
+
+          <%
+
+          var lastIdPers = 0;
+          var lastidDossier = 0;
+
+          var PAUSE = 0;
+          var FORMATION = 0;
+          var ATTENTE_DE_TRAVAIL = 0;
+          var PAUSE_DEJEUNER = 0;
+          var PANNE_MACHINE = 0;
+          var PANNE_INTERNET = 0;
+          var PANNE_RESEAU = 0;
+          var Delegues_du_personnel = 0;
+          var PAUSE_TOILETTE = 0;
+          var INSTALLATION = 0;
+          var OSTIE = 0;
+          var REUNION = 0;
+          var MAINTENANCE = 0;
+          var PERMISSION = 0;
+          var EXERCICE_Sous_charge = 0;
+          var PROBLEME_APPLICATION = 0;
+          var TEST_APPLICATION = 0;
+          var REFECTION = 0;
+
+          //return $sql;
+          var qte = 0;
+          var nbOp = 1;
+          var prod = 0;
+          var horsProd = 0;
+
+          var sommeQte = 0;
+          var sommeHeure = 0;
+          var sommeHeureProd = 0;
+          var sommeHeureHorsProd = 0;
+          var heureprod_dossier = 0; //trie par dossier en prod
+          var horsprod_dossier = 0; //trie par dossier hors prod
+          var tmpStr = "";
+          var cl = '';
+          var arrayDossier = [];
+          var arrayVitBrut = [];
+          var ii = 0;
+
+          var pers = "";
+          var app = "";
+          resultat.forEach(function (arr) {
+            var date = "";
+
+            if (ii >= 3)
+              ii = 0;
+            cl = 'classe' . $ii;
+
+            somme = arr['somme'];
+            if (lastidDossier != arr['dossier']) {
+              heureprod_dossier = 0;
+              horsprod_dossier = 0;
+            }
+
+
+            if (lastIdPers != arr['id_pers']) {
+
+              ii++;
+              nbOp++;
+
+              sommeQte+=qte;
+              sommeHeureProd += prod;
+              sommeHeureHorsProd += horsProd;
+
+              qte = 0;
+              prod = 0;
+              horsProd = 0;
+
+              PAUSE = 0;
+              FORMATION = 0;
+              ATTENTE_DE_TRAVAIL = 0;
+              PAUSE_DEJEUNER = 0;
+              PANNE_MACHINE = 0;
+              PANNE_INTERNET = 0;
+              PANNE_RESEAU = 0;
+              Delegues_du_personnel = 0;
+              PAUSE_TOILETTE = 0;
+              INSTALLATION = 0;
+              OSTIE = 0;
+              REUNION = 0;
+              MAINTENANCE = 0;
+              PERMISSION = 0;
+              EXERCICE_Sous_charge = 0;
+              PROBLEME_APPLICATION = 0;
+              TEST_APPLICATION = 0;
+              REFECTION = 0;
+            }
+
+
+
+            qte += Number(arr['qte']);
+            // return qte." et total= ".arr['total'];
+            //  qte += arr['total'];//edit by Vololona
+
+
+            switch (arr['id_type_ldt']) {
+              case 0: prod+= arr['somme'];
+                heureprod_dossier+=arr['somme'];
+                break;
+              //case 1:	PAUSE+= arr['somme'];horsProd += arr['somme'];break;
+              case 1://pause
+                PAUSE+= arr['somme']
+                horsProd += arr['somme'];
+                break;
+                horsprod_dossier+= arr['somme'];
+                break;
+
+              case 2: FORMATION+= arr['somme'];
+                horsProd += arr['somme'];
+                horsprod_dossier+= arr['somme'];
+                break;
+              case 3: ATTENTE_DE_TRAVAIL+= arr['somme'];
+                horsprod_dossier+= arr['somme'];
+                horsProd += arr['somme'];
+                break;
+              case 4:	PAUSE_DEJEUNER+= arr['somme'];break;
+              case 5: PANNE_MACHINE+= arr['somme'];
+                horsprod_dossier+= arr['somme'];
+                horsProd += arr['somme'];
+                break;
+              case 6: PANNE_INTERNET+= arr['somme'];
+                horsprod_dossier+= arr['somme'];
+                horsProd += arr['somme'];
+                break;
+              case 7: PANNE_RESEAU+= arr['somme'];
+                horsprod_dossier+= arr['somme'];
+                horsProd += arr['somme'];
+                break;
+              case 8: Delegues_du_personnel+= arr['somme'];
+                horsprod_dossier+= arr['somme'];
+                horsProd += arr['somme'];
+                break;
+              case 9:	PAUSE_TOILETTE+= arr['somme'];break;
+              case 10:INSTALLATION+= arr['somme'];
+                horsprod_dossier+= arr['somme'];
+                horsProd += arr['somme'];
+                break;
+              case 11:OSTIE+= arr['somme'];
+                horsprod_dossier+= arr['somme'];
+                horsProd += arr['somme'];
+                break;
+              case 12:REUNION+= arr['somme'];
+                horsprod_dossier+= arr['somme'];
+                horsProd += arr['somme'];
+                break;
+              case 13:MAINTENANCE+= arr['somme'];
+                horsprod_dossier+= arr['somme'];
+                horsProd += arr['somme'];
+                break;
+              case 14:PERMISSION+= arr['somme'];
+                horsprod_dossier+= arr['somme'];
+                  horsProd += arr['somme'];
+                break;
+              case 15:EXERCICE_Sous_charge+= arr['somme'];
+                horsprod_dossier+= arr['somme'];
+                horsProd += arr['somme'];
+                break;
+              case 16:PROBLEME_APPLICATION+= arr['somme'];
+                horsprod_dossier+= arr['somme'];
+                horsProd += arr['somme'];
+                break;
+              case 17:TEST_APPLICATION+= arr['somme'];
+                horsprod_dossier+= arr['somme'];
+                horsProd += arr['somme'];
+                break;
+              case 18:REFECTION+= arr['somme'];
+                horsprod_dossier+= arr['somme'];
+                horsProd += arr['somme'];
+                break;
+            }
+            pers = arr['id_pers'];
+            app = arr['appelation'];
+
+            lastIdPers = arr['id_pers'];
+            lastidDossier = arr['dossier'];
+
+          });
+          var total = prod + horsProd;
+
+          var vitesse_brute = (qte != 0) ? math.round(qte / (total / 3600), 2) : '';
+          var vitesse_nette = (qte != 0) ? math.round(qte / (prod / 3600), 2) : '';
+
+          %>
+          <a href="#">
+            <tr  onclick="setDataModal('<%=PAUSE/3600%>','<%=FORMATION/3600%>','<%=ATTENTE_DE_TRAVAIL/3600%>','<%=PAUSE_DEJEUNER/3600%>','<%=PANNE_MACHINE/3600%>','<%=PANNE_INTERNET/3600%>','<%=PANNE_RESEAU/3600%>','<%=Delegues_du_personnel/3600%>','<%=PAUSE_TOILETTE/3600%>','<%=INSTALLATION/3600%>','<%=OSTIE/3600%>','<%=REUNION/3600%>','<%=MAINTENANCE/3600%>','<%=PERMISSION/3600%>','<%EXERCICE_Sous_charge/3600%>','<%=PROBLEME_APPLICATION/3600%>','<%=TEST_APPLICATION/3600%>','<%=REFECTION/3600%>')" class="clickable-row" data-toggle="modal" data-target="#myModal">
+              <td class="text-primary"><h3 class='text-primary'><%=pers%></Br><h5 class='text-primary'><%=app%></h5></h3></td>
+              <td><h4 class="text-primary"> <%=vitesse_nette%> </h4></td>
+              <td><h4 class="text-primary"> <%=vitesse_brute%> </h4></td>
+              <td><h4 class="text-primary"> <%=qte%> </h4></td>
+              <td><h4 class="text-primary"> <%=math.round(total / 3600,2)%> </h4></td>
+              <td><h4 class="text-primary"> <%=math.round(prod / 3600,2)%> </h4></td>
+              <td><h4 class="text-primary"> <%=math.round(horsProd / 3600,2)%> </h4></td>
+            </tr>
+          </a>
+
+
+          <%
+
+          sommeQte+=qte; //$qte
+          totalMoyenne = 0;
+          totalnette = 0;
+
+
+
+           /* var vitesse = {};
+            var listEtape = [];
+
+            listeDossier.forEach(function (list) {
+              //console.log("lib:" + list.libelle + "-duree:" + list.duree + "_dossier:" + list.num + "-qte:" + list.qte + "-date:" + list.date_ldt);
+              var duree = 1;
+              var quantite = 0;
+              var vitesse = 0;
+
+              //calcul de vitesse
+              if(list.libelle!=null){
+                if(list.duree!=null){
+                  duree=list.duree;
+
+                }
+                if(list.qte!=null){
+                  quantite = list.qte;
+
+                }
+                vitesse = quantite/duree;
+
+              }
+
+            });
+              var Dossier = {
+              };
+              for(var tt = 0; tt<byDossier.length;tt++){
+                if(tt!=0){
+                }
+                Dossier[byDossier[tt][0]]=byDossier[tt][1]
+              }
+*/
+
+          %>
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+
+    </div>
+
+
+
+    <!--<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>-->
+    <script src="/js/jquery-1.12.4.js"></script>
+    <script src="/jquery-ui/jquery-ui.js"></script>
+    <script src="js/helper.js"></script>
+    <link rel="stylesheet" href="/css/grapheStyle.css">
+    <div class="col-md-12 col-sm-12 ">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h3 class="panel-title"><i class="fa fa-bar-chart-o"></i>Repartition par Dossier</h3>
+        </div>
+        <div class="panel-body">
+            <%var Dossier = {
+              };
+            for(var tt = 0; tt<byDossier.length;tt++){
+              if(tt!=0){
+              }
+              Dossier[byDossier[tt][0]]=byDossier[tt][1]+byDossier[tt][2];
+            }
+
+
+
+            %>
+
+          <div class="col-md-4 col-sm-4">
+            <%- partial ('chart/donutMorris.ejs', {idElement : 'idEtatHighchart',classeElement : 'pie_dossier', title : 'Temps passé', titleChart : 'Etat du Dossier' ,data : Dossier}) %>
+            <div class="row">
+              <button class="btn btn-success" data-toggle="modal" data-target="#modalVitesse">vitesse</button>
+              <button class="btn btn-success" data-toggle="modal" data-target="#modalQuantite">quantite</button>
+              <button class="btn btn-success" data-toggle="modal" data-target="#modalDuree">duree</button>
+            </div>
+          </div>
+          <div class="col-md-8 col-sm-8">
+            <table class='table table-bordered'>
+              <thead>
+              <tr>
+                <th>ETAPES</th>
+                <th>DOSSIER</th>
+                <th>DUREE</th>
+                <th>QUANTITE</th>
+                <th>VITESSE</th>
+              </tr>
+              </thead>
+              <tbody>
+              <%
+                var i = 0;
+                var qteTotal = 0;
+                var hTotalLdt = 0;
+                var totalVitess = 0;
+                var lastDossier = '';
+                rs.forEach(function (row) {
+                  var dossier = (row['num'] == lastDossier) ? '' : row['num'];
+
+                  if (row['num'] != lastDossier) {
+                    %>
+
+                    <tr>
+                      <td></td>
+                      <td><%=row['num'] %></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+
+                    </tr>
+
+
+                    <%
+                  }
+
+                    var qte = Number(row['qte']);
+                    var duree = row['duree'] / 3600;
+
+                    var vitesse = (qte != 0) ? math.round(qte / duree, 2) : '';
+                    qte = (qte != 0) ? qte : '';
+                    lastDossier = row['num'];
+                    var lib = (row['libelle'] == '' || row['libelle'] == null) ? row['lib']  : row['libelle'];
+                    %>
+
+                    <tr>
+                      <td><%=lib%></td>
+                      <td></td>
+                      <td><%=math.round(duree,2)%></td>
+                      <td><%=qte%></td>
+                      <td><%=vitesse%></td>
+
+                    </tr>
+
+
+                    <%
+
+                })
+                %>
+              </tbody>
+            </table>
+          </div>
+
+
+        </div>
+      </div>
+    </div>
+
+
+
+
+
+  </div>
+
+
+
+
+
+
+
+
+</div>
+<!-- modal-->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <!--Content-->
+    <form method="GET" action="#" >
+      <div class="modal-content">
+        <!--Header-->
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" id="myModalLabel">Heures Hors production</h4>
+        </div>
+        <!--Body-->
+        <div class="modal-body">
+          <ul class="list-group">
+            <li class='list-group-item'>PAUSE<span class="pull-right" id="pause">1</span></li>
+            <li class='list-group-item'>FORMATION<span class="pull-right" id="formation">1</span></li>
+            <li class='list-group-item'>ATTENTE_DE_TRAVAIL<span class="pull-right" id="adt">1</span></li>
+            <li class='list-group-item'>PAUSE_DEJEUNER<span class="pull-right" id="paused">1</span></li>
+            <li class='list-group-item'>PANNE_MACHINE<span class="pull-right" id="panemachine">1</span></li>
+            <li class='list-group-item'>PANNE_INTERNET<span class="pull-right" id="panneinternet">1</span></li>
+            <li class='list-group-item'>PANNE_RESEAU<span class="pull-right" id="pr">1</span></li>
+            <li class='list-group-item'>Delegues_du_personnel<span class="pull-right" id="ddp">1</span></li>
+            <li class='list-group-item'>PAUSE_TOILETTE<span class="pull-right" id="pt">1</span></li>
+            <li class='list-group-item'>INSTALLATION<span class="pull-right" id="ins">1</span></li>
+            <li class='list-group-item'>OSTIE<span class="pull-right" id="ostie">1</span></li>
+            <li class='list-group-item'>REUNION<span class="pull-right" id="reunion">1</span></li>
+            <li class='list-group-item'>MAINTENANCE<span class="pull-right" id="maint">1</span></li>
+            <li class='list-group-item'>PERMISSION<span class="pull-right" id="perm">1</span></li>
+            <li class='list-group-item'>EXERCICE_Sous_charge<span class="pull-right" id="esc">1</span></li>
+            <li class='list-group-item'>PROBLEME_APPLICATION<span class="pull-right" id="pa">1</span></li>
+            <li class='list-group-item'>TEST_APPLICATION<span class="pull-right" id="ta">1</span></li>
+            <li class='list-group-item'>REFECTION<span class="pull-right" id="refection">1</span></li></tr>
+          </ul>
+          <input type="text"  id="idLien" name="id" required="required"  class="hidden" value="">
+          <input type="text"  id="idEtape" name="idetape" required="required"  class="hidden" value="">
+        </div>
+        <!--Footer-->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermé</button>
+        </div>
+      </div>
+    </form>
+    <!--/.Content-->
+  </div>
+</div>
+
+<!--fin  modal-->
+
+<%
+  var categorieDate = [];
+  var dataQualite = [];
+  var dataDuree = [];
+  var dataQuantite = [];
+  var dataVitesse = [];
+  for(var ii = 0; ii<rsDoss.length;ii++){
+
+
+    var somme = math.round(Number(rsDoss[ii].somme)/3600,2);
+    if(categorieDate.indexOf(rsDoss[ii].date_deb_ldt)!=-1){
+      dataQuantite[ii] += (rsDoss[ii].err != null || rsDoss[ii].err != '') ? rsDoss[ii].err : 0;
+      dataQualite[ii] += (rsDoss[ii].qte != null || rsDoss[ii].qte != '') ? rsDoss[ii].qte : 0;
+      dataDuree[ii] += somme;
+      if(dataQuantite[ii]>0 && dataDuree[ii]>0){
+        dataVitesse[ii]=math.round((Number(dataQuantite[ii]/dataDuree[ii])),2);
+      }
+
+    }else{
+      categorieDate[ii]= rsDoss[ii].date_deb_ldt;
+      dataQualite[ii]= (rsDoss[ii].err != null || rsDoss[ii].err != '') ? rsDoss[ii].err : 0;
+      dataQuantite[ii]=(rsDoss[ii].qte != null || rsDoss[ii].qte != '') ? rsDoss[ii].qte : 0;
+      dataDuree[ii]= somme;
+      if(dataQuantite[ii]>0 && dataDuree[ii]>0){
+        dataVitesse[ii]=math.round((Number(dataQuantite[ii]/dataDuree[ii])),2);
+      }
+    }
+  }
+
+
+   %>
+
+<!-- modal Courbe vitesse-->
+<div class="modal modal-fullscreen fade" id="modalVitesse" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <!--Content-->
+    <form method="GET" action="#" >
+      <div class="modal-content">
+        <!--Header-->
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" id="myModalLabel">Evolution Vitesse</h4>
+        </div>
+        <!--Body-->
+        <div class="modal-body">
+          <div class="form-group">
+            <div class="row">
+              <%- partial ('chart/CourbeHighchart.ejs', {idElement : 'idVitess', title : ' ', titleChart : 'Vitesse', labelY : 'vitesse' ,cat : categorieDate, qte : dataVitesse}) %>
+
+            </div>
+          </div>
+
+
+        </div>
+        <!--Footer-->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermé</button>
+        </div>
+      </div>
+    </form>
+    <!--/.Content-->
+  </div>
+</div>
+
+<!--fin  modal-->
+
+<!-- modal Courbe Quantite-->
+<div class="modal fade" id="modalQuantite" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <!--Content-->
+    <form method="GET" action="#" >
+      <div class="modal-content">
+        <!--Header-->
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" id="myModalLabel">Evolution Quantite</h4>
+        </div>
+        <!--Body-->
+        <div class="modal-body">
+          <div class="row">
+            <%- partial ('chart/CourbeHighchart.ejs', {idElement : 'idQuant', title : ' ', titleChart : 'Quantite', labelY : 'quantite' ,cat : categorieDate, qte : dataQuantite}) %>
+
+          </div>
+
+        </div>
+        <!--Footer-->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermé</button>
+        </div>
+      </div>
+    </form>
+    <!--/.Content-->
+  </div>
+</div>
+
+<!--fin  modal-->
+
+
+<!-- modal Courbe vitesse-->
+<div class="modal fade" id="modalDuree" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <!--Content-->
+    <form method="GET" action="#" >
+      <div class="modal-content">
+        <!--Header-->
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" id="myModalLabel">Evolution Quantite</h4>
+        </div>
+        <!--Body-->
+        <div class="modal-body">
+          <div class="row">
+            <%- partial ('chart/CourbeHighchart.ejs', {idElement : 'idDuree', title : ' ', titleChart : 'Duree', labelY : 'Dureee' ,cat : categorieDate, qte : dataDuree}) %>
+
+          </div>
+
+        </div>
+        <!--Footer-->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermé</button>
+        </div>
+      </div>
+    </form>
+    <!--/.Content-->
+  </div>
+</div>
+
+<!--fin  modal-->
+<script>
+  var quota = <%= quota %>;
+  if(quota && parseInt(quota) === 1) alert('Vous avez dépassé votre quota pour accéder au menu selectionné');
+
+  function setDataModal(pause,form,adt,pd,pm,pi,pr,ddp,pt,ins,ostie,reunion,maint,perm,ecs,pa,ta,ref){
+    document.getElementById("pause").innerHTML =''+rnd(pause);
+    document.getElementById("formation").innerHTML =''+rnd(form);
+    document.getElementById("adt").innerHTML =''+rnd(adt);
+    document.getElementById("panemachine").innerHTML =''+rnd(pm);
+    document.getElementById("panneinternet").innerHTML =''+rnd(pi);
+    document.getElementById("pr").innerHTML =''+rnd(pr);
+    document.getElementById("ddp").innerHTML =''+rnd(ddp);
+    document.getElementById("pt").innerHTML =''+rnd(pt);
+    document.getElementById("ins").innerHTML =''+rnd(ins);
+    document.getElementById("ostie").innerHTML =''+rnd(ostie);
+    document.getElementById("reunion").innerHTML =''+rnd(reunion);
+    document.getElementById("maint").innerHTML =''+rnd(maint);
+    document.getElementById("perm").innerHTML =''+rnd(perm);
+    document.getElementById("esc").innerHTML =''+rnd(ecs);
+    document.getElementById("pa").innerHTML =''+rnd(pa);
+    document.getElementById("ta").innerHTML =''+rnd(ta);
+    document.getElementById("refection").innerHTML =''+rnd(ref);
+    document.getElementById("paused").innerHTML =''+rnd(pd);
+    /*document.getElementById("idLien").value =''+id;
+    document.getElementById("myModalLabel").innerHTML='Modification de '+libelle;
+    if(vit!='' && vit!=null){
+      document.getElementById("vit").value =''+vit;
+    }
+    document.getElementById("qte").value =''+qte;
+    document.getElementById("idEtape").value =''+et;*/
+
+  }
+
+  function rnd(ch){
+    return ch;
+  }
+</script>
+

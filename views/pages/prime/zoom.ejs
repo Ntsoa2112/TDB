@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Gestion prime almerys</title>
+  <link rel="stylesheet" href="/styles/importer.css">
+  <link rel="stylesheet" href="/bootflat/css/bootflat.min.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/local.css">
+  <link rel="stylesheet" href="/css/Style_v3.css">
+  <link rel="stylesheet" href="/jquery-ui/jquery-ui.css">
+  <!--STYLES END-->
+</head>
+<body onload="loadPrime();">
+
+<div id="prime" class="col-md-12 col-sm-12 col-xs-12" style="margin-top: -50px">
+</div>
+</div>
+</div>
+<script src="/js/jquery-1.12.4.js"></script>
+<!-- ECharts -->
+<script src="/vendors/echarts/dist/echarts.min.js"></script>
+<script src="/js/dependencies/sails.io.js"></script>
+<link rel="stylesheet" href="/css/grapheStyle.css">
+<script src="/js/jquery-ui.min.js"></script>
+<!-- NProgress -->
+<script src="/js/echarts/theme.js"></script>
+<script src="/js/echarts/echarts.js"></script>
+
+<script src="/material/chart/highcharts.js"></script>
+<script src="/material/chart/exporting.js"></script>
+<!-- Custom Theme Scripts -->
+<script src="/js/custom.min.js"></script>
+<!--<script src="/js/rp_almerys.js"></script>-->
+</body>
+</html>
+<script>
+  var dataPie = {};var data = [];var datacrenaux = [];
+  var id_lot = '<%=id_lot%>';
+  var date = '<%=pdate%>';
+  var id = '<%=id_dossier%>';
+  var ioSocket = false;
+
+  var host = window.location.hostname;
+  io.sails.url = 'http://'+host+':9090';
+
+  function affecterLot(lot){
+    id_lot = lot;
+  }
+  function loadPrime(){
+    $.ajax({
+      type: "GET",
+      url: "/loadDataZoom?id_dossier="+id+"&pdate="+date+"&id_lot="+id_lot,
+
+      success: function(msg){
+        ////console.log(JSON.stringify(msg));
+        var dataSourse = null;
+        try {
+          dataSourse = JSON.parse(msg);
+           data = dataSourse.lib;
+          var datapr = dataSourse.prime;
+          ioSocket= dataSourse.isSocketLaunch;
+          ////console.log(datapr);
+          $("#prime").html("");
+          listPaie = [];
+            var html_table_global = "<div class='col-md-12 col-sm-12 col-xs-12'>"+
+              "          <div class='x_panel'>"+
+              "            <div class='x_title'>"+
+              "            <h2>"+data+"</h2>"+
+              "          <ul class='nav navbar-right panel_toolbox'>"+
+              "            <li><a class='collapse-link'><i class='fa fa-chevron-up'></i></a>"+
+              "            </li>"+
+              ""+
+              "            <li><a class='close-link'><i class='fa fa-close'></i></a>"+
+              "            </li>"+
+              "            </ul>"+
+              "            <div class='clearfix'></div>"+
+              "            </div>"+
+              "            <div class='x_content row'>" +
+              "<div class='col-lg-8 col-md-8 col-xs-12' id='line_"+id_lot+"'  style='height:400px;' onmouseover='affecterLot("+id_lot+")'></div>" +
+              "<div class='col-lg-4 col-md-4 col-xs-12' id='list_"+id_lot+"'  style='height:400px;'>" +
+              "<table class='table table-hover'>" +
+              "     <thead>" +
+              "<tr>" +
+              "<th>Crenaux</th><th>Prime</th><th>Effectif<br/>(titulaire/renfort)</th><th>Montant<br/>(Total)</th>" +
+              "</tr>" +
+              "</thead>" +
+              "<tbody>" +
+              "<tr>" +
+              "<td>Moins de 9H</td><td id='pr_9H_"+id_lot+"'></td><td id='ef_9H_"+id_lot+"'></td><td id='mt_9H_"+id_lot+"'></td>" +
+              "</tr>" +
+              "<tr>" +
+              "<td>9H à 11H</td><td id='pr_9-11H_"+id_lot+"'></td><td id='ef_9-11H_"+id_lot+"'></td><td id='mt_9-11H_"+id_lot+"'></td>" +
+              "</tr>" +
+              "<tr>" +
+              "<td>11H à 13H</td><td id='pr_11-13H_"+id_lot+"'></td><td id='ef_11-13H_"+id_lot+"'></td><td id='mt_11-13H_"+id_lot+"'></td>" +
+              "</tr>" +
+              "<tr>" +
+              "<td>13H à 15H</td><td id='pr_13-15H_"+id_lot+"'></td><td id='ef_13-15H_"+id_lot+"'></td><td id='mt_13-15H_"+id_lot+"'></td>" +
+              "</tr>" +
+              "<tr>" +
+              "<td>Plus de 15H</td><td id='pr_15H-Plus_"+id_lot+"'></td><td id='ef_15H-Plus_"+id_lot+"'></td><td id='mt_15H-Plus_"+id_lot+"'></td>" +
+              "</tr>" +
+              "</tbody>" +
+              "</table>" +
+              "<div class='col-lg-4 col-md-4 col-xs-12' id='pie_"+id_lot+"'  style='height:400px; display: none;'></div>" +
+              "</div></div></div>";
+            $("#prime").append(html_table_global);
+           var dataCr = dataSourse.crenaux;
+           datacrenaux = dataSourse.crenaux;
+           /* var libGlobale = [];
+            var dataGlobale = [];
+            libGlobale.push("1020");
+            libGlobale.push("1019");
+            var obj = {name:"1020",value:2};
+            dataGlobale.push(obj);
+            var obj = {name:"1019",value:4};
+            dataGlobale.push(obj);
+
+
+
+
+
+            var echartPieCollapseAl = echarts.init(document.getElementById('pie_'+data[i].id_lotclient+''), theme);
+            echartPieCollapseAl.setOption(getOptionPieCol(libGlobale,dataGlobale));*/
+
+
+            var libGlobale2 = [];
+            var dataGlobale2 = [];
+            var dtp = [];
+            dataPie[id_lot] = {};
+            for(var a = 0 ;a<dataCr.length;a++){
+              libGlobale2.push(dataCr[a].libelle);
+              var html = "<i class='fa fa-close text-danger'></i>";
+              var nbT = 0;
+              var nbR = 0;
+              var montant = 0;
+              for(var b = 0 ;b<datapr.length;b++){
+                if(Number(datapr[b].id_s_spec) == Number(id_lot) && Number(datapr[b].id_spec) == Number(id) && Number(datapr[b].id_crenaux) == Number(dataCr[a].id)){
+                  var primary = JSON.parse(datapr[b].json_titulaire);
+                  var renfort = JSON.parse(datapr[b].json_renfort);
+                  var primary = JSON.parse(datapr[b].json_titulaire);
+                  var renfort = JSON.parse(datapr[b].json_renfort);
+                  nbR = renfort.length;
+                  nbT = primary.length;
+                  dataPie[id_lot][dataCr[a].libelle] = {pri:primary.length,ref:renfort.length};
+                  dtp.push(datapr[b].reel);
+
+                  if(datapr[b].prime){
+                    html = "<i class='fa fa-check text-success'></i>";
+                    montant = 100 * nbT;
+                  }
+                }
+              }
+              $("#pr_"+dataCr[a].libelle.replace("<","")+"_"+id_lot+"").html(html);
+              $("#ef_"+dataCr[a].libelle.replace("<","")+"_"+id_lot+"").html(nbT+"/"+nbR);
+              $("#mt_"+dataCr[a].libelle.replace("<","")+"_"+id_lot+"").html(montant+" Ar");
+
+            }
+
+
+
+            //alert(dtp);
+            var obj2 =  {
+              name:'Quantite',
+              type:'bar',
+              stack: 'sum',
+              barCategoryGap: '50%',
+              itemStyle: {
+                normal: {
+                  color: 'tomato',
+                  barBorderColor: 'tomato',
+                  barBorderWidth: 6,
+                  barBorderRadius:0,
+                  label : {
+                    show: true, position: 'insideTop'
+                  }
+                }
+              },
+              data:dtp
+            };
+            dataGlobale2.push(obj2);
+
+           /* var echartBarCollapseAl = echarts.init(document.getElementById('line_'+id_lot+''), theme);
+            echartBarCollapseAl.setOption(getOptionBarThermo(libGlobale2,dataGlobale2));
+            listPaie.push(echartBarCollapseAl);*/
+
+          Highcharts.chart('line_'+id_lot+'',optHighchart(libGlobale2,dtp));
+            /*echartBarCollapseAl.on('click', function (params) {
+              load_pie(id_lot,params.name);
+              ////console.log(id_lot); // do whatever you want with another chart say chartTwo here
+              //lert( "chartOne clicked=>"+id);
+            });
+            ////console.log(dataPie);
+            load_pie(id_lot,"<9H");*/
+
+
+
+
+
+          $.getScript( "/vendors/echarts/dist/echarts.min.js" );
+          $.getScript( "/js/custom.min.js" );
+          $.getScript( "/js/echarts/theme.js" );
+          $.getScript( "/js/echarts/echarts.js" );
+
+        }
+        catch (e) {
+        }
+
+        if(ioSocket){
+          listenSocket("prime_"+id);
+        }
+
+
+
+      },
+      error: function (error) {
+
+      }
+    });
+  }
+
+
+  function load_pie(id_lotclient,crenaux){
+    var libGlobale = [];
+    var dataGlobale = [];
+    libGlobale.push("Titulaire");
+    libGlobale.push("Renfort");
+    var obj = {name:"Titulaire",value:dataPie[id_lotclient][crenaux].pri};
+    dataGlobale.push(obj);
+    var obj = {name:"Renfort",value:dataPie[id_lotclient][crenaux].ref};
+    dataGlobale.push(obj);
+
+
+
+
+    var echartPieCollapseAl = echarts.init(document.getElementById('pie_'+id_lotclient+''), theme);
+    echartPieCollapseAl.setOption(getOptionPieCol(libGlobale,dataGlobale));
+
+
+  }
+
+  function listenSocket(id){
+    //location.reload();
+    //console.log(datacrenaux);
+    io.socket.on(id, function (msg) {
+      //console.log(msg);
+     location.reload()
+
+      /*try {
+        var dataprime = JSON.parse(msg);
+
+        var libGlobale2 = [];
+        var dataGlobale2 = [];
+        var dtp = [];
+        var col = [];
+        for(var a = 0 ;a<datacrenaux.length;a++){
+          libGlobale2.push(datacrenaux[a].libelle);
+
+          var html = "<i class='fa fa-close text-danger'></i>";
+          var nbT = 0;
+          var nbR = 0;
+          var montant = 0;
+          for(var b = 0 ;b<dataprime.length;b++){
+            if(Number(dataprime[b].id_crenaux) == Number(datacrenaux[a].id)){
+              var primary = JSON.parse(dataprime[b].json_titulaire);
+              var renfort = JSON.parse(dataprime[b].json_renfort);
+
+              nbR = renfort.length;
+              nbT = primary.length;
+              dtp.push(dataprime[b].reel);
+              col.push('bleu');
+              if(dataprime[b].prime){
+                html = "<i class='fa fa-check text-success'></i>";
+                montant = 100 * nbT;
+              }
+
+            }
+            $("#pr_"+datacrenaux[a].libelle.replace("<","")+"_"+dataprime[b].id_s_spec+"").html(html);
+            $("#ef_"+datacrenaux[a].libelle.replace("<","")+"_"+dataprime[b].id_s_spec+"").html(nbT+"/"+nbR);
+            $("#mt_"+datacrenaux[a].libelle.replace("<","")+"_"+dataprime[b].id_s_spec+"").html(montant+" Ar");
+
+
+          var obj2 =  {
+              name:'Quantite',
+              type:'bar',
+              stack: 'sum',
+              barCategoryGap: '50%',
+              itemStyle: {
+                normal: {
+                  color: 'tomato',
+                  barBorderColor: 'tomato',
+                  barBorderWidth: 6,
+                  barBorderRadius:0,
+                  label : {
+                    show: true, position: 'insideTop'
+                  }
+                }
+              },
+              data:dtp
+            };
+            dataGlobale2.push(obj2);
+
+
+          }
+
+
+        }
+
+        var echartBarCollapseAl = echarts.init(document.getElementById('line_'+id_lot+''), theme);
+        echartBarCollapseAl.setOption(getOptionBarThermo(libGlobale2,dataGlobale2));
+
+
+
+      }
+      catch (e) {
+        //console.log(e)
+      }*/
+
+    });
+  }
+
+
+  </script>

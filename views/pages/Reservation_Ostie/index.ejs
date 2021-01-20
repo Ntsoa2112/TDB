@@ -1,0 +1,420 @@
+<% if(req.session.droit==1){
+
+%>
+<% include ../../includes/entete.ejs %>
+<% }else{
+
+%>
+<% include ../../includes/enteteOperateur.ejs %>
+
+<% }%>
+
+<script>
+
+  var  res_ost_ct= [];
+  res_ost_ct =<%-count %>;//heureC
+  var heur_hostie = <%-heureC %>;
+
+
+</script>
+<head xmlns="http://www.w3.org/1999/html">
+    <title>Reservation Ostie</title>
+    <meta charset='utf-8' />
+    <link rel="stylesheet" href="/styles/importer.css">
+    <link rel="stylesheet" href="/bootflat/css/bootstrap.css">
+    <link rel="stylesheet" href="/bootflat/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/local.css">
+    <link rel="stylesheet" href="/css/Style_v3.css">
+    <link href="/bootstrap-toggle/css/bootstrap-toggle.min.css" rel="stylesheet">
+
+  </head>
+<body>
+
+<div class="row">
+
+  <div class="col-md-8 col-sm-8 col-xs-12">
+      <div class="x_panel">
+        <div class="x_title">
+          <h2></h2>
+          <ul class="nav navbar-right panel_toolbox">
+            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+            </li>
+
+            <li><a class="close-link"><i class="fa fa-close"></i></a>
+            </li>
+          </ul>
+          <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+
+          <canvas id="lineChart" style="width:133px; height:250px";></canvas>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4 col-sm-4 col-xs-12">
+      <div class="x_panel">
+        <div class="x_title">
+          <h2></h2>
+          <ul class="nav navbar-right panel_toolbox">
+            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+            </li>
+
+            <li><a class="close-link"><i class="fa fa-close"></i></a>
+            </li>
+          </ul>
+          <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+
+          <div id="echart_pie" style="height:350px;"></div>
+
+        </div>
+      </div>
+    </div>
+
+  <div class="col-sm-12">
+
+  <div class="x_panel">
+        <div class="x_title">
+          <h2>LISTES DES RENDEZ-VOUS  </h2>
+          <%
+            // test de l'activation hostie
+            var check  = "";
+            var btn  = "";
+            var btnchk  = "";
+            if(req.session.user!="1020"){
+                btnchk = "disabled";
+            }
+            if(etat==true){
+                check = "checked";
+            }else{
+                btn="disabled";
+            }
+
+            %>
+
+          <ul class="nav navbar-right panel_toolbox">
+           <li><input id="ostie-event" <%=check %> data-toggle="toggle" data-on="Actif" data-off="Pause" type="checkbox" class="form-control" <%=btnchk %>/>
+            </li>
+            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+            </li>
+
+            <li><a class="close-link"><i class="fa fa-close"></i></a>
+            </li>
+          </ul>
+          <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+        <input type="button" onclick="nr()"class="btn btn-primary" role="button" value="Nouveau" >
+        <a href="/recap_ostie"> <input type="button" class="btn btn-primary" role="button" value="Recapitulation" ></a>
+        <table class="table table-bordered">
+          <thead>
+          <tr>
+            <th>Matricule</th>
+            <th>Nom</th>
+            <th>Prenom</th>
+            <th>Departement</th>
+            <th>GPAO</th>
+            <th>Heure debut</th>
+            <th>Status</th>
+            <th>Option</th>
+          </tr>
+          </thead>
+          <tbody>
+
+          <%
+
+
+          var trbg = '';
+
+
+         var dateDeb = new Date();
+         var mn = 15;
+         var compteur = 0;
+         var numRank = 1;
+          Allres.forEach(function(rendez){
+          //console.log(rendez.stat+"===>rendez-vous en cours");
+              var hdeb = rendez.debut_reservation;
+          //console.log((rendez.stat).toLowerCase()==="rendez vous en cours".toLowerCase());
+              var classButton = "";
+             if((rendez.stat).toLowerCase()=="rendez vous en cours".toLowerCase()){
+                 var time = 0;
+
+                 var splitDebut = (rendez.debut_reservation).split(":");
+                 dateDeb.setHours(parseInt(splitDebut[0]));
+                 dateDeb.setMinutes(parseInt(splitDebut[1]));
+                 time =((new Date()-dateDeb)/1000)/60;
+
+                 classButton = "hidden";
+                 trbg = "style=background:#01fa0b";
+                 if(parseInt(time)>15){
+                     //console.log("time");
+                     //trbg = "bgcolor='#fa0301'";
+                     trbg = "style=background:#faca01";
+
+                 }
+              }else{
+                trbg = "";
+                var dateDebEnAttente = dateDeb;
+                  if(compteur>1){
+                      compteur = 0;
+                       dateDebEnAttente = dateDeb.setMinutes(dateDeb.getMinutes()+mn);
+                  }else{
+
+                  }
+
+                  hdeb = dateDeb.getHours()+":"+dateDeb.getMinutes()
+                  //console.log(dateDeb);
+                  compteur ++;
+                  //mn +=15;
+
+              }
+
+
+              if((rendez.stat).toLowerCase()!="terminer".toLowerCase() && (rendez.stat).toLowerCase()!="rendez vous annuler".toLowerCase()){
+                  if(numRank!=1 && (rendez.stat).toLowerCase()!="rendez vous en cours".toLowerCase()){
+                      classButton = "hidden";
+                  }
+
+                  var icon = "";
+
+                  if(rendez.connected==true){
+                      icon="<i class='fa fa-check'></i>";
+                  }
+          %>
+          <tr  data-id="<%= rendez.id_pers %>" data-model="moyenne">
+
+            <td <%=trbg%> ><%= rendez.id_pers%></td>
+            <td <%=trbg%> ><%= rendez.nom %></td>
+            <td <%=trbg%> ><%= rendez.prenom %></td>
+            <td <%=trbg%> ><%= rendez.libelle %></td>
+            <td <%=trbg%> ><%- icon %></td>
+            <td <%=trbg%> ><%= hdeb %></td>
+            <td <%=trbg%> ><%= rendez.stat %></td>
+            <td <%=trbg%> ><input type="button" onclick="dd(<%=rendez.id_reservation_ostie %>,<%=rendez.id_ldt%>)" class="btn btn-primary" role="button" value="Action" <%=btn%>/> <input type="button"  onclick="callOP(<%= rendez.id_pers%>,<%= rendez.id_reservation_ostie %>);" class="btn btn-primary <%=classButton%>" role="button" value="Rappeler" <%=btn%>/></td>
+            </tr>
+
+          <%
+              if((rendez.stat).toLowerCase()!="rendez vous en cours".toLowerCase()){
+
+                  numRank ++;
+                  }
+              }}); %>
+          </tbody>
+        </table></div>
+      </div>
+  </div>
+</div>
+
+    <%- partial('action.ejs') %>
+    <%- partial('insert.ejs') %>
+</body>
+  <script src="/js/dependencies/sails.io.js"></script>
+  <script src="/js/jquery-1.10.2.min.js"></script>
+  <script src="/bootstrap/js/bootstrap.min.js"></script>
+  <script src="/material/chart/highcharts.js"></script>
+  <script src="/material/chart/exporting.js"></script>
+  <script src="/js/dossierEtapeApp.js"></script>
+  <script src="/js/material-modal.min.js"></script>
+  <script src="/js/pikaday.js"></script>
+
+<!-- FastClick -->
+<script src="/vendors/fastclick/lib/fastclick.js"></script>
+<!-- NProgress -->
+<script src="/vendors/nprogress/nprogress.js"></script>
+<!-- ECharts -->
+<script src="/vendors/echarts/dist/echarts.min.js"></script>
+<script src="/vendors/echarts/map/js/world.js"></script>
+
+
+<script src="/js/custom.min.js"></script>
+
+
+
+<script src="/js/echarts/theme.js"></script>
+<script src="/js/echarts/echarts.js"></script>
+
+
+<script src="/vendors/Chart.js/dist/Chart.min.js"></script>
+<script src="/bootstrap-toggle/js/bootstrap-toggle.min.js"></script>
+<script type="text/javascript">
+
+function get_ip(callback) {
+      var ip = "null";
+      $.ajax({
+        type: "GET",
+        url: "http://gpao.easytech.mg/get_ip.php",
+        async: false,
+        success: function(msg){
+          ////console.log(msg);
+          callback(msg);
+        },
+        error: function (error) {
+          //alert('error; ' +error);
+          callback("IP INCONNUE");
+        }
+      });
+
+      //return ip;
+    }
+
+    var ips = "";
+    get_ip(function (ip) {
+
+      ips = ip;
+    });
+
+
+  var legende = [];
+  var data = []
+  for (var i = res_ost_ct.length - 1; i >= 0; i--) {
+    legende.push(res_ost_ct[i].stat);
+    var obj = {};
+    obj.name = res_ost_ct[i].stat;
+    obj.value = res_ost_ct[i].nbstat;
+    data.push(obj);
+
+  }
+
+  title = 'Ostie';
+
+  var echartPie = echarts.init(document.getElementById('echart_pie'), theme, data);
+  echartPie.setOption(getOptionPie(legende,data,title));
+
+  var labels = [];
+  var datas = [];
+  for (var i = heur_hostie.length - 1; i >= 0; i--) {
+    //console.log(heur_hostie[i].duree.minutes);
+    labels.push(heur_hostie[i].id_pers);
+    datas.push(heur_hostie[i].duree.minutes);
+  }
+  //alert(datas);
+
+
+  Chart.defaults.global.legend = {
+        enabled: false
+      };
+
+      // Line chart
+      var ctx = document.getElementById("lineChart");
+      var lineChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: "Durée en minutes",
+            backgroundColor: "rgba(38, 185, 154, 0.31)",
+            borderColor: "rgba(38, 185, 154, 0.7)",
+            pointBorderColor: "rgba(38, 185, 154, 0.7)",
+            pointBackgroundColor: "rgba(38, 185, 154, 0.7)",
+            pointHoverBackgroundColor: "#fff",
+            pointHoverBorderColor: "rgba(220,220,220,1)",
+            pointBorderWidth: 1,
+            data: datas
+          }]
+        },
+      });
+
+
+
+</script>
+<script>
+
+  var selectId = null;
+  var selectIdLdt = null;
+
+    $(function() {
+        $('#ostie-event').change(function() {
+          //alert($(this).prop('checked'));
+            onToogleOstie($(this).prop('checked'));
+        })
+      })
+
+
+    function notifyOstieW(){
+        $.ajax({
+          type: "GET",
+          url: "/notification_ostie",success: function(msg){
+            //console.log(msg);
+          },
+          error: function (error) {
+            //console.log(error);
+          }
+        });
+      }
+
+    function notifyOstieWeb(){
+    $.ajax({
+      type: "GET",
+      url: "/notification_ostie",success: function(msg){
+        //console.log(msg);
+      },
+      error: function (error) {
+        //console.log(error);
+      }
+    });
+  }
+    function onToogleOstie(check){
+
+        $.ajax({
+            type: "GET",
+            url: "/update_etat_ostie?etat="+check,
+            beforeSend: function(xhr){
+            },
+            success: function(msg){
+                if(check===true){
+                    notifyOstieW();
+                }else{
+                    //$('.btn').prop('disabled', true);
+                    //$("input.btn").attr("disabled", true);
+                    notifyOstieWeb();
+                    //document.getElementByClass("btn").disabled = true;
+                }
+                //alert(msg);
+            },
+            error: function (error) {
+              alert('Reessayez svp!');
+            }
+        });
+    }
+
+    function callOP(id,ido){
+        $.ajax({
+            type: "GET",
+            url: "/notification_op_ostie?id_pers="+id+"&id_ostie="+ido,
+            beforeSend: function(xhr){
+            },
+            success: function(msg){
+                alert(msg);
+            },
+            error: function (error) {
+              alert('Reessayez svp!');
+            }
+        });
+    }
+
+
+
+
+  //alert(get_ip());
+
+ function dd(id_res,id_ldt) {
+   selectId = id_res;
+   selectIdLdt = id_ldt;
+$('#myModal_modif').appendTo("body").modal('show');
+}
+  function nr() {
+    $('#myModal_insert').appendTo("body").modal('show');
+  }
+    var host = window.location.hostname;
+    io.sails.url = 'http://'+host+':9090';
+    //io.sails.url = 'http://gpao-tdb.easytech.mg';
+    io.socket.on("ostie", function (msg1) {
+      //console.log(msg1);
+      window.location = "/reservation_ostie/index"
+    });
+
+</script>

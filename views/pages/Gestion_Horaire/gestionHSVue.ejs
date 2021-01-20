@@ -1,0 +1,322 @@
+<% if(req.session.droit==1){
+
+  %>
+  <% include ../../includes/entete.ejs %>
+  <% }else{
+
+  %>
+  <% include ../../includes/enteteOperateur.ejs %>
+
+  <% }%>
+ <link rel="stylesheet" href="/jquery-ui/jquery-ui.css">
+ <script src="/js/jquery-1.12.4.js"></script>
+ <script src="/js/jquery-ui.min.js"></script>
+ <script src="/js/weekPicker.js"></script>
+ <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
+ <%
+ var html_pole= "";
+ pole.forEach(function(p){
+   if(Number(p.id)===Number(poleid)){
+     html_pole += "<option value='"+p.id+"' selected>"+p.libelle+"</option>";
+   }else{
+     html_pole += "<option value='"+p.id+"'>"+p.libelle+"</option>";
+   }
+
+ });
+
+ var html_semaine= "";
+ listsemaine.forEach(function(s){
+   if(Number(s.id)===Number(semid)){
+     html_semaine += "<option value='"+s.id+"' selected>SEMAINE "+s.num_semaine+" "+s.annee+"</option>";
+   }else{
+     html_semaine += "<option value='"+s.id+"'>SEMAINE "+s.num_semaine+" "+s.annee+"</option>";
+   }
+
+ });
+ %>
+ <div class="col-md-12 col-sm-12 col-xs-12">
+   <div class="x_panel">
+     <div class="x_title">
+       <h2></h2>
+       <ul class="nav navbar-right panel_toolbox">
+         <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+         </li>
+         <li><a class="close-link"><i class="fa fa-close"></i></a>
+         </li>
+       </ul>
+       <div class="clearfix"></div>
+     </div>
+     <div class="x_content">
+
+       <form method="get" action="/gestion_hs">
+         <div class="form-groupe col-md-3">
+           <label for="pole">Poles</label>
+           <select id="pole" name="pole" class="form-control">
+             <%-html_pole%>
+           </select>
+         </div>
+
+         <div class="form-groupe col-md-3">
+           <label for="sem">Semaines </label>
+
+           <select id="sem" name="sem" class="form-control">
+             <%-html_semaine%>
+           </select>
+         </div>
+
+         <div class="form-groupe col-md-3">
+           <label for="sem"></label>
+           <input type="submit" value="OK" class="btn btn-info form-control"/>
+         </div>
+
+         <div class="form-groupe col-md-3">
+           <label for="validate"></label>
+           <a onclick="saveAllHS()" type="submit" class="btn btn-success form-control">ENREGISTRER</a>
+         </div>
+       </form>
+
+
+     </div>
+   </div>
+ </div>
+
+ <div class="col-md-12 col-sm-12 col-xs-12">
+   <div class="x_panel">
+     <div class="x_title">
+       <h2></h2>
+       <ul class="nav navbar-right panel_toolbox">
+         <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+         </li>
+         <li><a class="close-link"><i class="fa fa-close"></i></a>
+         </li>
+       </ul>
+       <div class="clearfix"></div>
+     </div>
+     <div class="x_content">
+<div id="tableData" style="overflow-x:auto;">
+
+  <%
+    //recuperation de la liste des date
+    var debSplit = semaine[0].date_debut.split('/');
+    var finSplit = semaine[0].date_fin.split('/');
+
+    var thDate = "<th class=\"\"></th><th class=\"\">-</th>";
+    var thPrincipale = "<th class=\"\">-</th><th class=\"\"></th><th class=\"vh_head_conge\">SEMAINE "+semaine[0].num_semaine+" </th><th class=\"\"></th>";
+    var thSecondaire = "<th class=\"\">Matricule</th><th class=\"\">Nom et prénom</th><th class=\"vh_head_conge\">HS réel</th><th class=\"\">HS validé</th>";
+   //var dateDeb = new Date();
+   var dateDeb = new Date(""+debSplit[1]+"/"+debSplit[0]+"/"+debSplit[2]);
+   dateDeb.setDate(dateDeb.getDate()+1);
+   /*dateDeb.setMonth(Number(debSplit[0]));
+   dateDeb.setFullYear(Number(debSplit[2]));*/
+   //var dateFin = new Date();
+   var dateFin = new Date(""+finSplit[1]+"/"+finSplit[0]+"/"+finSplit[2]);
+    /*dateFin.setDate(Number(finSplit[1]));
+    dateFin.setMonth(Number(finSplit[0]));
+    dateFin.setFullYear(Number(finSplit[2]));*/
+
+    dateFin.setDate(dateFin.getDate()+1);
+   //console.log(semaine[0].date_debut);
+   //console.log(semaine[0].date_fin);
+   //console.log(dateDeb);
+   //console.log(dateFin);
+
+   var ct = 0;
+
+    var dateArray = [];
+    var currentDate = dateDeb;
+    var weekday = new Array(7);
+    weekday[0] = "Sam";
+    weekday[1] =  "Dim";
+    weekday[2] = "Lun";
+    weekday[3] = "Mar";
+    weekday[4] = "Mer";
+    weekday[5] = "Jeu";
+    weekday[6] = "Ven";
+
+    while (currentDate <= dateFin) {
+      var dat = currentDate.toISOString().replace(/-/,'/').replace(/-/,'/').substr(0,10);
+      //sails.log(currentDate.getDay());
+      var datSplt =dat.split('/');
+      dateArray.push(currentDate);
+      thDate +="<th class=\"\">"+weekday[currentDate.getDay()]+"</th><th class=\"\">"+datSplt[2]+"/"+datSplt[1]+"</th><input id='date_"+ct+"' type=\"hidden\" value=\""+datSplt[2]+"/"+datSplt[1]+"/"+datSplt[0]+"\"/>";
+      currentDate = new Date(currentDate.setTime( currentDate.getTime() + 1 * 86400000 ));
+
+      if(ct>0){
+        thPrincipale+="<th class=\"\"></th><th class=\"\"></th>";
+        thSecondaire+="<th class=\"vh_head_conge\">HS réel</th><th class=\"\">HS validé</th>";
+      }
+      ct++;
+    }
+
+
+
+    //sails.log(dateArray);
+
+ %>
+        <table class="table table-responsive">
+            <thead>
+
+                <tr>
+                  <%-thPrincipale%>
+                </tr>
+
+                <tr>
+                  <%-thDate%>
+                </tr>
+                <tr>
+                    <%-thSecondaire%>
+                </tr>
+            </thead>
+            <tbody>
+
+            <%
+              var hs_reel = '00:00:00' ;
+              var hs_predef = '00:00:00' ;
+
+              var listId = []
+            %>
+            <% result.forEach(function(resultat){
+
+              listId.push(resultat.id_pers);
+
+
+              var ghTable = resultat.gh;
+              //sails.log(resultat.gh);
+
+
+
+            %>
+                <tr>
+                    <td class="" align="right"><%= resultat.id_pers %></td>
+                    <td  class="" align="right"><%= resultat.nom %> <%= resultat.prenom %></td>
+
+                  <%
+                    var ct_date = 0;
+                    ghTable.forEach(function (resul) {
+
+
+
+                    var classHs = '' ;
+
+
+
+                      if(resul.length !== 0){
+                        hs_reel = resul[0].heure_sup_reel;
+                        hs_predef = resul[0].heure_sup || '00:00:00';
+                        sails.log(resul[0]);
+                        if(resul[0].negative){
+                          classHs = 'btn-danger' ;
+                        }
+                      }else{
+                        hs_reel = '00:00:00';
+                        hs_predef = '00:00:00';
+                        //sails.log(resul[0].date);
+
+
+                      }
+
+                      if (hs_reel =='00:00:00' || hs_reel =='08:00:00' || hs_reel ==null) hs_reel = '';
+
+                      if(hs_reel===''){
+
+                        %>
+                  <td><input   class="vh_heure_conge vh_conge" id="hs_reel_<%=ct_date%>_<%= resultat.id_pers %>" type="text" size="8" value="<%= hs_reel %>" disabled/> </td>
+                  <td class=""><input   class="vh_heure_conge timepicker" id="hs_predef_<%=ct_date%>_<%= resultat.id_pers %>" type="text" size="8" value="<%= hs_predef %>"/></td>
+
+
+                  <%
+                      }else{
+
+
+                      %>
+                  <td   ondblclick="affectationValeurReel('<%=ct_date%>','<%= resultat.id_pers %>');"><input   class="vh_heure_conge vh_conge <%=classHs%>" id="hs_reel_<%=ct_date%>_<%= resultat.id_pers %>" type="text" size="8" value="<%= hs_reel %>" disabled/><a href="#" onclick="affectationValeurReel('<%=ct_date%>','<%= resultat.id_pers %>');"><i class="fa fa-forward"></i> </a> </td>
+                  <td class=""><input   class="vh_heure_conge timepicker" id="hs_predef_<%=ct_date%>_<%= resultat.id_pers %>" type="text" size="8" value="<%= hs_predef %>"/></td>
+
+                  <%
+                  }
+                    ct_date++;
+                    });
+                  %>
+
+                </tr>
+            <% }) %>
+            </tbody>
+        </table>
+        <div class="col-md-4 col-sm-4 col-xs-4" style="margin-left:40%;margin-top:5%">
+            <!--<input class="btn btn-info" type="button" onclick="saveAllGH();" value="Insérer"/>-->
+        </div>
+    </form>
+</div>
+     </div>
+   </div>
+ </div>
+
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
+ <script>
+   $(function() {
+     $( "#datedeb").datepicker({
+       dateFormat: 'dd/mm/yy'
+     }).datepicker("setDate", new Date());
+
+
+     //convertToWeekPicker($("#sem"));
+     //$('input.timepicker').timepicker({});
+
+   } );
+
+   var date_deb = '';
+   var date_fin = '';
+   var result = <%-JSON.stringify(result)%>;
+   var dateArray = <%-JSON.stringify(dateArray)%>;
+   function saveAllHS(){
+      for(var i = 0;i<result.length;i++){
+
+        var data_gh = result[i].gh;
+        var id_pers = result[i].id_pers;
+
+        for(var y = 0;y<dateArray.length;y++){
+          saveHSById(id_pers,y);
+          console.log(id_pers+" "+y);
+        }
+
+
+      }
+   }
+
+   function affectationValeurReel(date_cible,id_pers){
+     //alert(date_cible);
+     //alert(""+$("#hs_reel_"+date_cible+"_"+id_pers).val());
+     var value = $("#hs_reel_"+date_cible+"_"+id_pers).val();
+
+     if(value===''){
+       value='00:00:00';
+     }
+      $("#hs_predef_"+date_cible+"_"+id_pers).val(value);
+      $("#hs_predef_"+date_cible+"_"+id_pers).addClass("btn-success");
+   }
+
+   function saveHSById(id,ct_date) {
+     var value = $("#hs_predef_"+ct_date+"_"+id).val();
+     if (value == '') value = '0';
+
+     //alert(isNaN(Number(value)));
+       var date = $("#date_"+ct_date).val();
+
+       //console.log("/saveGh?id_pers="+id+"&date="+encodeURIComponent(date)+"&heure_travaille="+ghH+"&heure_conge="+ghC);
+
+
+       $.ajax({
+         type: "GET",
+         url: "/saveHS?id_pers="+id+"&date="+encodeURIComponent(date)+"&value="+value,
+
+         success: function(msg){
+
+         },
+         error: function (error) {
+
+         }
+       });
+
+
+   }
+ </script>

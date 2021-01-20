@@ -1,0 +1,302 @@
+
+<% if(req.session.droit==1){
+
+%>
+<% include ../includes/entete.ejs %>
+<% }else{
+
+%>
+<% include ../includes/enteteOperateur.ejs %>
+
+<% }%>
+
+
+<script src="/js/socket/init-socket.js"></script>
+<div id="page-wrapper">
+  <div class="container-fluid  flat-blue">
+    <div class="">
+      <div class="">
+        <div class="">
+
+          <link rel="stylesheet" href="/css/screen.css">
+          <!-------------------style css particulier------>
+          <!-------------------fin css particulier------>
+
+
+
+          <div class="row">
+            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+              <div class="card card-info">
+                <div class="card-header">
+                  <div class="card-title">
+                    <div class="title">
+                      <p>Matricule</p>
+
+                      </div>
+
+                  </div>
+                  <div class="clear-both"></div>
+                </div>
+                <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+                <div class="no-padding">
+
+                  <link href="/jquery-ui/jquery-ui.css" rel="stylesheet">
+                  <script src="/js/jquery-1.10.2.js"></script>
+                  <script src="/jquery-ui/jquery-ui.js"></script>
+
+                  <!-- Javascript -->
+                  <script>
+                    $(function() {
+                      $( "#slider-1" ).slider({
+                        min: 0,
+                        max: 300,
+                        value: 0,
+                        slide: function( event, ui ) {
+                          $( "#price" ).val(ui.value + "");
+                          qual = ui.value;
+                        }
+                      });
+                      $( "#price" ).val(qual);
+                    });
+                  </script>
+
+
+                  <div id="users" class="">
+                    <input class="search live-search-box form-control"  placeholder="Recherche" />
+                  </div>
+
+                  <label for="price" class="form-control" style=" border:0;text-align: center">Qualité</label>
+                  <div id="slider-1" class=""></div>
+                  <input type="text" id="price" class="form-control" style="border:0; color:#b9cd6d; font-weight:bold; text-align: center">
+
+
+                  <ul class="list scrollable-menu live-search-list" style="height: 580px">
+                    <% plogon.forEach(function(pers){ %>
+
+
+                    <li class="form-control" style="background-color: white; border-color: #00fff6" >
+                        <div class="">
+                          <%
+                           if(pers.connected){
+                             %>
+                          <script>
+                            isClickedList['<%=pers.id%>'] = 0;
+                          </script>
+                          <div class="col-sm-1 col-md-1 col-lg-1"><i class="fa fa-dot-circle-o" aria-hidden="true"></i> </div>
+                          <div class="col-sm-3 col-md-3 col-lg-3"><%= pers.id %></div>
+                        
+                          <div class="col-sm-3 col-md-3 col-lg-3">
+                            <label class="switch" >
+                              <input type="checkbox" id="chk<%= pers.id %>"  onclick="toogle(<%= pers.id %>)">
+                              <div class="slider round"></div>
+                            </label>
+                          </div>
+                          <div class="col-sm-3 col-md-3 col-lg-3 pull-right"><a href="#" onclick="detail('<%=  pers.id %>','<%=  pers.last_connected_time %>','<%=  pers.connected %>')"> <i class="fa fa-eye fa-2x" aria-hidden="true"></i></a></div>
+
+                         
+                          <%
+                          }else{
+                          %>
+
+                          <div class="col-sm-1 col-md-1 col-lg-1"><i class="fa fa-circle-o" aria-hidden="true"></i> </div>
+                          <div class="col-sm-4 col-md-4 col-lg-4"><%= pers.id %></div><%
+                          }
+                          %>
+
+                        </div>
+
+
+                    </li>
+                    <% }); %>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
+              <div class="card card-info">
+                <div class="card-header">
+                  <div class="card-title">
+                    <div class="title">
+                        <p id="mat">Ecran</p>
+
+
+                    </div>
+                    <!--<div class="row form-group col-md-12">
+                      <div class="col-md-6">
+                        <input class="form-control" id="qlt" type="number" max="300">
+                      </div>
+                      <div class="col-md-2">
+                        <input class="form-control btn btn-adn" type="button" value="capture" onclick="capture()">
+                      </div>
+                      <div class="col-md-2">
+                        <input class="form-control btn btn-adn" type="button" value="stop" onclick="stop()">
+                      </div>
+                    </div>-->
+                  </div>
+                  <div class="clear-both"></div>
+                </div>
+                <div class="no-padding" id="ecran">
+
+
+                  <div id="myCarousel" class="carousel slide" data-ride="carousel" style="height: 732px">
+
+
+                    <!-- Wrapper for slides -->
+                    <div class="carousel-inner" role="listbox">
+                      <div id="load" class="col-md-12" style="display:none">
+                        <img src="img/screen-loader.gif" class="col-md-12" alt="loader">
+                      </div>
+                      <%
+                      var a = 0;
+                      image.forEach(function (img) {
+
+                        var classNam = "item";
+                        if(a==0){
+                          classNam = "item active";
+                          a++;
+                        }else{
+                          classNam = "item";
+                        }
+
+
+                      %>
+                      <div class="<%=classNam%>">
+                        <img src="data:image/png;base64, <%= img.photo%>" class="col-md-9" alt="Date">
+                        <div class="carousel-caption">
+                          <h3>Date</h3>
+                          <p><%=img.time%></p>
+                        </div>
+                      </div>
+                      <%
+                      })
+                      %>
+
+
+                    </div>
+
+                    <!-- Left and right controls -->
+                    <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+                      <!--<i class="fa fa-arrow-left" aria-hidden="true"></i>-->
+                    </a>
+                    <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+                      <!--<i class="fa fa-arrow-right" aria-hidden="true"></i>-->
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<script src="/js/jquery-1.12.4.js"></script>
+<script src="/jquery-ui/jquery-ui.js"></script>
+<script src="/js/search-view.js"></script>
+<script type="text/javascript">
+      var id_pers ;
+      var myVar ;
+      var qual = 0;
+
+      function refresh(){
+        $.ajax({
+          type: "GET",
+          url: "/showScreen?id_pers="+id_pers,
+          success: function(msg){
+            $("#ecran").html(msg);
+          },
+          error: function (error) {
+            //alert('error; ' +error);
+          }
+        });
+      }
+      function detail(id,lastconnection,connected){
+        /*document.getElementById("mat").innerHTML("Matricule  "+id);
+        /*document.getElementById("ecr").innerHTML("Dernier Connexion : "+lastconnection);*/
+        $( "#load" ).show();
+        id_pers = id;
+        $("#mat").html("Ecran de :  "+id);
+        var lastCon = "jamais";
+
+        var con = "non connecté";
+        if(connected!='false'){
+          con = "connecté"
+        }
+        if(lastconnection!=null){
+          lastCon = lastconnection;
+        }
+        $("#erc").html("Dernier Connexion : "+lastCon + "            Etat : "+con+"");
+        //$("#regTitle").html("Hello World");
+
+        $.ajax({
+          type: "GET",
+          url: "/showScreen?id_pers="+id,
+          success: function(msg){
+            $("#ecran").html(msg);
+            $( "#load" ).hide();
+          },
+          error: function (error) {
+            //alert('error; ' +error);
+          }
+        });
+
+        io.socket.on("prc"+id, function (msg) {
+          //console.log(msg);
+          var response = msg;
+          //)/alert("type:"+response.type);
+        });
+        //alert("mande : "+connected)
+      }
+
+      function toogle(id){
+        //console.log(isClickedList);
+        if($('#chk'+id).is(":checked")){
+          capture(id);
+        }else {
+          stop(id)
+        }
+      }
+      function capture(id){
+        //qual =$("#qual").val();
+        //myVar = setInterval(myTimer(id_pers), 1000);
+        timerList[id]=setInterval(function(){ myTimer(id); }, 30000);
+      }
+
+      function stop(id){
+        $.ajax({
+          type: "GET",
+          url: "/send?id_pers="+id+"&qualite="+qual+"&message=OFF",
+          success: function(msg){
+            //console.log("send successful stop capture");
+            clearInterval(timerList[id]);
+          },
+          error: function (error) {
+            //alert('error; ' +error);
+          }
+        });
+
+      }
+
+
+
+      function myTimer(id) {
+        $.ajax({
+          type: "GET",
+          url: "http://10.128.1.246:10040/send?id_pers="+id+"&qualite="+qual+"&message=ON",
+          success: function(msg){
+            //console.log("send successful capture");
+
+          },
+          error: function (error) {
+            //alert('error; ' +error);
+          }
+        });
+
+
+      }
+
+
+</script>

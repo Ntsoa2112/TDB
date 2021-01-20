@@ -1,0 +1,385 @@
+<title xmlns="http://www.w3.org/1999/html">Detourage Reporting</title>
+<head>
+
+
+  <!-- TIME PICKER INCLUDE  -->
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!--link rel="stylesheet" href="bootstrap.css" /-->
+  <!-- FIN TIME PICKER INCLUDE  -->
+
+  <!--script type='text/javascript' src='/js/jquery.min.js'></script-->
+  <!-- TEST BUG MENU -->
+
+
+  <link rel="stylesheet" href="/styles/importer.css">
+  <link rel="stylesheet" href="/bootflat/css/bootstrap.css">
+  <link rel="stylesheet" href="/bootflat/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/local.css">
+  <link rel="stylesheet" href="/css/Style_v3.css">
+  <link rel="stylesheet" href="/jquery-ui/jquery-ui.css">
+
+  <script src="/js/dependencies/sails.io.js"></script>
+  <script src="/js/jquery-1.10.2.min.js"></script>
+  <script src="/bootstrap/js/bootstrap.min.js"></script>
+  <script src="/js/jquery-ui.min.js"></script>
+  <!--script type='text/javascript' src='/js/fullcalendar.min.js'></script-->
+  <script type="text/javascript">
+    $(document).ready(function(){
+      $("#submit").click(function(e){
+        e.preventDefault();
+        // ajax();
+      });
+    });
+  </script>
+</head>
+<body>
+<% include ../../includes/entete.ejs %>
+
+<%
+  var style = '';
+  if(id_pers==0)
+    style = "style='display: none'";
+%>
+<div class="container-fluid">
+  <form method="post" action="/Detourage/synthese">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+      <div class="x_panel">
+        <div class="x_title">
+          <h2></h2>
+          <ul class="nav navbar-right panel_toolbox">
+            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+            </li>
+            <li><a class="close-link"><i class="fa fa-close"></i></a>
+            </li>
+          </ul>
+          <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+
+            <div class="form-groupe col-md-3">
+              <label for="dateDeb">Debut</label>
+                <input type="text" class="form-control"  id="dateDeb" name="dateDeb" onchange="" value="<%=dateDeb%>">
+            </div>
+
+            <div class="form-groupe col-md-3">
+              <label for="dateFin">Fin</label>
+                <input type="text" class="form-control"  id="dateFin" name="dateFin" onchange="" value="<%=dateFin%>">
+            </div>
+
+            <div class="form-groupe col-md-3 hidden">
+              <label for="etape">ETAPE</label>
+                <select id="etape" name="etape" class="form-control" >
+                  <option value="0">Tous</option>
+                  <%
+                      etapes.forEach(function(etape){
+                        if(Number(etape.id_categorie)===Number(id_etape))
+                        {
+                        %>
+                          <option value="<%=etape.id_categorie %>" selected='true'><%=etape.libelle %></option>
+                        <%
+                      }else{
+                        %>
+                        <option value="<%=etape.id_categorie %>"><%=etape.libelle %></option>
+                        <%
+                      }
+                      });
+                  %>
+
+                </select>
+            </div>
+
+            <div class="form-groupe col-md-3 hidden">
+              <label for="id_pers">Matricule</label>
+                <input type="text" class="form-control"  id="id_pers" name="id_pers" onchange="" value="<%=id_pers%>">
+            </div>
+
+
+
+            <div class="form-groupe col-md-3">
+              <label for="sem">-</label>
+              <input type="submit" value="OK" class="btn btn-info form-control"/>
+            </div>
+
+
+        </div>
+      </div>
+    </div>
+  </form>
+<style>
+  .t_client {
+    background : #381c1c;
+    color : white;
+  }
+  .designation {
+    text-align:left !important;
+    padding-left : 50px;
+  }
+</style>
+  <div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="x_panel">
+      <div class="x_title">
+        <h2></h2>
+        <ul class="nav navbar-right panel_toolbox">
+          <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+          </li>
+          <li><a class="close-link"><i class="fa fa-close"></i></a>
+          </li>
+        </ul>
+        <div class="clearfix"></div>
+      </div>
+      <div class="x_content">
+        <table id="dttb" class="table table-hover">
+
+          <thead>
+            <tr style='font-size:10px'>
+              <th style='width:50%;text-align:left !important'>Désignation</th>
+              <th>Volume total traité</th>
+              <th>Heures consommées</th>
+              <th>Crédit heure</th>
+              <th>Besoin heures</th>
+            </tr>
+          </thead>
+          <tbody>
+            <%
+            console.log("log view");
+            //sails.log(clients);
+            clients.forEach(function(client){
+
+                var total_qte = 0;
+                var total_duree = 0;
+                var total_credit_heure = 0;
+                var total_besoin_heure = 0;
+                  client.difficulte.forEach(function(diff){
+
+                    var qte_trt = 0;
+                    var qte_cq = 0;
+
+                    var duree_trt = 0;
+                    var duree_cq = 0;
+
+
+                    var qte = 0;
+                    var dur = 0;
+
+
+                    var vit = '';
+
+                    var credit_heure = "";
+                    var besoin_heure = "";
+
+
+
+
+
+
+                  if(id_pers!==0){
+                    // pour le Traitement
+                    qte_trt = Number(diff.trt[0].qte || 0) ;
+                    duree_trt = Number((Number(diff.trt[0].durree || 0)/3600).toFixed(7));
+                    // pour le CQ
+                    qte_cq = Number(diff.cq[0].qte || 0) ;
+                    duree_cq = Number((Number(diff.cq[0].durree || 0)/3600).toFixed(7));
+
+                    qte = qte_trt+qte_cq ;
+                    dur = duree_trt + duree_cq;
+
+
+
+                  }else {
+                    qte = Number(diff.data[0].qte || 0) ;
+                    dur = Number((Number(diff.data[0].durree || 0)/3600).toFixed(7));
+                  }
+
+                total_qte +=qte;
+                total_duree +=dur;
+
+                  if(qte_trt ===0)
+                    qte_trt = '';
+                  if(qte_cq ===0)
+                    qte_cq = '';
+
+                  if(duree_trt ===0)
+                    duree_trt = '';
+                  if(duree_cq ===0)
+                    duree_cq = '';
+
+                  if(dur !==0)
+                    vit = Number((qte/dur).toFixed(1))
+
+                  if(qte ===0)
+                    qte = '';
+
+                  if(dur ===0)
+                    dur = '';
+
+                    if(diff.vitesse_equilibre)
+                    {
+                      if(diff.vitesse_equilibre!=0)
+                      {
+                        credit_heure = Number(qte)/Number(diff.vitesse_equilibre);
+                        total_credit_heure +=credit_heure;
+                        besoin_heure = Number(dur)-credit_heure;
+                        total_besoin_heure +=besoin_heure;
+                        credit_heure = Number(credit_heure.toFixed(4))
+                        besoin_heure = Number(besoin_heure.toFixed(4))
+
+
+                      }
+                       // credit_heure = number(qte)/number(diff.vitesse_equilibr);
+                    }
+
+              //sails.log(diff);
+
+
+                  });
+
+              total_qte = Number(total_qte.toFixed(4));
+              total_duree = Number(total_duree.toFixed(4));
+              total_credit_heure = Number(total_credit_heure.toFixed(4));
+              total_besoin_heure = Number(total_besoin_heure.toFixed(4));
+            %>
+            <tr>
+              <td class="t_client designation"><%=client.lib_client || client.nom_client %></td>
+              <td class="t_client"><%=total_qte%></td>
+              <td class="t_client"><%=total_duree%></td>
+              <td class="t_client"><%=total_credit_heure%></td>
+              <td class="t_client"><%=total_besoin_heure%></td>
+            </tr>
+            <%
+            });
+            %>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- modal-->
+<div class="modal fade" id="modifVitesseEquilibreModal" tabindex="-1" role="dialog" aria-labelledby="alertModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <!--Content-->
+    <form method="GET" action="#" >
+      <div class="modal-content">
+        <!--Header-->
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" id="alertModalLabel">Specifier la vitesse d'équilibre</h4>
+        </div>
+        <!--Body-->
+        <div class="modal-body">
+          <h3 id="title_client_dif"></h3>
+          <input type="hidden" id="id_dificulte"/>
+          <input type="hidden" id="id_client"/>
+          <div class="form-group col-md-6">
+            <input type="number" id="vitesse_eq" class="form-control"/>
+          </div>
+        </div>
+        <!--Footer-->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermé</button>
+          <button type="button" class="btn btn-success" onclick="saveVequilibre()">Valider</button>
+        </div>
+      </div>
+    </form>
+    <!--/.Content-->
+  </div>
+</div>
+</body>
+
+<!-- FastClick -->
+<script src="/vendors/fastclick/lib/fastclick.js"></script>
+<!-- NProgress -->
+<script src="/vendors/nprogress/nprogress.js"></script>
+<!-- ECharts -->
+<script src="/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+<script src="/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
+<script src="/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
+<script src="/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+<script src="/vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+<script src="/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+<script src="/vendors/datatables.net-scroller/js/datatables.scroller.min.js"></script>
+<script src="/vendors/jszip/dist/jszip.min.js"></script>
+<script src="/vendors/pdfmake/build/pdfmake.min.js"></script>
+<script src="/vendors/pdfmake/build/vfs_fonts.js"></script>
+
+<!-- Custom Theme Scripts -->
+<script src="/js/custom.min.js"></script>
+<script src="/js/dependencies/sails.io.js"></script>
+
+
+<script>
+  $(function() {
+    $( "#dateDeb" ).datepicker({
+      dateFormat: 'yymmdd'
+    });
+
+    $( "#dateFin" ).datepicker({
+      dateFormat: 'yymmdd'
+    });
+
+    $('#dttb').DataTable({
+      "searching":   false,
+      "bPaginate": false,
+      "ordering": false,
+      dom: 'Bfrtip',
+        buttons: [
+            {
+                extend: 'excelHtml5',
+                exportOptions: {
+                    columns: ':visible',
+                    format: {
+                        body: function(data, row, column, node) {
+                            return data.replace('&lt;', '<').replace('&gt;', '>').replace('.', ',');
+                        }
+                    }
+                }
+            },
+            {
+                extend: 'csvHtml5',
+                exportOptions: {
+                    columns: ':visible',
+                    format: {
+                        body: function(data, row, column, node) {
+                            return data.replace('&lt;', '<').replace('&gt;', '>');
+                        }
+                    }
+                }
+            }
+        ]
+    });
+  } );
+
+  function loadDataModif(data){
+    $("#title_client_dif").html(data[2]+"<br/>"+data[3]);
+    $("#id_client").val(""+data[0]);
+    $("#id_dificulte").val(""+data[1]);
+    $("#vitesse_eq").val(""+data[4]);
+  }
+
+  function saveVequilibre() {
+    $.ajax({
+      type: "GET",
+      url: "/Detourage/saveVitesseEquilibre?id_client="+$("#id_client").val()+"&id_difficulte="+$("#id_dificulte").val()+"&vitesse_eq="+$("#vitesse_eq").val(),
+      success: function(msg){
+        document.location.reload(true);
+      },
+      error: function (error) {
+        alert('error; ' +error);
+      }
+    });
+  }
+</script>
+
+</body>

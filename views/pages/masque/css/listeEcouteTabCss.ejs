@@ -1,0 +1,121 @@
+
+<div id="tableData">
+  <table class="table table-hover" id="" >
+	<thead>
+		<tr>
+		  <!--<th>Chef d'équipe</th>-->
+			<th>Equipe</th>
+			<th>Vague</th>
+			<th>CRC</th>
+			<th>Date d'enregistrement</th>
+			<th>Numero</th>
+			<th>Notes</th>
+			<!--<th>Mode d'ecoute</th>-->
+			<th>Typologie d'appel</th>
+			<th>Commentaire</th>
+			<th>Qualite</th>
+			<th>Modifier</th>
+		</tr>
+	</thead>
+	<tbody>
+	<%
+		var month = new Array();
+		month[0] = "Janvier";
+		month[1] = "Février";
+		month[2] = "Mars";
+		month[3] = "Avril";
+		month[4] = "Mai";
+		month[5] = "Juin";
+		month[6] = "Juillet";
+		month[7] = "Aout";
+		month[8] = "Septembre";
+		month[9] = "Octobre";
+		month[10] = "Novembre";
+		month[11] = "Décembre";
+	%>
+	<% resultat.forEach(function(result){ %>
+		<tr>
+			<%
+				var conf = "oui";
+				var bgcolor_conformite="";
+				
+				if(result.conforme == false){
+					bgcolor_conformite="bgcolor=#FAF670"; 
+					conf = "non";
+				}
+				
+				var mode = "A";
+				
+				if(result.id_mode == 2){
+					
+					mode = "NA";
+				}
+				
+				var dateE = new Date(Number(Date.parse(result.date_enregistrement)));
+				var nFin = month[dateE.getMonth()];
+				var dateEnregistrement = dateE.getDate()+" "+nFin+" "+dateE.getFullYear();
+				
+				if(nFin == null){
+					dateEnregistrement = " - ";
+				}
+				if(typeof nFin == "undefined" ){
+					dateEnregistrement = " - ";
+				}
+				
+				var comF = "-";
+				var comM = "-";
+				
+				var francais = result.francais_formation;
+				var metier = result.metier_formation;
+				
+				if(francais.substring(0,9)=="Francais/"){
+					var array = francais.split("/");
+					comF = "oui";
+					
+					if(!array[1] && result.conforme == true){
+						bgcolor_conformite="bgcolor=#FAAC58";
+					}
+				}
+				if(metier.substring(0,7)=="Metier/"){
+					var array = metier.split("/");
+					comM = "oui";
+					
+					if(!array[1] && result.conforme == true){
+						bgcolor_conformite="bgcolor=#FAAC58";
+					}
+				}
+				
+				
+				var moy = (Number(result.nt)*20)/Number(result.pnd);
+
+				  var str_note = Number(moy.toFixed(2));
+				  if(isNaN(str_note)){
+					str_note ="-";
+				  }
+				
+			%>
+		  <!--<td align="right"><%= result.ce %></td>
+		  <td <%= bgcolor_conformite %> align="right"><%= result.pers_ecoute %></td>
+		  <td <%= bgcolor_conformite %> align="right"><%= result.tc %></td>
+		  <td <%= bgcolor_conformite %> align="right"><%= dateEnregistrement %></td>
+		  <td <%= bgcolor_conformite %> align="right"><%= result.numero_enregistrement %></td>
+		  <td <%= bgcolor_conformite %> align="right">-</td>-->
+		  
+		  <td <%= bgcolor_conformite %> align="right"><%= result.ce %></td>
+		  <td <%= bgcolor_conformite %> align="right"><%= result.vague %></td>
+		  <td <%= bgcolor_conformite %> align="right"><%= result.nom_crc %></td>
+		  <td <%= bgcolor_conformite %> align="right"><%= dateEnregistrement %></td>
+		  <td <%= bgcolor_conformite %> align="right"><%= result.numero_enregistrement %></td>
+		  <td <%= bgcolor_conformite %> align="right"><%= str_note %></td>
+		  <!--<td <%= bgcolor_conformite %> align="right"><%= (result.mode || "-") %></td>-->
+		  <td <%= bgcolor_conformite %> align="right"><%= (result.libelle || "-") %></td>
+		  
+		  <td <%= bgcolor_conformite %> align="right"><%= (result.commentaire_non_conformite || "") %> </td>
+		  <td <%= bgcolor_conformite %> align="right"><%= conf %></td>
+		  
+		  <td align="right"><a href="/updateEcouteByIdCss?id=<%= result.id_ecoute %>&id_pers=<%= result.id_pers %>">Modifier</a></td>
+		</tr>
+	<% }) %>
+	</tbody>
+  </table>
+</div>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TDB Stat</title>
+
+  <link rel="stylesheet" href="/styles/importer.css">
+  <link rel="stylesheet" href="/bootflat/css/bootflat.min.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/local.css">
+  <link rel="stylesheet" href="/css/Style_v3.css">
+  <link rel="stylesheet" href="/jquery-ui/jquery-ui.css">
+  <!--STYLES END-->
+</head>
+
+<body onLoad="getMat();getCQMat();">
+<% if(req.session.droit==1){
+
+%>
+<% include ../includes/entete.ejs %>
+<% }else{
+
+%>
+<% include ../includes/enteteOperateur.ejs %>
+
+<% }%>
+<div id="page-wrapper">
+  <div class="row">
+    <div class="col-md-12">
+      <div class=" row ">
+
+          <div  class="">
+
+            <div class="panel panel-primary">
+              <div class="panel-heading">
+                <h3 class="panel-title"> <i class="fa fa-bar-chart-o"></i> </h3>
+                <div class="row">
+                  <div class="form-group">
+
+
+
+
+                      <div class="col-xs-2 col-md-2 col-lg-2">
+                        <select class="form-control mat" tabindex="-1" id="mat" onchange="">
+                          <option value="">MATRICULE</option>
+                        </select>
+
+                      </div>
+                    <div class="col-xs-2 col-md-2 col-lg-2">
+                        <select class="form-control niv" tabindex="-1" id="niv" onchange="">
+                          <option value="0">NIVEAU CQ</option>
+                          <option value="1">NIVEAU CP</option>
+                        </select>
+
+                      </div>
+
+                      <div class="col-xs-1 col-md-2 col-lg-2">
+					  <a   title="echantillons CQ"> <span style="cursor:pointer"><i class="fa fa-ellipsis-v fa-2x link">  </i></span> </a>
+                        <a onclick="addCQ();" class="text-info" title="Affectation"><span style="cursor:pointer" class="gray"><i class="fa fa-user-plus fa-2x link"> </i></span></a>
+						<a   > <span><i class="fa fa-ellipsis-v fa-2x link">  </i></span> </a>
+                      </div>
+                  </div>
+
+
+                </div>
+              </div>
+
+
+
+
+            </div>
+
+
+
+
+
+
+
+
+
+          </div>
+
+
+
+
+        </div>
+      </div>
+
+
+
+
+    </div>
+  </div>
+<div id="loadC" class="col-md-4" style="display:none">
+  <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+  <span class="sr-only">Loading...</span>
+</div>
+<div id="div" class="col-md-12 col-sm-12 col-xs-12">
+</div>
+
+
+</div>
+
+
+<!-- ECharts -->
+<script src="/vendors/echarts/dist/echarts.min.js"></script>
+<script src="/js/jquery-1.12.4.js"></script>
+<script src="/js/dependencies/sails.io.js"></script>
+<script src="/js/jquery-ui.min.js"></script>
+<script src="/bootstrap/js/bootstrap.min.js"></script>
+<script src="/vendors/fastclick/lib/fastclick.js"></script>
+<!-- NProgress -->
+<script src="/vendors/nprogress/nprogress.js"></script>
+<script src="/js/dossierEtapeApp.js"></script>
+<script src="/js/echarts/theme.js"></script>
+<script src="/js/echarts/echarts.js"></script>
+
+<!-- Custom Theme Scripts -->
+<script src="/js/custom.min.js"></script>
+<link href="/select/css/select2.min.css" rel="stylesheet" />
+<script src="/select/js/select2.min.js"></script>
+<!--<script src="/js/cq_almerys.js"></script>-->
+<script>
+  $(".mat").select2();
+  $(".niv").select2({
+    placeholder: "Choisir le niveau",
+    allowClear: true
+  });
+
+  function addCQ() {
+    var id_pers = $("#mat").val();
+    var niv = $("#niv").val();
+    $.ajax({
+      type: "GET",
+      url: "/addCQ?id_pers="+id_pers+"&niv="+niv,
+
+      success: function(msg){
+        getCQMat();
+        getMat();
+      },
+      error: function (error) {
+
+      }
+    });
+  }
+
+  function getMat() {
+
+    $.ajax({
+      type: "GET",
+      url: "/getLsMat",
+
+      success: function(msg){
+
+        var html = "<option value=''></option>";
+        var data = JSON.parse(msg);
+
+        for (var i = 0 ; i<data.length ; i++){
+          html += "<option value='"+data[i].id_pers+"'>"+data[i].matricule+"</option>";
+        }
+        $("#mat").html(html);
+      },
+      error: function (error) {
+
+      }
+    });
+  }
+  function getCQMat() {
+
+    $.ajax({
+      type: "GET",
+      url: "/getLsCQMat",
+
+      success: function(msg){
+
+        var html = "<table class='table'>" +
+          "<thead>" +
+          "<tr>" +
+          "<th>Matricule</th>" +
+          "<th>Appelation</th>" +
+          "<th>Niveau</th>" +
+          "<th>option</th>" +
+          "</tr>" +
+          "</thead>" +
+          "<tbody>";
+        var data = JSON.parse(msg);
+
+        for (var i = 0 ; i<data.length ; i++){
+          var nv = "NIVEAU CP";
+          if(Number(data[i].niveaux)==0){
+            nv = "NIVEAU CQ";
+          }
+          html += "<tr><td>"+data[i].matricule+"</td><td>"+data[i].appelation+"</td><td>"+nv+"</td><td><a href='#' onclick='remove("+data[i].id_pers+");'><i class='fa fa-remove fa-2x text-danger'></i></a></td></tr>";
+        }
+        html += "" +
+          "</tbody>" +
+          "</table>";
+        $("#div").html(html);
+      },
+      error: function (error) {
+
+      }
+    });
+  }
+
+  function remove(id){
+    $.ajax({
+      type: "GET",
+      url: "/removeCQ?id_pers="+id,
+
+      success: function(msg){
+        getCQMat();
+        getMat();
+
+      },
+      error: function (error) {
+      }
+    });
+  }
+
+
+</script>
+
+</body>
+</html>

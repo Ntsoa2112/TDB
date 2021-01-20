@@ -1,0 +1,638 @@
+<style>
+
+  .circle, .triangle{
+    position:fixed;
+    display:block;
+  }
+
+  .circle{
+    border-radius:50%;
+    -webkit-transform:scale(1);
+    -ms-transform:scale(1);
+    transform:scale(1);
+    -webkit-transition:.5s;
+    transition:.5s;
+  }
+
+  .circle:hover{
+    -webkit-transform:scale(1.4);
+    -ms-transform:scale(1.4);
+    transform:scale(1.4);
+  }
+
+  .circle:nth-child(1){
+    width:300px;
+    height:300px;
+    border:3px solid #fff;
+    top:150px;
+    left:-100px;
+    border-radius:50%;
+  }
+
+  .circle:nth-child(2){
+    width:120px;
+    height:120px;
+    right:90px;
+    top:80px;
+    background:#fff;
+  }
+
+  .circle:nth-child(3){
+    width:200px;
+    height:200px;
+    right:300px;
+    bottom:-90px;
+    border:3px solid #fff;
+  }
+
+  .circle:nth-child(4){
+    width:50px;
+    height:50px;
+    left:390px;
+    top:50px;
+    background:#fff;
+  }
+
+  *{
+    margin:0;
+    padding:0;
+    -webkit-box-sizing:border-box;
+    box-sizing:border-box;
+  }
+
+
+  .block{
+    font-family: 'Open Sans Condensed', sans-serif;
+    background: #34cddc;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #514A9D, #24C6DC);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #514A9D, #24C6DC); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    -webkit-transition:.5s;
+    transition:.5s;
+  }
+
+
+  .btnH{
+    position:absolute;
+    -webkit-transform:scale(1);
+    -ms-transform:scale(1);
+    transform:scale(1);
+    padding:15px 35px;
+    border:1px solid #24C6DC;
+    border-radius:50px;
+    background:transparent;
+    cursor:pointer;
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-size:1.2em;
+    color:#fff;
+    -webkit-transition:.5s;
+    transition:.5s;
+  }
+
+  .frm {
+
+
+    color: white;
+    background:transparent;
+    cursor:pointer;
+    height: 55px;
+    padding:15px 35px;
+    border:1px solid #24C6DC;
+    border-radius:25px;
+
+    -webkit-transition:.5s;
+    transition:.5s;
+  }
+
+ /* .btnH:focus{
+    outline:none;
+  }
+*/
+
+  .frm:hover{
+    -webkit-transform:scale(1.1);
+    transform:scale(1.1);
+    background: #3a2698;
+    -moz-box-shadow: 0px 0px 20px rgba(56,56,56,.2);
+    -webkit-box-shadow: 0px 0px 20px rgba(56,56,56,.2);
+    box-shadow: 0px 0px 20px rgba(56,56,56,.2);
+  }
+
+
+  .btnH:hover{
+    -webkit-transform:scale(1.2);
+    ransform:scale(1.2);
+    background:#24C6DC;
+    -moz-box-shadow: 0px 0px 20px rgba(56,56,56,.2);
+    -webkit-box-shadow: 0px 0px 20px rgba(56,56,56,.2);
+    box-shadow: 0px 0px 20px rgba(56,56,56,.2);
+  }
+
+
+	.dropdown-submenu {
+	  position: relative;
+	}
+
+	.dropdown-submenu a::after {
+	  //transform: rotate(-90deg);
+	  position: absolute;
+	  right: 6px;
+	  top: .8em;
+	}
+
+	.dropdown-submenu .dropdown-menu {
+	  top: 0;
+	  left: 100%;
+	  margin-left: .1rem;
+	  margin-right: .1rem;
+	}
+
+</style>
+
+<div id="wrapper">
+		<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/dash_suivis">Tableau de bord</a>
+            </div>
+            <div class="collapse navbar-collapse navbar-ex1-collapse">
+                <ul id="active" class="nav navbar-nav side-nav">
+                   <li class="<%=menu.aceuil %>"><a href="/dashCp"><i class="fa fa-bullseye"></i> Accueil</a></li>
+                    <!--<li class="<%=menu.dossierAdmin %>"><a href="/management"><i class="fa fa-tasks"></i> Dossier </a></li>-->
+                    <li class="<%=menu.gestionDossier %>">
+                      <a href="/listeDossier" class="dropdown-toggle">
+                        <i class="fa fa-bar-chart-o"></i>
+                        <span class="hidden-xs">Gestion dossier</span>
+                      </a>
+
+                    </li>
+
+                    <li class="<%=menu.gestionDossier %>">
+                        <a href="/osm" class="dropdown-toggle">
+                            <!--i class="fa fa-bar-chart-o"></i-->
+                            <span class="hidden-xs">GeoLocalisation</span>
+                        </a>
+
+                    </li>
+
+                  <li class="dropdown <%=menu.statOpAdmin %>">
+                    <a href="/statOp?menu=stat_op" class="dropdown-toggle">
+                      <i class="fa fa-bar-chart-o"></i>
+                      <span class="hidden-xs">Statistique OP</span>
+                    </a>
+
+                  </li>
+
+
+                  <li class="<%=menu.presence %>">
+                    <!--<a href="/presence" class="dropdown-toggle">-->
+                   <a href="/getRetardParDepartement?menu=retard_par_departement" class="dropdown-toggle">
+                      <i class="fa fa-bar-chart-o"></i>
+                      <span class="hidden-xs">Retard</span>
+                    </a>
+
+                  </li>
+
+                  <li class="<%=menu.admin %>">
+                    <a href="/screenS" class="dropdown-toggle">
+                      <i class="fa fa-bar-chart-o"></i>
+                      <span class="hidden-xs">Ecran</span>
+                    </a>
+
+                  </li>
+
+                  <li class="<%=menu.admin %>">
+                    <a href="/plan2d" class="dropdown-toggle">
+                      <i class="fa fa-bar-chart-o"></i>
+                      <span class="hidden-xs">Plan 2D</span>
+                    </a>
+
+                  </li>
+
+				  <li class="<%=menu.admin %>"> <!-- REPORTING PROD Gestion horaire-->
+                    <!--<a href="/GestionHoraire" class="dropdown-toggle">-->
+                    <a href="/real_gestion_horaire?menu=real_gestion_horaire" class="dropdown-toggle">
+                      <i class="fa fa-bar-chart-o"></i>
+                      <span class="hidden-xs">Reporting horaires</span>
+                    </a>
+                  </li>
+                  <!-- REPORTING PROD Gestion horaire-->
+                  <!--<a href="/GestionHoraire" class="dropdown-toggle">-->
+                  <!--li class="">
+
+                    <a href="/gestion_hs" class="dropdown-toggle">
+                      <i class="fa fa-bar-chart-o"></i>
+                      <span class="hidden-xs">Gestion HS</span>
+                    </a>
+                  </li-->
+<%
+ //if(req.session.user===487 || req.session.user===1241 || req.session.user===177 || req.session.user===70 || req.session.user===943){
+
+   %>
+                  <li class=""> <!-- REPORTING PROD Gestion horaire-->
+                    <!--<a href="/GestionHoraire" class="dropdown-toggle">-->
+                    <a href="/gestion_hr" class="dropdown-toggle">
+                      <i class="fa fa-bar-chart-o"></i>
+                      <span class="hidden-xs">Gestion HR</span>
+                    </a>
+                  </li>
+                   <!-- <li class=""> &lt;!&ndash; GESTION PROD Gestion horaire&ndash;&gt;
+                        &lt;!&ndash;<a href="/GestionHoraire" class="dropdown-toggle">&ndash;&gt;
+                        <a href="/gestion_acces/index" class="dropdown-toggle">
+                            <i class="fa fa-bar-chart-o"></i>
+                            <span class="hidden-xs">Gestion Acces CP</span>
+                        </a>
+                    </li>-->
+
+
+                  <%
+ //}
+ %>
+
+
+                  <li class="">
+                    <a href="/anomalieOp?menu=anomalie_op" class="dropdown-toggle">
+                      <i class="fa fa-bar-chart-o"></i>
+                    <span class="hidden-xs">Anomalies</span>
+                    </a>
+
+                  </li>
+                  <li class="">
+                    <a href="/findGroupeId" class="dropdown-toggle">
+                      <i class="fa fa-bar-chart-o"></i>
+                    <span class="hidden-xs">Gestion equipes</span>
+                    </a>
+
+
+
+                    <li class="">
+                    <a href="/suivisHeureOp?menu=suivi_heure_op" class="dropdown-toggle">
+                      <i class="fa fa-bar-chart-o"></i>
+                    <span class="hidden-xs">Suivis Heures</span>
+                    </a>
+
+                  </li>
+                  <li class="">
+                    <a href="/toTDBOP?menu=tdb_op" class="dropdown-toggle">
+                      <i class="fa fa-bar-chart-o"></i>
+                    <span class="hidden-xs">TDB journaliere</span>
+                    </a>
+
+                  </li>
+                  <%
+                  if(req.session.niveaux == 1){
+                  %>
+                  <li class="">
+                    <a href="/ldtOpAdmin" class="dropdown-toggle">
+                      <i class="fa fa-bar-chart-o"></i>
+                    <span class="hidden-xs">TDB journaliere Admin</span>
+                    </a>
+
+                  </li>
+
+                  <%}%>
+                 <!-- <li class="">
+                    <a href="/gpao_modif" class="dropdown-toggle">
+                      <i class="fa fa-edit"></i>
+                      <span class="hidden-xs">Gestion GPAO Lite</span>
+                    </a>
+
+                  </li>-->
+                </ul>
+
+
+
+
+                <ul id = "menu_haut" class="nav navbar-nav navbar-right navbar-user">
+				<%
+				  if(req.session.user == 1308 || req.session.user == 1261 || req.session.user == 3 || req.session.user == 1019 || req.session.user == 536 || req.session.user == 244 ){
+				%>
+				  <li class=""><a href="/listePersonnel"><i class="fa fa-user-circle fa-lg" style="color:#red"></i> Info personnel </a></li>
+				<%}%>
+
+          <li class="dropdown messages-dropdown" id="classique">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-file-archive-o fa-lg" style="color:#6a3eff"></i> Classique </a>
+            <ul class="dropdown-menu notifications">
+              <li class=""><a href="/centralisation/index?menu=centralisation"> Resume cummulé </a></li>
+            <li class=""><a href="/centralisation/vitesse_qualite?menu=centralisation_vitesse_qualite"> vitesse qualité </a></li>
+            <li class=""><a href="/centralisation/consommation_dossier?menu=centralisation_consommation_dossier"> ALS </a></li>
+            <li class=""><a href="/dossierflexicap/index?menu=reporting_flexicap"> Reporting FlexiCap </a></li>
+
+            </ul>
+          </li>
+
+                  <li class="dropdown messages-dropdown" id="det">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-folder-open fa-lg" style="color:red"></i> Detourage </a>
+                    <ul class="dropdown-menu notifications">
+                      <li class=""><a href="/Detourage"> Recap </a></li>
+                      <li class=""><a href="/Detourage/reporting?menu=detourage_reporting"> Reporting </a></li>
+                      <li class=""><a href="/Detourage/synthese"> Synthese </a></li>
+                      <li class=""><a href="/Detourage/rapportCq"> Rapport CQ </a></li>
+                      <li class=""><a href="/Detourage/suiviVue"> Suivi vue </a></li>
+
+                    </ul>
+                  </li>
+                  <!--<li class=""><a href="/Detourage"><i class="fa fa-folder-open fa-lg" style="color:#red"></i> Detourage </a></li>-->
+                  <li class=""><a href="/management"><i class="fa fa-folder-open fa-lg" style="color:#eabe50"></i> Dossier </a></li>
+                  <li class=""><a href="/suivisOp"><i class="fa fa-dashboard fa-lg" style="color:#ff6f6f"></i> Suivis </a></li>
+                  <li class="dropdown messages-dropdown" id="message">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-dashboard fa-lg" style="color:#ada4b9"></i> Reservation <b class="caret"></b></a>
+                    <ul class="dropdown-menu notifications">
+                      <li class=""><a href="/reservation/index"> Reservation Salle </a></li>
+                      <li class=""><a href="/reservation_ostie/index"> Reservation FUNHENCE </a></li>
+
+                    </ul>
+                  </li>
+                  <li class="dropdown messages-dropdown" id="message">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-envelope fa-lg" style="color:#ada4b9"></i> Almerys <b class="caret"></b></a>
+                    <ul class="dropdown-menu notifications">
+                      <li class=""><a href="/almerysCall?menu=almerys_call"> Reporting Almerys Call </a></li>
+                      <li class=""><a href="/cq_almerys"> CQ </a></li>
+                      <li class=""><a href="/rp_almerys?menu=rp_almerys">CQ Reporting </a></li>
+                      <%
+                      if(req.session.niveaux == 1){
+                      %>
+                      <li class=""><a href="/cq_almerys_user"> CQ Utilisateurs </a></li>
+                      <li class=""><a href="/alm_param">Parametrage ISO </a></li>
+                      <li class=""><a href="/prime">Gestion prime </a></li>
+                      <li class=""><a href="/primeSetting">Parametrage de la prime </a></li>
+                      <%}%>
+					            <!--li class=""><a href="/GestionHoraireAlmerys">Gestion Horaire Almerys </a></li-->
+					            <li class=""><a href="/vueHoraire">Gestion Horaire Insertion </a></li>
+                      <li class=""><a href="/PageHeurePauseAlmerys?menu=page_heure_pause_almerys">Reporting Horaire Heure Autre</a></li>
+                      <li class=""><a href="/gestion_frequence">Gestion frequence suivi</a></li>
+                      <li class=""><a href="/suivi_indicateur_prod?menu=suivi_indicateur_prod">Suivi indicateur de prod</a></li>
+
+                      <%
+                      if(req.session.user == 3023){
+                      %>
+                      <li class=""><a href="/test_cq">Test grille CQ</a></li>
+                      <%}%>
+                      
+                    </ul>
+                  </li>
+            <li class="dropdown messages-dropdown" id="message">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-envelope fa-lg" style="color:#ada4b9"></i> SOLIMU <b class="caret"></b></a>
+                <ul class="dropdown-menu notifications">
+<!--                    <li class=""><a href="/solimu/statistique/index"> Reporting Saisie </a></li>-->
+                    <li class=""><a href="/solimu/cq/index"> CQ</a></li>
+                    <li class=""><a href="/solimu/reporting/index?menu=solimu_reporting"> Reporting Prod (facture)</a></li>
+                    <!--                    <li class=""><a href="/solimu/reporting_volume_pdf/index"> Reporting Prod (pdf)</a></li>
+                                        <li class=""><a href="/solimu/lot/index"> LOT SOLIMUT</a></li>-->
+                    <li class=""><a href="/solimut/reporting_op/index?menu=solimu_reporting_op"> Reporting Prod Saisie OP</a></li>
+                </ul>
+            </li>
+
+                  <%
+                    if(req.session.id_departement == 12 || req.session.id_departement == 23){
+                  %>
+                      <!--NEOCLES-->
+
+                  <li class="dropdown messages-dropdown dropdown-masque" id="neocles">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-dashboard fa-lg" style="color:#ff6f6f"></i> NEOCLES <b class="caret"></b></a>
+                    <ul class="dropdown-menu notifications">
+
+                      <% if(req.session.isFormateur || req.session.user == 551){ %>
+                        <li class="dropdown-submenu">
+                          <a class="dropdown-item dropdown-toggle" tabindex="-1" href="#">Notation <i class="fa fa-caret-right fa-sm" style="color:white"></i></a>
+                          <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/neocles-notation-appel"> Appel </a></li>
+                            <li><a class="dropdown-item" href="/neocles-notation-mail-ticket"> Mail Ticket </a></li>
+                            <li><a class="dropdown-item" href="/neocles-notation-mail-appel"> Mail Appel </a></li>
+                            <li><a class="dropdown-item" href="/neocles-list-ecoute"> Liste enregistrement </a></li>
+                            <li><a class="dropdown-item" href="/neocles-administration"> Paramètre </a></li>
+                          </ul>
+                        </li>
+                      <%}%>
+
+                      <li class=""><a href="/neocles-reporting-indiviuel"> Consultation individuelle</a></li>
+                      <li class=""><a href="/neocles-reporting-equipe"> Consultation groupée </a></li>
+                    </ul>
+                  </li>
+                   <%
+                      }
+                   %>
+
+                  <%
+                  if(req.session.niveaux == 1){
+                     // console.log("TONGA ETOOOO");
+                  %>
+                  <!--<li class="dropdown messages-dropdown" id="masque">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-dashboard fa-lg" style="color:#ada4b9"></i> Masque Call <b class="caret"></b></a>
+                    <ul class="dropdown-menu notifications">
+                      <li class=""><a href="/masqueDoctocare"> Ecoute Doctocare </a></li>
+                      <li class=""><a href="/masqueBriant"> Ecoute Jacques Briant </a></li>
+                      <li class=""><a href="/masqueCodelis"> Ecoute CODELIS </a></li>
+                      <li class=""><a href="/masque"> Ecoute AE </a></li>
+                      <li class=""><a href="/masqueAS"> Ecoute AS </a></li>
+
+                      <li class=""><a href="/masqueEole"> Ecoute Client Eole </a></li>
+                      <li class=""><a href="/masqueIsoEole"> Ecoute Iso Eole </a></li>
+
+					  <li class=""><a href="/listeEcouteDoctocare"> Liste écoute Doctocare </a></li>
+					  <li class=""><a href="/listeEcouteBriant"> Liste écoute Jacques Briant </a></li>
+					  <li class=""><a href="/listeEcouteCodelis"> Liste écoute CODELIS </a></li>
+					  <li class=""><a href="/listeEcoute"> Liste écoute AE </a></li>
+					  <li class=""><a href="/listeEcouteAS"> Liste écoute AS </a></li>
+
+                      <li class=""><a href="/import"> Importer </a></li>
+
+                      <li class=""><a href="/statistiqueDoctocare?menu=statistique_doctocare"> Stat Doctocare </a></li>
+                      <li class=""><a href="/statistiqueBriant?menu=statistique_briant"> Stat Jacques Briant </a></li>
+                      <li class=""><a href="/statistiqueCodelis?menu=statistique_codelis"> Stat CODELIS </a></li>
+                      <li class=""><a href="/statistique?menu=statistique_ae"> Stat AE </a></li>
+                      <li class=""><a href="/statistiqueAS?menu=statistique_as"> Stat AS </a></li>
+
+                      <li class=""><a href="/statistiqueEole"> Stat Ecoute Client Eole  </a></li>
+                      <li class=""><a href="/statistiqueIsoEole?menu=statistique_iso_eole"> Stat Ecoute Iso Eole </a></li>
+
+					  <li class=""><a href="/suiviEcoute"> Suivi écoute </a></li>
+                    </ul>
+                  </li>-->
+
+					  <li class="dropdown messages-dropdown dropdown-masque" id="masque">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-dashboard fa-lg" style="color:#ada4b9"></i> Masque Call <b class="caret"></b></a>
+						<ul class="dropdown-menu notifications">
+
+						  <li class="dropdown-submenu">
+							<a class="dropdown-item dropdown-toggle" tabindex="-1" href="#">DOCTOCARE <i class="fa fa-caret-right fa-sm" style="color:white"></i></a>
+							<ul class="dropdown-menu">
+							  <li><a class="dropdown-item" href="/masqueDoctocare"> Ecoute Doctocare </a></li>
+							  <li><a class="dropdown-item" href="/listeEcouteDoctocare"> Liste écoute Doctocare </a></li>
+							  <li><a class="dropdown-item" href="/statistiqueDoctocare?menu=statistique_doctocare"> Statistique Doctocare </a></li>
+							</ul>
+						  </li>
+
+						  <li class="dropdown-submenu">
+							<a class="test dropdown-item dropdown-toggle" tabindex="-1" href="#">JB AE <i class="fa fa-caret-right fa-sm" style="color:white"></i></a>
+							<ul class="dropdown-menu">
+							  <li><a class="dropdown-item" href="/masqueBriant"> Ecoute JB AE </a></li>
+							  <li><a class="dropdown-item" href="/listeEcouteBriant"> Liste écoute JB AE </a></li>
+							  <li><a class="dropdown-item" href="/statistiqueBriant?menu=statistique_briant"> Statistique JB AE </a></li>
+							</ul>
+						  </li>
+
+						  <li class="dropdown-submenu">
+							<a class="test dropdown-item dropdown-toggle" tabindex="-1" href="#">JB AS <i class="fa fa-caret-right fa-sm" style="color:white"></i></a>
+							<ul class="dropdown-menu">
+							  <li><a class="dropdown-item" href="/masqueBriantAs"> Ecoute JB AS </a></li>
+							  <li><a class="dropdown-item" href="/listeEcouteBriantAs"> Liste écoute JB AS </a></li>
+							  <li><a class="dropdown-item" href="/statistiqueBriantAs?menu=statistique_briant_as"> Statistique JB AS </a></li>
+							</ul>
+						  </li>
+
+						  <li class="dropdown-submenu">
+							<a class="test dropdown-item dropdown-toggle" tabindex="-1" href="#">CODELIS <i class="fa fa-caret-right fa-sm" style="color:white"></i></a>
+							<ul class="dropdown-menu">
+							  <li><a class="dropdown-item" href="/masqueCodelis"> Ecoute CODELIS </a></li>
+							  <li><a class="dropdown-item" href="/listeEcouteCodelis"> Liste écoute CODELIS </a></li>
+							  <li><a class="dropdown-item" href="/statistiqueCodelis?menu=statistique_codelis"> Statistique CODELIS </a></li>
+							</ul>
+						  </li>
+
+						  <li class="dropdown-submenu">
+							<a class="test dropdown-item dropdown-toggle" tabindex="-1" href="#">AE <i class="fa fa-caret-right fa-sm" style="color:white"></i></a>
+							<ul class="dropdown-menu">
+							  <li><a class="dropdown-item" href="/masque"> Ecoute AE </a></li>
+							  <li><a class="dropdown-item" href="/listeEcoute"> Liste écoute AE </a></li>
+							  <li><a class="dropdown-item" href="/statistique?menu=statistique_ae"> Statistique AE </a></li>
+							</ul>
+						  </li>
+
+						  <li class="dropdown-submenu">
+							<a class="test dropdown-item dropdown-toggle" tabindex="-1" href="#">AS <i class="fa fa-caret-right fa-sm" style="color:white"></i></a>
+							<ul class="dropdown-menu">
+							  <li><a class="dropdown-item" href="/masqueAS"> Ecoute AS </a></li>
+							  <li><a class="dropdown-item" href="/listeEcouteAS"> Liste écoute AS </a></li>
+							  <li><a class="dropdown-item" href="/statistiqueAS?menu=statistique_as"> Statistique AS </a></li>
+							</ul>
+						  </li>
+
+						  <li class="dropdown-submenu">
+							<a class="test dropdown-item dropdown-toggle" tabindex="-1" href="#"> GGS <i class="fa fa-caret-right fa-sm" style="color:white"></i></a>
+							<ul class="dropdown-menu">
+							  <li><a class="dropdown-item" href="/masqueIsoEole"> Ecoute GGS </a></li>
+							  <li><a class="dropdown-item" href="/listeEcouteIsoEole"> Liste écoute GGS </a></li>
+							  <li><a class="dropdown-item" href="/statistiqueIsoEole?menu=statistique_iso_eole"> Statistique GGS  </a></li>
+							  <li><a class="dropdown-item" href="/statistiqueSuiviCQ"> Suivi CQ  </a></li>
+							</ul>
+						  </li>
+
+						  <li class="dropdown-submenu">
+							<a class="test dropdown-item dropdown-toggle" tabindex="-1" href="#"> CSS <i class="fa fa-caret-right fa-sm" style="color:white"></i></a>
+							<ul class="dropdown-menu">
+							  <li><a class="dropdown-item" href="/masqueCss"> Ecoute CSS </a></li>
+							  <li><a class="dropdown-item" href="/listeEcouteCss"> Liste écoute CSS </a></li>
+							  <li><a class="dropdown-item" href="/statistiqueCss"> Statistique CSS  </a></li>
+							</ul>
+						  </li>
+
+						  <li class="dropdown-submenu">
+							<a class="test dropdown-item dropdown-toggle" tabindex="-1" href="#"> LAMIE <i class="fa fa-caret-right fa-sm" style="color:white"></i></a>
+							<ul class="dropdown-menu">
+							  <li><a class="dropdown-item" href="/masqueLamie"> Ecoute LAMIE </a></li>
+							  <li><a class="dropdown-item" href="/listeEcouteLamie"> Liste écoute LAMIE </a></li>
+							  <li><a class="dropdown-item" href="/statistiqueLamie"> Statistique LAMIE  </a></li>
+							</ul>
+						  </li>
+
+						  <li class="dropdown-submenu">
+							<a class="test dropdown-item dropdown-toggle" tabindex="-1" href="#">TPMEP <i class="fa fa-caret-right fa-sm" style="color:white"></i></a>
+							<ul class="dropdown-menu">
+							  <li><a class="dropdown-item" href="/masqueTpmep"> Ecoute TPMEP </a></li>
+							  <li><a class="dropdown-item" href="/listeEcouteTpmep"> Liste écoute TPMEP </a></li>
+							  <li><a class="dropdown-item" href="/statistiqueTpmep"> Statistique TPMEP  </a></li>
+							</ul>
+						  </li>
+
+
+						  <!--<li class="dropdown-submenu">
+							<a class="test dropdown-item dropdown-toggle" tabindex="-1" href="#"> Iso Eole <i class="fa fa-caret-right fa-sm" style="color:white"></i></a>
+							<ul class="dropdown-menu">
+							  <li><a class="dropdown-item" href="/masqueIsoEole"> Ecoute Iso Eole </a></li>
+							  <li><a class="dropdown-item" href="/statistiqueIsoEole?menu=statistique_iso_eole"> Statistique Iso Eole  </a></li>
+							</ul>
+						  </li>
+
+						  <li class="dropdown-submenu">
+							<a class="test dropdown-item dropdown-toggle" tabindex="-1" href="#"> Eole <i class="fa fa-caret-right fa-sm" style="color:white"></i></a>
+							<ul class="dropdown-menu">
+							  <li><a class="dropdown-item" href="/masqueEole"> Ecoute Eole </a></li>
+							  <li><a class="dropdown-item" href="/statistiqueEole"> Statistique Eole  </a></li>
+							</ul>
+						  </li>-->
+						  <!--<li><a class="dropdown-item" href="/statistiqueIsoEoleJournalier"> Stat Journalier </a></li>
+							  <li><a class="dropdown-item" href="/statistiqueIsoEoleHebdo"> Stat Hebdomadaire </a></li>-->
+
+						  <li class=""><a href="/import"> Importer </a></li>
+						  <li class=""><a href="/suiviEcoute"> Suivi écoute </a></li>
+						</ul>
+					  </li>
+
+                  <!--</li>-->
+
+                  <%}%>
+
+				  <li class="dropdown messages-dropdown" id="message">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-envelope fa-lg" style="color:#ada4b9"></i> CALL Almerys <b class="caret"></b></a>
+					<ul class="dropdown-menu notifications">
+					  <li class=""><a href="/PageHeurePauseCall?menu=page_heure_pause_call"> Reporting Heure Pause Almerys Call </a></li>
+					  <li class=""><a href="/call/ticketing/remonte/index"> Traitement Remontee </a></li>
+					  <li class=""><a href="/call/ticketing/gestionuser/index"> Gestion Profil Utilisateur Traitement Remontee </a></li>
+					</ul>
+				  </li>
+
+                  <li class="dropdown user user-menu">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                      <img src="data:image/png;base64, <%= req.session.pdp%>" class="user-image" alt="User Image">
+                      <span class="hidden-xs"><%= req.session.appelation%></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                      <!-- User image -->
+                      <li class="user-header">
+                        <img src="data:image/png;base64, <%= req.session.pdp%>" class="img-circle" alt="User Image">
+
+                        <p>
+                          <%=req.session.nom%>
+                        </p>
+                      </li>
+                      <!-- Menu Footer-->
+                      <li class="user-footer">
+                        <div class="pull-right">
+                          <a href="/logout" class="btn btn-primary btn-flat">Déconnexion</a>
+                        </div>
+                      </li>
+                    </ul>
+                  </li>
+
+
+                </ul>
+            </div>
+        </nav>
+
+  <script src="/js/dependencies/sails.io.js"></script>
+  <script type="text/javascript">
+    var host = window.location.hostname;
+    var id = '<%=req.session.user %>';
+    io.sails.url = 'http://'+host+':9090';
+
+
+    /*io.socket.on("connecting", function (msg) {
+      $.ajax({
+        type: "GET",
+        url: "/ImConnected?id_pers="+id+"&type=1",
+        success: function(msg){
+        },
+        error: function (error) {
+          //alert('error; ' +error);
+        }
+      });
+    });*/
+  </script>
+
+
+<!-- /Header -->

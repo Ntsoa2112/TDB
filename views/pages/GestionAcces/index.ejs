@@ -1,0 +1,221 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TDB Gestion Acces</title>
+
+    <link rel="stylesheet" href="/styles/importer.css">
+    <link rel="stylesheet" href="/bootflat/css/bootflat.min.css">
+    <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/local.css">
+    <link rel="stylesheet" href="/css/Style_v3.css">
+    <!--STYLES END-->
+</head>
+<body>
+<% if(req.session.droit==1){
+
+%>
+    <% include ../../includes/entete.ejs %>
+<% }else{
+
+%>
+    <% include ../../includes/enteteOperateur.ejs %>
+
+<% }%>
+
+<div id="page-wrapper" class="content">
+
+
+
+    <div class="container-fluid  flat-blue">
+        <div class="side-body padding-top">
+            <div class="row">
+                <div class="form-group">
+                        <div class="col-xs-2">
+                            <select class="form-control" tabindex="-1" id="grpDashAdmin" placeholder = "PERSONNEL" >
+                            </select>
+                        </div>
+                        <button class="btn btn-info btn-md" onclick="getDataAccesPrivilegeHR()">ok</button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                    <div class="card card-success">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <div class="title" >
+                                    Departement
+                                </div>
+                            </div>
+                            <div class="clear-both"></div>
+                        </div>
+                        <div class="card-body no-padding">
+                            <select name="menu_content"  id="departement_data" class="form-control"   size="15"  data-draggable="target1" min-width="300">
+
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                    <div class="card card-success">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <div class="title" ></i>Personnel</div>
+                            </div>
+                            <div class="clear-both"></div>
+                        </div>
+                        <div class="card-body no-padding">
+                            <select name="id_enseigne"  id="personnel_data"   size="15" class="form-control"   data-draggable="target">
+
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+            </div>
+
+        </div>
+    </div>
+
+
+</div>
+
+<!-- modal DEPARTMENT-->
+<div class="modal fade" id="modalDepartement" tabindex="-1" role="dialog" aria-labelledby="alertModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <!--Content-->
+        <form method="GET" action="#" >
+            <div class="modal-content">
+                <!--Header-->
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="alertModalLabel">Specifier la vitesse d'équilibre</h4>
+                </div>
+                <!--Body-->
+                <div class="modal-body">
+                    <h3 id="title_client_dif"></h3>
+                    <select class="form-control" tabindex="-1" id="select_newpersonnel" placeholder = "PERSONNEL" >
+                    </select>
+                    <div class="form-group col-md-6">
+                        <input type="number" id="vitesse_eq" class="form-control"/>
+                    </div>
+                </div>
+                <!--Footer-->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermé</button>
+                    <button type="button" class="btn btn-success" onclick="">Valider</button>
+                </div>
+            </div>
+        </form>
+        <!--/.Content-->
+    </div>
+</div>
+<!-- modal PERSONNEL-->
+<div class="modal fade" id="modalPersonnel" tabindex="-1" role="dialog" aria-labelledby="alertModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <!--Content-->
+        <form method="GET" action="#" >
+            <div class="modal-content">
+                <!--Header-->
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="alertModalLabel">Specifier la vitesse d'équilibre</h4>
+                </div>
+                <!--Body-->
+                <div class="modal-body">
+                    <h3 id="title_client_dif"></h3>
+                    <select class="form-control" tabindex="-1" id="select_newpersonnel" placeholder = "PERSONNEL" >
+                    </select>
+                    <div class="form-group col-md-6">
+                        <input type="number" id="vitesse_eq" class="form-control"/>
+                    </div>
+                </div>
+                <!--Footer-->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermé</button>
+                    <button type="button" class="btn btn-success" onclick="saveVequilibre()">Valider</button>
+                </div>
+            </div>
+        </form>
+        <!--/.Content-->
+    </div>
+</div>
+
+
+
+
+<script src="/js/dependencies/sails.io.js"></script>
+<script src="/js/jquery-1.12.4.js"></script>
+<script src="/js/jquery-ui.js"></script>
+<script src="/bootstrap/js/bootstrap.min.js"></script>
+<script>
+    function getLsPersonneDroit()
+    {
+        $.ajax({
+            type: "GET",
+            url: "/gestion_acces/listPersonneAcces",
+            success: function(msg){
+                var data = JSON.parse(msg);
+                var html = "";
+                for(var i=0;i<data.length;i++)
+                {
+                    html+="<option value='"+data[i].id_pers+"'><b>"+data[i].id_pers+"</b> - "+data[i].appelation+"</option>"
+                }
+                $("#grpDashAdmin").append(html);
+            },
+            error: function (error) {
+                //alert('error; ' +error);
+            }
+        });
+    }
+    // Recuperation donnée Affectation privilege
+    function getDataAccesPrivilegeHR(){
+        var id_pers = $("#grpDashAdmin").val();
+        alert(id_pers);
+     //   return;
+        $.ajax({
+            type: "GET",
+            url: "/gestion_acces/listDataAcces?id_pers="+id_pers,
+            success: function(msg){
+                var data = JSON.parse(msg);
+                console.log(data);
+                var html_departement = "";
+                var html_personnel = "";
+                for(let i = 0; i<data.Departement.length;i++)
+                {
+                    var dep = data.Departement[i];
+                    html_departement += "<option value='"+dep.id+"'>"+dep.libelle+"</option>";
+                }
+                for(let i = 0; i<data.Equipe.length;i++)
+                {
+                    var equipe = data.Equipe[i];
+                    html_personnel += "<option value='"+equipe.id+"'>"+equipe.appelation+"</option>";
+                }
+                $("#departement_data").append(html_departement);
+                $("#personnel_data").append(html_personnel);
+            },
+            error: function (error) {
+                //alert('error; ' +error);
+            }
+        });
+    }
+    $(document).ready(function(){
+        getLsPersonneDroit();
+    });
+
+</script>
+
+
+<!-- /CONTAINER -->
+
+</body>
+
+</html>
+

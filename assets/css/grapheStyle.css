@@ -1,0 +1,32 @@
+.pie_dossier {
+  min-width: 310px;
+  height: 450px;
+  max-width: 600px;
+  margin: 0 auto
+}
+
+.pie_panel {
+  height: 450px;
+}
+
+.pie_morris_multiple {
+  min-width: 100px;
+  height: 300px;
+  max-width: 400px;
+  margin: 0 auto
+}
+
+.pie_retard {
+  min-width: 310px;
+  height: 350px;
+  max-width: 600px;
+  margin: 0 auto
+}
+
+.pie_retard_all {
+  min-width: 310px;
+  height: 400px;
+  max-width: 600px;
+  margin: 0 auto
+}
+

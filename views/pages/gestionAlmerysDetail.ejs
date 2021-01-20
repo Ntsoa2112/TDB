@@ -1,0 +1,235 @@
+
+
+<%
+
+  var dataFinal = [];
+
+  var lastId = null;
+
+  var ii = 0;
+  ldtSpec.forEach(function (ldt) {
+    if(ldt.id_spec!=lastId){
+      dataFinal[ldt.id_spec]=[];
+      dataFinal[ldt.id_spec].specialite = ldt.libelle;
+      dataFinal[ldt.id_spec].qte = Number(ldt.qte);
+      dataFinal[ldt.id_spec].err = Number(ldt.err);
+      dataFinal[ldt.id_spec].hhprod = 0;
+      dataFinal[ldt.id_spec].hprod = 0;
+      dataFinal[ldt.id_spec].formation = 0;
+      dataFinal[ldt.id_spec].lenteur = 0;
+      dataFinal[ldt.id_spec].pinternet = 0;
+      dataFinal[ldt.id_spec].pmachine = 0;
+      dataFinal[ldt.id_spec].ostie = 0;
+      if(ldt.id_type_ldt==0){
+        dataFinal[ldt.id_spec].hprod = Number(ldt.somme/3600);
+      }else if(ldt.id_type_ldt==2){
+        dataFinal[ldt.id_spec].formation = Number(ldt.somme/3600);
+        dataFinal[ldt.id_spec].hhprod = Number(ldt.somme/3600);
+      }else if(ldt.id_type_ldt==20){
+        dataFinal[ldt.id_spec].lenteur = Number(ldt.somme/3600);
+        dataFinal[ldt.id_spec].hhprod = Number(ldt.somme/3600);
+      }else if(ldt.id_type_ldt==19 || ldt.id_type_ldt==6){
+        dataFinal[ldt.id_spec].pinternet = Number(ldt.somme/3600);
+        dataFinal[ldt.id_spec].hhprod = Number(ldt.somme/3600);
+      }else if(ldt.id_type_ldt==5 || ldt.id_type_ldt==7){
+        dataFinal[ldt.id_spec].pmachine = Number(ldt.somme/3600);
+        dataFinal[ldt.id_spec].hhprod = Number(ldt.somme/3600);
+      }else if(ldt.id_type_ldt==11){
+        dataFinal[ldt.id_spec].ostie = Number(ldt.somme/3600);
+        dataFinal[ldt.id_spec].hhprod = Number(ldt.somme/3600);
+      }else{
+        //dataFinal[ii].hhprod = Number(ldt.somme/3600);
+      }
+      lastId= ldt.id_spec;
+
+    }else{
+      dataFinal[ldt.id_spec].qte += Number(ldt.qte);
+      dataFinal[ldt.id_spec].err += Number(ldt.err);
+      if(ldt.id_type_ldt==0){
+        dataFinal[ldt.id_spec].hprod += Number(ldt.somme)/3600;
+      }else if(ldt.id_type_ldt==2){
+        dataFinal[ldt.id_spec].formation += Number(ldt.somme/3600);
+        dataFinal[ldt.id_spec].hhprod += Number(ldt.somme/3600)
+
+      }else if(ldt.id_type_ldt==20){
+        dataFinal[ldt.id_spec].lenteur += Number(ldt.somme/3600);
+        dataFinal[ldt.id_spec].hhprod += Number(ldt.somme/3600)
+      }else if(ldt.id_type_ldt==19 || ldt.id_type_ldt==6){
+        dataFinal[ldt.id_spec].pinternet += Number(ldt.somme/3600);
+        dataFinal[ldt.id_spec].hhprod += Number(ldt.somme/3600)
+      }else if(ldt.id_type_ldt==11){
+        dataFinal[ldt.id_spec].ostie += Number(ldt.somme/3600);
+        dataFinal[ldt.id_spec].hhprod += Number(ldt.somme/3600);
+      }else if(ldt.id_type_ldt==5 || ldt.id_type_ldt==7){
+        dataFinal[ldt.id_spec].pmachine += Number(ldt.somme/3600);
+        dataFinal[ldt.id_spec].hhprod += Number(ldt.somme/3600)
+      }else{
+        //dataFinal[ii].hhprod += Number(ldt.somme/3600);
+      }
+    }
+  })
+
+    %>
+<div class="col-md-12 col-sm-12 col-xs-12">
+  <div class="x_panel">
+    <div class="x_title">
+
+      <div class="clearfix"></div>
+    </div>
+    <div class="x_content">
+      <table id="datatable-buttons" class="table table-striped table-bordered">
+        <thead>
+        <tr>
+          <th>SPECIALITE</th>
+          <th>Total H hors  prod</th>
+          <th>H prod travaillées</th>
+          <th>H liées au congé</th>
+          <th>H liées repos medic</th>
+          <th>H liées aux formations</th>
+          <th>H liées aux coupures connexion/électricité</th>
+          <th>H liées aux lenteurs</th>
+          <th>H liées aux pannes machines/reseau/</th>
+        </tr>
+        </thead>
+
+
+        <tbody>
+
+
+                <%
+
+                  ////console.log(dataFinal);
+                  spec.forEach(function (dat) {
+                  if(typeof dataFinal[dat.id_spec] == 'undefined'){
+                    %>
+                <tr>
+                  <td><%=dat.libelle%></td>
+                  <td> 0 </td>
+                  <td> 0 </td>
+                  <td> 0 </td>
+                  <td> 0 </td>
+                  <td> 0 </td>
+                  <td> 0 </td>
+                  <td> 0 </td>
+                  <td> 0 </td>
+                </tr>
+                <%
+                  }else{
+
+                    var hConge = 0;
+                    var hCongeMed = 0;
+                    var hProdTotal = math.round(dataFinal[dat.id_spec].hhprod,2);
+                    if(typeof conge[dat.id_spec].hConge != 'undefined'){
+                      hConge = conge[dat.id_spec].hConge;
+                      hCongeMed = conge[dat.id_spec].hCongeMed;
+                      hProdTotal = hConge + hCongeMed + math.round(dataFinal[dat.id_spec].hhprod,2);
+                    }
+                  %>
+                <tr>
+                  <td><%=dataFinal[dat.id_spec].specialite%></td>
+                  <td><%=hProdTotal%></td>
+                  <td><%=math.round(dataFinal[dat.id_spec].hprod,2)%></td>
+                  <td><%=hConge%></td>
+                  <td><%=hCongeMed%></td>
+                  <td><%=math.round(dataFinal[dat.id_spec].formation,2)%></td>
+                  <td><%=math.round(dataFinal[dat.id_spec].pinternet,2)%></td>
+                  <td><%=math.round(dataFinal[dat.id_spec].lenteur,2)%></td>
+                  <td><%=math.round(dataFinal[dat.id_spec].pmachine,2)%></td>
+                </tr>
+
+                <%
+                }
+
+                })
+
+                 %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script src="/js/jquery-1.12.4.js"></script>
+<script src="/bootstrap/js/bootstrap.min.js"></script>
+
+<script>
+  $(document).ready(function() {
+    var handleDataTableButtons = function() {
+      if ($("#datatable-buttons").length) {
+        $("#datatable-buttons").DataTable({
+          dom: "Bfrtip",
+          buttons: [
+            {
+              extend: "copy",
+              className: "btn-sm"
+            },
+            {
+              extend: "csv",
+              className: "btn-sm"
+            },
+            {
+              extend: "excel",
+              className: "btn-sm"
+            },
+            {
+              extend: "pdfHtml5",
+              className: "btn-sm"
+            },
+            {
+              extend: "print",
+              className: "btn-sm"
+            },
+          ],
+          responsive: true
+        });
+      }
+    };
+
+    TableManageButtons = function() {
+      "use strict";
+      return {
+        init: function() {
+          handleDataTableButtons();
+        }
+      };
+    }();
+
+    $('#datatable').dataTable();
+    $('#datatable-keytable').DataTable({
+      keys: true
+    });
+
+    $('#datatable-responsive').DataTable();
+
+
+    var table = $('#datatable-fixed-header').DataTable({
+      fixedHeader: true
+    });
+
+    TableManageButtons.init();
+  });
+</script>
+
+<script src="/bootstrap/js/bootstrap.min.js"></script>
+<!-- FastClick -->
+<script src="/vendors/fastclick/lib/fastclick.js"></script>
+<!-- NProgress -->
+<script src="/vendors/nprogress/nprogress.js"></script>
+
+
+<script src="/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+<script src="/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
+<script src="/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
+<script src="/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+<script src="/vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+<script src="/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+<script src="/vendors/datatables.net-scroller/js/datatables.scroller.min.js"></script>
+<script src="/vendors/jszip/dist/jszip.min.js"></script>
+<script src="/vendors/pdfmake/build/pdfmake.min.js"></script>
+<script src="/vendors/pdfmake/build/vfs_fonts.js"></script>
+<script src="/js/custom.min.js"></script>

@@ -1,0 +1,37 @@
+
+<div id="tableData">
+  <table class="table table-hover" id="" >
+	<thead>
+		<tr>
+		  <th>Matricule</th>
+		  <th>Nom et pr&#233;nom</th>
+		  <th>Date</th>
+		  <th>Heures</th>
+		</tr>
+	</thead>
+	<tbody>
+	<% resultat.forEach(function(result){ %>
+		<tr>
+			
+			<% 
+				var d = result.duree;
+				var h = Math.floor(d / 3600);
+				var m = Math.floor(d % 3600 / 60);
+				var s = Math.floor(d % 3600 % 60);
+
+				var hDisplay = h > 0 ? h + (h == 1 ? " h " : " h ") : "";
+				var mDisplay = m > 0 ? m + (m == 1 ? " m " : " m ") : "";
+				var sDisplay = s > 0 ? s + (s == 1 ? " s " : " s ") : "";
+				var duereeHeure = hDisplay + mDisplay + sDisplay; 
+			
+			%>
+		
+		  <td align="right"><%= result.matricule %></td>
+		  <td align="right"><%= result.nom %> <%= result.prenom %></td>
+		  <td align="right"><%= result.dateldt %></td>
+		  <td align="right"><%= duereeHeure %></td>
+		</tr>
+	<% }) %>
+	</tbody>
+  </table>
+</div>

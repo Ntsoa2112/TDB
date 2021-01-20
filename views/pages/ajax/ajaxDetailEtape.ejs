@@ -1,0 +1,20 @@
+<div class="panel-heading">
+  <h3 class="panel-title"><i class="fa fa-bar-chart-o"></i>Repartition des etapes</h3>
+</div>
+<%
+var etapes = {
+
+}
+
+for(var tt = 0; tt<etape.length;tt++){
+  etapes[etape[tt].libelle]=etape[tt].duree/3600;
+  ////console.log("etape="+etape[tt].duree/3600);
+  ////console.log(etape[tt].libelle+":"+etape[tt].duree/3600);
+}
+
+%>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>

@@ -1,0 +1,118 @@
+	<div class="col-xs-12 col-sm-12">
+		<div class="box">
+			<div class="box-header">
+				<div class="box-name">
+					<i class="fa fa-circle"></i>
+					<span><%= title %></span>
+				</div>
+
+				<div class="no-move"></div>
+			</div>
+			<div class="box-content">
+				<div id="<%= idElement %>" style="min-height: 200px;"></div>
+			</div>
+		</div>
+    </div>
+ <!--<script src="https://code.highcharts.com/highcharts.js"></script>
+  <script src="https://code.highcharts.com/highcharts-more.js"></script>
+  <script src="https://code.highcharts.com/modules/solid-gauge.js"></script>-->
+
+  <link rel="stylesheet" href="/jquery-ui/jquery-ui.css">
+  <script src="/js/jquery-1.12.4.js"></script>
+  <script src="/js/jquery-ui.min.js"></script>
+
+  <script>
+		$(document).ready(function() {
+			var donnee = <%=nbr %>
+			var max = <%=max %>
+
+			ColomnRotatedLabelHighchart("<%= idElement %>", "<%= titleChart %>", "<%= labelY %>", donnee,max);
+		});
+
+        //fonction affichage du colomn
+        function ColomnRotatedLabelHighchart(idElement, titre, lableY ,data,maximum){
+
+
+          var gaugeOptions = {
+
+            chart: {
+              type: 'solidgauge'
+            },
+
+            title: null,
+
+            pane: {
+              center: ['50%', '85%'],
+              size: '140%',
+              startAngle: -90,
+              endAngle: 90,
+              background: {
+                backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || '#EEE',
+                innerRadius: '60%',
+                outerRadius: '100%',
+                shape: 'arc'
+              }
+            },
+
+            tooltip: {
+              enabled: false
+            },
+
+            // the value axis
+            yAxis: {
+              stops: [
+                [0.1, '#55BF3B'], // green
+                [0.5, '#DDDF0D'], // yellow
+                [0.9, '#DF5353'] // red
+              ],
+              lineWidth: 0,
+              minorTickInterval: null,
+              tickAmount: 2,
+              title: {
+                y: -70
+              },
+              labels: {
+                y: 16
+              }
+            },
+
+            plotOptions: {
+              solidgauge: {
+                dataLabels: {
+                  y: 5,
+                  borderWidth: 0,
+                  useHTML: true
+                }
+              }
+            }
+          };
+
+            $('#' + idElement).highcharts(Highcharts.merge(gaugeOptions, {
+              yAxis: {
+                min: 0,
+                max: maximum,
+                title: {
+                  text: titre
+                }
+              },
+
+              credits: {
+                enabled: false
+              },
+
+              series: [{
+                name: titre,
+                data: [data],
+                dataLabels: {
+                  format: '<div style="text-align:center"><span style="font-size:25px;color:' +
+                  ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y}</span><br/>' +
+                  '<span style="font-size:12px;color:silver">km/h</span></div>'
+                },
+                tooltip: {
+                  valueSuffix: ' nbrs/dep'
+                }
+              }]
+
+            }));
+        }
+    </script>

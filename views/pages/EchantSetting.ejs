@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TDB Stat</title>
+
+  <link rel="stylesheet" href="/styles/importer.css">
+  <link rel="stylesheet" href="/bootflat/css/bootflat.min.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/local.css">
+  <link rel="stylesheet" href="/css/Style_v3.css">
+  <link rel="stylesheet" href="/jquery-ui/jquery-ui.css">
+  <!--STYLES END-->
+</head>
+
+<body>
+<% if(req.session.droit==1){
+
+%>
+<% include ../includes/entete.ejs %>
+<% }else{
+
+%>
+<% include ../includes/enteteOperateur.ejs %>
+
+<% }%>
+<div id="page-wrapper">
+  <div class="row">
+    <div class="col-md-12">
+      <div class=" row ">
+
+        <div  class="">
+
+          <div class="panel panel-primary">
+           <!-- <div class="panel-heading">
+              <h3 class="panel-title"> <i class="fa fa-bar-chart-o"></i> </h3>
+              <div class="row">
+                <div class="form-group">
+
+
+
+
+                  <div class="col-xs-1 col-md-1 col-lg-2">
+                    <select class="form-control" tabindex="-1" id="specialite" onchange="loadsousspecialite(this.value);loadsat(this.value);">
+                      <option value="">SPECIALITE</option>
+                    </select>
+
+                  </div>
+                  <div class="col-xs-1 col-md-1 col-lg-" style="display:none" id="divsspec">
+                    <select class="form-control" tabindex="-1" id="sspecialite" onchange="loadMotif(this.value);">
+                      <option value="">SOUS SPECIALITE</option>
+                    </select>
+                  </div>
+                  <div class="col-xs-1 col-md-2 col-lg-2">
+                    <a   title="echantillons CQ"> <span style="cursor:pointer"><i class="fa fa-ellipsis-v fa-3x link">  </i></span> </a>
+                    <a onclick="searchCQalm(0);" class="text-warning" title="recherche globale"><span style="cursor:pointer" class="gray"><i class="fa fa-search fa-3x link"> </i></span></a>
+                    <a   > <span><i class="fa fa-ellipsis-v fa-3x link">  </i></span> </a>
+                  </div>
+                </div>
+
+
+              </div>
+            </div>
+          </div>-->
+          <div class="panel-content">
+            <div id="pan1">
+
+              <div class="panel panel-primary">
+                <div class="panel-heading">
+                  <h3 class="panel-title"> <i class="fa fa-cog"></i>Parametrage ISO <a href="#" onclick="reloadDTEFree();"><i class="fa fa-line-chart fa-2x pull-right"></i></a><input type="text" id="dt" class="pull-right text-primary"/></h3>
+                </div>
+                <div class="panel-content" id="p_content">
+                  <table class="table table-bordered" id="table_search">
+                    <thead>
+                    <tr>
+                      <th>Departements</th>
+                      <th>Sous specialités</th>
+                      <th>Populations</th>
+                      <th>Echantillons</th>
+                      <th>Nb Operateur</th>
+                      <th>Status</th>
+                      <th>Option</th>
+                      <th>Echantilloner</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <%
+                    sspec.forEach(function (list) {
+                    %>
+                    <tr>
+                      <td><%=list.num_dossier%></td>
+                      <td><a href="#" onclick="parametre('<%=list.id_lotclient%>');"><%=list.libelle%></a></td>
+                      <td><input type="number" class="population" id="pop_<%=list.id_lotclient%>" value="0" disabled="true"></td>
+                      <td id="ech_<%=list.id_lotclient%>">0</td>
+                      <td><a href="#"  id="op_<%=list.id_lotclient%>" onclick="parametre('<%=list.id_lotclient%>');">0</a></td>
+                      <td id="st_<%=list.id_lotclient%>"><i class="fa fa-close fa-2x text-danger"></i> </td>
+                      <td id="btn_<%=list.id_lotclient%>"><a href="#" onclick="enable_form('<%=list.id_lotclient%>',0);"><i class="fa fa-edit fa-2x text-info"></i> </a> </td>
+                      <td id="btn_ech_<%=list.id_lotclient%>"><a href="#" onclick="load_ech('<%=list.id_lotclient%>',0);"><i class="fa fa-filter fa-2x text-warning"></i> </a> </td>
+                    </tr>
+                    <%
+                    });
+                    %>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+            </div>
+            <div id="pan2">
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div id="myModalop" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-md">
+
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title text-primary" id="titre" >Les OP concernés</h4>
+        </div>
+        <div class="modal-body">
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" onclick="" data-dismiss="modal">OK</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ECharts -->
+<script src="/vendors/echarts/dist/echarts.min.js"></script>
+<script src="/js/jquery-1.12.4.js"></script>
+<script src="/js/dependencies/sails.io.js"></script>
+<script src="/js/jquery-ui.min.js"></script>
+<script src="/bootstrap/js/bootstrap.min.js"></script>
+<script src="/vendors/fastclick/lib/fastclick.js"></script>
+<script src="/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+<script src="/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
+<script src="/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
+<script src="/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+<script src="/vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+<script src="/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+<script src="/vendors/datatables.net-scroller/js/datatables.scroller.min.js"></script>
+<script src="/vendors/jszip/dist/jszip.min.js"></script>
+<script src="/vendors/pdfmake/build/pdfmake.min.js"></script>
+<script src="/vendors/pdfmake/build/vfs_fonts.js"></script>
+<!-- NProgress -->
+<script src="/js/echarts/theme.js"></script>
+<script src="/js/echarts/echarts.js"></script>
+<!-- Custom Theme Scripts -->
+<script src="/js/custom.min.js"></script>
+
+<!-- NProgress -->
+<script src="/vendors/nprogress/nprogress.js"></script>
+<script src="/js/dossierEtapeApp.js"></script>
+<script src="/js/echarts/theme.js"></script>
+<script src="/js/echarts/echarts.js"></script>
+
+<link href="/select/css/select2.min.css" rel="stylesheet" />
+<script src="/select/js/select2.min.js"></script>
+
+<!-- Custom Theme Scripts -->
+<script src="/js/custom.min.js"></script>
+
+<script>
+  var niveaux = <%=req.session.niveaux %>;
+  var user = <%=req.session.user %>;
+
+  $(function() {
+    $( "#dt").datepicker({
+      dateFormat: 'yymmd',
+      maxDate: new Date()
+    }).datepicker("setDate", new Date());
+
+  });
+
+  /*
+  * selection date
+  * */
+
+  function reloadDTEFree(){
+    var html = "<table class='table table-bordered'>" +
+      "<thead><tr>" +
+        "<th>Departements</th>" +
+        "<th>Sous specialités</th>" +
+        "<th>Populations</th>" +
+        "<th>Echantillons</th>" +
+        "<th>Nb Operateur</th>" +
+        "<th>Nb erreur</th>" +
+        "<th>Taux d'erreur</th>" +
+      "</tr></thead>" +
+      "<tbody>";
+
+    $.ajax({
+      type: "GET",
+      url: "/get_list_param?pdate=" + $("#dt").val(),
+      success: function (msg) {
+
+        //alert(msg);
+        var data = JSON.parse(msg);
+        var listSouSpec = data.listSSp;
+        var listPopSouSpec = data.listPopSSp;
+        var listPersSouSpec = data.nbPersSSp;
+        var listErrSouSpec = data.nbErrSSp;
+        var lpop = data.lpop;
+        var lech = data.lech;
+
+        for (var i = 0;i<listSouSpec.length; i++){
+           html += " <tr>"+
+            "          <td>"+listSouSpec[i].num_dossier+"</td>"+
+            "          <td><a href='#' onclick='parametre('"+listSouSpec[i].id_lotclient+"');'>"+listSouSpec[i].libelle+"</a></td>"+
+            "          <td id='pop_"+listSouSpec[i].id_lotclient+"'>0</td>"+
+            "          <td id='ech_"+listSouSpec[i].id_lotclient+"'>0</td>"+
+            "          <td id='op_"+listSouSpec[i].id_lotclient+"'>0</td>"+
+            "          <td id='nerr_"+listSouSpec[i].id_lotclient+"'>0</td>"+
+            "          <td id='terry_"+listSouSpec[i].id_lotclient+"'>0</td>"+
+            "          </tr>";
+        }
+
+
+
+        html += "</tbody>"+
+          "</table> ";
+        $("#p_content").html(html);
+
+        for (var i = 0;i<listPopSouSpec.length; i++){
+          //$("#pop_"+listPopSouSpec[i].id_lot_client).val(""+listPopSouSpec[i].qte);
+          $("#ech_"+listPopSouSpec[i].id_lot_client).html(""+listPopSouSpec[i].echantillon);
+        }
+        for (var i = 0;i<listPersSouSpec.length; i++){
+          $("#op_"+listPersSouSpec[i].id_lot_client).html(""+listPersSouSpec[i].ct);
+        }
+        for (var i = 0;i<listErrSouSpec.length; i++){
+          $("#nerr_"+listErrSouSpec[i].id_lotclient).html(""+listErrSouSpec[i].ct);
+        }
+        for (var i = 0;i<lpop.length; i++){
+          $("#pop_"+lpop[i].id_lotclient).html(""+lpop[i].ct);
+        }
+
+        for (var i = 0;i<lech.length; i++){
+          $("#ech_"+lech[i].id_lotclient).html(""+lech[i].ct);
+        }
+
+        for (var i = 0;i<listSouSpec.length; i++){
+
+          if(parseInt(($("#ech_"+listSouSpec[i].id_lotclient).text()).trim())!==parseInt(0)){
+
+            var taux = parseInt($("#nerr_"+listSouSpec[i].id_lotclient).text())/parseInt($("#ech_"+listSouSpec[i].id_lotclient).text());
+            //console.log(taux.toFixed(5));
+            $("#terry_"+listSouSpec[i].id_lotclient).html(""+Number(taux.toFixed(5)));
+          }
+        }
+      },
+      error: function (error) {
+      }
+    });
+    ;
+  }
+  /*
+  * Innitialisation des données
+  * */
+  $(".mat2").select2();
+  reloadData();
+  //reloadDatatableGlobale();
+  geNbOp();
+  getMat();
+  reloadDatatableGlobale();
+
+  /*
+  Appel du fonction Ajax qui repartie les nombre d'echantillon par matricle
+   */
+  function load_ech(id,tp){
+    var echant_tot = $("#ech_"+id).text();
+    var op_tot = $("#op_"+id).text();
+
+    $.ajax({
+      type: "GET",
+      url: "/set_echant_by_op?id_lotclient="+id+"&ech="+echant_tot+"&op="+op_tot+"&type="+tp,
+      success: function(msg){
+
+
+      },
+      error: function (error) {
+
+      }
+    });
+  }
+
+  function load_ech_pop(id,tp,ech,op){
+    var echant_tot = $("#ech_"+id).text();
+    var op_tot = $("#op_"+id).text();
+
+    $.ajax({
+      type: "GET",
+      url: "/set_echant_by_op?id_lotclient="+id+"&ech="+ech+"&op="+op+"&type="+tp,
+      success: function(msg){
+        //alert(msg);
+        //reloadData();
+
+
+      },
+      error: function (error) {
+        //alert(error);
+      }
+    });
+  }
+
+
+  /*
+  * Fonction pour lister les matricule
+  * */
+  function getMat() {
+
+    $.ajax({
+      type: "GET",
+      url: "/getLsMatPara",
+
+      success: function(msg){
+
+        var html = "<option value=''></option>";
+        var data = JSON.parse(msg);
+
+        for (var i = 0 ; i<data.length ; i++){
+          html += "<option value='"+data[i].id_pers+"'>"+data[i].matricule+"</option>";
+        }
+        $("#mat2").html(html);
+      },
+      error: function (error) {
+
+      }
+    });
+  }
+
+  /*
+  * Fonction pour la rafraichissement des données de la colonne  Nb operateur
+  * */
+  function geNbOp() {
+
+    $.ajax({
+      type: "GET",
+      url: "/get_nb_by_lot",
+
+      success: function(msg){
+
+        var data = JSON.parse(msg);
+        for (var i = 0 ; i<data.length ; i++){
+          $("#op_"+data[i].id_lot_client).html(""+data[i].ct);
+          //html += "<option value='"+data[i].id_pers+"'>"+data[i].matricule+"</option>";
+        }
+      },
+      error: function (error) {
+
+      }
+    });
+  }
+
+
+
+/*
+* Fonction pour la rechargement du dataTable
+* */
+  function reloadDatatableGlobale(){
+
+    var handleDataTableButtons_g = function() {
+      if ($("#table_search").length) {
+        $("#table_search").DataTable({
+          searching: true,
+          paging: false
+        });
+      }
+    };
+
+    TableManageButtons_g = function() {
+      "use strict";
+      return {
+        init: function() {
+          handleDataTableButtons_g();
+        }
+      };
+    }();
+    TableManageButtons_g.init();
+  }
+
+
+  /*
+  * Fonction pour rendre modifiable la population
+  * */
+  function enable_form(id,tp){
+    $("#pop_"+id).prop("disabled",false);
+    $("#btn_"+id).html(
+      "<a href='#' onclick='save("+id+","+tp+");'><i class='fa fa-save fa-2x text-success'></i> </a>"
+    );
+  }
+
+  /*
+  * Fonction de modification de la population
+  * Parametre:
+  * id_lot_client
+  * type:0=>Insertion 1=>Modification
+  * */
+  function save(id,tp){
+    var pop =$("#pop_"+id).val();
+
+    $.ajax({
+      type: "GET",
+      url: "/save_ech?id_lotclient="+id+"&pop="+pop+"&type="+tp,
+      success: function(msg){
+        //alert(msg);
+        reloadData();
+
+
+      },
+      error: function (error) {
+        //alert(error);
+      }
+    });
+
+  }
+
+  /*
+  * Fonction de rechargement du panel principale
+  * */
+  function reloadData(){
+    $.ajax({
+      type: "GET",
+      url: "/get_popu",
+      success: function(msg){
+        //alert(msg);
+        var data = JSON.parse(msg);
+
+        for( var i = 0 ;i<data.length;i++){
+          $("#btn_"+data[i].id_lot_client).html("<a href='#' onclick='enable_form("+data[i].id_lot_client+",1);'><i class='fa fa-edit fa-2x text-info'></i> </a>");
+          $("#pop_"+data[i].id_lot_client).prop("disabled",true);
+          $("#pop_"+data[i].id_lot_client).val(""+data[i].qte);
+          $("#ech_"+data[i].id_lot_client).html(""+data[i].echantillon);
+          $("#st_"+data[i].id_lot_client).html(
+            "<i class='fa fa-check fa-2x text-success'></i>"
+          );
+        }
+
+      },
+      error: function (error) {
+        //alert(error);
+      }
+    });
+  }
+
+
+  /*
+   * Fonction pour afficher le div de modification des op specifique a un sous specialite
+   * Parametre
+   * id_lot_client
+   */
+
+  function parametre(id){
+    var html = "";
+    html = "<div class='panel panel-primary'>"+
+       "<div class='panel-heading'>"+
+       "  <h3 class='panel-title'><a href='#' onclick='prev();'> <i class='fa fa-arrow-circle-left fa-2x'></i></a>Parametrage ISO</h3>"+
+       "</div>"+
+       "<div class='panel-content'>" +
+      "     <div class='row'>" +
+              "<div class='col-lg-2 col-md-2'>" +
+                  "<select class='form-control mat2' tabindex='-1' id='mat2' onchange=''>"+
+                     "<option value=''>MATRICULE</option>"+
+                  "</select>" +
+              "</div>" +
+              "<div class='col-lg-4 col-md-4'>" +
+                  "<a href='#' class='btn btn-primary' onclick='addEch("+id+");'>Ajouter</a>"+
+              "</div>" +
+      "     </div>" +
+            "  <table class='table table-bordered'>"+
+            "  <thead>"+
+            "  <tr>"+
+            "  <th>Matricule</th>"+
+            "  <th>Echantillon Total</th>"+
+            "  <th>Echantillon déja choisi</th>"+
+            "  <th></th>"+
+            "  </tr>"+
+            "  </thead>"+
+            "<tbody>";
+
+    $.ajax({
+      type: "GET",
+      url: "/get_ech_by_mat?id="+id,
+      success: function(msg){
+
+
+        var data = JSON.parse(msg);
+
+        for( var i = 0 ;i<data.length;i++){
+          html +="<tr>"+
+            "<td>"+data[i].id_pers+"</td>"+
+            "<td>"+(data[i].echant_total || '0')+"</td>"+
+            "<td>"+(data[i].echant_choisie || '0')+"</td>"+
+            "<td><a href='#' onclick='remove_mat("+id+","+data[i].id_pers+")'><i class='fa fa-remove fa-2x text-danger'></i> </a> </td>"+
+            "</tr>";
+        }
+        //alert(html);
+        html += "</tbody>"+
+          "</table>";
+        $("#pan2").removeClass("hidden");//afficher la div de modification de liste d'utilisateur
+        $("#pan1").addClass("hidden");//cacher la div principale
+        $("#pan2").html(html);//recharger le contenu de la div de modification de liste d'utilisateur
+
+        $(".mat2").select2();
+        getMat();
+
+
+      },
+      error: function (error) {
+        //alert(error);
+      }
+    });
+
+
+
+
+  }
+
+  /*
+  fonction en cas de basculement d'un OP
+  parametre
+  id_lot_client
+  id_pers
+   */
+
+  function remove_mat(id,id_pers){
+    $.ajax({
+      type: "GET",
+      url: "/del_ech_by_mat?id=" + id + "&id_pers=" + id_pers,
+      success: function (msg) {
+       /* reloadData();//pour les données principale du tableau
+        geNbOp();//pour la colonnne nb op du tableau*/
+        parametre(id);//rafraichissement du div secondaire
+        //alert(msg);
+      },
+      error: function (error) {
+
+      }
+    });
+  }
+  /*
+  fonction de resoration du div principale
+   */
+
+  function prev(){
+    $("#pan2").addClass("hidden");//cacher la div de modification de liste d'utilisateur
+    $("#pan1").removeClass("hidden");//afficher la div principale
+    reloadData();
+    geNbOp();
+  }
+
+  /*
+  fonction d'enregistrement des matricules specifique au sous specialité
+  parametre
+  id_lot_client
+  id_pers
+   */
+  function addEch(id){
+    $.ajax({
+      type: "GET",
+      url: "/add_ech_by_mat?id=" + id + "&id_pers=" + $("#mat2").val(),
+      success: function (msg) {
+        reloadData();//pour les données principale du tableau
+        geNbOp();//pour la colonnne nb op du tableau
+        load_ech(id,0);// recalcule des echantillon par op
+        parametre(id);//rafraichissement du div secondaire
+      },
+      error: function (error) {
+
+      }
+    });
+  }
+
+  //alert(niveaux);
+</script>
+
+</body>
+</html>

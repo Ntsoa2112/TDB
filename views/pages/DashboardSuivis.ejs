@@ -1,0 +1,423 @@
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TDB Stat</title>
+
+  <link rel="stylesheet" href="/styles/importer.css">
+  <link rel="stylesheet" href="/bootflat/css/bootflat.min.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/local.css">
+  <link rel="stylesheet" href="/css/Style_v3.css">
+  <link rel="stylesheet" href="/jquery-ui/jquery-ui.css">
+  <!--STYLES END-->
+</head>
+
+<%
+var menu = [];
+menu["aceuil"]= "selected";
+menu["dossierAdmin"]= "";
+menu["gestionDossier"]= "";
+menu["statOpAdmin"]= "";
+menu["presence"]= "";
+menu["admin"]= "";
+%>
+<% if(req.session.droit==1){
+
+  %>
+  <% include ../includes/entete.ejs %>
+  <% }else{
+
+  %>
+  <% include ../includes/enteteOperateur.ejs %>
+
+  <% }%>
+
+<script>
+  var cars = [];
+  var prod = [];
+  var etape = [];
+  var dataetape = [];
+  var hprod = [];
+  var vitesseb = 0;
+  var vitessen = 0;
+  var quantite = 0;
+  var qualite = 0;
+</script>
+
+
+<div id="page-wrapper" class="content">
+
+
+
+
+  <div class="">
+
+
+    <div class="clearfix"></div>
+
+
+    <div class="col-md-12 col-sm-12 col-xs-12">
+      <div class="x_panel">
+        <div class="x_title">
+          <h2></h2>
+          <ul class="nav navbar-right panel_toolbox">
+            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+            </li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+              <ul class="dropdown-menu" role="menu">
+                <li><div class="">
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                      <input type="number" id="timereload" required="required"  value="4">
+                    </div>
+                  </div>
+                </li>
+                </li>
+              </ul>
+            </li>
+            <li><a class="close-link"><i class="fa fa-close"></i></a>
+            </li>
+          </ul>
+          <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+
+          <div class="">
+            <div class="row top_tiles">
+
+              <!-- total --->
+
+              <div class="animated flipInY col-lg-2 col-md-2 col-sm-6 col-xs-12">
+
+                <div class="tile-stats">
+                  <div class="icon"><i class="fa fa-check-square-o"></i></div>
+
+                  <a href="#" data-toggle="modal" data-target="#myModalPers" onclick="refreshData (0)"><div class="count" id="nbactif"><%=listePersonneConnected.length  %></div></a>
+                  <h3>Total actif</h3>
+                  <p>personnels actifs.</p>
+                </div>
+              </div>
+
+              <div class="animated flipInY col-lg-2 col-md-2 col-sm-6 col-xs-12">
+
+                <div class="tile-stats">
+                  <div class="icon"><i class="fa fa-check-square-o"></i></div>
+
+                  <a href="#" data-toggle="modal" data-target="#myModalPers" onclick="refreshData (1)"><div class="count" id="nbpointagebio"><%=listeinPtConnected.length %></div></a>
+                  <h3>Pointages OK</h3>
+                  <p>Nombre Pointages.</p>
+                </div>
+              </div>
+
+              <div class="animated flipInY col-lg-2 col-md-2 col-sm-6 col-xs-12">
+
+                <div class="tile-stats">
+                  <div class="icon"><i class="fa fa-check-square-o"></i></div>
+
+                  <a href="#" data-toggle="modal" data-target="#myModalPers" onclick="refreshData (2)"><div class="count" id="nbpointage"><%=listePersonneConnected.length - listeinPtConnected.length %></div></a>
+                  <h3>Pointages NOK</h3>
+                  <p>Pointages Absent.</p>
+                </div>
+              </div>
+
+
+              <div class="animated flipInY col-lg-2 col-md-2 col-sm-6 col-xs-12">
+                <div class="tile-stats">
+                  <div class="icon"><i class="fa fa-comments-o"></i></div>
+                  <div class="count"><a href="#" data-toggle="modal" data-target="#myModalPers" onclick="refreshData (3)" id="nbgpao"><%=listeinLdtConnected.length %>
+                    </a>/<a href="#" data-toggle="modal" data-target="#myModalPers" onclick="refreshData (4)" id="nbgpaonok"><%=listeinPtConnected.length %></a></div>
+                  <h3>Connectés</h3>
+                  <p>Connecter au GPAO.</p>
+                </div>
+              </div>
+              <div class="animated flipInY col-lg-2 col-md-2 col-sm-6 col-xs-12">
+                <div class="tile-stats">
+                  <div class="icon"><i class="fa fa-folder-open"></i></div>
+                  <div class="count" id="nbdossier"><%=dossAl.length + dossCl.length %></div>
+                  <h3>Dossiers</h3>
+                  <p>Dossier en cours de traitement</p>
+                </div>
+              </div>
+              <div class="animated flipInY col-lg-2 col-md-2 col-sm-6 col-xs-12">
+                <div class="tile-stats">
+                  <div class="icon"><i class="fa fa-caret-square-o-right"></i></div>
+                  <div class="count" id="nbconge"><%=listeConge.length %></div>
+                  <h3>Congés</h3>
+                  <p>Congés payer et non payer</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+
+    <div class="clearfix"></div>
+
+
+
+
+    <div class="col-md-6 col-sm-6 col-xs-12">
+      <div class="x_panel">
+        <div class="x_title">
+          <h2>Congés</h2>
+          <ul class="nav navbar-right panel_toolbox">
+            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+            </li>
+
+            <li><a class="close-link"><i class="fa fa-close"></i></a>
+            </li>
+          </ul>
+          <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+
+          <div id="echart_pie" style="height:350px;"></div>
+
+        </div>
+      </div>
+    </div>
+
+
+
+    <div class="col-md-6 col-sm-6 col-xs-12">
+      <div class="x_panel">
+        <div class="x_title">
+          <h2>Absent et retard</h2>
+          <ul class="nav navbar-right panel_toolbox">
+            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+            </li>
+
+            <li><a class="close-link"><i class="fa fa-close"></i></a>
+            </li>
+          </ul>
+          <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+
+          <div id="echart_donut" style="height:350px;"></div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-sm-6 col-xs-12">
+      <div class="x_panel">
+        <div class="x_title">
+          <h2 id="dbdosAL">Almerys(<%=dossAl.length %>)</h2>
+          <ul class="nav navbar-right panel_toolbox">
+            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+            </li>
+
+            <li><a class="close-link"><i class="fa fa-close"></i></a>
+            </li>
+          </ul>
+          <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+
+          <div id="echart_pieAl" style="height:600px;"></div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-sm-6 col-xs-12">
+      <div class="x_panel">
+        <div class="x_title">
+          <h2 id="dbdosCl">Classiques(<%=dossCl.length %>)</h2>
+          <ul class="nav navbar-right panel_toolbox">
+            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+            </li>
+            <li><a class="close-link"><i class="fa fa-close"></i></a>
+            </li>
+          </ul>
+          <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+
+          <div id="echart_pieCl" style="height:600px;"></div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+
+
+<!--modal Personnel-->
+<div id="myModalPers" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Listes des Personnels</h4>
+      </div>
+      <div class="modal-body">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+          <div class="x_panel">
+            <div class="x_title">
+
+              <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+              <table id="datatable-fixed-header" class="table table-striped table-bordered">
+                <thead>
+                <tr>
+                  <th>Nom</th>
+                  <th>Matricule</th>
+                  <th>Departement</th>
+                  <th>Dernière connexion</th>
+                  <th>GPAO(En Temp réel)</th>
+                  <th>Pointage BIO</th>
+                </tr>
+                </thead>
+
+                <div id="dvPers">
+
+                  <tbody id="tbPers"></tbody>
+                </div>
+
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+      </div>
+
+    </div>
+  </div>
+</div>
+<script src="/js/dependencies/sails.io.js"></script>
+<script src="/js/jquery-1.12.4.js"></script>
+<script src="/js/jquery-ui.min.js"></script>
+<script src="/bootstrap/js/bootstrap.min.js"></script>
+<script>
+
+
+
+  var res_dossierAl = <%-JSON.stringify(dossAl) %>;
+  var res_dossierCl = <%-JSON.stringify(dossCl) %>;
+  var res_conge = <%-JSON.stringify(listeConge) %>;
+
+  var retvalue = <%-retard%>;
+  var presvalue = <%-present%>;
+  var lpersvalue = <%-pers%>;
+
+
+  var htm_upd_modal = "";
+  var htm_upd_modal_pt_ok = "";
+  var htm_upd_modal_pt_nok = "";
+  var htm_upd_modal_pt_gpao = "";
+  var htm_upd_modal_pt_gpao_nok = "";
+  var data_status = <%-JSON.stringify(statusPers)%>;
+
+
+  for(var i=0;i<data_status.length;i++){
+    var str_gpao = "";
+    var str_gpao_bio = "";
+    var str_gpao_ct = "";
+    if(data_status[i].connecting != '' && data_status[i].connecting != null){
+      str_gpao_ct = data_status[i].connecting;
+    }
+    if(data_status[i].connected == true){
+      str_gpao = "<i class='fa fa-check'></i>";
+      htm_upd_modal_pt_gpao += "<tr><td>"+data_status[i].appelation+"</td><td>"+data_status[i].id_pers+"</td><td>"+data_status[i].libelle+"</td><td>"+str_gpao_ct +"</td><td><i class='fa fa-check'></i></td><td><i class='fa fa-check'></i></td></tr>";
+    }
+
+    if(data_status[i].pt != null){
+      str_gpao_bio = "<i class='fa fa-check'></i>";
+
+
+      htm_upd_modal_pt_ok += "<tr><td>"+data_status[i].appelation+"</td><td>"+data_status[i].id_pers+"</td><td>"+data_status[i].libelle+"</td><td>"+str_gpao_ct +"</td><td>"+str_gpao+"</td><td>"+str_gpao_bio+"</td></tr>";
+      if(data_status[i].connected == false){
+        htm_upd_modal_pt_gpao_nok += "<tr><td>"+data_status[i].appelation+"</td><td>"+data_status[i].id_pers+"</td><td>"+data_status[i].libelle+"</td><td>"+str_gpao_ct +"</td><td></td><td><i class='fa fa-check'></i></td></tr>";
+      }
+
+    }else{
+      htm_upd_modal_pt_nok += "<tr><td>"+data_status[i].appelation+"</td><td>"+data_status[i].id_pers+"</td><td>"+data_status[i].libelle+"</td><td>"+str_gpao_ct +"</td><td>"+str_gpao+"</td><td></td></tr>";
+    }
+    htm_upd_modal += '<tr><td>'+data_status[i].appelation+'</td><td>'+data_status[i].id_pers+'</td><td>'+data_status[i].libelle+'</td><td>'+str_gpao_ct +'</td><td>'+str_gpao+'</td><td>'+str_gpao_bio+'</td></tr>';
+
+  }
+
+
+
+
+</script>
+
+<!-- FastClick -->
+<script src="/vendors/fastclick/lib/fastclick.js"></script>
+<!-- NProgress -->
+<script src="/vendors/nprogress/nprogress.js"></script>
+<!-- ECharts -->
+<script src="/vendors/echarts/dist/echarts.min.js"></script>
+<script src="/vendors/echarts/map/js/world.js"></script>
+<script src="/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+<script src="/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
+<script src="/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
+<script src="/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+<script src="/vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+<script src="/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+<script src="/vendors/datatables.net-scroller/js/datatables.scroller.min.js"></script>
+
+<!-- Custom Theme Scripts -->
+<script src="/js/custom.min.js"></script>
+
+<script>
+  var table = null;
+  $(document).ready(function() {
+
+  });
+
+
+  function refreshData (type){
+    var html = "";
+    if(parseInt(type)==0){
+      html = htm_upd_modal;
+    }else if(parseInt(type)==1){
+      html = htm_upd_modal_pt_ok;
+    }else if(parseInt(type)==2){
+      html = htm_upd_modal_pt_nok;
+    }else if(parseInt(type)==3){
+      html = htm_upd_modal_pt_gpao;
+    }else if(parseInt(type)==4){
+      html = htm_upd_modal_pt_gpao_nok;
+    }
+
+    $("#datatable-fixed-header").dataTable().fnDestroy();
+    $("#tbPers").html(""+html);
+    $('#datatable-fixed-header').DataTable({
+      retrieve: true,
+      fixedHeader: true
+    });
+
+
+    //alert('ok'+htm_upd_modal); //what the fuck! :p
+  }
+
+
+
+</script>
+<script src="/js/echarts/theme.js"></script>
+<script src="/js/echarts/echarts.js"></script>
+<script src="/js/dash.suivis.js"></script>
+</body>
+</html>

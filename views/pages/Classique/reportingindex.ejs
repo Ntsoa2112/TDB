@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TDB Stat</title>
+
+    <link rel="stylesheet" href="/styles/importer.css">
+    <link rel="stylesheet" href="/bootflat/css/bootflat.min.css">
+    <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/local.css">
+    <link rel="stylesheet" href="/css/Style_v3.css">
+    <link rel="stylesheet" href="/jquery-ui/jquery-ui.css">
+    <!--STYLES END-->
+</head>
+
+<body onLoad="loadFlexiDossier();">
+<% if(req.session.droit==1){
+
+%>
+    <% include ../../includes/entete.ejs %>
+<% }else{
+
+%>
+    <% include ../../includes/enteteOperateur.ejs %>
+<%}%>
+
+<link rel="stylesheet" href="/jquery-ui/jquery-ui.css">
+<script src="/js/jquery-1.10.2.min.js"></script>
+<script src="/js/jquery-ui.min.js"></script>
+<script src="/js/table-scroll.min.js"></script>
+
+<style>
+    .livree {
+        background: grey;
+        color: white;
+    }
+
+    .pers_th {
+        background: #4F3E3A !important;
+        color: white;
+    }
+
+    .pers_th_dossier1 {
+        background: #4E5C63 !important;
+        color: white;
+    }
+
+    .pers_th_dossier2 {
+        background: #20171F !important;
+        color: white;
+    }
+
+    .pers_th_etape1 {
+        background: #261625   !important;
+        color: white;
+    }
+    .pers_th_etape2 {
+        background: #16261C !important;
+        color: white;
+    }
+
+    .pers_th_etape3 {
+        background: #261916 !important;
+        color: white;
+    }
+
+    #content_data_table {
+        overflow-x: scroll;
+        width: 100%;
+    }
+
+    .frm {
+        border: 1px solid #24C6DC;
+        border-radius: 0px;
+        padding: 10px;
+    }
+
+    .td_tab {
+        background: white !important;
+    }
+</style>
+<div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="x_panel block">
+        <div class="x_title">
+            <h2></h2>
+            <ul class="nav navbar-right panel_toolbox">
+                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                </li>
+                <li><a class="close-link"><i class="fa fa-close"></i></a>
+                </li>
+            </ul>
+            <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+
+            <form method="post" action="/testExportFlexiFusion">
+                <div class="form-groupe col-md-2">
+                    <select  id="type" name="type" class="frm form-control">
+                    </select>
+                </div>
+
+                <div class="form-groupe col-md-2">
+                    <input type="text" class="frm form-control" id="dateDeb" placeholder="Debut" name="date_debut"/>
+                </div>
+
+                <div class="form-groupe col-md-2">
+                    <input type="text" class="frm form-control" id="dateFin" placeholder="Fin" name="date_fin"/>
+                </div>
+
+                <div class="form-groupe col-md-2">
+                    <input type="number" class="frm form-control" id="id_pers" placeholder="matricule" name="matricule"/>
+                </div>
+
+                <div class="frm form-groupe col-md-2" style="width: 50px;padding: 5px;background: #0b2e13;color: white">
+                    <a href="#" onclick="loadData()"><i class="fa fa-search fa-3x"></i> </a>
+                </div>
+
+                <div class="frm form-groupe col-md-2" style="width: 50px;padding: 5px;background: #23903c;color: white">
+                    <button type="submit"><i class="fa fa-file-excel-o fa-3x"></i> </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="x_panel block">
+        <div class="x_title">
+            <h2>Resultat</h2>
+            <ul class="nav navbar-right panel_toolbox">
+                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                </li>
+                <li><a class="close-link"><i class="fa fa-close"></i></a>
+                </li>
+            </ul>
+            <div class="clearfix"></div>
+        </div>
+        <div class="x_content" id="content_data_table">
+            <table id="datatable-buttons" class="table table-responsive table-bordered table-hover">
+                <thead>
+                <tr>
+                    <!--<th></th>-->
+                    <th>NOM OUVRAGE</th>
+                    <th>Nombre Document</th>
+                    <th>Matricule</th>
+                    <th>TYPE DE DOSSIER</th>
+                    <th>CATEGORIE DE DOCUMENT</th>
+                    <th>TYPE DE DOCUMENT</th>
+                    <th>Heure Debut</th>
+                    <th>Heure Fin</th>
+                    <th>Duree par doc</th>
+                    <th>Duree Totale</th>
+                    <th>Nombre Pieces</th>
+                </tr>
+                </thead>
+
+                <tbody id="dataglobale">
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- Custom Theme Scripts -->
+<script src="/js/custom.min.js"></script>
+<script src="/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+<script src="/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
+<script src="/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
+<script src="/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+<script src="/vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+<script src="/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+<script src="/vendors/datatables.net-scroller/js/datatables.scroller.min.js"></script>
+<script src="/vendors/jszip/dist/jszip.min.js"></script>
+<script src="/vendors/pdfmake/build/pdfmake.min.js"></script>
+<script src="/vendors/pdfmake/build/vfs_fonts.js"></script>
+<script src="/js/moment.min.js"></script>
+<!-- End Custom theme scripts -->
+<script>
+    // changer second to basic heure format
+    function changeSecondToBasicHourFormat(seconds){
+        /*var formatcorrect=  moment("2015-01-01").startOf('day')
+          .seconds(seconds)
+          .format('HH:mm:ss');*/
+        var dur = moment.duration(seconds, "seconds");
+        var formatcorrect = Math.floor(dur.asHours()) + moment.utc(dur.asMilliseconds()).format(":mm:ss");
+        if(parseInt(Math.floor(dur.asHours()))<10)
+        {
+            formatcorrect = "0"+Math.floor(dur.asHours()) + moment.utc(dur.asMilliseconds()).format(":mm:ss");
+        }
+        return formatcorrect.toString();
+    }
+    // recuperation donnée FLEXI CAP
+    function loadData() {
+        var id_dossier = $("#type").val();
+        var id_pers= $("#id_pers").val();
+        var dateDeb = $("#dateDeb").val();
+        var dateFin = $("#dateFin").val();
+        if(dateDeb == "" || dateFin == "")
+        {
+            alert("Veuillez selectionner une date");
+            return;
+        }
+        $("#datatable-buttons").dataTable().fnDestroy();
+        var url = '/dossierflexicap/GetDataDossier?id_dossier='+id_dossier+'&date_debut='+dateDeb+'&date_fin='+dateFin+'&id_pers='+id_pers+'';
+        //alert(url);
+        $.ajax({
+            type: "GET",
+            url: url,
+            success: function(msg){
+                var data = JSON.parse(msg);
+                console.log(data);
+                try {
+                    var html_body = ""
+                    for(var i=0; i<data.length ; i++)
+                    {
+                        html_body += "<tr bgcolor=\"#add8e6\">";
+                       // html_body += "<td></td>";
+                        html_body += "<td>"+data[i].lot_client+"</td>";
+                        html_body += "<td>"+data[i].somme_qte+"</td>";
+                        html_body += "<td>"+data[i].id_pers+"</td>";
+                        html_body += "<td>"+data[i].dossier+"</td>";
+                        html_body += "<td>"+data[i].etape+"</td>";
+                        html_body += "<td>"+data[i].lot+"</td>";
+                        html_body += "<td>"+data[i].debut+"</td>";
+                        html_body += "<td>"+data[i].fin+"</td>";
+                        html_body += "<td>"+changeSecondToBasicHourFormat(data[i].duree)+"</td>";
+                        html_body += "<td>"+changeSecondToBasicHourFormat(data[i].somme_duree)+"</td>";
+                        html_body += "<td>"+data[i].somme_qte+"</td>";
+                        html_body += "</tr>";
+                    }
+
+                    var html_final = html_body;
+
+                    $("#dataglobale").html(html_final);
+                        /* $('table').table_scroll({
+                             fixedColumnsLeft: 2,
+                             columnsInScrollableArea: 12,
+                             scrollX: 5,
+                             scrollY: 10
+                         });*/
+                        //alert(html_head);
+                    reloadDatatableHeure();
+                }catch (e) {
+                    console.error(e);
+                }
+
+
+                //$('#dataglobale').html(html_data);
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    }
+
+    $(function() {
+        $("#dateDeb").datepicker({
+            dateFormat: 'yymmdd'
+        });
+
+        $("#dateFin").datepicker({
+            dateFormat: 'yymmdd'
+        });
+    });
+    // FONCTION RECUPERATION FLEXIDOSSIER SERVEUR
+    function loadFlexiDossier()
+    {
+        $.ajax({
+            type: "GET",
+            url: "/GetspecialiteDossierFlexi",
+
+            success: function(msg){
+                var html = "<option value=''>Tous</option>";
+                var data = null;
+                try {
+                    data = JSON.parse(msg);
+                    for (var i = 0 ; i<data.length ; i++){
+                        html += "<option value='"+data[i].id_lotclient+"'>"+data[i].libelle+"</option>"
+                    }
+                    $("#type").html(html);
+                }
+                catch (e) {
+                    $("#type").html(html);
+                }
+
+            },
+            error: function (error) {
+
+            }
+        });
+    }
+    // DATATABLE
+    function reloadDatatableHeure(){
+        var handleDataTableButtons_v = function() {
+            if ($("#datatable-buttons").length) {
+                $("#datatable-buttons").DataTable({
+                    dom: "Bfrtip",
+                    searching: false,
+                    paging: false,
+                    "aLengthMenu": [[25, 50, 75, -1], [25, 50, 75, "All"]],
+                    "iDisplayLength": 25,
+                    buttons: [
+                        {
+                            extend: "copy",
+                            className: "btn-sm"
+                        },
+                        {
+                            extend: "csv",
+                            className: "btn-sm"
+                        },
+                        {
+                            extend: "excel",
+                            className: "btn-sm"
+                        },
+                        {
+                            extend: "pdfHtml5",
+                            className: "btn-sm"
+                        },
+                        {
+                            extend: "print",
+                            className: "btn-sm"
+                        },
+                    ],
+                    responsive: true
+                });
+            }
+        };
+
+        TableManageButtons_v = function() {
+            "use strict";
+            return {
+                init: function() {
+                    handleDataTableButtons_v();
+                }
+            };
+        }();
+
+
+        TableManageButtons_v.init();
+    }
+</script>

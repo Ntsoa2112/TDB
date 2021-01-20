@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta name="generator" content="Bootply" />
+  <link rel="stylesheet" href="/styles/importer.css">
+  <link rel="stylesheet" href="/bootflat/css/bootflat.min.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/local.css">
+  <link rel="stylesheet" href="/css/Style_v3.css">
+  <link rel="stylesheet" href="/jquery-ui/jquery-ui.css">
+
+  <!--<style type="text/css">
+    .colorTable{
+      background-color:red;
+    }
+    input[type=radio] {
+      display: block;
+      margin: 0 auto;
+    }
+    label {
+      display: inline-block;
+    }
+  </style>-->
+  <title>Ecoute Masque</title>
+</head>
+<body>
+	<!-- HEADER -->
+	<%
+	var mapPonderation = {};
+	if(req.session.droit==1){
+
+	%>
+	<% include ../../../includes/entete.ejs %>
+	<% }else{
+
+	%>
+	<% include ../../../includes/enteteOperateur.ejs %>
+
+	<% }%>
+	<!-- /HEADER -->
+
+	<div id="page-wrapper">
+		<div class="row">
+			<!--<div class="page-title" style="margin-left:150px">
+			  <div class="title_left">
+				<h3 style="color:#2B75A6;">
+				  Modification note
+				</h3>
+			  </div>
+			</div>-->
+			<div class="col-md-12 col-sm-12 col-xs-12" id="panel_info">
+			  <div class="x_panel">
+				<div class="x_title">
+				  <h2 id="td_pseudo"></h2>
+				  <ul class="nav navbar-right panel_toolbox">
+					<li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+					</li>
+				  </ul>
+				  <div class="clearfix"></div>
+				</div>
+				<div class="x_content">
+
+				  <div class="col-md-2">
+					<img src="" class="img-circle" style="width:150px;height:150px;" alt="User Image" id="pdp">
+				  </div>
+				  <!--Form group de colone principale-->
+				  <div class="col-md-5">
+					<div  class="gray"></div>
+					<div class="gray"><span id="td_nom"></span> <span id="td_prenom"></span></div>
+					<div  class="gray"><b><u>SAT</u>:</b> <span id="td_sat"></span></div>
+					<div  class="gray"><b><u>Niveau</u>:</b> <span id="td_niveau"></span></div>
+					<div  class="gray"><b><u>Vague</u>:</b> <span id="td_vague"></span></div>
+					<div  class="gray"><b><u>Numero tel</u>:</b> <span id="td_numtel"></span></div>
+					<div  class="gray"><b><u>Matricule</u>:</b> <span id="td_matricule"></span></div>
+				  </div>
+				  <!--Fin du form group de colone principale-->
+
+				</div>
+			  </div>
+			</div>
+			
+			<form method="POST" action="#" data-parsley-validate class="form-horizontal form-label-left" style="margin-left:25px">
+				<div class="form-group">
+					<div class="form-group">
+						<div class="col-md-6 col-sm-6 col-xs-12">
+							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name" >Libelle<span class="required"></span></label>
+						</div>
+						<div class="col-md-2 col-sm-2 col-xs-12">
+							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name" >Pondération<span class="required"></span></label>
+						</div>
+						<div class="col-md-2 col-sm-2 col-xs-12">
+							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name" >Note<span class="required"></span></label>
+						</div>
+						</br>
+					</div>
+					<div class="form-group">
+					  <% resultatNote.forEach(function(result){ %>
+						<input type="hidden" value="<%= result.id_note %>" id="idApplication" name="id_application" class="form-control col-md-7 col-xs-12">
+						<div class="col-md-6 col-sm-6 col-xs-12">
+							<input type="text" id="nomApplication" required="required" name="nom_application" class="form-control col-md-7 col-xs-12" value="<%= result.libelle %>" disabled>
+						</div>
+						<div class="col-md-2 col-sm-2 col-xs-12">
+							<input type="text" id="nomApplication" required="required" name="nom_application" class="form-control col-md-7 col-xs-12" value="<%= result.ponderation %>" disabled>
+						</div>
+						<div class="col-md-2 col-sm-2 col-xs-12">
+							<%
+							  var noteEcoute = result.note;
+							  if(result.note==null){
+								noteEcoute = 0;
+							  }
+							%>
+							<input type="text" id="nomApplication" required="required" name="nom_application" class="form-control col-md-7 col-xs-12" value="<%= noteEcoute %>">
+						</div>
+						</br>
+					  <% }) %>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-md-8 col-sm-8 col-xs-12">
+					</div>
+					<div class="col-md-2 col-sm-2 col-xs-12">
+						<label style='font-size:15px;'>Total note :</label>
+						<input type='text' id='total_note_tc' name='total_note_tc' class='form-control' value='' disabled>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-md-8 col-sm-8 col-xs-12">
+					</div>
+					<div class="col-md-4 col-sm-4 col-xs-12">
+						<button type="button" class="btn btn-primary waves-attach" id="modifier" data-backdrop="static" data-toggle="modal" href="#doc_dialog_example_alert" >Modifier</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	</br>
+	</br>
+</body>
+<script src="/js/jquery-ui.min.js"></script>
+<script src="/bootstrap/js/bootstrap.min.js"></script>
+<script src="/js/jquery.min.js"></script>
+<script>
+	//function load_profile(id_pers) {
+	$(document).ready(function(){
+		var id_pers = 682;
+		$.ajax({
+		  type: "GET",
+		  url: "/getProfile?id_pers="+id_pers,
+
+		  success: function(msg){
+			var dataAll = JSON.parse(msg);
+			var data = dataAll.pr;
+			var ph = dataAll.ph;
+			//alert(msg);
+			$("#td_nom").html(""+data.nom);
+			$("#td_prenom").html(""+data.prenom);
+			$("#td_matricule").html(""+data.matricule);
+			$("#td_pseudo").html(""+data.pseudo);
+			$("#td_sat").html(""+data.sat);
+			$("#td_vague").html(""+data.libelle);
+			$("#td_niveau").html(""+data.niveau);
+			$("#td_numtel").html(""+data.num_tel);
+			$("#pdp").attr("src","data:image/png;base64, "+ph+"");
+			$("#panel_info").removeClass("hidden");
+		  },
+		  error: function (error) {
+
+		  }
+		});
+	  }
+</script>
+
+</html>

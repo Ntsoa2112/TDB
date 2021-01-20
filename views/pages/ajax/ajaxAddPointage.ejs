@@ -1,0 +1,26 @@
+<div class="col-md-3">
+  <input class="form-control" type="text" disabled="true" id="date" value="<%=dt%>">
+  <input class="hidden" type="text" disabled="true" id="idpers" value="<%=idpers%>">
+</div>
+<div class="col-md-3" >
+  <input class="form-control" id="heure" type="text" placeholder="12:36:00">
+</div>
+<div class="col-md-3" id="source">
+  <select class="form-control" onchange="getSource(this.value)">
+    <option value=""></option>
+    <option value="1">IN-1</option>
+    <option value="2">IN-2</option>
+    <option value="3">IN-3</option>
+    <option value="4">IN-4</option>
+    <option value="5">OUT-1</option>
+    <option value="6">OUT-2</option>
+    <option value="7">OUT-3</option>
+    <option value="8">OUT-4</option>
+  </select>
+</div>
+<div class="col-md-3">
+  <button class="form-control btn btn-success" onclick="save();">Inserer</button>
+</div>
+<script>
+
+</script>

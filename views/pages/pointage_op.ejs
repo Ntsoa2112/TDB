@@ -1,0 +1,83 @@
+
+<% if(req.session.droit==1){
+
+%>
+<% include ../includes/entete.ejs %>
+<% }else{
+
+%>
+<% include ../includes/enteteOperateur.ejs %>
+
+<% }%>
+<div id="page-wrapper">
+  <form method="get" action="/getRetard">
+    <%
+    var datech = "";
+    if(req.session.datechoice!=null){
+      datech = req.session.datechoice;
+    }
+    %>
+  <div class="row">
+    <div class="col-xs-2">
+      <input class="form-control" type="date" id="datetim" name="datedeb" placeholder="Date" value="<%=datech%>"/>
+    </div>
+    <div class="col-xs-2">
+      <select class="form-control" placeholder="Departement" name="dep">
+        <% departement.forEach(function(departement){
+        if(parseInt(req.session.dep)==parseInt(departement.id)){
+        %>
+
+        <option value="<%= departement.id %>" selected="true">
+          <%= departement.libelle %>
+        </option>
+        <%
+        }else{
+        %>
+
+        <option value="<%= departement.id %>">
+          <%= departement.libelle %>
+        </option>
+        <%
+        }
+        %>
+        <% }); %>
+      </select>
+    </div>
+    <!--<div class="col-xs-2">
+      <select class="form-control" placeholder="Departement">
+        <option>
+          Departement
+        </option>
+      </select>
+    </div>
+    <div class="col-xs-2">
+      <input class="form-control" type="text"  name="maticule" placeholder="Matricule"/>
+    </div>-->
+    <button type="submit" class="btn btn-info btn-md">ok</button>
+  </div>
+  </form>
+
+  <div class="row">
+
+    <%- partial ('chart/PieChartHighchart.ejs', {idElement : 'idRetardHighchart',classeElement : 'pie_dossier_all', title : 'Repartition retard et abscence (Highchart)', titleChart : 'Highchart' ,data : retardParDepartement}) %>
+    <%- partial ('chart/ColumnHighchart.ejs', {idElement : 'idRetardParDepartement', title : 'Repartition retard et abscence (Highchart)', titleChart : 'Retard', labelY : 'Retard par departement' ,data : retardParDepartement}) %>
+
+
+
+
+
+
+
+  </div>
+
+</div>
+<link rel="stylesheet" href="/jquery-ui/jquery-ui.css">
+<script src="/js/jquery-1.12.4.js"></script>
+<script src="/jquery-ui/jquery-ui.js"></script>
+<script>
+  $(function() {
+    $( "#datetim" ).datepicker({
+      dateFormat: 'yy/mm/dd'
+    });
+  } );
+</script>

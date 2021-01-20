@@ -1,0 +1,46 @@
+
+<link  href="/viewer/viewer.css" rel="stylesheet">
+<script src="/viewer/viewer.js"></script>
+<div id="myCarousel" class="carousel slide" data-ride="carousel"   style="height: 732px">
+
+
+  <!-- Wrapper for slides -->
+  <div class="carousel-inner" role="listbox">
+    <div id="load" class="col-md-12" style="display:none">
+      <img src="img/screen-loader.gif" class="col-md-12" alt="loader">
+    </div>
+    <%
+    var a = 0;
+    image.forEach(function (img) {
+
+      var classNam = "item";
+      if(a==0){
+        classNam = "item active";
+        a++;
+      }else{
+        classNam = "item";
+      }
+
+
+    %>
+    <div class="<%=classNam%>">
+      <img src="data:image/png;base64, <%= img.photo%>" class="col-md-12" alt="ph" style="height: 732px">
+      <div  class="carousel-caption">
+        <h3>Date</h3>
+        <p><%=img.time%></p>
+      </div>
+    </div>
+    <%
+    })
+    %>
+
+
+  </div>
+  <!-- Left and right controls -->
+  <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+    <!--<i class="fa fa-arrow-left" aria-hidden="true"></i>-->
+  </a>
+  <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+    <!--<i class="fa fa-arrow-right" aria-hidden="true"></i>-->
+  </a>
+</div>

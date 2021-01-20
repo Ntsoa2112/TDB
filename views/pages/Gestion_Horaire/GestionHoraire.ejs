@@ -1,0 +1,128 @@
+ <% include ../../includes/entete.ejs %>
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+<div id="page-wrapper">
+  <div class="row">
+	<div class="page-title" style="margin-left:50px">
+        <h2 style="color:#2B75A6;">
+          Gestion horaire
+        </h2>
+    </div>
+    </br>
+  
+    <div class="col-md-12">
+      <div class="table-responsive">
+	  
+		<%
+		  var datech = "";
+		  if(req.session.datechoice!=null){
+			datech = req.session.datechoice;
+		  }
+		%>
+		<!--<select class="form-control" name="mois" id="mois" onchange="test();">
+			<option value="">1</option>
+			<option value="01">2</option>
+			<option value="02">3</option>
+		</select>-->
+        <form method="get" action="/exportHoraire">
+			<div class="col-md-1 col-sm-1 col-xs-1">
+				<h5 style="color:#0F1615;">
+				  Début:
+				</h5>
+			</div>
+			<div class="col-md-3 col-sm-3 col-xs-3">
+				<input class="form-control" type="date" id="datedeb" name="datedeb" placeholder = "Date" value="<%=datech %>"/>
+			</div>
+			<div class="col-md-1 col-sm-1 col-xs-1">
+				<h5 style="color:#0F1615;">
+				  Fin:
+				</h5>
+			</div>
+			<div class="col-md-3 col-sm-3 col-xs-3">
+				<input class="form-control" type="date" id="datefin" name="datefin" placeholder = "Date" value="<%=datech %>" onchange="getAjaxFiltreHoraire();"/>
+			</div>
+		  <div class="col-md-4 col-sm-4 col-xs-4">
+			<input class="btn btn-info" type="submit" value="Exporter"/>
+		  </div>
+        </form>
+		</br>
+		<div id="horaire">
+		
+		</div>
+		
+        <!-- <div id="tableData">
+          <table class="table table-hover" id="" >
+            <thead>
+            <tr>
+              <th>Matricule</th>
+              <th>Nom et pr&#233;nom</th>
+              <th>Date</th>
+              <th>Heures</th>
+            </tr>
+            </thead>
+            <tbody>
+            <% resultat.forEach(function(result){ %>
+            <tr data-model="AlmerysCall" >
+				
+				<% 
+					var d = result.duree;
+					var h = Math.floor(d / 3600);
+					var m = Math.floor(d % 3600 / 60);
+					var s = Math.floor(d % 3600 % 60);
+
+					var hDisplay = h > 0 ? h + (h == 1 ? " h " : " h ") : "";
+					var mDisplay = m > 0 ? m + (m == 1 ? " m " : " m ") : "";
+					var sDisplay = s > 0 ? s + (s == 1 ? " s " : " s ") : "";
+					var duereeHeure = hDisplay + mDisplay + sDisplay; 
+				
+				%>
+			
+              <td align="right"><%= result.matricule %></td>
+              <td align="right"><%= result.nom %> <%= result.prenom %></td>
+              <td align="right"><%= result.dateldt %></td>
+			  <td align="right"><%= duereeHeure %></td>
+            </tr>
+            <% }) %>
+            </tbody>
+          </table>
+        </div>-->
+
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+//alert( "ready!" );      TmForever.exe /lan /join=192.168.100.110
+	$( document ).ready(function() {
+		//alert( "ready!" );
+		var datedeb = "";
+		var datefin = "";
+		$.ajax({
+			type: "GET",
+			url: "/getLsHoraire?datedeb="+datedeb+"&datefin="+datefin,
+			success: function(msg){
+			  $("#horaire").html(msg);
+			},
+			error: function (error) {
+			  //alert('error; ' +error);
+			}
+		});
+	});
+
+    function getAjaxFiltreHoraire()
+    {
+		//alert($("#datefin").val());
+		var datedeb = $("#datedeb").val();
+		var datefin = $("#datefin").val();
+		
+		$.ajax({
+			type: "GET",
+			url: "/getLsHoraire?datedeb="+datedeb+"&datefin="+datefin,//+dateFin
+			success: function(msg){
+			  $("#horaire").html(msg);
+			},           
+			error: function (error) {
+			  //alert('error; ' +error);
+			}
+		});
+    }
+</script>

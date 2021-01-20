@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TDB Stat</title>
+
+  <link rel="stylesheet" href="/styles/importer.css">
+  <link rel="stylesheet" href="/bootflat/css/bootflat.min.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/local.css">
+  <link rel="stylesheet" href="/css/Style_v3.css">
+  <link rel="stylesheet" href="/jquery-ui/jquery-ui.css">
+  <!--STYLES END-->
+</head>
+
+<%
+var menu = [];
+menu["aceuil"]= "selected";
+menu["dossierAdmin"]= "";
+menu["gestionDossier"]= "";
+menu["statOpAdmin"]= "";
+menu["presence"]= "";
+menu["admin"]= "";
+  %>
+  <% if(req.session.droit==1){
+
+    %>
+    <% include ../includes/entete.ejs %>
+    <% }else{
+    
+    %>
+    <% include ../includes/enteteOperateur.ejs %>
+    
+    <% }%>
+
+<script>
+  var cars = [];
+  var prod = [];
+  var etape = [];
+  var dataetape = [];
+  var hprod = [];
+  var vitesseb = 0;
+  var vitessen = 0;
+  var quantite = 0;
+  var qualite = 0;
+</script>
+
+
+<script>
+
+</script>
+
+<script>
+  var data_error_ok = [];
+  var data_error_iso = [];
+  var data_cadence = [];
+  var data_volume = [];
+  var cpt = 193;
+  var cptfn = 0;
+
+  var host = window.location.hostname;
+  io.sails.url = 'http://'+host+':9090';
+  io.socket.on("test", function (msg) {
+    ////console.log(msg);
+    var response = msg;
+    var obj = {};
+    obj.id_spec = response.id;
+    obj.value = response.data;
+    cptfn ++;
+
+    var pr = cptfn/cpt;
+    if (typeof bar !== "undefined") { // do stuff
+      bar.animate(pr);
+    }
+    var val = 0;
+    if(response.data != null){
+      val =response.data;
+    }
+    if(parseInt(response.type) != 11){
+      $( "#"+response.type+""+response.id).html(""+val);
+    }
+
+    if(parseInt(response.type) == 11){
+      var dataFinal = [];
+
+      var lastId = null;
+      for(var i = 0;i < response.data.length;i++){
+        //$( "#a"+response.data[i].id_spec).html(""+response.data[i].qte);
+
+        if(response.data[i].id_spec!=lastId){
+          dataFinal[response.data[i].id_spec]=[];
+          dataFinal[response.data[i].id_spec].specialite = response.data[i].libelle;
+          dataFinal[response.data[i].id_spec].qte = Number(response.data[i].qte);
+          dataFinal[response.data[i].id_spec].err = Number(response.data[i].err);
+          dataFinal[response.data[i].id_spec].hhprod = 0;
+          dataFinal[response.data[i].id_spec].hprod = 0;
+          if(response.data[i].id_type_ldt==0){
+            dataFinal[response.data[i].id_spec].hprod = Number(response.data[i].somme/3600);
+          }else{
+            dataFinal[response.data[i].id_spec].hhprod = Number(response.data[i].somme/3600);
+          }
+          lastId= response.data[i].id_spec;
+
+        }else{
+          dataFinal[response.data[i].id_spec].qte += Number(response.data[i].qte);
+          dataFinal[response.data[i].id_spec].err += Number(response.data[i].err);
+          if(response.data[i].id_type_ldt==0){
+            dataFinal[response.data[i].id_spec].hprod += Number(response.data[i].somme)/3600;
+          }else{
+            dataFinal[response.data[i].id_spec].hhprod += Number(response.data[i].somme/3600);
+          }
+        }
+
+        var vit = 0;
+        if(dataFinal[response.data[i].id_spec].hprod != 0 ){
+          vit  = (dataFinal[response.data[i].id_spec].qte)/(dataFinal[response.data[i].id_spec].hprod);
+        }
+        $( "#a"+response.data[i].id_spec).html(""+dataFinal[response.data[i].id_spec].qte);
+        $( "#b"+response.data[i].id_spec).html(""+Math.round(vit,2));
+
+      }
+
+
+
+
+
+
+
+      /*var ii = 0;
+      //console.log("test "+ldtSpec.length);
+      ldtSpec.forEach(function (ldt) {
+
+      })*/
+    }/*else if(parseInt(response.type) == 1){
+      data_error_iso.push(obj);
+    }else if(parseInt(response.type) == 2){
+      data_volume.push(obj);
+    }else if(parseInt(response.type) == 3){
+      data_cadence.push(obj);
+    }*/
+
+
+    TableManageButtons.init();
+
+  });
+</script>
+
+
+<div id="page-wrapper" class="content">
+
+
+  <div class="container-fluid  flat-blue">
+
+    <a href="/findSpecById"> Gestion de specialité </a>
+    <a href="/stock_almerys"> Gestion de volume </a>
+    <a href="/cadence_almerys"> Gestion de Cadence </a>
+    <a href="/qualite_almerys"> Gestion de Qualite </a>
+
+     <div class="col-md-12 col-sm-12 col-xs-12">
+      <div class="x_panel">
+        <div class="x_title">
+         <div class="col-md-6">
+                       <div class="col-md-6 col-lg-6">
+                        <select class="form-control" onchange="loadUrl(this.value)">
+                            <option value="0">RH</option>
+                            <option value="1">Qualite</option>
+                            <!--<option value="2">Volume</option>-->
+                        </select>
+                       </div>
+                    <div class="col-md-6 col-lg-6">
+                          <select class="form-control" onchange="loadForm(this.value)">
+                            <option value="0">Mensuel</option>
+                            <option value="1">Hebdomadaire</option>
+                            <option value="2">Journalier</option>
+                          </select>
+
+                       </div>
+            </div>
+            <div id="forms" class="col-md-6" >
+
+             </div>
+          <ul class="nav navbar-right panel_toolbox">
+            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+            </li>
+
+            <li><a class="close-link"><i class="fa fa-close"></i></a>
+            </li>
+          </ul>
+          <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+
+          <div class="card-body no-padding">
+              <div id="load" class="col-md-4" style="display:none">
+                <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                <span class="sr-only">Loading...</span>
+              </div>
+            </div>
+            <div id="table-response">
+
+            </div>
+
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+</div>
+
+<script src="/js/dependencies/sails.io.js"></script>
+<script src="/js/jquery-1.12.4.js"></script>
+<script src="/js/jquery-ui.min.js"></script>
+<script src="/js/custom.min.js"></script>
+
+<script>
+var url = "/qual_almerys";
+  function loadData(){
+    var dateDeb = $( "#datetimd" ).val();
+    var dateFin = $( "#datetimf" ).val();
+    cptfn = 0;
+    $.ajax({
+      type: "GET",
+      url: url+"?datedeb="+dateDeb+"&datefin="+dateFin,
+      beforeSend: function(xhr){
+        $( "#load").show();
+      },
+      success: function(msg){
+
+        $("#table-response").html(msg);
+        $( "#load").hide();
+        //alert("ok");
+        /*//console.log(data_error_ok);
+        //console.log(data_error_iso);
+        //console.log(data_cadence);
+        //console.log(data_volume);*/
+      },
+      error: function (error) {
+        //alert('error; ' +error);
+      }
+    });
+  }
+
+  function loadForm(val) {
+    $.ajax({
+      type: "GET",
+      url: "/ajaxForm?type="+val,
+      beforeSend: function(xhr){
+      },
+      success: function(msg){
+        $("#forms").html(msg);
+      },
+      error: function (error) {
+        //alert('error; ' +error);
+      }
+    });
+
+  }
+
+    function loadUrl(val) {
+       if(parseInt(val)==0){
+           url = "/ajaxAlm"
+       }else{
+           url = "/qual_almerys";
+       }
+
+  }
+
+
+
+
+  </script>
+
+
+</body>
+</html>
+

@@ -1,0 +1,1757 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TDB Stat</title>
+
+  <link rel="stylesheet" href="/styles/importer.css">
+  <link rel="stylesheet" href="/bootflat/css/bootflat.min.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/local.css">
+  <link rel="stylesheet" href="/css/Style_v3.css">
+  <!--STYLES END-->
+</head>
+
+<style>
+  #det{
+    animation: Test 1s infinite;
+    color: red;ull
+  }
+  @keyframes Test{
+    0%{opacity: 1;}
+    50%{opacity: 0;}
+    100%{opacity: 1;}
+  }
+</style>
+<body onload="loadMoy('<%=idpers%>');loadErreurCq('<%=idpers%>')">
+
+<%
+var  ip =  req.ip;
+////console.log("ip"+ip);
+%>
+<script>
+  var cars = [];
+  var prod = [];
+  var hprod = [];
+  var etape = [];
+  var dataetape = [];
+  var vitesseb = 0;
+  var vitessen = 0;
+  var quantite = 0;
+  var qualite = 0;
+
+  
+
+  function showRang(id_div,id_dossier,id_etape,pdate,id_pers){
+    var ms ;
+    var rang ;
+    $.ajax({
+      type: "GET",
+      url: '/rangJson?id_dossier='+id_dossier+'&id_etape='+id_etape+'&pdate='+pdate,
+      success: function(msg){
+        //$("#loadpointage").html(msg);
+        //$("#date").val(date);
+        ms = JSON.parse(msg);
+        rang = ms.rangList;
+        var rg = rang.indexOf(parseInt(id_pers))+1;
+        $("#"+id_div).html(rg+" / "+rang.length);
+        ////console.log("index:"+rang.indexOf(parseInt(id_pers))+" "+id_pers);
+        ////console.log('/rangJson?id_dossier='+id_dossier+'&id_etape='+id_etape+'&pdate='+pdate);
+      },
+      error: function (error) {
+        //alert('error; ' +error);
+      }
+    });
+  }
+
+
+  //alert("free"+myIP());
+  //var valeur = '25000000';
+  function formatArgent(valeur){
+    var charVal = valeur.split('');
+    var ct = charVal.length;
+    var response = '';
+    var indice =[];
+    for(var i = ct-3;i>0;i=i-3){
+      indice.push(i);
+    }
+    var compt = 0;
+    for(var i = indice.length-1; i>=0;i--){
+      response = response +'' + valeur.substring(compt, indice[i])+' ';
+      compt= indice[i];
+    }
+
+    //alert(indice);
+    ////console.log(valeur);
+    ////console.log(response);
+    ////console.log(ct);
+    return response;
+
+  }
+
+  //for calcule heure
+
+  var date_in=[];
+  var date_out=[];
+  var h_theorique="";
+</script>
+
+<div id="page-wrapper" class="content">
+
+
+  <div class="row">
+
+
+
+    <script src="/js/jquery-1.12.4.js"></script>
+    <script src="/js/jquery-ui.min.js"></script>
+    <script src="/js/helper.js"></script>
+    <link rel="stylesheet" href="/css/grapheStyle.css">
+    <div class="col-md-12 col-sm-12 col-xs-12" style="height: 50px;margin-top:-70px">
+      <marquee direction="left" onMouseOver="this.stop();" onMouseOut="this.start();">
+       <!-- <div class="row">
+          <div class="col-md-1 col-sm-1 col-xs-12" style="width: 70px">
+            <i class="fa text-danger fa-warning fa-4x"></i>
+          </div>
+          <div class="col-md-10 col-sm-10 col-xs-12">
+            <STRONG>ALERTE VOL</STRONG>
+            <p>Un vol a été commis vendredi 30 juin. Nous demandons à chacun de rester vigilant, et ne pas laisser de biens de valeur sans surveillance, jusqu'à ce que le ou les responsables soient identifiés.<br/>
+              Une plainte sera déposée à la police et la direction fera tout ce qui est possible pour identifier et poursuivre le ou les fautifs
+            </p>
+          </div>
+
+        </div>-->
+
+        <div class="row">
+          <div class="col-md-1 col-sm-1 col-xs-12" style="width: 70px">
+            <img style="height: 100px;width: 100px" class="img img-rounded" src="pub/santee.jpg">
+          </div>
+          <div class="col-md-1 col-sm-1 col-xs-12" style="width: 70px">
+          </div>
+          <div class="col-md-8 col-sm-8 col-xs-12">
+            <STRONG>CAS DE PESTE A TANA</STRONG><a href="#" id="det" data-toggle='modal' data-target='#alertModal' >(Details)</a>
+            <p>Afin de prévenir de tout risque d'infection, nous recommandons une hygiène irréprochable: se laver les mains régulièrement avec du savon.<br/>
+              En cas de contact involontaire avec des agents à risque (rats morts, personne infectée), ou l'apparition de symptômes, contacter immédiatement un médecin et prévenir l'entourage et la hiérarchie pour assister l'entourage<br/>
+              Cette infection se soigne facilement par antibiotiques si elle est détectée à temps.
+            </p>
+          </div>
+
+        </div>
+      </marquee>
+    </div>
+
+
+    <div class="col-md-12 col-sm-12 col-xs-12">
+      <div class="x_panel">
+        <div class="x_title">
+          <h2> <%= (quota) ? quota : 0 %> consultation(s) restante(s)</h2>
+          <ul class="nav navbar-right panel_toolbox">
+            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+            </li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+              <ul class="dropdown-menu" role="menu">
+                <li><div class="">
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                      <input type="number" id="timereload" required="required"  value="10">
+                    </div>
+                  </div>
+                </li>
+                </li>
+              </ul>
+            </li>
+            <li><a class="close-link"><i class="fa fa-close"></i></a>
+            </li>
+          </ul>
+          <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+
+          <div class="">
+            <div class="row top_tiles">
+
+              <!-- total --->
+
+              <div class="animated flipInY col-lg-2 col-md-2 col-sm-2 col-xs-12">
+
+                <div class="tile-stats">
+                  <div class="icon"><i class="fa fa-exclamation-triangle text-danger"></i></div>
+
+                  <div class="count" id="anomalie"></div>
+                  <h3>Anomalie </h3>
+                  <p>Anomalie GPAO et pointage ce mois</p>
+                </div>
+              </div>
+
+              <div class="animated flipInY col-lg-2 col-md-2 col-sm-2 col-xs-12">
+
+                <div class="tile-stats">
+                  <div class="icon"><i class="fa fa-folder-open text-warning"></i></div>
+
+                  <div class="count" id="dossier"></div>
+                  <h3>Dossiers Traitées</h3>
+                  <p>Nombre de dossier traitée ce jour</p>
+                </div>
+              </div>
+
+              <div class="animated flipInY col-lg-2 col-md-2 col-sm-2 col-xs-12">
+
+                <div class="tile-stats">
+                  <div class="icon"><i class="fa fa-step-forward text-primary"></i></div>
+
+                  <div class="count"><%=countEtape %></div>
+                  <h3>Etapes Traitées</h3>
+                  <p>Nombre d'etapes traitée ce jour</p>
+                </div>
+              </div>
+
+              <div class="animated flipInY col-lg-2 col-md-2 col-sm-2 col-xs-12">
+
+                <div class="tile-stats">
+                  <div class="icon"><i class="fa fa fa-bus text-info"></i></div>
+
+                  <a href="#" data-toggle="modal" data-target="#transportModal"><div class="count" id="nbtrans"></div></a>
+                  <h3 id="prixtrans"></h3>
+                  <p>Indemnités  de transport</p>
+                </div>
+              </div>
+
+              <div class="animated flipInY col-lg-3 col-md-3 col-sm-3 col-xs-12">
+
+                <div class="tile-stats">
+                  <div class="icon"><i class="fa fa-cutlery text-success"></i></div>
+
+                  <!--<div class="count" id="nbdej"></div>
+                  <h3 id="prixdej"></h3>-->
+
+                  <div class="count" id="nbdej"></div>
+                  <h3 id="prixdej"></h3>
+                  <p>Indemnités de Repas</p>
+                </div>
+              </div>
+
+
+              <div class="animated flipInY col-lg-1 col-md-1 col-sm-1 col-xs-12">
+
+
+                  <div class=" pull-right" id=""><img src="data:image/png;base64, <%= img%>" style="width: 120px;height: 120px"  class="img img-circle" alt="PH"/></div>
+
+                  <!--<div class="count" id="nbdej"></div>
+                  <h3 id="prixdej"></h3>-->
+
+
+
+              </div>
+
+              <!--<div class="animated flipInY col-lg-2 col-md-2 col-sm-2 col-xs-12">
+
+
+                <div class="row">
+                  <div class="col-md-4"><i class="fa fa fa-bus fa-3x text-info"></i></div>
+                  <div class="col-md-6"><h3>20000</h3></div>
+                </div>
+                  <div class="row">
+                    <div class="col-md-4"><i class="fa fa-cutlery fa-3x text-success"></i></div>
+                    <div class="col-md-6"><h3>10000</h3></div>
+                </div>
+
+                  <p id="">JAN 2016</p>
+              </div>-->
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+
+    <div class="col-md-12 col-sm-12 col-xs-12">
+      <div class="x_panel">
+        <div class="x_title">
+          <h2>Les erreurs du J moins un(<a id="jm1"></a>)</h2>
+          <ul class="nav navbar-right panel_toolbox">
+            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+            </li>
+
+            <li><a class="close-link"><i class="fa fa-close"></i></a>
+            </li>
+          </ul>
+          <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+          <div class="animated flipInY col-lg-6 col-md-6 col-sm-6 col-xs-12">
+
+            <div class="tile-stats">
+              <div class="icon"><i class="fa fa-warning text-primary"></i></div>
+
+              <div class="count" id="count_es">0</div>
+              <h3>ES</h3>
+            </div>
+          </div>
+          <div class="animated flipInY col-lg-6 col-md-6 col-sm-6 col-xs-12">
+
+            <div class="tile-stats">
+              <div class="icon"><i class="fa fa-warning text-primary"></i></div>
+
+              <div class="count" id="count_nrrg">0</div>
+              <h3>NRRG</h3>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+
+
+
+    <div class="col-md-6 col-sm-6 col-xs-12">
+      <div class="x_panel">
+        <div class="x_title">
+          <h2>Indicateurs de performance</h2>
+          <ul class="nav navbar-right panel_toolbox">
+            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+            </li>
+
+            <li><a class="close-link"><i class="fa fa-close"></i></a>
+            </li>
+          </ul>
+          <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+
+
+
+          <%
+
+          var lastIdPers = 0;
+          var lastidDossier = 0;
+
+          var PAUSE = 0;
+          var FORMATION = 0;
+          var ATTENTE_DE_TRAVAIL = 0;
+          var PAUSE_DEJEUNER = 0;
+          var PANNE_MACHINE = 0;
+          var PANNE_INTERNET = 0;
+          var PANNE_RESEAU = 0;
+          var Delegues_du_personnel = 0;
+          var PAUSE_TOILETTE = 0;
+          var INSTALLATION = 0;
+          var OSTIE = 0;
+          var REUNION = 0;
+          var MAINTENANCE = 0;
+          var PERMISSION = 0;
+          var EXERCICE_Sous_charge = 0;
+          var PROBLEME_APPLICATION = 0;
+          var TEST_APPLICATION = 0;
+          var REFECTION = 0;
+
+          //return $sql;
+          var qte = 0;
+          var nbOp = 1;
+          var prod = 0;
+          var horsProd = 0;
+
+          var sommeQte = 0;
+          var sommeHeure = 0;
+          var sommeHeureProd = 0;
+          var sommeHeureHorsProd = 0;
+          var heureprod_dossier = 0; //trie par dossier en prod
+          var horsprod_dossier = 0; //trie par dossier hors prod
+          var tmpStr = "";
+          var cl = '';
+          var arrayDossier = [];
+          var arrayVitBrut = [];
+          var ii = 0;
+
+          var pers = "";
+          var app = "";
+          resultat.forEach(function (arr) {
+            var date = "";
+
+            if (ii >= 3)
+              ii = 0;
+            cl = 'classe' . $ii;
+
+            somme = arr['somme'];
+            if (lastidDossier != arr['dossier']) {
+              heureprod_dossier = 0;
+              horsprod_dossier = 0;
+            }
+
+
+            if (lastIdPers != arr['id_pers']) {
+
+              ii++;
+              nbOp++;
+
+              sommeQte+=qte;
+              sommeHeureProd += prod;
+              sommeHeureHorsProd += horsProd;
+
+              qte = 0;
+              prod = 0;
+              horsProd = 0;
+
+              PAUSE = 0;
+              FORMATION = 0;
+              ATTENTE_DE_TRAVAIL = 0;
+              PAUSE_DEJEUNER = 0;
+              PANNE_MACHINE = 0;
+              PANNE_INTERNET = 0;
+              PANNE_RESEAU = 0;
+              Delegues_du_personnel = 0;
+              PAUSE_TOILETTE = 0;
+              INSTALLATION = 0;
+              OSTIE = 0;
+              REUNION = 0;
+              MAINTENANCE = 0;
+              PERMISSION = 0;
+              EXERCICE_Sous_charge = 0;
+              PROBLEME_APPLICATION = 0;
+              TEST_APPLICATION = 0;
+              REFECTION = 0;
+            }
+
+
+
+            qte += Number(arr['qte']);
+            ////console.log("qte========>"+qte);
+            // return qte." et total= ".arr['total'];
+            //  qte += arr['total'];//edit by Vololona
+
+
+            switch (arr['id_type_ldt']) {
+              case 0: prod+= arr['somme'];
+                heureprod_dossier+=arr['somme'];
+                break;
+              //case 1:	PAUSE+= arr['somme'];horsProd += arr['somme'];break;
+              case 1://pause
+                PAUSE+= arr['somme']
+                horsProd += arr['somme'];
+                break;
+                horsprod_dossier+= arr['somme'];
+                break;
+
+              case 2: FORMATION+= arr['somme'];
+                horsProd += arr['somme'];
+                horsprod_dossier+= arr['somme'];
+                break;
+              case 3: ATTENTE_DE_TRAVAIL+= arr['somme'];
+                horsprod_dossier+= arr['somme'];
+                horsProd += arr['somme'];
+                break;
+              case 4:	PAUSE_DEJEUNER+= arr['somme'];break;
+              case 5: PANNE_MACHINE+= arr['somme'];
+                horsprod_dossier+= arr['somme'];
+                horsProd += arr['somme'];
+                break;
+              case 6: PANNE_INTERNET+= arr['somme'];
+                horsprod_dossier+= arr['somme'];
+                horsProd += arr['somme'];
+                break;
+              case 7: PANNE_RESEAU+= arr['somme'];
+                horsprod_dossier+= arr['somme'];
+                horsProd += arr['somme'];
+                break;
+              case 8: Delegues_du_personnel+= arr['somme'];
+                horsprod_dossier+= arr['somme'];
+                horsProd += arr['somme'];
+                break;
+              case 9:	PAUSE_TOILETTE+= arr['somme'];break;
+              case 10:INSTALLATION+= arr['somme'];
+                horsprod_dossier+= arr['somme'];
+                horsProd += arr['somme'];
+                break;
+              case 11:OSTIE+= arr['somme'];
+                horsprod_dossier+= arr['somme'];
+                horsProd += arr['somme'];
+                break;
+              case 12:REUNION+= arr['somme'];
+                horsprod_dossier+= arr['somme'];
+                horsProd += arr['somme'];
+                break;
+              case 13:MAINTENANCE+= arr['somme'];
+                horsprod_dossier+= arr['somme'];
+                horsProd += arr['somme'];
+                break;
+              case 14:PERMISSION+= arr['somme'];
+                horsprod_dossier+= arr['somme'];
+                horsProd += arr['somme'];
+                break;
+              case 15:EXERCICE_Sous_charge+= arr['somme'];
+                horsprod_dossier+= arr['somme'];
+                horsProd += arr['somme'];
+                break;
+              case 16:PROBLEME_APPLICATION+= arr['somme'];
+                horsprod_dossier+= arr['somme'];
+                horsProd += arr['somme'];
+                break;
+              case 17:TEST_APPLICATION+= arr['somme'];
+                horsprod_dossier+= arr['somme'];
+                horsProd += arr['somme'];
+                break;
+              case 18:REFECTION+= arr['somme'];
+                horsprod_dossier+= arr['somme'];
+                horsProd += arr['somme'];
+                break;
+            }
+            pers = arr['id_pers'];
+            app = arr['appelation'];
+
+            lastIdPers = arr['id_pers'];
+            lastidDossier = arr['dossier'];
+
+          });
+          var total = prod + horsProd;
+
+          ////console.log("totam============>"+total);
+          ////console.log("prod============>"+prod);
+
+          var vitesse_brute = (total !=0) ? math.round(qte / (total / 3600), 2) : '';
+          var vitesse_nette = (prod !=0) ? math.round(qte / (prod / 3600), 2) : '';
+
+          var data_type1 = [];
+          var l_type1 = [];
+
+          var data_type2 = [];
+          var l_type2 = [];
+
+          var data_type3 = [];
+          var l_type3 = [];
+          var vitnett = {};
+          vitnett.value = vitesse_nette;
+          vitnett.name = "VITESSE NETTE";
+          data_type1.push(vitnett);
+          l_type1.push(vitnett.name);
+          var vitbrut = {};
+          vitbrut.value = vitesse_brute;
+          vitbrut.name = "VITESSE BRUTE";
+          data_type1.push(vitbrut);
+          l_type1.push(vitbrut.name);
+          var qteob = {};
+          qteob.value = qte;
+          qteob.name = "QUANTITE";
+          data_type2.push(qteob);
+          l_type2.push(qteob.name);
+          var tot = {};
+          tot.value = math.round(total / 3600,2);
+          tot.name = "HEURE TOTAL";
+          data_type3.push(tot);
+          l_type3.push(tot.name);
+          var produ = {};
+          produ.value = math.round(prod / 3600,2);
+          produ.name = "HEURE PRODUCTION";
+          data_type3.push(produ);
+          l_type3.push(produ.name);
+          var hhprodu = {};
+          hhprodu.value = math.round(horsProd / 3600,2);
+          hhprodu.name = "HEURE HORS PRODUCTION";
+          data_type3.push(hhprodu);
+          l_type3.push(hhprodu.name);
+
+          %>
+
+
+          <di class="col-md-6">
+            <label>Vitesse</label>
+            <div id="echart_type1" style="height:360px;"></div>
+          </di>
+          <di class="col-md-6">
+            <label>Quantité</label>
+            <div id="echart_type2" style="height:360px;"></div>
+          </di>
+
+
+
+
+
+          <%
+
+          sommeQte+=qte; //$qte
+          totalMoyenne = 0;
+          totalnette = 0;
+
+
+
+
+
+          %>
+
+          </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+
+    <div class="col-md-6 col-sm-6 col-xs-12">
+      <div class="x_panel">
+        <div class="x_title">
+          <a href="#" data-toggle="modal" data-target="#modalLdtOnepers" onclick="">
+            <h2>Ligne de temps</h2></a>
+          <ul class="nav navbar-right panel_toolbox"></a>
+            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+            </li>
+
+            <li><a class="close-link"><i class="fa fa-close"></i></a>
+            </li>
+          </ul>
+          <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+
+          <%
+          var data_doss = [];
+          var l_doss = [];
+
+
+
+          var Dossier = {
+          };
+          for(var tt = 0; tt<byDossier.length;tt++){
+            if(tt!=0){
+            }
+
+            Dossier[byDossier[tt][0]]=byDossier[tt][1]+byDossier[tt][2];
+          }
+
+          getEtape.forEach(function (row) {
+            var optionDossier = {};
+            optionDossier.name = row.libelle;
+            optionDossier.value = math.round(row.duree/3600,2);
+
+            l_doss.push(row.libelle);
+            data_doss.push(optionDossier);
+          })
+
+
+
+          %>
+          <div class="col-md-6">
+            <div id="echart_dossier" style="height:400px;"></div>
+          </div>
+
+          <div class="col-md-6">
+            <table class='table table-bordered'>
+              <thead>
+              <tr>
+                <th>ETAPES</th>
+                <th>DOSSIER</th>
+                <th>DUREE</th>
+                <th>QUANTITE</th>
+                <th>VITESSE</th>
+                <th>RANG</th>
+              </tr>
+              </thead>
+              <tbody>
+              <%
+              var i = 0;
+              var qteTotal = 0;
+              var hTotalLdt = 0;
+              var totalVitess = 0;
+              var lastDossier = '';
+              var ctDossier = 0;
+              rs.forEach(function (row) {
+                var dossier = (row['num'] == lastDossier) ? '' : row['num'];
+
+              if (row['num'] != lastDossier) {
+                ctDossier++;
+
+                var tr = " <tr> " +
+                            "<td></td>" +
+                            "<td>"+row['num']+"</td>" +
+                            "<td></td>" +
+                            "<td></td>" +
+                            "<td></td>" +
+                            "<td></td> " +
+                          "</tr>";
+
+              %>
+
+              <%-tr %>
+
+
+              <%
+              }
+
+                var qte = Number(row['qte']);
+                var duree = row['duree'] / 3600;
+
+                var vitesse = (qte != 0) ? math.round(qte / duree, 2) : '';
+                qte = (qte != 0) ? qte : '';
+                lastDossier = row['num'];
+                var lib = (row['libelle'] == '' || row['libelle'] == null) ? row['lib']  : row['libelle'];
+                ////console.log("id_type_ldt"+row['id_type_ldt'])
+                if(Number(row['id_type_ldt'])>0){
+                    lib = row['lib'];
+                }
+
+                var tr = " <tr> " +
+                  "<td>"+lib+"</td>" +
+                  "<td></td>" +
+                  "<td>"+math.round(duree,2)+"</td>" +
+                  "<td>"+qte+"</td>" +
+                  "<td>"+vitesse+"</td>" ;
+
+                 if(row['libelle'] == '' || row['libelle'] == null){
+                    var td = "<td></td>";
+                    tr = tr + td + "</tr>";
+                 }else{
+                     var td = "<td id='rg_"+row['id_dossier']+"_"+row['id_etape']+"'></td>";
+                     var script = "";
+                     script = "<script>" +
+                    "//console.log('rg_" +row['libelle']+"');" +
+                    "showRang('rg_"+row['id_dossier']+"_"+row['id_etape']+"','"+row['id_dossier']+"','"+row['id_etape']+"','"+datecible +"','"+idpers+"');"+
+                    "</script>";
+
+                tr = tr + td + script+ "</tr>";
+                  %>
+                <%
+                 }
+                  %>
+              <%-tr %>
+
+              </tr>
+
+
+              <%
+
+              })
+              %>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-sm-6 col-xs-12">
+      <div class="x_panel">
+        <div class="x_title">
+          <h3 class="panel-title"><i class="fa fa-bar-chart-o"></i>Pointage</h3>
+          <ul class="nav navbar-right panel_toolbox">
+            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+            </li>
+
+            <li><a class="close-link"><i class="fa fa-close"></i></a>
+            </li>
+          </ul>
+          <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+          <div class="col-md-6">
+
+            <svg id="pt_jauge" width="100%" height="160" onclick="/*gauge1.update(NewValue());*/"></svg>
+          </div>
+
+          <div class="col-md-6">
+
+            <table class='table table-bordered col-md-3'>
+              <thead>
+              <tr>
+                <th>Pointeuse</th>
+                <th>Heure</th>
+                <th>Source</th>
+              </tr>
+              </thead>
+              <tbody>
+              <%
+              var date_in = [];
+              var date_out = [];
+              var h_theorique_str = "";
+              pointage.forEach(function (row) {
+                h_theorique_str = row.horaire_journaliere;
+                ////console.log("IN = "+(row['sortie'])) ;
+                if((row['source']).indexOf("IN")===0){
+                  date_in.push(row['entree']);
+                }else{
+                  date_out.push(row['entree']);
+                }
+              %>
+
+              <tr>
+                <td><%=row['source'] %></td>
+                <td><%=row['entree'] %></td>
+                <td><%=row['sortie'] || 'BIO' %></td>
+
+              </tr>
+
+
+              <%
+
+              })
+
+
+              %>
+
+              <script>
+                date_in = <%-JSON.stringify(date_in) %>;
+                date_out = <%-JSON.stringify(date_out) %>;
+                h_theorique = <%-JSON.stringify(h_theorique_str) %>;
+              </script>
+              </tbody>
+            </table>
+
+            <!-- duree -->
+            <table class='table table-bordered col-md-3'>
+              <thead>
+              <tr>
+                <th>Consomée</th>
+                <th>Restant</th>
+                <th>Heure theorique</th>
+              </tr>
+              </thead>
+              <tbody>
+
+
+
+              <tr  id="table_pt_cal">
+                <td id="cons"></td>
+                <td id="rest"></td>
+                <td id="htheorique"></td>
+
+              </tr>
+              <!--<tr  id="">
+                <th class="text-center">Heure fin</th>
+                <th id="">approximatif</th>
+                <td id="fin"></td>-->
+
+              </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+
+
+
+
+
+    <div class="col-md-6">
+      <!-- table anomalie pointage-->
+      <div class="x_panel">
+        <div class="x_title">
+          <a href="#" data-toggle="modal" data-target="#modalAnomalie" onclick="">
+            <h3 class="panel-title"><i class="fa fa-bar-chart-o"></i>Anomalie </h3></a>
+          <ul class="nav navbar-right panel_toolbox">
+            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+            </li>
+
+            <li><a class="close-link"><i class="fa fa-close"></i></a>
+            </li>
+          </ul>
+          <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+          <table class='table table-bordered'>
+            <thead>
+            <tr>
+              <th>DATE</th>
+              <th>MOTIF</th>
+            </tr>
+            </thead>
+            <tbody>
+            <%
+
+            var anomalie = 0;
+            var nbtrans = 0;
+            var nbdej = 0;
+
+            var hdej = 6;
+            var pdej = 2000;
+            var htmlTrans = '';
+            var h_theo = '';
+
+            pointageMens.forEach(function (row) {
+
+              var splitGPAO = [];
+              var splitProd = [];
+              var splitTHE = [];
+              var hgpao = 0;
+              var hgprod = 0;
+              var htheorique = 0;
+              var ht = 0;
+              h_theo = row.horaire_journaliere;
+            if(row.pdate!=(new Date().toISOString().replace(/-/,'/').replace(/-/,'/').substr(0,10))){
+
+
+
+
+              var hgpao = row.duree_prod_gpao_rh || '00:00:00';
+              var hprod = row.duree_prod || '00:00:00';
+
+              var gpaoH= hgpao.split(":");
+              var prodH= hprod.split(":");
+              var hgtheorique= row.horaire_journaliere || '00:00:00';
+
+              var theoSplt  = hgtheorique.split(":");
+
+              var Ht = Number(theoSplt[0])+ Number(theoSplt[1])/60 + (Number(theoSplt[2])/60)/60;
+              var Hg = Number(gpaoH[0])+ Number(gpaoH[1])/60 + (Number(gpaoH[2])/60)/60;
+
+              var Hpr = Number(prodH[0])+ Number(prodH[1])/60 + (Number(prodH[2])/60)/60;
+
+
+              var stat_rep = "nok";
+              var stat_trans = "nok";
+              var come = "heures travaillées insufisant";
+              var tot_com = "";
+
+              if(Ht>6){
+                pdej = 3000;
+              }
+              if(row.categorie === 'HC'){
+                if(Number(row.id_dep)!==23){
+                  if(Hpr>=4){
+                    stat_trans = "ok"
+                    come = "";
+                    nbtrans ++;
+                  }
+
+                  if(Hpr>=Ht-1){
+                    stat_rep = "ok"
+                    nbdej++;
+                  }
+                }else{
+                  if(Hpr>=4){
+                    stat_rep = "ok"
+                    stat_trans = "ok"
+                    come = "";
+                    nbtrans ++;
+                    nbdej++;
+                  }
+                }
+              }else{
+                if(Number(row.id_dep)!==23){
+                  if(Hg>=4 || Hpr>=4){
+                    stat_trans = "ok"
+                    come = "";
+                    nbtrans ++;
+                  }
+
+                  if(Hg>=Ht-1 || Hpr>=Ht-1){
+                    stat_rep = "ok"
+                    come = "";
+                    nbdej++;
+                  }
+                }else{
+                  if(Hpr>=4 || Hg>=4){
+                    stat_rep = "ok"
+                    stat_trans = "ok"
+                    come = "";
+                    nbtrans ++;
+                    nbdej++;
+                  }
+                }
+              }
+
+              if(row.type_erreur == 'Absent'){
+                htmlTrans = htmlTrans + '<tr><td>'+row.pdate+'</td><td>Absent</td><td>nok</td><td>nok</td></tr>';
+              }else{
+                htmlTrans = htmlTrans + '<tr><td>'+row.pdate+'</td><td>'+come+'</td><td>'+stat_trans+'</td><td>'+stat_rep+'</td></tr>';
+              }
+
+
+
+
+            if(row.commentaire != null && row.commentaire!= '' && row.commentaire!= 'null'){
+              anomalie++;
+            %>
+            <tr>
+              <td><a href="#" onclick="loadpointage('<%= row.id_util %>','<%= row.pdate%>',0)" data-toggle="modal" data-target="#modalAnomalie"><%=row.pdate %></a></td>
+              <td><%=row.commentaire %></td>
+            </tr>
+            <%
+            }else if(row.type_erreur != null && row.type_erreur!= '' && row.type_erreur!= 'null'){
+              anomalie++;
+            %>
+            <tr>
+              <td><a href="#" onclick="loadpointage('<%= row.id_util %>','<%= row.pdate%>',0)" data-toggle="modal" data-target="#modalAnomalie"><%=row.pdate %></a></td>
+              <td><%=row.type_erreur%></td>
+            </tr>
+            <%
+            }else if(hgpao!==0 && hgpao<htheorique){
+              anomalie++;
+            %>
+            <tr>
+              <td><a href="#" onclick="loadpointage('<%= row.id_util %>','<%= row.pdate%>',1)" data-toggle="modal" data-target="#modalAnomalie"><%=row.pdate %></a></td>
+              <td>heure prod insuffisant(<%=row.duree_prod_gpao%>)</td>
+            </tr>
+            <%
+            }
+            }});
+
+            %>
+
+            <script>
+              var nbdossier = <%-ctDossier%>;
+              var nbAnomalie = <%-anomalie%>;
+              var nbtrans = <%-nbtrans%>;
+              var nbdej = <%-nbdej%>;
+              var pdej = <%-pdej%>;
+
+              var htmTr = '<%-htmlTrans%>';
+              var prixtrans = ""+(parseInt(nbtrans)*1000);
+              var prixrep = ""+(parseInt(nbdej)*pdej);
+
+              $("#anomalie").text(""+nbAnomalie);
+              $("#dossier").text(""+nbdossier);
+              $("#nbtrans").text(""+nbtrans);
+              $("#prixtrans").text(""+prixtrans+" Ariary" );
+              $("#nbdej").text(""+nbdej);
+              $("#prixdej").text(""+prixrep +" Ariary" );
+              /*$("#anomalie").html("20");
+               $("#dossier").html("1");*/
+            </script>
+            </tbody>
+          </table>
+
+        </div>
+      </div>
+    </div>
+
+
+
+
+
+
+
+  </div>
+</div>
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+</div>
+<!-- modal-->
+<!--modal detail ligne de temps-->
+<div class="modal fade" id="modalLdtOnepers" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <!--Content-->
+    <form method="GET" action="#" >
+      <div class="modal-content">
+        <!--Header-->
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" id="myModalLabel">Detail ligne de temps : <% idpers %></h4>
+        </div>
+        <!--Body-->
+        <div class="modal-body">
+          <table width=\"100%\"><thead><tr>
+              <th class='th'  id='matricule'>User</th>
+              <th class='th'  id='num_dossier'>Dossier</th>
+              <th class='th'  id='lib'>Etape</th>
+              <th class='th'  id='ldg'>LDG</th>
+              <th class='th'  id='type'>Type</th>
+              <th class='th'  id='h_deb'>Heure Debut</th>
+              <th class='th'  id='h_fin'>Heure Fin</th>
+              <th class='th'  id='h_fin'>Duree</th>
+              <th class='th'  id='quantite'>Qte</th>
+              <th class='th'  id='quantite'>Vitesse</th>
+              <th class='th'  id='nbre_erreur'>NbErr</th>
+              <th class='th'  id='statu'>Statut</th>
+              <th></th></tr></thead>
+            <tbody>
+            <%
+
+            var vitesse=0;
+            ldtOne.forEach(function (ldtO) {
+              if(ldtO.quantite!=0 && ldtO.quantite!=null)
+              {
+                vitesse=ldtO.quantite/(ldtO.duree/3600);
+              }else
+                vitesse=0;
+
+
+            %>
+            <tr>
+
+              <td><%=ldtO.matricule %></td>
+              <% if(ldtO.num_dossier!=null)
+              {%>
+              <td><%=ldtO.num_dossier %></td>
+              <% }else { %>
+              <td> - </td><%}
+              if(ldtO.lib!=null)
+              {
+              %>
+              <td><%=ldtO.lib %></td>
+              <% }else { %>
+              <td> - </td><%}
+              if(ldtO.ldg)
+              {
+              %>
+              <td><%=ldtO.ldg %></td>
+              <%} else { %>
+              <td> - </td>
+              <% } if(ldtO.type!=null)
+              {%>
+              <td><%=ldtO.type %></td>
+              <% }else { %>
+              <td> - </td><%}%>
+
+
+              <td><%=ldtO.h_deb %></td>
+              <% if(ldtO.h_fin!=null){ %>
+              <td><%=ldtO.h_fin %></td>
+              <%} else { %><td> - </td> <% }
+              if(ldtO.duree!=null){
+              %>
+              <td><%=(ldtO.duree/3600).toFixed(2) %></td>
+              <%} else { %><td> - </td> <% }
+              if(ldtO.quantite!=null){
+              %>
+              <td><%=ldtO.quantite %></td>
+              <%} else { %><td> - </td> <% }
+              %>
+              <td><%=(vitesse).toFixed(2) %></td>
+              <% if(ldtO.nbre_erreur!=null)
+              {%>
+              <td><%=ldtO.nbre_erreur %></td>
+              <% }else { %>
+              <td> - </td><%}%>
+              <td><%=ldtO.statu %></td>
+
+            </tr>
+            <%
+            });
+
+            %>
+
+            </tbody>
+
+          </table>
+          <input type="text"  id="idLien" name="id" required="required"  class="hidden" value="">
+          <input type="text"  id="idEtape" name="idetape" required="required"  class="hidden" value="">
+        </div>
+        <!--Footer-->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermé</button>
+        </div>
+      </div>
+    </form>
+    <!--/.Content-->
+  </div>
+</div>
+
+<!--modal anomalie -->
+<div id="modalAnomalie" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Listes des Pointages</h4>
+      </div>
+      <div class="modal-body">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+          <div id="loadpointage">
+
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+      </div>
+
+    </div>
+  </div>
+</div>
+<!--fin  modal-->
+
+
+<!-- modal-->
+<div class="modal fade" id="transportModal" tabindex="-1" role="dialog" aria-labelledby="transportModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <!--Content-->
+    <form method="GET" action="#" >
+      <div class="modal-content">
+        <!--Header-->
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" id="myModalLabel"></h4>
+        </div>
+        <!--Body-->
+        <div class="modal-body">
+          <table>
+            <thead>
+            <tr>
+              <th>Date</th>
+              <th>Commentaire</th>
+              <th>Transport</th>
+              <th>Repas</th>
+            </tr>
+            </thead>
+            <tbody id="transtab">
+
+            </tbody>
+          </table>
+        </div>
+        <!--Footer-->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermé</button>
+        </div>
+      </div>
+    </form>
+    <!--/.Content-->
+  </div>
+</div>
+
+<!-- modal-->
+<div class="modal fade" id="erreurModal" tabindex="-1" role="dialog" aria-labelledby="erreurModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <!--Content-->
+    <form method="GET" action="#" >
+      <div class="modal-content">
+        <!--Header-->
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" id="erreurModalLabel"></h4>
+        </div>
+        <!--Body-->
+        <div class="modal-body">
+          <table>
+            <thead>
+            <tr>
+              <th>Num Nuo</th>
+              <th>Motif</th>
+            </tr>
+            </thead>
+            <tbody id="erreurtab">
+
+            </tbody>
+          </table>
+        </div>
+        <!--Footer-->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermé</button>
+        </div>
+      </div>
+    </form>
+    <!--/.Content-->
+  </div>
+</div>
+
+
+
+<!-- modal-->
+<div class="modal fade" id="alertModal" tabindex="-1" role="dialog" aria-labelledby="alertModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <!--Content-->
+    <form method="GET" action="#" >
+      <div class="modal-content">
+        <!--Header-->
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" id="alertModalLabel"></h4>
+        </div>
+        <!--Body-->
+        <div class="modal-body">
+          <div id="myCarousel" class="carousel slide" data-ride="carousel">
+            <!-- Indicators -->
+            <ol class="carousel-indicators">
+              <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+              <li data-target="#myCarousel" data-slide-to="1"></li>
+              <li data-target="#myCarousel" data-slide-to="2"></li>
+              <li data-target="#myCarousel" data-slide-to="3"></li>
+            </ol>
+
+            <!-- Wrapper for slides -->
+            <div class="carousel-inner">
+              <div class="item active">
+                <img style="width: 100%"  src="img/peste/1.jpg" alt="Page 1">
+              </div>
+
+              <div class="item">
+                <img style="width: 100%" src="img/peste/2.jpg" alt="Page 2">
+              </div>
+
+              <div class="item">
+                <img style="width: 100%"  src="img/peste/3.jpg" alt="Page 3">
+              </div>
+
+              <div class="item">
+                <img style="width: 100%"  src="img/peste/4.jpg" alt="Page 4">
+              </div>
+            </div>
+
+            <!-- Left and right controls -->
+            <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+              <span class="glyphicon glyphicon-chevron-left"></span>
+              <span class="sr-only">Previous</span>
+            </a>
+            <a class="right carousel-control" href="#myCarousel" data-slide="next">
+              <span class="glyphicon glyphicon-chevron-right"></span>
+              <span class="sr-only">Next</span>
+            </a>
+          </div>
+        </div>
+        <!--Footer-->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermé</button>
+        </div>
+      </div>
+    </form>
+    <!--/.Content-->
+  </div>
+</div>
+<script src="/bootstrap/js/bootstrap.min.js"></script>
+<script src="/vendors/fastclick/lib/fastclick.js"></script>
+<!-- NProgress -->
+<script src="/vendors/nprogress/nprogress.js"></script>
+<!-- ECharts -->
+<script src="/vendors/echarts/dist/echarts.min.js"></script>
+
+
+
+<script src="/js/dependencies/sails.io.js"></script>
+<script src="/js/jquery-1.12.4.js"></script>
+<script src="/js/jquery-ui.min.js"></script>
+<script src="/js/echarts/theme.js"></script>
+<script src="/js/echarts/echarts.js"></script>
+<script src="/js/custom.min.js"></script>
+
+<!-- <script src="http://d3js.org/d3.v3.min.js" language="JavaScript"></script>-->
+<script src="/js/d3/d3.v3.min.js" language="JavaScript"></script>
+<script src="liquidFillGauge.js" language="JavaScript"></script>
+
+
+
+<script>
+
+  var host = window.location.hostname;
+  var id = '<%=idpers %>';
+  io.sails.url = 'http://'+host+':9090';
+  io.socket.on("connecting", function (msg) {
+    $.ajax({
+      type: "GET",
+      url: "/ImConnected?id_pers="+id+"&type=0",
+      success: function(msg){
+      },
+      error: function (error) {
+        //alert('error; ' +error);
+      }
+    });
+  });
+  $("#transtab").html(""+htmTr);
+
+
+
+
+
+  /*//console.log(dateDiff(date1, date2));
+   //console.log(date_in);
+   //console.log(date_out);
+   //console.log(dateDiff(date1, date2));*/
+
+  //transformation en date
+
+
+  var lab_chart3 = <%-JSON.stringify(l_type3)%>;
+  var data_chart3 = <%-JSON.stringify(data_type3)%>;
+
+
+  var lab_chart_doss = <%-JSON.stringify(l_doss)%>;
+  var data_chart_doss = <%-JSON.stringify(data_doss)%>;
+
+
+
+
+
+
+ /* var echartPieCollapseCl3 = echarts.init(document.getElementById('echart_type3'), theme);
+  echartPieCollapseCl3.setOption(getOptionPieCol(lab_chart3,data_chart3));*/
+
+  var echartPieCollapseDossier = echarts.init(document.getElementById('echart_dossier'), theme);
+  echartPieCollapseDossier.setOption(getOptionPieCol(lab_chart_doss,data_chart_doss));
+
+  var date_in_d = [];
+  var date_out_d = [];
+
+  var duree = 0;
+  var th_split = h_theorique.split(":");
+  var dure_theorique = 1000 * (parseInt(th_split[0])*60*60+parseInt(th_split[1])*60+parseInt(th_split[1]));
+  dur_tmp = 0;
+
+
+  /*calcule de reel pointage*/
+  var tableIn =[];
+  var tableOut =[];
+
+  var lastIn = null;
+  var lastOut = null;
+  //recuperation de la liste exacte des heures de pointages sans doublons
+  for (var i = 0;i<date_in.length;i++){
+    if(lastIn !== null){
+      var lastInsplit = lastIn.split(":");
+      var linNum = new Date().setHours(parseInt(lastInsplit[0]), parseInt(lastInsplit[1]), parseInt(lastInsplit[2]));
+      var Insplit = date_in[i].split(":");
+      var inNum = new Date().setHours(parseInt(Insplit[0]), parseInt(Insplit[1]), parseInt(Insplit[2]));
+      //comparaison par rapport au last In si la #ce entre in[i] et lastIn < 1 Min
+      if(((inNum-linNum)/1000)/60 > 0.1/*min*/){
+        //on affecte in[i] dans lastIn et dans tableIn
+        lastIn  = date_in[i];
+        tableIn.push(lastIn);
+
+      }
+    }else{
+      lastIn  = date_in[i];
+      tableIn.push(lastIn);
+    }
+  }
+
+  for (var i = 0;i<date_out.length;i++){
+
+    if(lastOut !== null){
+      var lastOutsplit = lastOut.split(":");
+      var loutNum = new Date().setHours(parseInt(lastOutsplit[0]), parseInt(lastOutsplit[1]), parseInt(lastOutsplit[2]));
+      var Outsplit = date_out[i].split(":");
+      var outNum = new Date().setHours(parseInt(Outsplit[0]), parseInt(Outsplit[1]), parseInt(Outsplit[2]));
+      //comparaison par rapport au lastOut si la #ce entre out[i] et lastOut < 1 Min
+      if(((outNum-loutNum)/1000)/60 > 0.1/*min*/){
+        //on affecte out[i] dans lastOut et dans tableOut
+        lastOut  = date_out[i];
+        tableOut.push(lastOut);
+
+      }
+    }else{
+
+      lastOut  = date_out[i];
+      tableOut.push(lastOut);
+    }
+  }
+
+  //console.log("---------------------------------------------------------------------------------------------------------------");
+  //console.log(tableIn);
+  //console.log(tableOut);
+
+
+  var idpers = <%=idpers%>;
+
+  /*calcule de reel pointage*/
+  for(var i=0 ; i<tableIn.length;i++) {
+    if (tableIn.length < tableOut.length) {
+      //console.log("anomalie pointage");
+    } else {
+      var date_in_tmp = new Date();
+      var date_out_tmp = new Date();
+      var in_split = tableIn[i].split(":");
+      date_in_tmp.setHours(parseInt(in_split[0]), parseInt(in_split[1]), parseInt(in_split[2]));
+      var out_split = [];
+      if (typeof tableOut[i] === "undefined") {
+
+      } else {
+        out_split = tableOut[i].split(":");
+        date_out_tmp.setHours(parseInt(out_split[0]), parseInt(out_split[1]), parseInt(out_split[2]));
+      }
+      var tmp = dateDiff(date_in_tmp, date_out_tmp);
+      dur_tmp += (date_out_tmp - date_in_tmp);
+
+      //console.log("temp : " + (date_out_tmp - date_in_tmp));
+      //console.log(date_in_tmp);
+      //console.log(date_out_tmp);
+    }
+  }
+  var h_cons =  format(dur_tmp);
+  var charDuree = ""+h_cons.hour+":"+h_cons.min+":"+h_cons.sec;
+
+  var h_tot = dure_theorique;
+  var dtt = h_tot - dur_tmp;
+  var p_time = 0;
+  if(h_tot!=0){
+    p_time = (dur_tmp/h_tot)*100;
+  }
+
+  /* load gauge for  pointage */
+  var gauge1 =  loadGauge(p_time);
+
+
+
+
+
+  if((h_tot - dur_tmp)<0){
+    dtt = 0;
+  }
+  var h_rest = format(dtt);
+  var dateNow = new Date();
+  var charRest = ""+h_rest.hour+":"+h_rest.min+":"+h_rest.sec;
+  var d_split = charRest.split(":");
+  dateNow.setHours(dateNow.getHours()+parseInt(d_split[0]),  dateNow.getMinutes()+parseInt(d_split[1]),  dateNow.getSeconds()+parseInt(d_split[2]));
+  var dataDatTer = format(dateNow);
+  var charTer = ""+dataDatTer.hour+":"+dataDatTer.min+":"+dataDatTer.sec;
+  //console.log("now:"+dateNow);
+  //console.log(h_tot);
+  //console.log(dur_tmp);
+
+  //console.log(charDuree);
+  //console.log(charRest);
+  $("#cons").html(""+charDuree);
+  $("#rest").html(""+charRest);
+  $("#htheorique").html(""+h_theorique);
+  //$("#fin").html(""+dateNow.getHours()+":"+dateNow.getMinutes()+":"+dateNow.getSeconds());
+  if(h_theorique==""){
+    $("#cons").html("Pointage Manquant");
+    $("#rest").html("");
+    $("#htheorique").html("");
+  }
+
+
+  function loadGauge(p_time) {
+
+    var config1 = liquidFillGaugeDefaultSettings();
+    config1.waveAnimateTime = 1000;
+    var gauge = loadLiquidFillGauge("pt_jauge", p_time,config1);
+    return gauge;
+  }
+
+  function dateDiff(date1, date2){
+    var diff = {}                           // Initialisation du retour
+    var tmp = date2 - date1;
+
+    tmp = Math.floor(tmp/1000);             // Nombre de secondes entre les 2 dates
+    diff.sec = tmp % 60;                    // Extraction du nombre de secondes
+
+    tmp = Math.floor((tmp-diff.sec)/60);    // Nombre de minutes (partie entière)
+    diff.min = tmp % 60;                    // Extraction du nombre de minutes
+
+    tmp = Math.floor((tmp-diff.min)/60);    // Nombre d'heures (entières)
+    diff.hour = tmp % 24;                   // Extraction du nombre d'heures
+
+    tmp = Math.floor((tmp-diff.hour)/24);   // Nombre de jours restants
+    diff.day = tmp;
+
+    return tmp;
+  }
+
+  function format(duree){
+    var diff = {};
+    duree = Math.floor(duree/1000);             // Nombre de secondes entre les 2 dates
+    diff.sec = duree % 60;                    // Extraction du nombre de secondes
+
+    duree = Math.floor((duree-diff.sec)/60);    // Nombre de minutes (partie entière)
+    diff.min = duree % 60;                    // Extraction du nombre de minutes
+
+    duree = Math.floor((duree-diff.min)/60);    // Nombre d'heures (entières)
+    diff.hour = duree % 24;                   // Extraction du nombre d'heures
+
+    duree = Math.floor((duree-diff.hour)/24);   // Nombre de jours restants
+    diff.day = duree;
+
+    return diff;
+  }
+  function setDataModal(pause,form,adt,pd,pm,pi,pr,ddp,pt,ins,ostie,reunion,maint,perm,ecs,pa,ta,ref){
+    document.getElementById("pause").innerHTML =''+rnd(pause);
+    document.getElementById("formation").innerHTML =''+rnd(form);
+    document.getElementById("adt").innerHTML =''+rnd(adt);
+    document.getElementById("panemachine").innerHTML =''+rnd(pm);
+    document.getElementById("panneinternet").innerHTML =''+rnd(pi);
+    document.getElementById("pr").innerHTML =''+rnd(pr);
+    document.getElementById("ddp").innerHTML =''+rnd(ddp);
+    document.getElementById("pt").innerHTML =''+rnd(pt);
+    document.getElementById("ins").innerHTML =''+rnd(ins);
+    document.getElementById("ostie").innerHTML =''+rnd(ostie);
+    document.getElementById("reunion").innerHTML =''+rnd(reunion);
+    document.getElementById("maint").innerHTML =''+rnd(maint);
+    document.getElementById("perm").innerHTML =''+rnd(perm);
+    document.getElementById("esc").innerHTML =''+rnd(ecs);
+    document.getElementById("pa").innerHTML =''+rnd(pa);
+    document.getElementById("ta").innerHTML =''+rnd(ta);
+    document.getElementById("refection").innerHTML =''+rnd(ref);
+    document.getElementById("paused").innerHTML =''+rnd(pd);
+    /*document.getElementById("idLien").value =''+id;
+     document.getElementById("myModalLabel").innerHTML='Modification de '+libelle;
+     if(vit!='' && vit!=null){
+     document.getElementById("vit").value =''+vit;
+     }
+     document.getElementById("qte").value =''+qte;
+     document.getElementById("idEtape").value =''+et;*/
+
+  }
+
+  function rnd(ch){
+    return ch;
+  }
+
+
+  function loadpointage(idpers,date,type){
+    var url = "/ajaxPointageDet?pdate="+date+"&id_pers="+idpers;
+    if(Number(type)!=0){
+      var action  = "getLstLdt";
+      var deb  = ""+date;
+      var fin  = "";
+      var dossier  = "";
+      var etape  = "";
+      var mat  = idpers;
+      var stat  = "";
+      var orderby  = "";
+      var dep  = "";
+
+      url = "http://gpao.easytech.mg/php/link.php?action="+action+"&deb="+deb+"&fin="+fin+"&dossier="+dossier+"&mat="+mat+"&stat="+stat+"&orderby="+orderby+"&dep="+dep+"&etape="+etape;
+    }
+
+    //alert("List pt de "+idpers+" du "+date);
+    $.ajax({
+      type: "GET",
+      url: url,
+      success: function(msg){
+        $("#loadpointage").html(msg);
+        //$("#date").val(date);
+      },
+      error: function (error) {
+        //alert('error; ' +error);
+      }
+    });
+  }
+
+
+  function loadMoy(id){
+    $.ajax({
+      type: "GET",
+      url: "/ldtMoy?idpers="+id,
+      success: function(msg){
+        //$("#loadpointage").html(msg);
+        //$("#date").val(date);
+        var data = JSON.parse(msg)
+        var leg = [];
+        var dat = [];
+        var dat2 = [];
+        for (var c = 0 ; c <data.moy.length ; c++){
+          var obj = { name : data.moy[c].libelle,value :  Math.round(data.moy[c].pqte,2) };
+          var obj2 = { name : data.moy[c].libelle,value :  Math.round(data.moy[c].pvit,2) };
+          leg.push(data.moy[c].libelle);
+          dat.push(obj);
+          dat2.push(obj2);
+        }
+        //console.log(data);
+        var echartPieCollapseCl1 = echarts.init(document.getElementById('echart_type1'), theme);
+        echartPieCollapseCl1.setOption(getOptionPieCol(leg,dat));
+        var echartPieCollapseCl2 = echarts.init(document.getElementById('echart_type2'), theme);
+        echartPieCollapseCl2.setOption(getOptionPieCol(leg,dat2));
+
+        ////console.log(dat);
+      },
+      error: function (error) {
+        alert('error; ' +error);
+      }
+    });
+  }
+
+  function loadErreurCq(id){
+    $.ajax({
+      type: "GET",
+      url: "/loadErreurCq?idpers="+id,
+      success: function(msg){
+        //$("#loadpointage").html(msg);
+        //$("#date").val(date);
+        var data = JSON.parse(msg)
+        $("#count_es").html("<a href='#'  data-toggle='modal' data-target='#erreurModal'  onclick='loadListErreurCq(" + id + ",5)'>"+data.es+"</a>");
+        $("#count_nrrg").html("<a href='#'  data-toggle='modal' data-target='#erreurModal'  onclick='loadListErreurCq(" + id + ",4)'>"+data.nrrg+"</a>");
+        $("#jm1").html(data.date);
+        //console.log(data);
+      },
+      error: function (error) {
+        //alert('error; ' +error);
+      }
+    });
+  }
+
+  function loadListErreurCq(id,id_etat){
+    $.ajax({
+      type: "GET",
+      url: "/loadListErreurCq?idpers="+id+"&id_etat="+id_etat,
+      success: function(msg){
+        //$("#loadpointage").html(msg);
+        //$("#date").val(date);
+        var data = JSON.parse(msg)
+        var html = "";
+        for (var i = 0;i<data.length;i++){
+          html +="<tr><td>"+data[i].num_nuo+"</td><td>"+data[i].libelle+"</td></tr>";
+        }
+
+        $("#erreurtab").html(html);
+        //console.log(data);
+      },
+      error: function (error) {
+        //alert('error; ' +error);
+      }
+    });
+  }
+  lancerCommpteARebour();
+
+  function lancerCommpteARebour(){
+    var str_h_restant = $("#rest").html();
+    var str_h_cons = $("#cons").html();
+    var str_h_th = $("#htheorique").html();
+
+
+    var str_split_h_restant = str_h_restant.split(':');
+
+    var str_split_h_cons = str_h_cons.split(':');
+    var str_split_h_th = str_h_th.split(':');
+
+    var date_rest = new Date();
+    var date_cons = new Date();
+
+    date_rest.setHours(Number(str_split_h_restant[0]),Number(str_split_h_restant[1]),Number(str_split_h_restant[2]));
+    date_cons.setHours(Number(str_split_h_cons[0]),Number(str_split_h_cons[1]),Number(str_split_h_cons[2]));
+
+    date_rest.setSeconds(date_rest.getSeconds()-1);
+    date_cons.setSeconds(date_cons.getSeconds()+1);
+
+
+
+
+     var consHeur = date_cons.getHours() + (date_cons.getMinutes()/60 ) + (date_cons.getSeconds() /3600);
+     var theoHeur = Number(str_split_h_th[0]) + (Number(str_split_h_th[1])/60 ) + (Number(str_split_h_th[2]) /3600);
+     var percent = (consHeur/theoHeur)*100;
+     if(theoHeur<consHeur)
+     {
+       $("#rest").html('00:00:00');
+     }else{
+       $("#rest").html(date_rest.getHours()+':'+date_rest.getMinutes()+':'+date_rest.getSeconds());
+     }
+
+     $("#cons").html(date_cons.getHours()+':'+date_cons.getMinutes()+':'+date_cons.getSeconds());
+     console.log(consHeur);
+     console.log(theoHeur);
+     percent = Number(percent.toFixed(2));
+
+     gauge1.update(percent);
+     console.log(percent);
+
+    var actualisation = setTimeout("lancerCommpteARebour();", 1000);
+
+
+
+    console.log(percent);
+  }
+
+</script>
+<!--<script src="/js/dash.op.js"></script>-->
+</body>
+
+</html>

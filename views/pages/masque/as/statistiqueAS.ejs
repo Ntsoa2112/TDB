@@ -1,0 +1,1755 @@
+
+
+<!DOCTYPE html>
+<script>
+
+</script>
+<html lang="en">
+<head>
+
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta name="generator" content="Bootply" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link rel="stylesheet" href="/styles/importer.css">
+  <link rel="stylesheet" href="/bootflat/css/bootflat.min.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/local.css">
+  <link rel="stylesheet" href="/css/Style_v3.css">
+  <link rel="stylesheet" href="/jquery-ui/jquery-ui.css">
+  <style type="text/css">
+    .bs-notation_almerys{
+      margin: 50px;
+    }
+    .table {
+      width: 100%;
+      margin-bottom: 20px;
+    }
+    .table > thead > tr > th,
+    .table > tbody > tr > th,
+    .table > tfoot > tr > th,
+    .table > thead > tr > td,
+    .table > tbody > tr > td,
+    .table > tfoot > tr > td {
+      padding: 8px;
+      line-height: 1.42857143;
+      vertical-align: top;
+      border-top: 1px solid #d6d6d6;
+    }
+    .table > thead > tr > th {
+      background-color: transparent;
+      vertical-align: bottom;
+      border-bottom: 2px solid #e8e8e8;
+    }
+    .table > caption + thead > tr:first-child > th,
+    .table > colgroup + thead > tr:first-child > th,
+    .table > thead:first-child > tr:first-child > th,
+    .table > caption + thead > tr:first-child > td,
+    .table > colgroup + thead > tr:first-child > td,
+    .table > thead:first-child > tr:first-child > td {
+      border-top: 0;
+    }
+    .table > tbody + tbody {
+      border-top: 2px solid #cacaca;
+    }
+    .table .table {
+      background-color: #060606;
+    }
+    .table-condensed > thead > tr > th,
+    .table-condensed > tbody > tr > th,
+    .table-condensed > tfoot > tr > th,
+    .table-condensed > thead > tr > td,
+    .table-condensed > tbody > tr > td,
+    .table-condensed > tfoot > tr > td {
+      padding: 5px;
+    }
+    .table-bordered {
+      border: 1px solid #d4d4d4;
+    }
+    .table-bordered > thead > tr > th,
+    .table-bordered > tbody > tr > th,
+    .table-bordered > tfoot > tr > th,
+    .table-bordered > thead > tr > td,
+    .table-bordered > tbody > tr > td,
+    .table-bordered > tfoot > tr > td {
+      border: 1px solid #dcdcdc;
+    }
+    .table-bordered > thead > tr > th,
+    .table-bordered > thead > tr > td {
+      border-bottom-width: 2px;
+    }
+    .table-striped > tbody > tr:nth-child(odd) > td,
+    .table-striped > tbody > tr:nth-child(odd) > th {
+      background-color: #080808;
+    }
+    .table-hover > tbody > tr:hover > td,
+    .table-hover > tbody > tr:hover > th {
+      background-color: #282828;
+    }
+    table col[class*="col-"] {
+      position: static;
+      float: none;
+      display: table-column;
+    }
+    table td[class*="col-"],
+    table th[class*="col-"] {
+      position: static;
+      float: none;
+      display: table-cell;
+    }
+    .table > thead > tr > td.active,
+    .table > tbody > tr > td.active,
+    .table > tfoot > tr > td.active,
+    .table > thead > tr > th.active,
+    .table > tbody > tr > th.active,
+    .table > tfoot > tr > th.active,
+    .table > thead > tr.active > td,
+    .table > tbody > tr.active > td,
+    .table > tfoot > tr.active > td,
+    .table > thead > tr.active > th,
+    .table > tbody > tr.active > th,
+    .table > tfoot > tr.active > th {
+      background-color: #282828;
+    }
+    .table-hover > tbody > tr > td.active:hover,
+    .table-hover > tbody > tr > th.active:hover,
+    .table-hover > tbody > tr.active:hover > td,
+    .table-hover > tbody > tr.active:hover > th {
+      background-color: #1b1b1b;
+    }
+    .table > thead > tr > td.success,
+    .table > tbody > tr > td.success,
+    .table > tfoot > tr > td.success,
+    .table > thead > tr > th.success,
+    .table > tbody > tr > th.success,
+    .table > tfoot > tr > th.success,
+    .table > thead > tr.success > td,
+    .table > tbody > tr.success > td,
+    .table > tfoot > tr.success > td,
+    .table > thead > tr.success > th,
+    .table > tbody > tr.success > th,
+    .table > tfoot > tr.success > th {
+      background-color: #77b300;
+    }
+    .table-hover > tbody > tr > td.success:hover,
+    .table-hover > tbody > tr > th.success:hover,
+    .table-hover > tbody > tr.success:hover > td,
+    .table-hover > tbody > tr.success:hover > th {
+      background-color: #669a00;
+    }
+    .table > thead > tr > td.info,
+    .table > tbody > tr > td.info,
+    .table > tfoot > tr > td.info,
+    .table > thead > tr > th.info,
+    .table > tbody > tr > th.info,
+    .table > tfoot > tr > th.info,
+    .table > thead > tr.info > td,
+    .table > tbody > tr.info > td,
+    .table > tfoot > tr.info > td,
+    .table > thead > tr.info > th,
+    .table > tbody > tr.info > th,
+    .table > tfoot > tr.info > th {
+      background-color: #9933cc;
+    }
+    .table-hover > tbody > tr > td.info:hover,
+    .table-hover > tbody > tr > th.info:hover,
+    .table-hover > tbody > tr.info:hover > td,
+    .table-hover > tbody > tr.info:hover > th {
+      background-color: #8a2eb8;
+    }
+    .table > thead > tr > td.warning,
+    .table > tbody > tr > td.warning,
+    .table > tfoot > tr > td.warning,
+    .table > thead > tr > th.warning,
+    .table > tbody > tr > th.warning,
+    .table > tfoot > tr > th.warning,
+    .table > thead > tr.warning > td,
+    .table > tbody > tr.warning > td,
+    .table > tfoot > tr.warning > td,
+    .table > thead > tr.warning > th,
+    .table > tbody > tr.warning > th,
+    .table > tfoot > tr.warning > th {
+      background-color: #ff8800;
+    }
+    .table-hover > tbody > tr > td.warning:hover,
+    .table-hover > tbody > tr > th.warning:hover,
+    .table-hover > tbody > tr.warning:hover > td,
+    .table-hover > tbody > tr.warning:hover > th {
+      background-color: #e67a00;
+    }
+    .table > thead > tr > td.danger,
+    .table > tbody > tr > td.danger,
+    .table > tfoot > tr > td.danger,
+    .table > thead > tr > th.danger,
+    .table > tbody > tr > th.danger,
+    .table > tfoot > tr > th.danger,
+    .table > thead > tr.danger > td,
+    .table > tbody > tr.danger > td,
+    .table > tfoot > tr.danger > td,
+    .table > thead > tr.danger > th,
+    .table > tbody > tr.danger > th,
+    .table > tfoot > tr.danger > th {
+      background-color: #cc0000;
+    }
+    .table-hover > tbody > tr > td.danger:hover,
+    .table-hover > tbody > tr > th.danger:hover,
+    .table-hover > tbody > tr.danger:hover > td,
+    .table-hover > tbody > tr.danger:hover > th {
+      background-color: #b30000;
+    }
+    @media (max-width: 767px) {
+      .table-responsive {
+        width: 100%;
+        margin-bottom: 15px;
+        overflow-y: hidden;
+        overflow-x: scroll;
+        -ms-overflow-style: -ms-autohiding-scrollbar;
+        border: 1px solid #282828;
+        -webkit-overflow-scrolling: touch;
+      }
+      .table-responsive > .table {
+        margin-bottom: 0;
+      }
+      .table-responsive > .table > thead > tr > th,
+      .table-responsive > .table > tbody > tr > th,
+      .table-responsive > .table > tfoot > tr > th,
+      .table-responsive > .table > thead > tr > td,
+      .table-responsive > .table > tbody > tr > td,
+      .table-responsive > .table > tfoot > tr > td {
+        white-space: nowrap;
+      }
+      .table-responsive > .table-bordered {
+        border: 0;
+      }
+      .table-responsive > .table-bordered > thead > tr > th:first-child,
+      .table-responsive > .table-bordered > tbody > tr > th:first-child,
+      .table-responsive > .table-bordered > tfoot > tr > th:first-child,
+      .table-responsive > .table-bordered > thead > tr > td:first-child,
+      .table-responsive > .table-bordered > tbody > tr > td:first-child,
+      .table-responsive > .table-bordered > tfoot > tr > td:first-child {
+        border-left: 0;
+      }
+      .table-responsive > .table-bordered > thead > tr > th:last-child,
+      .table-responsive > .table-bordered > tbody > tr > th:last-child,
+      .table-responsive > .table-bordered > tfoot > tr > th:last-child,
+      .table-responsive > .table-bordered > thead > tr > td:last-child,
+      .table-responsive > .table-bordered > tbody > tr > td:last-child,
+      .table-responsive > .table-bordered > tfoot > tr > td:last-child {
+        border-right: 0;
+      }
+      .table-responsive > .table-bordered > tbody > tr:last-child > th,
+      .table-responsive > .table-bordered > tfoot > tr:last-child > th,
+      .table-responsive > .table-bordered > tbody > tr:last-child > td,
+      .table-responsive > .table-bordered > tfoot > tr:last-child > td {
+        border-bottom: 0;
+      }
+    }
+
+
+
+    div.scrollmenu {
+      background-color: #333;
+      overflow: auto;
+      white-space: nowrap;
+    }
+
+    div.scrollmenu a {
+      display: inline-block;
+      color: white;
+      text-align: center;
+      padding: 14px;
+      text-decoration: none;
+    }
+
+    div.scrollmenu a:hover {
+      background-color: #777;
+    }
+  </style>
+  <title>Statistique Masque</title>
+</head>
+<body onload="loadTemplate();loadCE('u');loadTC('u');loadCE('u');loadVague('u');showTableB();">
+<!-- HEADER
+ loadCE("u");
+  loadTC("u");
+  loadCE("u");
+  loadVague("u");
+ -->
+<% if(req.session.droit==1){
+
+%>
+<% include ../../../includes/entete.ejs %>
+<% }else{
+
+%>
+<% include ../../../includes/enteteOperateur.ejs %>
+
+<% }%>
+<!-- /HEADER -->
+
+<!-- Main -->
+<div id="page-wrapper">
+    <div class="row">
+
+	<div class="page-title" style="margin-left:25px">
+	  <div class="title_left">
+		<h3 style="color:#2B75A6;">
+		  Statistique AS
+		</h3>
+	  </div>
+	</div></br>
+
+      <!--div de selection --->
+      <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+          <div class="x_title">
+            <h2>Menu</h2>
+            <ul class="nav navbar-right panel_toolbox">
+              <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+              </li>
+
+              <li><a class="close-link"><i class="fa fa-close"></i></a>
+              </li>
+            </ul>
+            <div class="clearfix"></div>
+          </div>
+          <div class="x_content">
+
+            <!--Form group de selection-->
+
+            <div class="">
+              <div class="form-group col-md-2 hidden">
+                <label for="ce_select">Responsable</label>
+                <select class="form-control" id="ce_select" onchange="loadVague(this.value);loadTC(this.value,0)">
+                  <option value="">-</option>
+                </select>
+              </div>
+              <div class="form-group col-md-2">
+                <label for="vague_select">Vague</label>
+                <select class="form-control" id="vague_select" onchange="loadTC(this.value,1)">
+                  <option value="">-</option>
+                </select>
+              </div>
+              <div class="form-group col-md-2">
+                <label for="tc_select">TC</label>
+                <select class="form-control" id="tc_select" onchange="load_profile(this.value)">
+                  <option value="">-</option>
+                </select>
+              </div>
+              <div class="form-group col-md-2">
+                <label for="deb_input">Date debut</label>
+                <input class="form-control" id="deb_input" type="text"/>
+              </div>
+              <div class="form-group col-md-2">
+                <label for="fin_input">Date fin</label>
+                <input class="form-control" id="fin_input" type="text"/>
+              </div>
+
+              <div class="form-group col-md-2">
+                <label for="load_input"> - </label>
+                <a class="form-control btn btn-primary" id="load_input" onclick="getEcoute()">OK</a>
+              </div>
+            </div>
+            <!--Fin du form group de selection-->
+
+
+          </div>
+        </div>
+      </div>
+      <!--fin div de selection --->
+
+
+      <!-- Div pour afficher le profile du TC -->
+      <div class="col-md-12 col-sm-12 col-xs-12 hidden" id="panel_info">
+        <div class="x_panel">
+          <div class="x_title">
+            <h2>Information generale</h2>
+            <ul class="nav navbar-right panel_toolbox">
+              <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+              </li>
+
+              <li><a class="close-link"><i class="fa fa-close"></i></a>
+              </li>
+            </ul>
+            <div class="clearfix"></div>
+          </div>
+          <div class="x_content">
+            <div class="col-md-2">
+              <img src="" class="img-circle" style="width:150px;height:150px;" alt="User Image" id="pdp">
+            </div>
+            <!--Form group de colone principale-->
+            <div class="col-md-5">
+              <div  class="gray"></div>
+              <div class="gray"><span id="td_nom"></span> <span id="td_prenom"></span></div>
+              <div  class="gray"><span id="td_sat"></span></div>
+              <div  class="gray"><span id="td_niveau"></span></div>
+              <div  class="gray"><span id="td_vague"></span></div>
+              <div  class="gray"><span id="td_numtel"></span></div>
+              <div  class="gray"><span id="td_mat"></span></div>
+            </div>
+            <!--Fin du form group de colone principale-->
+
+
+          </div>
+        </div>
+      </div>
+      <!-- Fin Div pour afficher le stat du TC -->
+      <div class="col-md-12 col-sm-12 col-xs-12 hidden" id="panel_stat">
+        <div class="x_panel">
+          <div class="x_title">
+            <h2>Statistique</h2>
+            <ul class="nav navbar-right panel_toolbox">
+              <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+              </li>
+
+              <li><a class="close-link"><i class="fa fa-close"></i></a>
+              </li>
+            </ul>
+            <div class="clearfix"></div>
+          </div>
+          <div class="x_content">
+
+            <!--Form group de colone principale-->
+            <div class="col-md-2">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Note</th>
+                    <th>Motif</th>
+                    <th></th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="donne_ecoute">
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <!--Fin du form group de colone principale-->
+
+            <!--Form group de colone Secondaire-->
+            <div class="col-md-10">
+              <div class="col-lg-12 col-md-12 col-xs-12 hidden" id="table_stat">
+                <table class="table table-bordered" id="datatable-buttons_g">
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th style="background-color: #cc0a0e;color: white;">Ponderation</th>
+                      <th style="background-color: #cc0a0e;color: white;">NA</th>
+                      <th style="background-color: #cc0a0e;color: white;">MAITRISE</th>
+                      <th style="background-color: #cc0a0e;color: white;">NON MAITRISE</th>
+                      <th style="background-color: #cc0a0e;color: white;">NOTE</th>
+                      <th style="background-color: #cc0a0e;color: white;">COMMENTAIRE</th>
+                    </tr>
+                  </thead>
+                  <tbody id="donne_table">
+
+                  </tbody>
+                </table>
+              </div>
+              <div class="col-lg-12 col-md-12 col-xs-12" id="graphe_ecoute"></div>
+            </div>
+            <!--Fin du form group de colone Secondaire-->
+
+
+          </div>
+        </div>
+      </div>
+      <!-- Fin Div pour afficher le stat du TC -->
+      <!-- Div statistique globale -->
+      <div class="col-md-12 col-sm-12 col-xs-12 hidden" id="panel_stat_glob">
+        <div class="x_panel">
+          <div class="x_title">
+            <h2>Statistique</h2>
+            <ul class="nav navbar-right panel_toolbox">
+              <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+              </li>
+
+              <li><a class="close-link"><i class="fa fa-close"></i></a>
+              </li>
+            </ul>
+            <div class="clearfix"></div>
+          </div>
+          <div class="x_content ">
+
+            <div class="col-md-12">
+
+              <table class="table" id="table-globale-2">
+
+              </table>
+              <div id='echart_line_glob2' class="hidden" style='height:600px;'></div>
+            </div>
+
+            <!--Form group de colone principale-->
+            <div class="col-md-12 mygrid-wrapper-div">
+              <table class="table" id="table-globale">
+                <thead>
+                  <tr>
+                    <!--<th>Responsable</th>-->
+                    <th>Vague</th>
+                    <th>Matricule</th>
+                    <th>Pseudo</th>
+                    <th>Date d'enregistrement</th>
+                    <th>Numero ecoute</th>
+                    <th>Note</th>
+                    <th>Campagne</th>
+                    <th>Besoin en formation</th>
+                    <th>Francais</th>
+                    <th>Metier</th>
+                    <th>Motif de non-conformité</th>
+                    <th>Commentaire</th>
+                    <!--<th>Specialite</th>-->
+                    <th>Conforme</th>
+                    <th>SQ</th>
+                    <th>Duree d'appel(minutes) </th>
+                    <th>Duree Durée d'écoute(minutes)</th>
+                    <th>Date écoute</th>
+					<th>Type écoute</th>
+					<th>Raisons</th>
+					<th>Appréciations</th>
+					<th>Commentaire Français</th>
+					<th>Commentaire Métier</th>
+					<th>Reprise Français</th>
+					<th>Reprise Métier</th>
+					<th></th>
+					<!--<th>Reprise</th>-->
+                  </tr>
+                </thead>
+                <tbody id="glob_ecoute">
+                  <tr>
+                    <!--<td></td>-->
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <!--<td></td>-->
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+
+            <div class="col-md-12">
+              <table class="table" id="table-globale-2">
+
+              </table>
+            </div>
+            <!--Fin du form group de colone principale-->
+
+
+
+
+          </div>
+        </div>
+      </div><!-- -->
+
+      <!-- Div statistique detailÃ© -->
+      <div class="col-md-12 col-sm-12 col-xs-12 hidden" id="panel_stat_det">
+        <div class="x_panel">
+          <div class="x_title">
+            <a href="#" onclick="back_detail();" class="nav navbar-left panel_toolbox"><i class="fa fa-backward fa-2x"></i></a>
+            <h2>Statistique</h2>
+            <ul class="nav navbar-right panel_toolbox">
+              <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+              </li>
+
+              <li><a class="close-link"><i class="fa fa-close"></i></a>
+              </li>
+            </ul>
+            <div class="clearfix"></div>
+          </div>
+          <div class="x_content">
+
+            <!--Form group de colone principale-->
+            <div class="col-lg-12 col-md-12 col-xs-12">
+                <table class="table table-bordered" id="datatable-buttons_det">
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th style="background-color: #cc0a0e;color: white;">Ponderation</th>
+                      <th style="background-color: #cc0a0e;color: white;">NA</th>
+                      <th style="background-color: #cc0a0e;color: white;">MAITRISE</th>
+                      <th style="background-color: #cc0a0e;color: white;">NON MAITRISE</th>
+                      <th style="background-color: #cc0a0e;color: white;">NOTE</th>
+                      <th style="background-color: #cc0a0e;color: white;">COMMENTAIRE</th>
+                    </tr>
+                  </thead>
+                  <tbody id="donne_det_table">
+
+                  </tbody>
+                </table>
+              </div>
+            <!--Fin du form group de colone principale-->
+
+
+
+
+          </div>
+        </div>
+      </div><!-- -->
+
+    </div>
+  </div>
+
+
+
+<!-- Modal courbe -->
+
+<div class="modal fade" id="modalCourbe" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <!--Content-->
+    <form method="GET" action="#" >
+      <div class="modal-content">
+        <!--Header-->
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" id="myModalLabel">Evolution Ecoute</h4>
+        </div>
+        <!--Body-->
+        <div class="modal-body">
+          <div class="row">
+            <div id='echart_line_glob' style='height:600px;'></div>
+          </div>
+
+
+        </div>
+        <!--Footer-->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">FermÃ©</button>
+        </div>
+      </div>
+    </form>
+    <!--/.Content-->
+  </div>
+</div>
+<!--Fin Modal courbe -->
+
+</body>
+<script src="/js/vendors/echarts.min.js"></script>
+<script src="/js/jquery-1.12.4.js"></script>
+<script src="/js/dependencies/sails.io.js"></script>
+<script src="/js/jquery-ui.min.js"></script>
+<script src="/js/echarts/theme.js"></script>
+<script src="/js/echarts/echarts.js"></script>
+
+<script src="/bootstrap/js/bootstrap.min.js"></script>
+<script src="/vendors/fastclick/lib/fastclick.js"></script>
+<!-- Custom Theme Scripts -->
+<script src="/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+<script src="/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
+<script src="/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
+<script src="/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+<script src="/vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+<script src="/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+<script src="/vendors/datatables.net-scroller/js/datatables.scroller.min.js"></script>
+<script src="/vendors/jszip/dist/jszip.min.js"></script>
+<script src="/vendors/pdfmake/build/pdfmake.min.js"></script>
+<script src="/vendors/pdfmake/build/vfs_fonts.js"></script>
+<script src="/js/custom.min.js"></script>
+<!--script customise-->
+
+<script language="javascript">
+  $(function() {
+    $( "#fin_input").datepicker({
+      dateFormat: 'yymmdd'
+    }).datepicker("setDate", new Date());
+    $( "#deb_input").datepicker({
+      dateFormat: 'yymmdd'
+    }).datepicker("setDate", new Date());
+
+
+  } );
+
+
+  $( window ).resize(function() {
+    var window_height = $(window).height(),
+      content_height = window_height - 200;
+    $('.mygrid-wrapper-div').height(content_height);
+  });
+
+  var id_ec = "<%=id_ecoute %>";
+
+  function pad(num) {
+    return ("0"+num).slice(-2);
+  }
+  function hhmmss(secs) {
+    var minutes = Math.floor(secs / 60);
+    secs = secs%60;
+    var hours = Math.floor(minutes/60)
+    minutes = minutes%60;
+    return pad(hours)+":"+pad(minutes)+":"+pad(secs);
+  }
+
+  /*
+  * Fonction pour afficher la liste deroulante des teleconseilaire
+  * */
+
+  function loadTC(data,tp){
+    if(data == "u"){
+      data = "";
+    } else{
+      if(Number(tp)==0){
+        data = 'AND id_ce ='+data;
+      }else{
+        data = 'AND id_vague ='+data;
+      }
+    }
+    $.ajax({
+      type: "GET",
+      url: "/getLsTC?sql="+data,
+
+      success: function(msg){
+
+        var html = "<option value='u'>TOUTES LES TC</option>";
+        var data = JSON.parse(msg);
+
+        for (var i = 0 ; i<data.length ; i++){
+          html += "<option value='"+data[i].matricule+"'>"+data[i].pseudo+" - "+data[i].matricule+"</option>";
+        }
+        $("#tc_select").html(html);
+      },
+      error: function (error) {
+
+      }
+    });
+  }
+
+  /*
+  Liste des chef d'equipe
+  */
+
+  function loadCE(data){
+    if(data == "u") data = "";
+    $.ajax({
+      type: "GET",
+      url: "/getLsCE?sql="+data,
+
+      success: function(msg){
+
+        var html = "<option value='u'>TOUTES LES EQUIPES</option>";
+        var data = JSON.parse(msg);
+
+        for (var i = 0 ; i<data.length ; i++){
+          html += "<option value='"+data[i].matricule+"'>"+data[i].pseudo+"</option>";
+        }
+        $("#ce_select").html(html);
+      },
+      error: function (error) {
+
+      }
+    });
+  }
+
+  /*
+  Liste des vague
+  */
+
+  function loadVague(data){
+    if(data == "u"){
+      data = "";
+    }else{
+      data = 'AND almerys_user_new.id_ce='+data;
+    }
+
+
+    $.ajax({
+      type: "GET",
+      url: "/getLsVague?sql="+data,
+
+      success: function(msg){
+
+        var html = "<option value='u'>TOUTES LES VAGUES</option>";
+        var data = JSON.parse(msg);
+
+        for (var i = 0 ; i<data.length ; i++){
+          html += "<option value='"+data[i].id_vague+"'>"+data[i].libelle+"</option>";
+        }
+        $("#vague_select").html(html);
+      },
+      error: function (error) {
+
+      }
+    });
+  }
+
+  /*
+  * Fonction pour charger les informations generale du TC
+  * parametre
+  * id_pers
+  * */
+
+  function load_profile(id_pers) {
+    if(id_pers.trim()=="u"){
+       $("#panel_info").addClass("hidden");
+    }else{
+        $.ajax({
+      type: "GET",
+      url: "/getProfile?id_pers="+id_pers,
+
+      success: function(msg){
+        var dataAll = JSON.parse(msg);
+        var data = dataAll.pr;
+        var ph = dataAll.ph;
+        //alert(msg);
+        $("#td_nom").html(""+data.nom);
+        $("#td_mat").html(""+data.matricule);
+        $("#td_prenom").html(""+data.prenom);
+        $("#td_pseudo").html(""+data.pseudo);
+        $("#td_sat").html(""+data.sat);
+        $("#td_vague").html(""+data.libelle);
+        $("#td_niveau").html(""+data.niveau);
+        $("#td_numtel").html(""+data.num_tel);
+        $("#pdp").attr("src","data:image/png;base64, "+ph+"");
+        $("#panel_info").removeClass("hidden");
+      },
+      error: function (error) {
+
+      }
+    });
+    }
+
+  }
+
+  /*
+  * Fonction pour l'affichage des statistique
+  * parametre
+  * id_pers,date_deb,date_fin
+  * */
+
+  var datalist = [];
+
+  function getEcoute() {
+    $("#echart_line_glob2").addClass("hidden");
+    $("#panel_stat_detail").addClass("hidden");
+    $("#table_stat").addClass("hidden");
+    $("#graphe_ecoute").removeClass("hidden");
+    $("#glob_ecoute").html("");
+    $("#table-globale-2").html("<thead><tr><th></th></tr></thead><tbody><tr><td></td></tr></tbody>");
+    $("#table-globale").dataTable().fnDestroy()
+    $("#table-globale-2").dataTable().fnDestroy()
+    //loadDataTableG();
+    var id_pers = $("#tc_select").val();
+    var date_deb = $("#deb_input").val();
+    var date_fin = $("#fin_input").val();
+    var htmll = "";
+    var legende = [];
+    var data_courbe = [];
+    if(id_pers.trim()=="u"){
+      //panel_stat_glob
+      var sql_vg = "";
+      var sql_ce = "";
+      if($("#vague_select").val().trim()!="u"){
+        sql_vg = " AND id_vague = "+$("#vague_select").val();
+      }
+      if($("#ce_select").val().trim()!="u"){
+        //sql_ce = " AND id_ce = "+$("#ce_select").val();
+        sql_ce = ""+$("#ce_select").val();
+      }
+      $.ajax({
+      type: "GET",
+      url: "/getEcouteAllAS?date_deb="+date_deb+"&date_fin="+date_fin+"&sql_vg="+sql_vg+"&sql_ce="+sql_ce,
+
+      success: function(msg){
+
+        //alert(msg);
+        datalist = [];
+        var lastCe = null;
+        var lastPers = null;
+        var data = JSON.parse(msg);
+        var object = {};
+        var ecoutes = [];
+        var nce ;
+        var pseudo ;
+        for (var i = 0 ; i<data.length ; i++){
+
+
+
+
+
+          legende.push((data[i].date_enregistrement).substring(0, 10)+" "+data[i].libelle);
+          //data_courbe.push(Number(data[i].nt));
+          var moy = (Number(data[i].nt)*20)/Number(data[i].pnd);
+
+          var conforme = 'non';
+          var Francais = 'Aucun';
+          var dataSplit;
+
+          if(data[i].commentaire_formation!=null){
+            dataSplit = (data[i].commentaire_formation).split(",");
+            ////console.log(dataSplit.length);
+          }
+
+          var cls = '';
+          if(data[i].conforme == true){
+            conforme = 'oui';
+          }
+          if(Number(moy.toFixed(2))<12){
+            cls = 'btn-danger';
+          }
+
+		  var str_note = Number(moy.toFixed(2));
+		  if(isNaN(str_note)){
+		  str_note ="-";
+		  }
+
+          var besoin ="-";
+
+          /*if(data[i].francais_formation!=null && data[i].francais_formation!='' && data[i].metier_formation!=null && data[i].metier_formation!=''){
+            besoin ="FranÃ§ais et mÃ©tier";
+
+          }else{
+              if(data[i].francais_formation!=null && data[i].francais_formation!=''){
+                besoin ="FranÃ§ais uniquement";
+              }else if(data[i].metier_formation!=null && data[i].metier_formation!=''){
+                besoin ="MÃ©tier uniquement";
+
+              }
+          }*/
+
+          var comF = "";
+          var comM = "";
+
+
+          var repF = data[i].reprise_francais || '';
+          var repM = data[i].reprise_metier || '';
+
+          var francais = data[i].francais_formation;
+          var metier = data[i].metier_formation;
+
+          if(francais.substring(0,9)=="Francais/"){
+            var array = francais.split("/");
+            comF = array[1];
+
+            besoin = "Français uniquement"
+
+            if(data[i].mode==='A'){
+              if(comF===''){
+                repF = "non";
+              }else{
+                repF = "oui";
+              }
+            }
+
+          }
+          if(metier.substring(0,7)=="Metier/"){
+            var array = metier.split("/");
+            if(besoin!=="-"){
+              besoin = "Français et métier"
+            }else{
+              besoin = "Métier uniquement"
+            }
+            comM = array[1];
+
+            if(data[i].mode==='A'){
+              if(comM===''){
+                repM = "non";
+              }else{
+                repM = "oui";
+              }
+            }
+
+          }
+		  if(metier.substring(0,7)!=="Metier/" && francais.substring(0,9)!=="Francais/"){
+			besoin = "Aucun";
+		  }
+
+          var com = (data[i].commentaire_non_conformite || "");
+
+          data_courbe.push(moy);
+          htmll += "<tr>" +
+            //"<td class='td_ec td_"+data[i].id_ecoute+" "+cls+"'>"+(data[i].ce || '')+"</td>"+
+            "<td class='td_ec td_"+data[i].id_ecoute+" "+cls+"'>"+data[i].id_vague+"</td>"+
+            "<td class='td_ec td_"+data[i].id_ecoute+" "+cls+"'>"+data[i].matricule+"</td>"+
+            "<td class='td_ec td_"+data[i].id_ecoute+" "+cls+"'>"+data[i].pseudo+"</td>"+
+            "<td class='td_ec td_"+data[i].id_ecoute+" "+cls+"'>"+reformatDate((data[i].date_enregistrement).substring(0, 10))+"</td>"+
+            "<td class='td_ec td_"+data[i].id_ecoute+" "+cls+"'>"+(data[i].numero_enregistrement || '')+"</td>"+
+            "<td class='td_ec td_"+data[i].id_ecoute+" "+cls+"'>"+str_note+"</td>"+
+            "<td class='td_ec td_"+data[i].id_ecoute+" "+cls+"'>"+(data[i].campagne || '')+"</td>"+
+            "<td class='td_ec td_"+data[i].id_ecoute+" "+cls+"'>"+(besoin || '')+"</td>"+
+            "<td class='td_ec td_"+data[i].id_ecoute+" "+cls+"'>"+comF+"</td>"+
+            "<td class='td_ec td_"+data[i].id_ecoute+" "+cls+"'>"+comM+"</td>"+
+            "<td class='td_ec td_"+data[i].id_ecoute+" "+cls+"'><p style='width: 100px'>"+(data[i].nc || '')+"</p></td>"+
+            "<td class='td_ec td_"+data[i].id_ecoute+" "+cls+"'><p style='width: 100px'>"+com+"</p></td>"+
+            <!--"<td class='td_ec td_"+data[i].id_ecoute+" "+cls+"'>"+data[i].spec+"</td>"+-->
+            "<td class='td_ec td_"+data[i].id_ecoute+" "+cls+"'>"+conforme+"</td>"+
+            "<td class='td_ec td_"+data[i].id_ecoute+" "+cls+"'>"+data[i].appelation+"</td>"+
+            "<td class='td_ec td_"+data[i].id_ecoute+" "+cls+"'>"+hhmmss(Number(data[i].duree_appel) || "")+"</td>"+
+            "<td class='td_ec td_"+data[i].id_ecoute+" "+cls+"'>"+hhmmss(Number(data[i].dur_ecoute)|| "")+"</td>"+
+            "<td class='td_ec td_"+data[i].id_ecoute+" "+cls+"'>"+reformatDate((data[i].deb_ecoute).substring(0, 10) || '')+"</td>"+
+
+			"<td class='td_ec td_"+data[i].id_ecoute+" "+cls+"'>"+(data[i].type_ecoute || '')+"</td>"+
+			"<td class='td_ec td_"+data[i].id_ecoute+" "+cls+"'>"+(data[i].raisons || '')+"</td>"+
+			"<td class='td_ec td_"+data[i].id_ecoute+" "+cls+"'>"+(data[i].appreciation || '')+"</td>"+
+			"<td class='td_ec td_"+data[i].id_ecoute+" "+cls+"'>"+(data[i].commentaire_appreciation_francais || '')+"</td>"+
+			"<td class='td_ec td_"+data[i].id_ecoute+" "+cls+"'>"+(data[i].commentaire_appreciation_metier || '')+"</td>"+
+			//"<td class='td_ec td_"+data[i].id_ecoute+" "+cls+"'>"+(data[i].reprise_francais || '-')+"</td>"+
+			//"<td class='td_ec td_"+data[i].id_ecoute+" "+cls+"'>"+(data[i].reprise_metier || '-')+"</td>"+
+
+            "<td class='td_ec td_"+data[i].id_ecoute+" "+cls+"'>"+repF+"</td>"+
+            "<td class='td_ec td_"+data[i].id_ecoute+" "+cls+"'>"+repM+"</td>"+
+
+            "<td class='td_ec td_"+data[i].id_ecoute+" "+cls+"'><a href='#' onclick='showTableDet("+data[i].id_ecoute+","+data[i].conforme+")'><i class='fa fa-table fa-2x'></i></a></td>"+
+            "</tr>";
+
+
+
+          /**
+           * Recupreation des donnees sous forme de
+           * ce : {nce,pseudo:pseude,ecoutes : [{id_ecoute:id,note:nt}]}
+           * */
+
+          if(lastCe==null){
+
+            lastCe = data[i].ice;
+            if(data[i].ice===null) lastCe = 0;
+            lastPers = data[i].id_pers;
+
+            nce = data[i].ce;
+            pseudo = data[i].pseudo;
+            var ecoute = {
+              id : data[i].id_ecoute,
+              conforme : data[i].conforme,
+              note :Number(moy.toFixed(2))
+            }
+            ecoutes.push(ecoute);
+            ////console.log(lastCe);
+          }else if(Number(lastCe)!=Number(data[i].ice)){
+            var obj = {
+              nce : nce,
+              pseudo : pseudo,
+              lecoute : ecoutes
+            }
+            datalist.push(obj);
+            ecoutes=[];
+            lastCe = data[i].ice;
+            lastPers = data[i].id_pers;
+
+            nce = data[i].ce;
+            pseudo = data[i].pseudo;
+            var ecoute = {
+              id : data[i].id_ecoute,
+              conforme : data[i].conforme,
+              note :Number(moy.toFixed(2))
+            }
+            ecoutes.push(ecoute);
+          }else{
+
+            if(Number(lastPers)!=Number(data[i].id_pers)){
+              var obj = {
+                nce : nce,
+                pseudo : pseudo,
+                lecoute : ecoutes
+              }
+              datalist.push(obj);
+              ecoutes=[];
+              lastPers = data[i].id_pers;
+
+              nce = data[i].ce;
+              pseudo = data[i].pseudo;
+              var ecoute = {
+                id : data[i].id_ecoute,
+                conforme : data[i].conforme,
+                note :Number(moy.toFixed(2))
+              }
+              ecoutes.push(ecoute);
+            }else{
+              nce = data[i].ce;
+              pseudo = data[i].pseudo;
+              var ecoute = {
+                id : data[i].id_ecoute,
+                conforme : data[i].conforme,
+                note :Number(moy.toFixed(2))
+              }
+              ecoutes.push(ecoute);
+            }
+
+          }
+
+          if(i == (data.length-1)){
+            var obj = {
+              nce : nce,
+              pseudo : pseudo,
+              lecoute : ecoutes
+            }
+            datalist.push(obj);
+          }
+
+          ////console.log(datalist)
+        }
+
+        /**
+         * Affichage des donnees
+         * */
+
+        var htmlHead = "<thead><tr><th>PSEUDO</th>"; //<th>CE</th>
+        var htmlBody = "";
+        var nbTh = 0;
+        htmlBody += "<tbody>";
+        for(var i = 0;i<datalist.length;i++){
+
+          for(var y = 0;y<datalist[i].lecoute.length;y++){
+            if(y>=nbTh) nbTh = y;
+          }
+        }
+
+        for(var i = 0;i<datalist.length;i++){
+
+          htmlBody +=
+            "<tr>" +
+            //"<td class='st st_"+i+"'>"+(datalist[i].nce || '-')+"</td>" +
+            "<td class='st st_"+i+"'>"+datalist[i].pseudo+"</td>";
+
+          var y = 0;
+          for(y = 0;y<datalist[i].lecoute.length;y++){
+            htmlBody +="<td class='st st_"+i+"'><a href='#' onclick='showTableDet("+datalist[i].lecoute[y].id+","+datalist[i].lecoute[y].conforme+")'>"+datalist[i].lecoute[y].note+"</a></td>";
+          }
+
+
+            while(y<nbTh+1){
+              htmlBody +="<td class='st st_"+i+"'></td>";
+
+              y++;
+            }
+
+          htmlBody += "<td class='st st_"+i+"'><a href='#' onclick='loadDataModal("+i+")'><i class='fa fa-line-chart'></i></a></td></tr>";
+        }
+
+        for(var i = 0 ; i<=nbTh;i++){
+          var nbec = i+1;
+          htmlHead += "<th>Ecoute "+nbec+"</th>";
+        }
+        htmlHead += "<th></th></tr></thead>";
+        htmlBody += "</tbody>";
+
+        ////console.log(datalist);
+        $("#table-globale-2").html(htmlHead+htmlBody);
+        $("#glob_ecoute").html(htmll);
+
+        loadDataTableG();
+        loadDataTableG2();
+
+
+
+      },
+      error: function (error) {
+
+      }
+    });
+      $("#panel_stat_glob").removeClass("hidden");
+      $("#panel_stat").addClass("hidden");
+    }else{
+      $.ajax({
+      type: "GET",
+      url: "/getEcouteAS?id_pers="+id_pers+"&date_deb="+date_deb+"&date_fin="+date_fin,
+
+      success: function(msg){
+
+        //alert(msg);
+        var data = JSON.parse(msg);
+        for (var i = 0 ; i<data.length ; i++){
+          legende.push((data[i].date_enregistrement).substring(0, 10)+" "+data[i].libelle);
+          //data_courbe.push(Number(data[i].nt));
+          var moy = (Number(data[i].nt)*20)/Number(data[i].pnd);
+          var cls = "";
+          if(Number(moy.toFixed(2))<12){
+            cls = 'btn-danger';
+          }
+          data_courbe.push(moy);
+          htmll += "<tr>" +
+            "<td class='td_ec td_"+data[i].id_ecoute+" "+cls+"'>"+reformatDate((data[i].date_enregistrement).substring(0, 10))+"</td>"+
+            "<td class='td_ec td_"+data[i].id_ecoute+" "+cls+"'>"+Number(moy.toFixed(2))+"</td>"+
+            "<td class='td_ec td_"+data[i].id_ecoute+" "+cls+"'>"+data[i].libelle+"</td>"+
+            "<td class='td_ec td_"+data[i].id_ecoute+" "+cls+"'><a href='#' onclick='showTable("+data[i].id_ecoute+","+data[i].conforme+")'><i class='fa fa-table'></i> </a> </td>"+
+            "<td class='td_ec td_"+data[i].id_ecoute+" "+cls+"'><a href='/exportEvaluation?id_ecoute="+data[i].id_ecoute+"' ><i class='fa fa-file-excel-o text-success'></i> </a> </td>"+
+            "</tr>";
+        }
+        $("#donne_ecoute").html(htmll);
+        $("#graphe_ecoute").html("<div id='echart_line' style='height:600px;'></div>");
+        var echartLineEcoute = echarts.init(document.getElementById('echart_line'), theme);
+        echartLineEcoute.setOption(getOptionLine(legende,data_courbe));
+
+      },
+      error: function (error) {
+
+      }
+    });
+
+      $("#panel_stat").removeClass("hidden");
+      $("#panel_stat_glob").addClass("hidden");
+      $("#panel_stat_detail").addClass("hidden");
+    }
+
+  }
+
+
+  function reformatDate (date_to_format) {
+    var dtc = date_to_format.split('-');
+
+    if(date_to_format!==''){
+      return (dtc[2]+'/'+dtc[1]+'/'+dtc[0]);
+    }else {
+      return date_to_format;
+    }
+
+  }
+
+  function loadDataModal(index){
+    var data = datalist[index].lecoute;
+    var legende = [];
+    var data_courbe = [];
+    $(".st").removeClass("btn-info");
+    $(".st_"+index).addClass("btn-info");
+    for(var i = 0;i<data.length;i++){
+      legende.push("Ecoute "+(i+1));
+      data_courbe.push(Number(data[i].note));
+    }
+    $("#echart_line_glob2").removeClass("hidden");
+    var echartLineCourbe = echarts.init(document.getElementById('echart_line_glob2'), theme);
+    echartLineCourbe.setOption(getOptionLine(legende,data_courbe));
+    ////console.log(data_courbe);
+    ////console.log(legende);
+  }
+
+  /*
+  * showTable
+  * */
+  function loadDataTable() {
+    //datatable-buttons_det
+    var handleDataTableButtons_det = function() {
+      if ($("#datatable-buttons_det").length) {
+        $("#datatable-buttons_det").DataTable({
+          dom: "Bfrtip",
+          destroy: true,
+          searching: false,
+          paging: false,
+          sort: false,
+          "aLengthMenu": [[25, 50, 75, -1], [25, 50, 75, "All"]],
+          "iDisplayLength": 25,
+          buttons: [
+            {
+              extend: "copy",
+              className: "btn-sm"
+            },
+            {
+              extend: "csv",
+              className: "btn-sm"
+            },
+            {
+              extend: "excel",
+              className: "btn-sm"
+            },
+            {
+              extend: "pdfHtml5",
+              className: "btn-sm"
+            },
+            {
+              extend: "print",
+              className: "btn-sm"
+            },
+          ],
+          responsive: true
+        });
+      }
+    };
+
+    TableManageButtons_det = function() {
+      "use strict";
+      return {
+        init: function() {
+          handleDataTableButtons_det();
+        }
+      };
+    }();
+    TableManageButtons_det.init();
+
+    var handleDataTableButtons_g = function() {
+      if ($("#datatable-buttons_g").length) {
+        $("#datatable-buttons_g").DataTable({
+          dom: "Bfrtip",
+          destroy: true,
+          searching: false,
+          paging: false,
+          sort: false,
+          "aLengthMenu": [[25, 50, 75, -1], [25, 50, 75, "All"]],
+          "iDisplayLength": 25,
+          buttons: [
+            {
+              extend: "copy",
+              className: "btn-sm"
+            },
+            {
+              extend: "csv",
+              className: "btn-sm"
+            },
+            {
+              extend: "excel",
+              className: "btn-sm"
+            },
+            {
+              extend: "pdfHtml5",
+              className: "btn-sm"
+            },
+            {
+              extend: "print",
+              className: "btn-sm"
+            },
+          ],
+          responsive: true
+        });
+      }
+    };
+
+    TableManageButtons_g = function() {
+      "use strict";
+      return {
+        init: function() {
+          handleDataTableButtons_g();
+        }
+      };
+    }();
+    TableManageButtons_g.init();
+  }
+
+  function loadDataTableG() {
+    //datatable-buttons_det
+
+
+    var handleDataTableButtons_gl = function() {
+      if ($("#table-globale").length) {
+        $("#table-globale").DataTable({
+          dom: "Bfrtip",
+          destroy: true,
+          searching: false,
+          paging: false,
+          sort: false,
+          "aLengthMenu": [[25, 50, 75, -1], [25, 50, 75, "All"]],
+          "iDisplayLength": 25,
+          buttons: [
+            {
+              extend: "copy",
+              className: "btn-sm"
+            },
+            {
+              extend: "csv",
+              className: "btn-sm"
+            },
+            {
+              extend: "excel",
+              className: "btn-sm"
+            },
+            {
+              extend: "pdfHtml5",
+              className: "btn-sm"
+            },
+            {
+              extend: "print",
+              className: "btn-sm"
+            },
+          ],
+          responsive: true
+        });
+      }
+    };
+
+    TableManageButtons_gl= function() {
+      "use strict";
+      return {
+        init: function() {
+          handleDataTableButtons_gl();
+        }
+      };
+    }();
+    TableManageButtons_gl.init();
+  }
+
+  function loadDataTableG2() {
+    //datatable-buttons_det
+
+
+    var handleDataTableButtons_gl2 = function() {
+      if ($("#table-globale-2").length) {
+        $("#table-globale-2").DataTable({
+          dom: "Bfrtip",
+          destroy: true,
+          searching: false,
+          paging: false,
+          sort: false,
+          "aLengthMenu": [[25, 50, 75, -1], [25, 50, 75, "All"]],
+          "iDisplayLength": 25,
+          buttons: [
+            {
+              extend: "copy",
+              className: "btn-sm"
+            },
+            {
+              extend: "csv",
+              className: "btn-sm"
+            },
+            {
+              extend: "excel",
+              className: "btn-sm"
+            },
+            {
+              extend: "pdfHtml5",
+              className: "btn-sm"
+            },
+            {
+              extend: "print",
+              className: "btn-sm"
+            },
+          ],
+          responsive: true
+        });
+      }
+    };
+
+    TableManageButtons_gl2= function() {
+      "use strict";
+      return {
+        init: function() {
+          handleDataTableButtons_gl2();
+        }
+      };
+    }();
+    TableManageButtons_gl2.init();
+  }
+
+  function showTable(id,isConforme) {
+    //loadTemplate();
+
+    $("#com_f").html("Conforme");
+    if(isConforme!=null){
+      if(isConforme){
+        $("#com_f").html("Conforme");
+      }else{
+        $("#com_f").html("Non conforme");
+      }
+    }
+
+    $(".td_ec").removeClass("btn-info");
+    $(".td_"+id).addClass("btn-info");
+    var html = "";
+    $.ajax({
+      type: "GET",
+      url: "/getDataNotation?id="+id,
+
+      success: function(msg){
+        var data = JSON.parse(msg);
+        var latID = null;
+
+        for (var i = 0 ; i<list.length ; i++){
+          $("#pnd_"+list[i].id_details_notation).html(""+list[i].ponderation);
+          $("#na_"+list[i].id_details_notation).html("");
+          $("#m_"+list[i].id_details_notation).html("");
+          $("#nm_"+list[i].id_details_notation).html("");
+          $("#n_"+list[i].id_details_notation).html("");
+          $("#com_"+list[i].id_details_notation).html("");
+        }
+        for (var i = 0 ; i<data.length ; i++){
+          var id_td = "";
+          var nt = 0;
+          ////console.log(data[i].note);
+          if(data[i].note!=null){
+
+            if(parseInt(data[i].note)==0){
+              id_td = "nm_"+data[i].id_details_notation;
+            }else{
+              nt = Number(data[i].note);
+              id_td = "m_"+data[i].id_details_notation;
+            }
+            $("#"+id_td).html(""+nt);
+            $("#n_"+data[i].id_details_notation).html(""+nt)
+          }else{
+            $("#na_"+data[i].id_details_notation).html("");
+            $("#n_"+data[i].id_details_notation).html("")
+            $("#pnd_"+data[i].id_details_notation).html("")
+          }
+
+
+
+          $("#com_"+data[i].id_details_notation).html("<p>"+(data[i].commentaire ||'')+"</p>");
+
+          ;
+        }
+        var tot_p = 0;
+        var tot_n = 0;
+        for (var i = 0 ; i<list.length ; i++){
+          if($("#n_"+list[i].id_details_notation).text()== null || $("#n_"+list[i].id_details_notation).text()==''){
+            $("#pnd_"+list[i].id_details_notation).html("");
+          }else{
+            tot_p += Number($("#pnd_"+list[i].id_details_notation).text());
+            tot_n += Number($("#n_"+list[i].id_details_notation).text());
+          }
+
+        }
+        $("#pnd_t").html("<h3 style='color: green'>"+tot_p+"</h3>");
+        $("#n_t").html("<h3 style='color: green'>"+tot_n+"</h3>");
+        var moy = (Number(tot_n)*20)/Number(tot_p);
+        var com  = "";
+
+        if(moy<15){
+          com = "Conforme";
+        }
+        $("#n_t_v").html("<h3 style='color: green'>"+Number(moy.toFixed(2))+"</h3>");
+        //$("#com_f").html(""+com);
+        loadDataTable();
+      },
+      error: function (error) {
+
+      }
+    });
+    $("#table_stat").removeClass("hidden");
+    $("#graphe_ecoute").addClass("hidden");
+
+  }
+
+  function showTableDet(id,isConforme) {
+    //loadTemplate();
+
+
+
+    var html = "";
+    $.ajax({
+      type: "GET",
+      url: "/getDataNotation?id="+id,
+
+      success: function(msg){
+        var data = JSON.parse(msg);
+        var latID = null;
+
+        for (var i = 0 ; i<list.length ; i++){
+          $("#pnd_"+list[i].id_details_notation+"_det").html(""+list[i].ponderation);
+          $("#na_"+list[i].id_details_notation+"_det").html("");
+          $("#m_"+list[i].id_details_notation+"_det").html("");
+          $("#nm_"+list[i].id_details_notation+"_det").html("");
+          $("#n_"+list[i].id_details_notation+"_det").html("");
+          $("#com_"+list[i].id_details_notation+"_det").html("");
+
+        }
+        for (var i = 0 ; i<data.length ; i++){
+          var id_td = "";
+          var nt = 0;
+          ////console.log(data[i].note);
+          if(data[i].note!=null){
+
+            if(parseInt(data[i].note)==0){
+              id_td = "nm_"+data[i].id_details_notation+"_det";
+            }else{
+              nt = Number(data[i].note);
+              id_td = "m_"+data[i].id_details_notation+"_det";
+            }
+            $("#"+id_td).html(""+nt);
+            $("#n_"+data[i].id_details_notation+"_det").html(""+nt)
+          }else{
+            $("#na_"+data[i].id_details_notation+"_det").html("");
+            $("#n_"+data[i].id_details_notation+"_det").html("")
+            $("#pnd_"+data[i].id_details_notation+"_det").html("")
+          }
+
+
+
+          $("#com_"+data[i].id_details_notation+"_det").html("<p>"+(data[i].commentaire ||'')+"</p>");
+
+          ;
+        }
+        var tot_p = 0;
+        var tot_n = 0;
+        for (var i = 0 ; i<list.length ; i++){
+          if($("#n_"+list[i].id_details_notation+"_det").text()== null || $("#n_"+list[i].id_details_notation+"_det").text()==''){
+            $("#pnd_"+list[i].id_details_notation+"_det").html("");
+          }else{
+            tot_p += Number($("#pnd_"+list[i].id_details_notation+"_det").text());
+            tot_n += Number($("#n_"+list[i].id_details_notation+"_det").text());
+          }
+
+        }
+        $("#pnd_t"+"_det").html("<h3 style='color: green'>"+tot_p+"</h3>");
+        $("#n_t"+"_det").html("<h3 style='color: green'>"+tot_n+"</h3>");
+        var moy = (Number(tot_n)*20)/Number(tot_p);
+        var com  = "";
+
+        if(moy<15){
+          com = "Conforme";
+        }
+        $("#n_t_v"+"_det").html("<h3 style='color: green'>"+Number(moy.toFixed(2))+"</h3>");
+        //$("#com_f"+"_det").html(""+com);
+        $("#com_f_det").html("Conforme");
+        if(isConforme!=null){
+          if(isConforme){
+            $("#com_f_det").html("Conforme");
+          }else{
+            $("#com_f_det").html("Non conforme");
+          }
+        }
+        loadDataTable();
+      },
+      error: function (error) {
+
+      }
+    });
+    $("#panel_stat_det").removeClass("hidden");
+    $("#panel_stat_glob").addClass("hidden");
+  }
+
+  function back_detail(){
+    $("#panel_stat_det").addClass("hidden");
+    $("#panel_stat_glob").removeClass("hidden");
+  }
+
+
+
+
+  /*
+  * Fonction pour charger le template de detail note
+  * */
+ var list = [];
+  function loadTemplate() {
+
+    $.ajax({
+       type: "GET",
+       url: "/getDataTemplateAS",
+
+       success: function(msg){
+         var html = "";
+         var html_det = "";
+         $("#donne_table").html(html);
+         $("#donne_det_table").html(html_det);
+         var data = JSON.parse(msg);
+         list = data;
+         var latID = null;
+         var tot_pond = 0;
+         for (var i = 0 ; i<data.length ; i++){
+           var style = "";
+           if(latID!=Number(data[i].id_categorie_notation)){
+             latID = Number(data[i].id_categorie_notation);
+             style = "style='background-color: #b2aeac;color: blue;'";
+             html += "<tr>" +
+               "<td "+style+">"+data[i].categorie+"</td>"+
+               "<td "+style+"></td>"+
+               "<td "+style+"></td>"+
+               "<td "+style+"></td>"+
+               "<td "+style+"></td>"+
+               "<td "+style+"></td>"+
+               "<td "+style+"></td>"+
+               "</tr>";
+
+              html_det += "<tr>" +
+               "<td "+style+">"+data[i].categorie+"</td>"+
+               "<td "+style+"></td>"+
+               "<td "+style+"></td>"+
+               "<td "+style+"></td>"+
+               "<td "+style+"></td>"+
+               "<td "+style+"></td>"+
+               "<td "+style+"></td>"+
+               "</tr>";
+           }
+           tot_pond += Number(data[i].ponderation);
+           html += "<tr>" +
+                      "<td class='text-danger'><p>"+data[i].notation+"</p></td>"+
+                      "<td id='pnd_"+data[i].id_details_notation+"'>"+data[i].ponderation+"</td>"+
+                      "<td id='na_"+data[i].id_details_notation+"'></td>"+
+                      "<td id='m_"+data[i].id_details_notation+"'></td>"+
+                      "<td id='nm_"+data[i].id_details_notation+"'></td>"+
+                      "<td id='n_"+data[i].id_details_notation+"'></td>"+
+                      "<td id='com_"+data[i].id_details_notation+"'></td>" +
+                    "</tr>";
+
+            html_det += "<tr>" +
+                      "<td class='text-danger'><p>"+data[i].notation+"</p></td>"+
+                      "<td id='pnd_"+data[i].id_details_notation+"_det'>"+data[i].ponderation+"</td>"+
+                      "<td id='na_"+data[i].id_details_notation+"_det'></td>"+
+                      "<td id='m_"+data[i].id_details_notation+"_det'></td>"+
+                      "<td id='nm_"+data[i].id_details_notation+"_det'></td>"+
+                      "<td id='n_"+data[i].id_details_notation+"_det'></td>"+
+                      "<td id='com_"+data[i].id_details_notation+"_det'></td>" +
+                    "</tr>";
+         }
+
+         html += "<tr>" +
+           "<td class='text-danger'><h3 style='color: #800166'>Note</h3></td>"+
+           "<td class='text-sucess' id='pnd_t'><h3 style='color: green'>"+tot_pond+"</h3></td>"+
+           "<td class='text-sucess' id='na_t'><h3 style='color: green'></h3></td>"+
+           "<td class='text-sucess' id='m_t'><h3 style='color: green'></h3></td>"+
+           "<td class='text-sucess' id='nm_t'><h3 style='color: green'></h3></td>"+
+           "<td class='text-sucess' id='n_t'><h3 style='color: green'>0</h3></td>"+
+           "<td></td>" +
+           "</tr>";
+         html += "<tr>" +
+           "<td class='text-danger'><h3 style='color: #800166'>Note sur 20</h3></td>"+
+           "<td class='text-sucess' id='pnd_t_v'><h3 style='color: green'>20</h3></td>"+
+           "<td class='text-sucess' id='na_t_v'><h3 style='color: green'></h3></td>"+
+           "<td class='text-sucess' id='m_t_v'><h3 style='color: green'></h3></td>"+
+           "<td class='text-sucess' id='nm_t_v'><h3 style='color: green'></h3></td>"+
+           "<td class='text-sucess' id='n_t_v'><h3 style='color: green'>0</h3></td>"+
+           "<td><p id='com_f'></p></td>" +
+           "</tr>";
+
+          html_det += "<tr>" +
+           "<td class='text-danger'><h3 style='color: #800166'>Note</h3></td>"+
+           "<td class='text-sucess' id='pnd_t_det'><h3 style='color: green'>"+tot_pond+"</h3></td>"+
+           "<td class='text-sucess' id='na_t_det'><h3 style='color: green'></h3></td>"+
+           "<td class='text-sucess' id='m_t_det'><h3 style='color: green'></h3></td>"+
+           "<td class='text-sucess' id='nm_t_det'><h3 style='color: green'></h3></td>"+
+           "<td class='text-sucess' id='n_t_det'><h3 style='color: green'>0</h3></td>"+
+           "<td></td>" +
+           "</tr>";
+         html_det += "<tr>" +
+           "<td class='text-danger'><h3 style='color: #800166'>Note sur 20</h3></td>"+
+           "<td class='text-sucess' id='pnd_t_v_det'><h3 style='color: green'>20</h3></td>"+
+           "<td class='text-sucess' id='na_t_v_det'><h3 style='color: green'></h3></td>"+
+           "<td class='text-sucess' id='m_t_v_det'><h3 style='color: green'></h3></td>"+
+           "<td class='text-sucess' id='nm_t_v_det'><h3 style='color: green'></h3></td>"+
+           "<td class='text-sucess' id='n_t_v_det'><h3 style='color: green'>0</h3></td>"+
+           "<td><p id='com_f_det'></p></td>" +
+           "</tr>";
+         //alert(html);
+         $("#donne_table").html(html);
+         $("#donne_det_table").html(html_det);
+       },
+       error: function (error) {
+
+       }
+     });
+
+  }
+
+  function showTableB(){
+    var id_ec = "<%=id_ecoute %>";
+
+    if(id_ec!="undefined" && id_ec!=""){
+	var conforme = <%-conforme %>;
+      showTableDet(id_ec, conforme);
+    }
+  }
+
+
+
+</script>
+<!--fin script customise-->
+</html>

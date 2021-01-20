@@ -1,0 +1,76 @@
+
+				<div id="<%= idElement %>" class=" col-lg-7 col-md-7 col-sm-7"></div>
+        <link rel="stylesheet" href="/jquery-ui/jquery-ui.css">
+        <script src="/js/jquery-1.12.4.js"></script>
+        <script src="/js/jquery-ui.min.js"></script>
+    <script>
+		$(document).ready(function() {
+      var qt = {};
+      <% 	for(var key in qte){%>
+      qt["<%= key%>"] = <%= qte[key]%>;
+      <% } %>
+      ColomnRotatedLabelHighchart("<%= idElement %>", "<%= titleChart %>", "<%= labelY %>", "<%= cat %>",qt);
+		});
+
+        //fonction affichage du colomn
+        function ColomnRotatedLabelHighchart(idElement, titre, lableY ,cat,qt){
+
+          var dataConvert = [];
+
+          //convertir les donnees
+          for(var key in qt){
+            dataConvert.push([key, qt[key]]);
+          }
+
+          //caracteristique du courbe avec donnees
+          var option = {
+            chart: {
+              type: 'spline'
+            },
+            title: {
+              text: titre
+            },
+
+
+            xAxis: {
+              categories: catsplit,
+              crosshair: true,
+              type: 'text',
+              title: {
+                text: 'Date'
+              }
+            },
+
+            yAxis: {
+              title: {
+                text: lableY
+              },
+              min: 0
+            },
+            tooltip: {
+              headerFormat: '<b>{series.name}</b><br>',
+              pointFormat: '{point.y}'
+            },
+
+            plotOptions: {
+              spline: {
+                marker: {
+                  enabled: true
+                }
+              }
+            },
+
+            series: [
+              {
+                name: lableY,
+                data: dataConvert
+              }
+            ]
+          };
+
+
+          // generer le graphe
+          var catsplit = cat.split(',');
+            $('#' + idElement).highcharts();
+        }
+    </script>

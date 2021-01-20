@@ -1,0 +1,284 @@
+<title xmlns="http://www.w3.org/1999/html">Detourage Suivi</title>
+<head>
+
+
+  <!-- TIME PICKER INCLUDE  -->
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!--link rel="stylesheet" href="bootstrap.css" /-->
+  <link rel="stylesheet" href="/timepickerRonny/bootstrap-material-datetimepicker.css" />
+  <link href='/timepickerRonny/font1.css' rel='stylesheet' type='text/css'>
+  <link href="/timepickerRonny/font2.css" rel="stylesheet">
+
+
+
+  <!-- FIN TIME PICKER INCLUDE  -->
+
+  <link rel="stylesheet" href="/css/bootstrap-material-datetimepicker.css">
+
+  <!--script type='text/javascript' src='/js/jquery.min.js'></script-->
+  <!-- TEST BUG MENU -->
+
+
+  <script type='text/javascript' src="/TestNewFullcalendar/jquery.min.js"></script>
+  <link rel="stylesheet" href="/styles/importer.css">
+  <link rel="stylesheet" href="/bootflat/css/bootstrap.css">
+  <link rel="stylesheet" href="/bootflat/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/local.css">
+  <link rel="stylesheet" href="/css/Style_v3.css">
+
+  <link rel='stylesheet' type='text/css' href='/css/fullcalendar.css' />
+  <link rel='stylesheet' type='text/css' href='/css/fullcalendar.min.css' />
+  <link rel='stylesheet' type='text/css' href='/css/fullcalendar.print.css' media='print' />
+
+  <script src="/js/dependencies/sails.io.js"></script>
+  <script src="/js/jquery-1.10.2.min.js"></script>
+  <script src="/bootstrap/js/bootstrap.min.js"></script>
+  <script src="/material/chart/exporting.js"></script>
+  <script src="/js/dossierEtapeApp.js"></script>
+  <script src="/js/jquery-ui.min.js"></script>
+  <script src="/js/material-modal.min.js"></script>
+  <script src="/js/pikaday.js"></script>
+  <!--script type='text/javascript' src='/js/jquery-ui-1.8.23.custom.min.js'></script-->
+  <script type='text/javascript' src='/js/moment.min.js'></script>
+  <!--script type='text/javascript' src='/js/fullcalendar.min.js'></script-->
+  <script type="text/javascript">
+    $(document).ready(function(){
+      $("#submit").click(function(e){
+        e.preventDefault();
+        // ajax();
+      });
+    });
+  </script>
+</head>
+<body>
+<% include ../../includes/entete.ejs %>
+<div class="container-fluid">
+  <form method="post" action="/Detourage/index">
+    <%
+    var datech = "";
+    if(req.session.datechoice!=null){
+      datech = req.session.datechoice;
+    }
+    %>
+    <div class="row">
+      <div class="col-xs-2">
+        <input class="form-control" type="date" id="date-only" name="date_recherche_saisi_reception" placeholder="Date" value="<%=datech%>"/>
+      </div>
+      <div class="col-xs-2">
+        <select class="form-control" placeholder="Traite" name="id_traitement_reception_recherche">
+          <option value="tous">
+            TOUS
+          </option>
+          <% traite.forEach (function(dep) { %>
+          <option value="<%= dep.id_det_type_traitement %>"><%= dep.libelle %></option>
+          <% }) %>
+        </select>
+      </div>
+      <!--<div class="col-xs-2">
+        <input class="form-control" type="text"  name="maticule" placeholder="Matricule"/>
+      </div>-->
+      <button type="submit" class="btn btn-info btn-md">ok</button>
+    </div>
+  </form>
+  <div class="x_content">
+  <table class="table table-hover">
+
+    <thead>
+    <tr>
+      <th>id_saisi_det</th>
+      <th>Priorité</th>
+      <th>DATE/Heure Reception_</th>
+      <th>Type de Traitement</th>
+      <th>Nombre de visuels</th>
+      <th>Client</th>
+      <th>Objet du mail de réception</th>
+      <th>Date/Heure d'envoi</th>
+      <th>Type de Traitement Envoi</th>
+      <th>Nombre de Visuels</th>
+      <th>Objet de mail d'envoi</th>
+
+    </tr>
+    </thead>
+    <tbody>
+    <%
+    var trbgcolor= '';
+
+    listetouslessaisies.forEach (function(saisi) {
+    if(saisi.libelle_priorite=="Très urgent")
+    {
+
+        trbgcolor= "style=background:#FF0000";
+    }
+    else
+    {
+      if(saisi.libelle_priorite=="Urgent")
+      {
+        trbgcolor= "style=background:#FFA500";
+      }
+      else
+      {
+          if(saisi.libelle_priorite=="Avec délai")
+            {
+              trbgcolor= "style=background:#7FFF00";
+            }
+            else
+            {
+                trbgcolor= "";
+            }
+
+      }
+
+    }
+
+
+     %>
+    <tr>
+
+      <td <%= trbgcolor %>><%= saisi.id_saisi_det%></td>
+      <td <%= trbgcolor %> class="text-teal" onclick="TEST(<%= saisi.id_saisi_det%>)" data-toggle="modal" data-target="#Modal_Modif_Priorite"><%= saisi.libelle_priorite %></td>
+      <td <%= trbgcolor %> ><%= saisi.date_heure_reception%></td>
+      <td <%= trbgcolor %> > <%= saisi.traite_reception%></td>
+      <td <%= trbgcolor %> ><%= saisi.visuels_reception%></td>
+      <td <%= trbgcolor %> ><%= saisi.nom_saisi_client%></td>
+      <td <%= trbgcolor %> ><%= saisi.objet_mail_reception%></td>
+      <td <%= trbgcolor %> ><%= saisi.date_heure_envoi%></td>
+      <td <%= trbgcolor %> ><%= saisi.traite_envoi%></td>
+      <td <%= trbgcolor %> ><%= saisi.visuels_envoi%></td>
+      <td <%= trbgcolor %> ><%= saisi.objet_mail_envoi%></td>
+
+    </tr>
+    <% }) %>
+    </tbody>
+
+    <div id="Modal_Modif_Priorite" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">AJOUT/MODIFICATION PRIORITE</h4>
+          </div>
+          <div class="modal-body">
+            <form action="/Detourage/Modif_Priorite" method="post">
+              <div class="form-group row">
+                <label class="col-xs-4 col-form-label">Veuillez Selectionner Priorite</label>
+                <div class="col-xs-5">
+                  <select class="form-control" id="Client" type="text" name="id_priorite_modif" id="" placeholder = "" value="" required>
+                    <% priorite.forEach (function(prio) { %>
+                    <option value="<%= prio.id_priorite %>"><%= prio.libelle %></option>
+                    <% }) %>
+                  </select>
+                </div>
+              </div>
+              <input type="hidden" id="valeur_id_saisi" value="" name="id_modif_saisi">
+              <center><input type="submit" value="Modif Priorite" class="btn btn-primary"></center>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      function TEST(id_saisi)
+      {
+      //    alert("TEST MODIF URGENT"+id_saisi);
+        $('#valeur_id_saisi').val(id_saisi);
+      }
+    </script>
+    <form action="/Detourage/Export_Excel_Saisi" method="post">
+      <input type="hidden" value="<%= date_reception_value_export%>" name="date_recherche_saisi_reception">
+      <input type="hidden" value="<%=traite_reception_value_export%>" name="id_traitement_reception_recherche">
+    <button class="btn btn-success" type="submit">Exporter CSV</button>
+    </form>
+   <br> <a class="btn btn-primary" href="/Detourage/NouveauSaisi">NOUVEAU SAISI</a>
+  </table>
+ </div>
+</div>
+</body>
+<script type="text/javascript" src="/timepickerRonny/material.js"></script>
+<script type="text/javascript" src="/timepickerRonny/moment_local.js"></script>
+<script type="text/javascript" src="/timepickerRonny/bootstrap-material-datetimepicker.js"></script>
+<script src="/js/dependencies/sails.io.js"></script>
+
+
+
+
+
+<!--script src="/js/jquery-ui.min.js"></script-->
+<script>
+  (function(i, s, o, g, r, a, m) {
+    i['GoogleAnalyticsObject'] = r;
+    i[r] = i[r] || function() {
+        (i[r].q = i[r].q || []).push(arguments)
+      }, i[r].l = 1 * new Date();
+    a = s.createElement(o),
+      m = s.getElementsByTagName(o)[0];
+    a.async = 1;
+    a.src = g;
+    m.parentNode.insertBefore(a, m)
+  })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+  ga('create', 'UA-60343429-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('#date').bootstrapMaterialDatePicker
+    ({
+      time: false,
+      clearButton: true
+    });
+
+    $('#time_start').bootstrapMaterialDatePicker
+    ({
+      date: false,
+      shortTime: false,
+      format: 'HH:mm'
+    });
+    $('#time_end').bootstrapMaterialDatePicker
+    ({
+      date: false,
+      shortTime: false,
+      format: 'HH:mm'
+    });
+    $('#date-format').bootstrapMaterialDatePicker
+    ({
+      format: 'dddd DD MMMM YYYY - HH:mm'
+    });
+    $('#date-fr_interface_2').bootstrapMaterialDatePicker
+    ({
+      format: 'YYYY/MM/DD HH:mm',
+      lang: 'fr',
+      weekStart: 1,
+      cancelText: 'ANNULER',
+      nowButton: true,
+      switchOnClick: true
+    });
+    $('#date-fr_saisie').bootstrapMaterialDatePicker
+    ({
+      format: 'YYYY/MM/DD HH:mm',
+      lang: 'fr',
+      weekStart: 1,
+      cancelText: 'ANNULER',
+      nowButton: true,
+      switchOnClick: true
+    });
+    $('#date-only').bootstrapMaterialDatePicker
+    ({
+      format: 'YYYY/MM/DD',
+      lang: 'fr',
+      time:false,
+    //  weekStart: 1,
+      cancelText: 'ANNULER',
+    //  nowButton: true,
+      switchOnClick: true
+    });
+  })
+</script>
+
+
+</body>

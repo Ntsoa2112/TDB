@@ -1,0 +1,55 @@
+<div class="container">
+  <div id="myModal_insert" role="dialog" class="modal fade">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" data-dismiss="modal" class="close">&times;</button>
+          <h4 class="modal-title">Nouveau reservation</h4>
+        </div>
+        <div class="modal-body">
+          <form action="/reservation_ostie/ajout" method="post">
+            <div class="form-group row">
+              <input type="hidden" id="ip" value="" name="ip"/>
+              <label for="personnel" class="col-xs-4 col-form-label">Matricule</label>
+              <div class="col-xs-8">
+                <select name="matricule" class="form-control" data-id="<%= Departement.id_reservation %>" data-model="departement" id="Departement" required>
+                  <% personnel.forEach (function(dep) { %>
+                  <option value="<%= dep.id_pers %>"><%= dep.id_pers %></option>
+                  <% }) %>
+                </select>
+              </div>
+            </div>
+            <center><input  class="btn btn-primary" type="submit" value="Nouveau rendez vous"></center>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/js/jquery-1.10.2.min.js"></script>
+<script>
+function get_ip2(callback) {
+      var ip = "null";
+      $.ajax({
+        type: "GET",
+        url: "http://gpao.easytech.mg/get_ip.php",
+        async: false,
+        success: function(msg){
+          //console.log(msg);
+          callback(msg);
+        },
+        error: function (error) {
+          alert('error; ' +error);
+          callback("IP INCONNUE");
+        }
+      });
+
+      //return ip;
+    }
+
+    get_ip2(function (ip) {
+
+       $("#ip").val(ip);
+    });
+
+</script>

@@ -1,0 +1,731 @@
+<script>
+  var listId = [];
+  function lodProgressBar(id_pers,pdate)
+  {
+    $.ajax({
+      type: "GET",
+      url: "/ajax_progress?id_pers="+id_pers+"&pdate="+pdate,
+      success: function(msg){
+        $("#request").append(msg);
+      },
+      error: function (error) {
+        //alert('error; ' +error);
+      }
+    });
+  }
+  function loadLC(id_pers)
+  {
+    $.ajax({
+      type: "GET",
+      url: "/ajaxLCOP?id_pers="+id_pers+"",
+      success: function(msg){
+        $("#request").append(msg);
+      },
+      error: function (error) {
+        //alert('error; ' +error);
+      }
+    });
+  }
+
+  function loadRT()
+  {
+
+    var interval =  setInterval(reloadingLC, 60 * 1000)
+
+
+  }
+  function reloadingLC() {
+    for(var i = 0; i<listId.length;i++){
+      loadLC(listId[i]);
+    }
+  }
+
+
+</script>
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TDB Stat</title>
+
+  <link rel="stylesheet" href="/styles/importer.css">
+  <link rel="stylesheet" href="/bootflat/css/bootflat.min.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/local.css">
+  <link rel="stylesheet" href="/css/Style_v3.css">
+  <!--STYLES END-->
+</head>
+<body onLoad="onLoadDossierStat();getLsDossierAdmin();getLsDepartement();getLsGroupe();getLsSpecialite();getLsEquipe(0,0);">
+<% if(req.session.droit==1){
+
+%>
+<% include ../includes/entete.ejs %>
+<% }else{
+
+%>
+<% include ../includes/enteteOperateur.ejs %>
+
+<% }%>
+<div id="request">
+
+</div>
+<div id="page-wrapper">
+  <div class="row">
+    <div class="col-md-12">
+      <div class=" row ">
+
+          <div  class="">
+
+              <div class="panel panel-primary">
+                <div class="panel-heading">
+                  <h3 class="panel-title"> <i class="fa fa-bar-chart-o"></i> </h3>
+                <div class="row">
+                  <div class="form-group">
+                    <form method="get" action="/suivisOp">
+
+                      <%
+                      var datech = "";
+                      if(req.session.datechoice!=null){
+                        datech = req.session.datechoice;
+                      }
+                      %>
+                      <div class="col-xs-2 col-md-2 col-lg-2">
+                        <select class="form-control" tabindex="-1" id="dossierDashAdmin" placeholder = "Dossier" name="dossier" onclick="">
+                          <option value="1">Dossier</option>
+                        </select>
+
+                      </div>
+
+                      <div class="col-xs-2 col-md-2 col-lg-2">
+                        <select class="form-control" tabindex="-1" id="equipeDashAdmin" placeholder = "Equipe" name="equipe">
+                          <option value="1">EQUIPE</option>
+                        </select>
+
+                      </div>
+
+                      <div class="col-xs-2 col-md-2 col-lg-2">
+                        <select class="form-control" tabindex="-1" id="departDashAdmin" placeholder = "Departement" name="departement">
+                          <option value="1">Departement</option>
+                        </select>
+
+                      </div>
+
+                      <div class="col-xs-2 col-md-2 col-lg-2">
+                        <select class="form-control" tabindex="-1" id="departGroupeDashAdmin" onchange="getLsDepartementGroupe(this.value)" placeholder = "Groupe Departement" name="groupe">
+                          <option value="1">Groupe Departement</option>
+                        </select>
+
+                      </div>
+                      <div class="col-xs-2 col-md-2 col-lg-2">
+                        <input class="form-control" type="text" id="datetim" name="datedeb" placeholder = "Date" value="<%=datech %>"/>
+                      </div>
+
+                      <button type="submit" class="btn btn-info btn-md">ok</button>
+                    </form>
+                  </div>
+
+
+                </div>
+              </div>
+
+
+              <%
+
+
+              var dat = [];
+              var datHprod = [];
+              var datHpause = [];
+              var donneNCGPAO = [];
+              var donne = [];
+              var cpt = 0;
+              var cptn = 0;
+              var classealert = "";
+              listePersonneConnected.forEach(function (list) {
+                var appelation = "Non connectée GPAO";
+                var motif = "";
+                var duree = 0;
+                var dureeHprod = 0;
+                var dureeHpause = 0;
+                var doss = 0;
+                var typeClasse = 0;
+                donne[cpt] = [];
+                donne[cpt].id_util = list.id_util;
+                donne[cpt].appelation = appelation;
+                donne[cpt].motif = motif;
+                donne[cpt].nom = list.appelation;
+                donneNCGPAO[cptn] = [];
+                ////console.log(listeinLdtConnected.length);
+                var test = 0;
+                for (var i = 0; i < listeinLdtConnected.length; i++) {
+
+                  if (listeinLdtConnected[i].id_pers == list.id_util) {
+
+                    appelation = listeinLdtConnected[i].num;
+                    duree = duree + listeinLdtConnected[i].duree;
+                    doss = listeinLdtConnected[i].id_dossier;
+                    if(listeinLdtConnected[i].id_type_ldt!=0){
+                      dureeHprod = dureeHprod + listeinLdtConnected[i].duree;
+                      if(listeinLdtConnected[i].id_type_ldt==1 || listeinLdtConnected[i].id_type_ldt==4 || listeinLdtConnected[i].id_type_ldt==9){
+                        dureeHpause = dureeHpause + listeinLdtConnected[i].duree;
+                      }
+                    }
+                    test++;
+                    ////console.log(list.id_util);
+
+                  }
+                }
+
+                //boucle pour parcourir les list des congée
+
+                for (var i = 0; i < listeConge.length; i++) {
+
+                  if (listeConge[i].id_pers == list.id_util) {
+                    if(appelation=="Non connectée GPAO"){
+                      appelation = listeConge[i].type_conge;
+                      motif = listeConge[i].motif;
+
+
+                    }else{
+                      test++;
+                    }
+
+                  }
+                }
+                if(test==0){
+                  typeClasse = 1;
+
+                  donneNCGPAO[cptn].id_util = list.id_util;
+                    donneNCGPAO[cptn].nom = list.appelation;
+                  donneNCGPAO[cptn].appelation = appelation;
+                  donneNCGPAO[cptn].motif = motif;
+                  donneNCGPAO[cptn].duree = 0;
+
+                  cptn++;
+
+                }
+
+                donne[cpt].duree = duree;
+                donne[cpt].appelation = appelation;
+                donne[cpt].motif = motif;
+                donne[cpt].id_dossier = doss;
+                donne[cpt].typeClasse = typeClasse;
+
+
+                if (duree != 0) {
+                  if(dossier!='') {
+                    if (dossier == donne[cpt].id_dossier ) {
+                      dat[list.id_util] = duree/3600;
+                    }
+                  }else{
+                    dat[list.id_util] = duree/3600;
+                  }
+                }
+                if (dureeHprod != 0) {
+
+
+                  datHprod[list.id_util] = dureeHprod/3600;
+                  datHpause[list.id_util] = dureeHpause/3600;
+                  donne[cpt].dureeHprod = dureeHprod;
+                }else{
+                  datHprod[list.id_util] = 0;
+                  datHpause[list.id_util] = 0;
+                  donne[cpt].dureeHprod = 0;
+                }
+
+
+
+                cpt++;
+              });
+              %>
+
+            </div>
+
+
+            <div class="clearfix"></div>
+
+            <div class="col-md-12 col-sm-12 col-xs-12">
+              <div class="x_panel">
+                <div class="x_title">
+                  <h2>Heure GPAO | Nbr OP: <span id="nb_op"><%=cpt-cptn %></span></h2>
+                  <ul class="nav navbar-right panel_toolbox">
+                    <li>
+                      <div class="">
+
+                        <select class="form-control" tabindex="-1"  placeholder = ""  onchange="getAjaxFiltre(this.value)" required="true">
+                          <option value="1">TOUS</option>
+                          <option value="2">ANOMALIE PROD</option>
+                          <option value="3">ANOMALIE PAUSE</option>
+                          <option value="4">CONNECTEE</option>
+                          <option value="5">NON CONNECTEE</option>
+                          <option value="6">CONGE</option>
+                        </select>
+
+                      </div>
+                    </li>
+                    <li><a href="#" onclick="openRequestedPopup();"><i class="fa fa-expand"></i></a></li>
+                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+
+                    <li><a class="close-link"><i class="fa fa-close"></i></a>
+                    </li>
+                  </ul>
+                  <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+
+                  <script src="/js/jquery-1.10.2.min.js"></script>
+                  <%- partial ('chart/stackedBarHigchart.ejs', {idElement : 'lineMorris',classeElement : ' ', title : 'Courbe Connexion', titleChart : 'Etape' ,data : dat,data2 : datHprod,data3 : datHpause }) %>
+                  <br />
+
+                </div>
+              </div>
+            </div>
+              <!--<div class="card-img" id="containerEvoVitesse"> </div>
+              <div class="card-img" id="containerEvoHeure"> </div>-->
+
+           <!-- <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
+            <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+            <script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+            <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+            <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>-->
+
+            <div class="col-md-12 col-sm-12 col-xs-12">
+              <div class="x_panel">
+                <div class="x_title">
+                  <h2>Listes</h2>
+                  <ul class="nav navbar-right panel_toolbox">
+                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+
+                    <li><a class="close-link"><i class="fa fa-close"></i></a>
+                    </li>
+                  </ul>
+                  <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+
+                  <div id="tableFiltre">
+                    <table  id="datatable-buttons" class="table table-striped table-bordered">
+                     <thead>
+                      <tr class=''>
+
+                        <th id='date_deb_ldt' class='th text-center'></td>
+                        <th id='date_deb_ldt' class='th text-center'>MATRICULE</td>
+                        <th id='date_deb_ldt' class='th text-center'>APPELATION</td>
+                        <th id='date_deb_ldt' class='th text-center'>LAST CONNEXION</td>
+                        <th id='date_deb_ldt' class="text-center">DOSSIERS</th>
+                        <th id='date_deb_ldt' class='th text-center'>MOTIF</td>
+                        <th id='date_fin_ldt' class="text-center">DUREE TOTAL</th>
+                        <th id='appelation' class="text-center">PROD</th>
+                        <th id='appelation' class="text-center">HORS PROD</th>
+                        <th id='appelation' class="text-center">% TEMPS PASSE</th>
+
+                      </tr>
+                        </thead>
+                      <tbody>
+
+                      <%
+
+
+                      function secondsToTime(secs)
+                      {
+                        secs = math.round(secs);
+                        var hours = math.floor(secs / (60 * 60));
+
+                        var divisor_for_minutes = secs % (60 * 60);
+                        var minutes = math.floor(divisor_for_minutes / 60);
+
+                        var divisor_for_seconds = divisor_for_minutes % 60;
+                        var seconds = math.ceil(divisor_for_seconds);
+
+                        var obj = {
+                          "h": hours,
+                          "m": minutes,
+                          "s": seconds
+                        };
+                        return obj;
+                      }
+
+
+
+
+                      var data = "";
+                      var data2 = "";
+                      if(donne.length>0){
+
+                      donne.forEach(function (list) {
+                      if(donne.length!=0){
+                        var prod = (list.duree/3600)-(list.dureeHprod/3600)
+                        var dt = 0;
+                        var prd = 0;
+                        var hprd = 0;
+                      var scrp = '';
+                      if(realtime){
+                        scrp = "loadLC("+list.id_util+");listId.push("+list.id_util+");";
+
+                      }
+                      var script1 = "<script>lodProgressBar("+list.id_util+",'"+datecible+"');"+scrp+"</script>"
+                      if(list.duree!=0 && list.duree!=null){
+                        dt = secondsToTime(list.duree);
+                        prd = secondsToTime(prod*3600);
+                        hprd = secondsToTime(list.dureeHprod);
+                        data2 += list.id_util+"?"+list.appelation+"?"+list.duree/3600+"?"+prod+"?"+list.dureeHprod/3600+"?0?"+list.nom+":";
+                      %>
+                      <tr class="">
+                        <td id="pt_<%=list.id_util%>"></td>
+                        <td ><%=list.id_util%></td>
+                        <td><a href="/ldtByOp?idpers=<%=list.id_util%>"><%=list.nom %></a></td>
+                        <td id="last_<%=list.id_util%>"></td>
+                        <td><%=list.appelation%></td>
+                        <td><%=list.motif%></td>
+                        <td><%=dt.h %>:<%=dt.m %>:<%=dt.s %></td>
+                        <td><a href="#" data-toggle="modal" data-target="#modalLdtOnepers" onclick="getLdtOp('<%=list.id_util%>','<%=datecible%>')"><%=prd.h %>:<%=prd.m %>:<%=prd.s %></a></td>
+                        <td><%=hprd.h %>:<%=hprd.m %>:<%=hprd.s %></td>
+                        <td id="">
+                          <div class="progress" id="pb_<%=list.id_util%>">
+
+                          </div>
+                        </td>
+                      </tr>
+                      <%
+                      }else{
+                        var className = '';
+                        if(list.typeClasse==1){
+                          className = 'error';
+                        }
+
+                        if(list.typeClasse==1){
+                          data2 += list.id_util+"?"+list.appelation+"?0?0?0?1?"+list.nom+":";
+                        }else{
+                          data2 += list.id_util+"?"+list.appelation+"?0?0?0?0?"+list.nom+":";
+                        }
+
+                      %>
+                      <tr >
+                        <td  class="<%=className%>" id="pt_<%=list.id_util%>"></td>
+                        <td class="<%=className%>"><%=list.id_util%></td>
+                        <td class="<%=className%>"><a href="/ldtByOp?idpers=<%=list.id_util%>"><%=list.nom %></a></td>
+                        <td class="<%=className%>"  id="last_<%=list.id_util%>"></td>
+                        <td class="<%=className%>"><%=list.appelation%></td>
+                        <td class="<%=className%>"><%=list.motif%></td>
+                        <td class="<%=className%>">0:0:0</td>
+                        <td class="<%=className%>"><a href="#" data-toggle="modal" data-target="#modalLdtOnepers" onclick="getLdtOp('<%=list.id_util%>','<%=datecible%>')">0:0:0</a></td>
+                        <td class="<%=className%>">0:0:0</td>
+                        <td class="<%=className%>" id="">
+                          <div class="progress" id="pb_<%=list.id_util%>">
+
+                          </div>
+                        </td>
+
+                      </tr>
+                      <%
+                      }
+
+                      %>
+
+                      <%-script1 %>
+                      <%
+                      }
+
+                      });
+
+
+                      }
+
+
+                      %>
+                      </tbody>
+                    </table>
+                    <%
+                  //
+                  var scr = ""
+                  if(realtime){
+                    //scr = "<script>loadRT();</script>"
+                  }
+
+                    var donneFiltre = "";
+                    donneFiltre = data2;
+                    %>
+
+                  <%-scr %>
+                  </div>
+
+                </div>
+              </div>
+
+
+
+
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+
+<!--modal detail ligne de temps-->
+<div class="modal fade" id="modalLdtOnepers" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <!--Content-->
+    <form method="GET" action="#" >
+      <div class="modal-content">
+        <!--Header-->
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" id="myModalLabel">Detail ligne de temps :</h4>
+        </div>
+        <!--Body-->
+        <div class="modal-body">
+          <table width=\"100%\"><thead><tr>
+              <th class='th'  id='matricule'>User</th>
+              <th class='th'  id='num_dossier'>Dossier</th>
+              <th class='th'  id='lib'>Etape</th>
+              <th class='th'  id='ldg'>LDG</th>
+              <th class='th'  id='type'>Type</th>
+              <th class='th'  id='h_deb'>Heure Debut</th>
+              <th class='th'  id='h_fin'>Heure Fin</th>
+              <th class='th'  id='h_fin'>Duree</th>
+              <th class='th'  id='quantite'>Qte</th>
+              <th class='th'  id='quantite'>Vitesse</th>
+              <th class='th'  id='nbre_erreur'>NbErr</th>
+              <th class='th'  id='statu'>Statut</th>
+              <th class='th'  id='statu'></th>
+              <th></th></tr></thead>
+            <tbody id="tableLdt">
+                <tr>
+                    <div id="handle"></div>
+                    <div id="divflottant"></div>
+                </tr>
+            </tbody>
+
+          </table>
+          <input type="text"  id="idLien" name="id" required="required"  class="hidden" value="">
+          <input type="text"  id="idEtape" name="idetape" required="required"  class="hidden" value="">
+        </div>
+        <!--Footer-->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermé</button>
+        </div>
+      </div>
+    </form>
+    <!--/.Content-->
+  </div>
+</div>
+
+
+
+
+
+<link rel="stylesheet" href="/jquery-ui/jquery-ui.css">
+<script src="/js/dependencies/sails.io.js"></script>
+<script src="/js/jquery-ui.min.js"></script>
+<script src="/bootstrap/js/bootstrap.min.js"></script>
+<script src="/material/chart/highcharts.js"></script>
+<script src="/material/chart/exporting.js"></script>
+<script src="/js/dossierEtapeApp.js"></script>
+
+<!-- Custom Theme Scripts -->
+<script src="/js/custom.min.js"></script>
+<script>
+  $(function() {
+    $( "#datetim" ).datepicker({
+      dateFormat: 'yy-mm-dd'
+    });
+  } );
+
+
+
+  function getLsDepartementGroupe(id)
+  {
+    $.ajax({
+      type: "GET",
+      url: "/getLsGroupeDep?groupe="+id,
+      success: function(msg){
+
+        $("#departDashAdmin").html(msg);
+      },
+      error: function (error) {
+        //alert('error; ' +error);
+      }
+    });
+  }
+
+  function getLsEquipe(id,type)
+  {
+    $.ajax({
+      type: "GET",
+      url: "/getLsEquipe?groupe="+id+"&type="+type,
+      success: function(msg){
+        $("#equipeDashAdmin").html(msg);
+      },
+      error: function (error) {
+        //alert('error; ' +error);
+      }
+    });
+  }
+
+  function getLdtOp(id,date)
+  {
+    $.ajax({
+      type: "GET",
+      url: "/ajax_ldt?id_pers="+id+"&pdate="+date,
+      success: function(msg){
+        $("#tableLdt").html(msg);
+      },
+      error: function (error) {
+        //alert('error; ' +error);
+      }
+    });
+  }
+
+
+  //function ajaxFiltreTable
+
+
+  function geTableFiltre(type)
+  {
+    $.ajax({
+      type: "POST",
+      url: "/geTableFiltre/",
+      data:"type="+type+"&data=<%=donneFiltre%>",
+      success: function(msg){
+        $("#tableFiltre").html(msg);
+      },
+      error: function (error) {
+        //alert('error; ' +error);
+      }
+    });
+  }
+
+
+
+//choix page ajax
+  function getAjaxFiltre(type)
+  {
+    if(Number(type)==1){
+      refresh(type);
+      geTableFiltre(type);
+    }else if(Number(type)==2 || Number(type)==3){
+      refresh(type);
+      geTableFiltre(type);
+    }else{
+      geTableFiltre(type);
+    }
+  }
+
+  function fullscreen(){
+    var doss = $("#dossierDashAdmin").val();
+    var eq = $("#equipeDashAdmin").val();
+    var dep = $("#departDashAdmin").val();
+    var grp = $("#departGroupeDashAdmin").val();
+    var dat = $("#datetim").val();
+    window.open(
+      "/graphe_suivis?dossier="+doss+"&equipe="+eq+"&departement="+dep+"&groupe="+grp+"&datedeb="+dat,
+      null,
+      "addressbar=0,directories=0,titlebar=0,toolbar=0,location=yes,status=0,menubar=0,scrollbars=0,resizable=1,fullscreen=1"
+    );
+  }
+
+  var windowObjectReference;
+  var strWindowFeatures = "menubar=no,location=no,resizable=yes,scrollbars=no,status=no,fullscreen=yes";
+
+  function openRequestedPopup() {
+    var doss = $("#dossierDashAdmin").val();
+    var eq = $("#equipeDashAdmin").val();
+    var dep = $("#departDashAdmin").val();
+    var grp = $("#departGroupeDashAdmin").val();
+    var dat = $("#datetim").val();
+    windowObjectReference = window.open("/graphe_suivis?dossier="+doss+"&equipe="+eq+"&departement="+dep+"&groupe="+grp+"&datedeb="+dat, "TDB", strWindowFeatures);
+  }
+</script>
+
+ <script type="text/javascript">
+  $(document).ready(function() {
+    var handleDataTableButtons = function() {
+      if ($("#datatable-buttons").length) {
+        $("#datatable-buttons").DataTable({
+          pageLength: 25,
+          dom: "Bfrtip",
+          buttons: [
+            {
+              extend: "copy",
+              className: "btn-sm"
+            },
+            {
+              extend: "csv",
+              className: "btn-sm"
+            },
+            {
+              extend: "excel",
+              className: "btn-sm"
+            },
+            {
+              extend: "pdfHtml5",
+              className: "btn-sm"
+            },
+            {
+              extend: "print",
+              className: "btn-sm"
+            },
+          ],
+          responsive: true
+        });
+      }
+    };
+
+    TableManageButtons = function() {
+      "use strict";
+      return {
+        init: function() {
+          handleDataTableButtons();
+        }
+      };
+    }();
+
+    $('#datatable').dataTable();
+    $('#datatable-keytable').DataTable({
+      keys: true
+    });
+
+    $('#datatable-responsive').DataTable();
+
+
+    var table = $('#datatable-fixed-header').DataTable({
+      fixedHeader: true
+    });
+
+    TableManageButtons.init();
+  });
+</script>
+
+<!-- FastClick -->
+<script src="/vendors/fastclick/lib/fastclick.js"></script>
+<!-- NProgress -->
+<script src="/vendors/nprogress/nprogress.js"></script>
+
+
+<script src="/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+<script src="/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
+<script src="/vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
+<script src="/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
+<script src="/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+<script src="/vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+<script src="/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+<script src="/vendors/datatables.net-scroller/js/datatables.scroller.min.js"></script>
+<script src="/vendors/jszip/dist/jszip.min.js"></script>
+<script src="/vendors/pdfmake/build/pdfmake.min.js"></script>
+<script src="/vendors/pdfmake/build/vfs_fonts.js"></script>
+</body>
+</html>

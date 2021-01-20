@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TDB Stat</title>
+
+  <link rel="stylesheet" href="/styles/importer.css">
+  <link rel="stylesheet" href="/bootflat/css/bootflat.min.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/local.css">
+  <link rel="stylesheet" href="/css/Style_v3.css">
+  <link rel="stylesheet" href="/jquery-ui/jquery-ui.css">
+  <!--STYLES END-->
+</head>
+<%
+var dat = [];
+var datHprod = [];
+var datHpause = [];
+var donneNCGPAO = [];
+var donne = [];
+var cpt = 0;
+var cptn = 0;
+var classealert = "";
+listePersonneConnected.forEach(function (list) {
+  var appelation = "Non connectée GPAO"
+  var duree = 0;
+  var dureeHprod = 0;
+  var dureeHpause = 0;
+  var doss = 0;
+  var typeClasse = 0;
+  donne[cpt] = [];
+  donne[cpt].id_util = list.id_util;
+  donne[cpt].appelation = appelation;
+  donne[cpt].nom = list.appelation;
+  donneNCGPAO[cptn] = [];
+  ////console.log(listeinLdtConnected.length);
+  var test = 0;
+  for (var i = 0; i < listeinLdtConnected.length; i++) {
+
+    if (listeinLdtConnected[i].id_pers == list.id_util) {
+
+      appelation = listeinLdtConnected[i].num;
+      duree = duree + listeinLdtConnected[i].duree;
+      doss = listeinLdtConnected[i].id_dossier;
+      if(listeinLdtConnected[i].id_type_ldt!=0){
+        dureeHprod = dureeHprod + listeinLdtConnected[i].duree;
+        if(listeinLdtConnected[i].id_type_ldt==1 || listeinLdtConnected[i].id_type_ldt==4 || listeinLdtConnected[i].id_type_ldt==9){
+          dureeHpause = dureeHpause + listeinLdtConnected[i].duree;
+        }
+      }
+      test++;
+      ////console.log(list.id_util);
+
+    }
+  }
+
+  //boucle pour parcourir les list des congée
+
+  for (var i = 0; i < listeConge.length; i++) {
+
+    if (listeConge[i].id_pers == list.id_util) {
+      if(appelation=="Non connectée GPAO"){
+        appelation = listeConge[i].type_conge;
+
+      }else{
+        test++;
+      }
+
+    }
+  }
+  if(test==0){
+    typeClasse = 1;
+
+    donneNCGPAO[cptn].id_util = list.id_util;
+    donneNCGPAO[cptn].nom = list.appelation;
+    donneNCGPAO[cptn].appelation = appelation;
+    donneNCGPAO[cptn].duree = 0;
+
+    cptn++;
+
+  }
+
+  donne[cpt].duree = duree;
+  donne[cpt].appelation = appelation;
+  donne[cpt].id_dossier = doss;
+  donne[cpt].typeClasse = typeClasse;
+
+
+  if (duree != 0) {
+    if(dossier!='') {
+      if (dossier == donne[cpt].id_dossier ) {
+        dat[list.id_util] = duree/3600;
+      }
+    }else{
+      dat[list.id_util] = duree/3600;
+    }
+  }
+  if (dureeHprod != 0) {
+
+
+    datHprod[list.id_util] = dureeHprod/3600;
+    datHpause[list.id_util] = dureeHpause/3600;
+    donne[cpt].dureeHprod = dureeHprod;
+  }else{
+    datHprod[list.id_util] = 0;
+    datHpause[list.id_util] = 0;
+    donne[cpt].dureeHprod = 0;
+  }
+
+
+
+  cpt++;
+});
+%>
+<div class="col-md-12 col-sm-12 col-xs-12">
+  <div class="x_panel">
+    <div class="x_title">
+      <h2>Heure GPAO</h2>
+      <ul class="nav navbar-right panel_toolbox">
+        <!--<li>
+          <div class="">
+
+            <select class="form-control" tabindex="-1"  placeholder = ""  onchange="getAjaxFiltre(this.value)" required="true">
+              <option value="1">TOUS</option>
+              <option value="2">ANOMALIE PROD</option>
+              <option value="3">ANOMALIE PAUSE</option>
+              <option value="4">CONNECTEE</option>
+              <option value="5">NON CONNECTEE</option>
+              <option value="6">CONGE</option>
+            </select>
+          </div>
+        </li>-->
+        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+        </li>
+
+        <li><a class="close-link"><i class="fa fa-close"></i></a>
+        </li>
+      </ul>
+      <div class="clearfix"></div>
+    </div>
+    <div class="x_content">
+
+      <script src="/js/jquery-1.10.2.min.js"></script>
+      <%- partial ('../chart/stackedBarHigchart.ejs', {idElement : 'lineMorris',classeElement : ' ', title : 'Courbe Connexion', titleChart : 'Etape' ,data : dat,data2 : datHprod,data3 : datHpause }) %>
+      <br />
+    </div>
+  </div>
+</div>
+<!-- ECharts -->
+<script src="/js/dependencies/sails.io.js"></script>
+<script src="/js/jquery-1.12.4.js"></script>
+<script src="/js/jquery-ui.min.js"></script>
+<script src="/bootstrap/js/bootstrap.min.js"></script>
+<script src="/material/chart/highcharts.js"></script>
+<script src="/material/chart/exporting.js"></script>
+<script src="/js/custom.min.js"></script>
+<script src="/vendors/echarts/dist/echarts.min.js"></script>
+<script src="/js/echarts/theme.js"></script>
+<script src="/js/echarts/echarts.js"></script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+
+
+<script>
+  function LoadLastC(id_pers,heure,stat){
+    $("#last_"+id_pers).html(heure);
+    var st = "<i class='fa fa-circle text-danger'></i>"
+    if(stat){
+      st = "<i class='fa fa-circle' style='color: green'></i>"
+    }
+    $("#pt_"+id_pers).html(st);
+  }
+</script>
+
+<%
+var scriptss = "<script>";
+scriptss += "LoadLastC("+status.id+",'"+status.heu+"',"+status.stat+"); </script>";
+%>
+
+
+<%-scriptss %>

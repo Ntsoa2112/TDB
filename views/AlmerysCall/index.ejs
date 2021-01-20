@@ -1,0 +1,128 @@
+
+
+<% include ../includes/entete.ejs %>
+
+
+<div id="page-wrapper">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="table-responsive">
+        <form method="get" action="/exportV2">
+          <!--<div class="col-md-4 col-sm-4 col-xs-4">
+            <select class="form-control" name="mois" id="mois" onchange="getAjaxFiltre(this.value);">
+              <option value="">Mois</option>
+              <option value="01">Janvier</option>
+              <option value="02">Fevrier</option>
+              <option value="03">Mars</option>
+              <option value="04">Avril</option>
+              <option value="05">Mai</option>
+              <option value="06">Juin</option>
+              <option value="07">Juillet</option>
+              <option value="08">Aout</option>
+              <option value="09">Septembre</option>
+              <option value="10">Octobre</option>
+              <option value="11">Novembre</option>
+              <option value="12">Decembre</option>
+            </select>
+          </div>
+            <div class="col-md-2 col-sm-2 col-xs-2">
+            <input class="form-control" type="number" value="2016" name="annee" id="annee"/>
+              </div>
+            <div class="col-md-4 col-sm-4 col-xs-4">
+              <input class="btn btn-info" type="submit" value="Exporter"/>
+            </div>-->
+          <div class="col-md-2 col-sm-2 col-xs-2">
+            <input class="form-control" type="text" value="" name="date" id="date" onchange="getAjaxFiltre();"/>
+          </div>
+
+          <div class="col-md-2 col-sm-2 col-xs-2">
+            <input class="form-control" type="text" value="" name="datefin" id="datefin" onchange="getAjaxFiltre();"/>
+          </div>
+          <div class="col-md-4 col-sm-4 col-xs-4">
+            <button type="submit" class="text-success" title="Export en excel"><span style="cursor:pointer"><i class="fa fa-file-excel-o fa-2x link"></i></span> </button>
+
+          </div>
+
+        </form>
+        <div id="loadG" class="col-md-4 text-success" style="display:none">
+          <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+          <span class="sr-only">Loading...</span>
+        </div>
+        <div id="tableData">
+          <table class="table table-hover" id="">
+            <thead>
+            <tr>
+              <th>Libelle Client</th>
+              <th>Libelle Etape</th>
+              <th>Nombre doublons etape</th>
+              <th>Date</th>
+            </tr>
+            </thead>
+            <tbody>
+            <% resultat.forEach(function(lot){ %>
+            <tr data-id=<%= lot.id_lot %> data-model="AlmerysCall">
+              <td><%= lot.lib %></td>
+              <td><%= lot.libel %></td>
+              <td><%= lot.nb %></td>
+              <td><%= lot.date %></td>
+            </tr>
+            <% }) %>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <link rel="stylesheet" href="/jquery-ui/jquery-ui.css">
+  <script src="/js/jquery-1.12.4.js"></script>
+  <script src="/js/jquery-ui.min.js"></script>
+  <script>
+    $( "#date").datepicker({
+      dateFormat: 'yymmdd'
+    }).datepicker("setDate", new Date());
+    $( "#datefin").datepicker({
+      dateFormat: 'yymmdd'
+    }).datepicker("setDate", new Date());
+    function getAjaxFiltre()
+    {
+      $.ajax({
+        type: "GET",
+        url: "/geTableAC?date="+$("#date").val()+"&datefin="+$("#datefin").val(),
+        beforeSend: function(xhr){
+          $( "#loadG").show();
+        },
+        success: function(msg){
+          $( "#loadG").hide();
+          $("#tableData").html(msg);
+        },
+        error: function (error) {
+          //alert('error; ' +error);
+          $( "#loadG").hide();
+        }
+      });
+    }
+
+    function exportXL()
+    {
+      var dtdb = $("#date").datepicker().val();
+      $.ajax({
+        type: "GET",
+        url: "/export?date="+dtdb+"",
+        beforeSend: function(xhr){
+          $( "#loadG").show();
+        },
+        success: function(msg){
+          //$("#tableData").html(msg);
+          $( "#loadG").hide();
+        },
+        error: function (error) {
+          //alert('error; ' +error);
+          $( "#loadG").hide();
+        }
+      });
+    }
+
+  </script>

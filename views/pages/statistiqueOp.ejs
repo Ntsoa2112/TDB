@@ -1,0 +1,286 @@
+
+<% if(req.session.droit==1){
+
+%>
+<% include ../includes/entete.ejs %>
+<% }else{
+
+%>
+<% include ../includes/enteteOperateur.ejs %>
+
+<% }%>
+<div id="page-wrapper">
+  <div class="row">
+    <div class="col-md-12">
+      <div class=" row ">
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+            <h3 class="panel-title"> <i class="fa fa-bar-chart-o"></i> </h3>
+            <div class="row">
+              <div class="form-group">
+                <form method="get" action="/statOp">
+
+                  <%
+                  /*
+                   req.session.mat = matricule;
+                   req.session.dossier = dossier;
+                   req.session.datedeb = dateess;
+                   */
+                  var datedb = "";
+                  var mat = "";
+                  var datefn = "";
+                  if(req.session.datedeb!=null){
+                    datedb = req.session.datedeb;
+                  }if(req.session.mat!=null){
+                    mat = req.session.mat;
+                  }if(req.session.datefin!=null){
+                    datefn = req.session.datefin;
+                  }
+                  %>
+
+                  <div class="col-xs-2">
+                    <input class="form-control" type="text" id="datetim" name="datedeb" placeholder = "Date Debut" value="<%=datedb%>"/>
+                  </div>
+                  <div class="col-xs-2">
+                    <input class="form-control" type="text" id="datetim2" name="datefin" placeholder = "Date Fin" value="<%=datefn%>"/>
+                  </div>
+                  <% if(req.session.droit==1){%>
+                  <div class="col-xs-2">
+                    <input class="form-control" type="number" name="matricule" placeholder = "Matricule" value="<%=mat%>"/>
+                  </div>
+                  <% } %>
+                  <button type="submit" class="btn btn-info btn-md">ok</button>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel-body">
+              <div class="card-img" id="containerEvoVitesse"> </div>
+              <div class="card-img" id="containerEvoHeure"> </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="/js/jquery-1.10.2.min.js"></script>
+<script>
+  $(function() {
+    $( "#datetim" ).datepicker({
+      dateFormat: 'yymmdd'
+    });
+  } );
+</script>
+<script>
+  $(function() {
+    $( "#datetim2" ).datepicker({
+      dateFormat: 'yymmdd'
+    });
+  } );
+</script>
+<script>
+  function round(value, decimals) {
+    return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
+  }
+  var datedeb = [];
+  var vitesseBrute = [];
+  var vitesseNette = [];
+  var heureProd = [];
+  var heureHorsProd = [];
+  var heureTotal = [];
+  datedeb = [<%
+  for(var tt = 0; tt<vitesseNette.length;tt++){
+  if(tt!=0){
+  %>
+    ,
+    <%
+    }
+    %>
+    <%=vitesseNette[tt].date_deb_ldt %>
+    <%
+    }
+    %>];
+
+  vitesseNette = [<%
+  for(var tt = 0; tt<vitesseNette.length;tt++){
+    var vit = 0;
+    vit = vitesseNette[tt].qte/(vitesseNette[tt].somme/3600);
+  if(tt!=0){
+  %>
+    ,
+    <%
+    }
+    %>
+    round(<%=vit %>,2)
+    <%
+    }
+    %>];
+  vitesseBrute = [<%
+  for(var tt = 0; tt<vitesseBrute.length;tt++){
+    var vit = 0;
+    vit = vitesseBrute[tt].qte/(vitesseBrute[tt].somme/3600);
+  if(tt!=0){
+  %>
+    ,
+    <%
+    }
+    %>
+    round(<%=vit %>,2)
+    <%
+    }
+    %>];
+
+
+  heureProd = [<%
+  for(var tt = 0; tt<vitesseNette.length;tt++){
+    var vit = 0;
+    vit = vitesseNette[tt].somme/3600;
+  if(tt!=0){
+  %>
+    ,
+    <%
+    }
+    %>
+    round(<%=vit %>,2)
+    <%
+    }
+    %>];
+
+  heureHorsProd = [<%
+  for(var tt = 0; tt<vitesseBrute.length;tt++){//console.log(tt+':'+JSON.stringify(vitesseBrute[tt]));
+    var vit = 0;
+  if(vitesseNette[tt]!=null){
+    vit = (vitesseBrute[tt]['somme']/3600)-(vitesseNette[tt]['somme']/3600);
+
+  }else{
+    vit = vitesseBrute[tt]['somme']/3600;
+  }
+  if(tt!=0){
+  %>
+    ,
+    <%
+    }
+    %>
+    round(<%=vit %>,2)
+    <%
+    }
+    %>];
+
+  heureTotal = [<%
+  for(var tt = 0; tt<vitesseBrute.length;tt++){
+    var vit = 0;
+    vit = vitesseBrute[tt]['somme']/3600;
+  if(tt!=0){
+  %>
+    ,
+    <%
+    }
+    %>
+    round(<%=vit %>,2)
+    <%
+    }
+    %>];
+</script>
+
+<script>
+  $(function () {
+
+    var optionEvH = {
+      chart: {
+        type: 'column'
+      },
+      title: {
+        text: 'STAT HEURE OP'
+      },
+      xAxis: {
+        categories: datedeb
+      },
+      yAxis: {
+        min: 0,
+        title: {
+          text: 'Temps consomé'
+        },
+        stackLabels: {
+          enabled: true,
+          style: {
+            fontWeight: 'bold',
+            color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
+          }
+        }
+      },
+      legend: {
+        align: 'right',
+        x: -30,
+        verticalAlign: 'top',
+        y: 25,
+        floating: true,
+        backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || 'white',
+        borderColor: '#CCC',
+        borderWidth: 1,
+        shadow: false
+      },
+      tooltip: {
+        headerFormat: '<b>{point.x}</b><br/>',
+        pointFormat: '{series.name}: {point.y} heurs<br/>Total: {point.stackTotal} heurs'
+      },
+      plotOptions: {
+        column: {
+          stacking: 'normal',
+          dataLabels: {
+            enabled: true,
+            color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white',
+            style: {
+              textShadow: '0 0 3px black'
+            }
+          }
+        }
+      },
+      series: [{
+        name: 'Heure Prod',
+        data: heureProd
+      }, {
+        name: 'Heure Hors Prod',
+        data: heureHorsProd
+      }]
+    };
+    Highcharts.chart('containerEvoHeure', optionEvH);
+    //$('#containerEvoHeure').highcharts();
+
+    var optionEvoVit = {
+      title: {
+        text: 'Evolution Vitesse'
+      },
+
+      xAxis: {
+        categories: datedeb,
+        crosshair: true
+      },
+
+      yAxis: {
+        type: 'logarithmic',
+        minorTickInterval: 0.1
+      },
+
+      tooltip: {
+        headerFormat: '<b>{series.name}</b><br />',
+        pointFormat: 'x = {point.x}, y = {point.y}'
+      },
+
+      series: [{
+        name: 'Brute',
+        data: vitesseBrute
+      },{
+        name: 'Nette',
+        data: vitesseNette
+      }
+      ]
+    };
+    Highcharts.chart('containerEvoVitesse', optionEvoVit);
+   // $('#containerEvoVitesse').highcharts();
+  });
+
+</script>
+

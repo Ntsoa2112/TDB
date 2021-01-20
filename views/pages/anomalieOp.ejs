@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TDB Stat</title>
+
+  <link rel="stylesheet" href="/styles/importer.css">
+  <link rel="stylesheet" href="/bootflat/css/bootflat.min.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/local.css">
+  <link rel="stylesheet" href="/css/Style_v3.css">
+  <!--STYLES END-->
+</head>
+<body onLoad="getLsMois();getLsEquipe(0,0);">
+<% if(req.session.droit==1){
+
+%>
+<% include ../includes/entete.ejs %>
+<% }else{
+
+%>
+<% include ../includes/enteteOperateur.ejs %>
+
+<% }%>
+<div id="page-wrapper">
+  <div class="row">
+    <div class="col-md-12">
+      <div class=" row ">
+
+          <div  class="">
+
+            <div class="panel panel-primary">
+              <div class="panel-heading">
+                <h3 class="panel-title"> <i class="fa fa-bar-chart-o"></i> </h3>
+                <div class="row">
+                  <div class="form-group">
+
+
+
+
+                      <div class="col-xs-2 col-md-2 col-lg-2">
+                        <select class="form-control" tabindex="-1" id="equipeDashAdmin" placeholder = "Equipe" name="equipe" id="idcp" onchange="changeCP(this.value)">
+                          <option value="1">EQUIPE</option>
+                        </select>
+
+                      </div>
+
+                      <div class="col-xs-2 col-md-2 col-lg-2">
+                        <select class="form-control" tabindex="-1" id="moisDashAdmin" placeholder = "Mois" name="mois" id="idp" onchange="changeP(this.value)">
+                          <option value="">Mois</option>
+                        </select>
+
+                      </div>
+                      <div class="col-xs-2 col-md-2 col-lg-2">
+                        <button type="submit" class="btn btn-info btn-md form-control" onclick="go();">ok</button>
+
+                      </div>
+
+
+
+
+                  </div>
+
+
+                </div>
+              </div>
+
+
+
+            </div>
+
+
+            <div class="clearfix"></div>
+
+
+              <!--<div class="card-img" id="containerEvoVitesse"> </div>
+              <div class="card-img" id="containerEvoHeure"> </div>-->
+
+           <!-- <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
+            <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+            <script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+            <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+            <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>-->
+            <div id="load1" class="col-md-4" style="display:none">
+              <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+              <span class="sr-only">Loading...</span>
+            </div>
+            <div id="div" class="col-md-12 col-sm-12 col-xs-12">
+
+
+
+
+
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+
+<script src="/js/jquery-1.10.2.min.js"></script>
+<script src="/js/dependencies/sails.io.js"></script>
+<script src="/js/jquery-ui.min.js"></script>
+<script src="/bootstrap/js/bootstrap.min.js"></script>
+<script src="/material/chart/highcharts.js"></script>
+<script src="/material/chart/exporting.js"></script>
+<script src="/js/dossierEtapeApp.js"></script>
+
+<!-- Custom Theme Scripts -->
+<script src="/js/custom.min.js"></script>
+<script>
+  $(function() {
+    $( "#datetim" ).datepicker({
+      dateFormat: 'yy-mm-dd'
+    });
+  } );
+
+  function getLsMois()
+  {
+    $.ajax({
+      type: "GET",
+      url: "/getLsMois",
+      success: function(msg){
+        $("#moisDashAdmin").html(msg);
+      },
+      error: function (error) {
+        //alert('error; ' +error);
+      }
+    });
+  }
+
+  function getLsEquipe(id,type)
+  {
+    $.ajax({
+      type: "GET",
+      url: "/getLsEquipe?groupe="+id+"&type="+type,
+      success: function(msg){
+        $("#equipeDashAdmin").html(msg);
+      },
+      error: function (error) {
+        //alert('error; ' +error);
+      }
+    });
+  }
+
+
+  var id_p = 1;
+  var id_cp = 1;
+
+  function changeP(str){
+    id_p = str;
+  }
+
+  function changeCP(str){
+    id_cp = str;
+  }
+  function go()
+  {
+
+
+    //console.log("paie="+id_p);
+    //console.log("cp="+id_cp);
+    $.ajax({
+      type: "GET",
+      url: "/ajaxAnomalieTab?id_paie="+id_p+"&id_cp="+id_cp,
+      beforeSend: function(xhr){
+        $( "#load1").show();
+      },
+      success: function(msg){
+        $( "#load1").hide();
+        $("#div").html(msg);
+      },
+      error: function (error) {
+        $( "#load1").hide();
+        //alert('error; ' +error);
+      }
+    });
+  }
+
+  //function ajaxFiltreTable
+
+
+
+
+//choix page ajax
+  function getAjaxFiltre(type)
+  {
+    if(Number(type)==1){
+      refresh(type);
+      geTableFiltre(type);
+    }else if(Number(type)==2 || Number(type)==3){
+      refresh(type);
+      geTableFiltre(type);
+    }else{
+      geTableFiltre(type);
+    }
+  }
+</script>
+
+
+</body>
+</html>

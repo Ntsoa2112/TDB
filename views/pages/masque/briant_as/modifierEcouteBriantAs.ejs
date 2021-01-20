@@ -1,0 +1,1436 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta name="generator" content="Bootply" />
+  <link rel="stylesheet" href="/styles/importer.css">
+  <link rel="stylesheet" href="/bootflat/css/bootflat.min.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/local.css">
+  <link rel="stylesheet" href="/css/Style_v3.css">
+
+  <link rel="stylesheet" href="/jquery-ui/jquery-ui.css">
+
+  <link rel="stylesheet" href="/css/bootstrap-duration-picker.css">
+  <!--<link href="/css/jquery.timesetter.css" rel="stylesheet">-->
+
+  <style type="text/css">
+    .notation_almerys{
+    }
+    .colorTable{
+      background-color:red;
+    }
+    input[type=radio] {
+      display: block;
+      margin: 0 auto;
+    }
+    label {
+      display: inline-block;
+    }
+  </style>
+  <title>Ecoute Masque</title>
+</head>
+<body onload="loadAll(); on_load_note_moyenne();">
+<!-- HEADER -->
+<%
+var mapPonderation = {};
+if(req.session.droit==1){
+
+%>
+<% include ../../../includes/entete.ejs %>
+<% }else{
+
+%>
+<% include ../../../includes/enteteOperateur.ejs %>
+
+<% }%>
+<!-- /HEADER -->
+
+<!-- Main -->
+<div id="page-wrapper">
+  <div class="row">
+	<!--div de selection --->
+
+    <!--Form group de selection-->
+
+    <div class="">
+		<% det_ecoute.forEach(function(detail_ecoute){ %>
+			  <div class="form-group col-md-2" id="div_tc">
+				<label for="tc_select">TC</label>
+				<select class="form-control" id="tc_select" onchange="load_profile(this.value);" disabled > <!--  -->
+				  <option value="">-</option>
+				</select>
+			  </div>
+			  <div class="form-group col-md-2">
+				<label for="motif_appel_select">Numero enregistrement</label>
+				<input type="number" min="0" class="form-control" id="numero_enregistrement_input" name="numero_enregistrement_input" value ="<%= detail_ecoute.numero_enregistrement %>" onchange="load_specialite()" required ></input>
+			  </div>
+			  <div class="form-group col-md-2">
+				<label for="motif_appel_select">Date enregistrement</label>
+				<input type='text' id='date_enr' name='date_enr' class='form-control hidden' value="<%= detail_ecoute.date_enregistrement %>"><br/>
+				<%
+					var d = detail_ecoute.date_enregistrement;
+					month = "" + (d.getMonth() + 1);
+					day = "" + d.getDate();
+					year = d.getFullYear();
+
+					if (month.length < 2) month = "0" + month;
+					if (day.length < 2) day = "0" + day;
+
+					var enr = [year, month, day].join("-");
+				%>
+				<input type="text" class="form-control" id="date_enregistrement" name="date_enregistrement" value="<%= enr %>" onchange="load_specialite()"></input>
+				<!--<input class="form-control" type="date" id="datedeb" name="datedeb" placeholder = "Date" value="/>-->
+			  </div>
+
+			  <div class="form-group col-md-2">
+				<label for="duration">Durée appel</label>
+				<!--<input class="form-control" id="duration" type="text" name="duration" onchange="setDuree(this.value);" disabled /></input>-->
+				<%
+					var sec_num = parseInt(detail_ecoute.duree_appel, 10); // don't forget the second param
+					var hours   = Math.floor(sec_num / 3600);
+					var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
+					var seconds = sec_num - (hours * 3600) - (minutes * 60);
+
+					if (hours   < 10) {hours   = "0"+hours;}
+					if (minutes < 10) {minutes = "0"+minutes;}
+					if (seconds < 10) {seconds = "0"+seconds;}
+					var res =  hours+":"+minutes+":"+seconds;
+				%>
+				<input class="form-control" id="duration1" type="text" name="duration1" placeholder="00:00:00" value="<%= res %>" onchange="load_specialite()"></input>
+			  </div>
+
+			  <div class="form-group col-md-1" id="div_spec">
+				<label for="motif_appel_select">Spécialités</label>
+				<select class="form-control" id="specialite_select" onclick="controle_numero_enregistrement()" onchange="load_specialite()" > <!--  -->
+				  <option value="">-</option>
+				</select>
+			  </div>
+
+			  <div class="form-group col-md-1" id="div_mode">
+				<label for="motif_appel_select">Mode</label>
+				<select class="form-control" id="mode_select" onclick="controle_numero_enregistrement()" onchange="load_specialite()" disabled > <!--  -->
+				  <option value="">-</option>
+				</select>
+			  </div>
+
+			  <div class="form-group col-md-2" id="div_motif">
+				<label for="motif_appel_select">Motif appel</label>
+				<select class="form-control" id="motif_appel_select" onclick="controle_numero_enregistrement()" onchange="load_notation()" >
+				  <option value="">-</option>
+				</select>
+				<input type="text" class="form-control hidden" id="input_motif" name="input_motif" placeholder="Nouveau motif..." oninput="load_input_motif()" ></input>
+			  </div>
+				<%
+				
+				var bgcolor_francais="";
+				var bgcolor_metier="";
+				if(detail_ecoute.commentaire_appreciation_francais == ""){
+					bgcolor_francais="#FAA33A";
+				}
+				if(detail_ecoute.commentaire_appreciation_metier == ""){
+					bgcolor_metier="#FAA33A";
+				}
+				
+				%>
+
+			  <!-- NEW CHAMPS -->
+			  <div class = "form-group hidden" id="type_ecoute_champs">
+				  <div class="form-group col-md-2" id="div_type_ecoute">
+					<label for="motif_appel_select">Type écoute</label>
+					<select class="form-control" id="type_ecoute_select" onclick="controle_numero_enregistrement()" onchange="load_specialite()"> <!--  -->
+					  <option value="">-</option>
+					</select>
+				  </div>
+				  <div class="form-group col-md-2">
+					<label for="motif_appel_select">Raisons</label>
+					<input type="text" min="0" class="form-control" id="raison_input" name="raison_input" value="<%= detail_ecoute.raisons %>" oninput="load_specialite()"></input>
+				  </div>
+				  <div class="form-group col-md-2" id="div_appreciation">
+					<label for="motif_appel_select">Appréciations</label>
+					<select class="form-control" id="appreciation_select" onclick="controle_numero_enregistrement()" onchange="load_specialite()"> <!--  -->
+					  <option value="">-</option>
+					</select>
+				  </div>
+				  <div class="form-group col-md-2" id = "">
+					<label for="motif_appel_select">Français</label>
+					<input type="text" style="background-color:<%= bgcolor_francais %>;" min="0" class="form-control" id="commentaire_appreciation_francais_input" name="commentaire_appreciation_francais_input" value="<%= detail_ecoute.commentaire_appreciation_francais %>" oninput="load_specialite()"></input>
+				  </div>
+				  <div class="form-group col-md-2" id = "commentaire_appreciation_champ">
+					<label for="motif_appel_select">Métier</label>
+					<input type="text" style="background-color:<%= bgcolor_metier %>;" min="0" class="form-control" id="commentaire_appreciation_metier_input" name="commentaire_appreciation_metier_input" value="<%= detail_ecoute.commentaire_appreciation_metier %>" oninput="load_specialite()"></input>
+				  </div>
+				  <div class="form-group col-md-2">
+					<label for="motif_appel_select">Reprise Français</label>
+					<input type="text" min="0" class="form-control" id="reprise_francais_input" name="reprise_francais_input" value="<%= detail_ecoute.reprise_francais %>" oninput="load_specialite()"></input>
+				  </div>
+				  <div class="form-group col-md-2">
+					<label for="motif_appel_select">Reprise Métier</label>
+					<input type="text" min="0" class="form-control" id="reprise_metier_input" name="reprise_metier_input" value="<%= detail_ecoute.reprise_metier %>" oninput="load_specialite()"></input>
+				  </div>
+
+
+				  </br></br>
+				  <div class="form-group col-md-12">
+					</br></br>
+					<%
+						var checkOui2 = " ";
+						var checkNon2 = " ";
+						if(detail_ecoute.conforme == true){
+							checkOui2 = "checked";
+						}else{
+							checkNon2 = "checked";
+						}
+					%>
+					<div class='form-group' id='notation_conforme2'>
+						<div class='col-md-8'>
+						</div>
+						<div class='col-md-2 col-lg-2 col-xs-4' style='padding-top:30px;' ><label style='font-size:18px;' >Conformité : </label></div>
+						<div class='col-md-1 col-lg-1 col-xs-4' style='padding-top:30px;'><label><div class ='pull-left'><input type='radio'  <%= checkOui2 %>  name='conformite2' id='conformite_oui2' value='1'  checked='checked'>Oui</label></div></div>
+						<div class='col-md-1 col-lg-1 col-xs-4' style='padding-top:30px;'><label><input type='radio'  <%= checkNon2 %>  name='conformite2' id='conformite_non2' value='0'>Non</label></div>
+					</div>
+				  <div class='form-group  col-md-10' style='margin-left:150px'>
+						<div class='col-md-12' > <!-- style='padding-top:20px;' -->
+						  <!--<button type='submit' class='btn btn-primary pull-right'>  Enregistrer  </button>-->
+						  <a class="btn btn-primary pull-right" href="#" role="button" onclick = "modifierNA()">Enregistrer</a>
+						</div>
+				  </div>
+			  </div>
+
+
+	  <!-- / NEW CHAMPS -->
+
+
+	  <% }); %>
+      <!--Fin du form group de selection-->
+    </div>
+
+	<div class="page-title" style="margin-left:25px">
+	  <div class="title_left">
+		<h3 style="color:#2B75A6;">
+		  Modification note
+		</h3>
+	  </div>
+	</div>
+
+    <!-- Div pour afficher le profile du TC -->
+    <div class="col-md-12 col-sm-12 col-xs-12" id="panel_info">
+      <div class="x_panel">
+        <div class="x_title">
+          <h2 id="td_pseudo"></h2>
+
+          <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+          <div class="col-md-2">
+            <img src="" class="img-circle" style="width:150px;height:150px;" alt="User Image" id="pdp">
+          </div>
+          <!--Form group de colone principale-->
+          <div class="col-md-5">
+            <div  class="gray"></div>
+            <div class="gray"><span id="td_nom"></span> <span id="td_prenom"></span></div>
+            <div  class="gray"><b><u>SAT</u>:</b> <span id="td_sat"></span></div>
+            <div  class="gray"><b><u>Niveau</u>:</b> <span id="td_niveau"></span></div>
+            <div  class="gray"><b><u>Vague</u>:</b> <span id="td_vague"></span></div>
+            <div  class="gray"><b><u>Numero tel</u>:</b> <span id="td_numtel"></span></div>
+            <div  class="gray"><b><u>Matricule</u>:</b> <span id="td_matricule"></span></div>
+          </div>
+          <!--Fin du form group de colone principale-->
+        </div>
+      </div>
+    </div>
+
+    <!-- DIV pour afficher la table NOTATION    <div class="notation_almerys hidden" id="notation_almerys"> -->
+    <div class="col-md-12 col-sm-12 col-xs-12" id="notation_almerys">
+      <div class="x_panel">
+        <div class="x_title">
+			<div class="col-md-2 col-lg-2 col-xs-12">
+				<h2>Notation</h2>
+			</div>
+			<div class="col-md-1 col-lg-1 col-xs-12 pull-left">
+				<input type='text' id='total_note' name='total_note' class='form-control' value='' disabled>
+			</div>
+			<div class="col-md-9 col-lg-8 col-xs-12">
+
+			</div>
+          <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+          <div class="panel-group" id="accordion">
+            <!-- FORM -->
+            </br>
+            <div class="title">
+              <div class="row fixed">
+                <div class="col-md-5 col-lg-4 col-xs-12">  </div>
+                <div class="col-md-1 col-lg-1 col-xs-12 center">
+                  <i class="fa fa-ban red" aria-hidden="true"> NA</i>
+                </div>
+                <div class="col-md-1 col-lg-1 col-xs-12 center">
+                  <i class="fa fa-thumbs-o-up " aria-hidden="true"> Ec A</i>
+                </div>
+                <div class="col-md-2 col-lg-1 col-xs-12 center">
+                  <i class="fa fa-thumbs-up" aria-hidden="true"> A </i>
+                </div>
+				<div class="col-md-3 col-lg-1 col-xs-12 center">
+                  <i class="fa fa-thumbs-down" aria-hidden="true"> NE </i>
+                </div>
+                <div class="col-md-3 col-lg-3 col-xs-12">
+                  <i class="fa fa-commenting-o" aria-hidden="true"></i>
+                  <label>COMMENTAIRES</label>
+                </div>
+            </div>
+            </div>
+
+            <form method="GET" action="/modifierNotation" data-parsley-validate class="form-horizontal">
+              <!--<input type='text' id='id_tc_form' name='id_tc_form' class='form-control hidden' value="">
+              <input type='text' id='id_motif_appel_form' name='id_motif_appel_form' class='form-control hidden' value="">
+              <input type='text' id='numero_enregistrement_form' name='numero_enregistrement_form' class='form-control hidden' value="">
+              <input type='text' id='date_enregistrement_form' name='date_enregistrement_form' class='form-control hidden' value=""><br/>
+              <input type='text' id='duree_enregistrement_form' name='duree_enregistrement_form' class='form-control hidden' value=""><br/>
+              <input type='text' id='date_debut_form' name='date_debut_form' class='form-control hidden' value=""><br/>-->
+			  <% det_ecoute.forEach(function(detail_ecoute){ %>
+				  <input type='text' id='id_tc_form' name='id_tc_form' class='form-control hidden' value="">
+				  <input type='text' id='id_motif_appel_form' name='id_motif_appel_form' class='form-control hidden' value="<%= detail_ecoute.id_motif %>">
+				  <input type='text' id='id_specialite_form' name='id_specialite_form' class='form-control hidden' value="<%= detail_ecoute.id_specialite %>">
+				  <input type='text' id='id_mode_form' name='id_mode_form' class='form-control hidden' value="<%= detail_ecoute.id_mode %>">
+				  <input type='text' id='numero_enregistrement_form' name='numero_enregistrement_form' class='form-control hidden' value="<%= detail_ecoute.numero_enregistrement %>">
+				  <input type='text' id='date_enregistrement_form' name='date_enregistrement_form' class='form-control hidden' value=""><br/>
+				  <input type='text' id='duree_enregistrement_form' name='duree_enregistrement_form' class='form-control hidden' value=""><br/>
+				  <input type='text' id='date_debut_form' name='date_debut_form' class='form-control hidden' value=""><br/>
+				  
+				  <input type='text' id='is_briant_as' name='is_briant_as' class='form-control hidden' value="briant_as">
+				  
+			  <% }); %>
+
+              <%
+                  //boucle des detail notation
+                  var lastID = 0;
+                  var html = "";
+                  var icon = [];
+
+                  icon.push();
+                  det_notation.forEach(function (notation) {
+                    mapPonderation[notation.id_details_notation] = notation.ponderation;
+                    if(lastID!=Number(notation.id_categorie_notation)){
+                      if(lastID != 0){
+                        html +="</div>" +
+                        "</div>" +
+                        "</div>";
+                      }
+                      lastID=Number(notation.id_categorie_notation);
+                      html += "<div class='panel panel-default'>"+
+                        "          <div class='title-flat title1'>"+
+                        "              <h4 class='title1'>"+
+                        "                 <a class='"+notation.icone+"' aria-hidden='true'   style='color:"+notation.couleur+"'> </a><a   style='color:"+notation.couleur+"' data-toggle='collapse' data-parent='#accordion' href='#collapse"+notation.id_categorie_notation+"'> "+notation.categorie+"</a>"+
+                        "              </h4>"+
+                        "          </div>"+
+                        "          <div >"+  //
+                        "            <div class='panel-body'>";
+                    }
+
+
+                    if(Number(notation.id_details_notation)!=328){
+
+						var checkMaitrise = " ";
+						var checkMaitriseEC = " ";
+						var checkNonMaitrise = " ";
+						var checkNA = " ";
+						if(notation.note==null){
+							checkNA = "checked";
+						}
+						if(notation.note > 0){
+							if(notation.note == notation.ponderation)
+							{
+								checkMaitrise = "checked";
+							}
+							else{
+								checkMaitriseEC = "checked";
+							}
+						}
+						if (notation.note==0){
+							checkNonMaitrise = "checked";
+						}
+
+                      html += "<div class='row'>"+
+                      "          <div class='col-md-5 col-lg-4 col-xs-12'>"+notation.notation+"</div>"+
+                      ""+
+					  "		<input type='text' id='nomApplication' name=note value='"+notation.note+"' hidden>"+
+					  "		<input type='text' id='id_ecoute' name='id_ecoute' class='form-control hidden' value='"+notation.id_ecoute+"'><br/>"+
+
+                      "          <div class='col-md-1 col-lg-1 col-xs-4'><input type='radio' "+checkNA+" name='"+notation.id_details_notation+"' id='"+notation.id_details_notation+"' value='110' required='required'></div>"+
+					  "          <div class='col-md-1 col-lg-1 col-xs-4'><input type='radio' "+checkMaitriseEC+" name='"+notation.id_details_notation+"' id='"+notation.id_details_notation+"' value='111' required='required'></div>"+
+                      "          <div class='col-md-1 col-lg-1 col-xs-4'><input type='radio' "+checkMaitrise+" name='"+notation.id_details_notation+"' id='"+notation.id_details_notation+"' value='112' required='required'></div>"+
+                      "          <div class='col-md-1 col-lg-1 col-xs-4'><input type='radio' "+checkNonMaitrise+" name='"+notation.id_details_notation+"' id='"+notation.id_details_notation+"' value='113' required='required'></div>"+
+                      "          <div class='col-md-4 col-lg-4 col-xs-12'><textarea class='form-control' rows='1' id='commentaire-"+notation.id_details_notation+"' name='commentaire-"+notation.id_details_notation+"' placeholder='Commentaire...'>"+notation.commentaire+"</textarea></div>"+
+                      ""+
+                          " </div>";
+                    }
+                    else{
+                      html += "<div class='row'>"+
+                        "          <div class='col-md-5 col-lg-4 col-xs-12'>"+notation.notation+"</div>"+
+                        ""+
+                        "          <div class='col-md-3 col-lg-4 col-xs-4'> <input type='number' step='any' min='0' max='15' class='form-control' id='"+notation.id_details_notation+"' name='"+notation.id_details_notation+"' placeholder=' ' required='required' value='"+notation.note+"'/></div>"+
+                       "          <div class='col-md-4 col-lg-4 col-xs-12'><textarea class='form-control' rows='1' id='commentaire-"+notation.id_details_notation+"' name='commentaire-"+notation.id_details_notation+"' placeholder='Commentaire...'>"+notation.commentaire+"</textarea></div>"+
+                        ""+
+                        " </div>";
+                    }
+
+                  });
+
+				  if(typeof det_formation != "undefined"){
+					det_formation.forEach(function (formation) {
+
+						var checkF = " ";
+						var checkM = " ";
+						var checkA = " ";
+						var checkFM = " ";
+
+						var hiddenF = "hidden";
+						var hiddenM = "hidden";
+
+						var francais = formation.francais_formation;
+						var metier = formation.metier_formation;
+
+						var comF = " ";
+						var comM = " ";
+
+						if(francais.substring(0,9)=="Francais/"){
+							checkF = "checked";
+							hiddenF = " ";
+							var array = francais.split("/");
+							comF = array[1];
+						}
+						if(metier.substring(0,7)=="Metier/"){
+							checkM = "checked";
+							hiddenM = " ";
+							var array = metier.split("/");
+							comM = array[1];
+						}
+
+
+					  html += "<br/><br/>"+
+							"<div class='row'>"+
+							  "          <div class='col-md-5 col-lg-5 col-xs-12'><label style='font-size:18px;'>Besoin de formation : </label></div>"+
+							  ""+
+							  "          <div class='col-md-1 col-lg-1 col-xs-4'>Français <input type='checkbox' "+checkF+" name='Francais' id='Francais' value='Francais'></div>"+
+							  "          <div class='col-md-1 col-lg-1 col-xs-4'>Métier <input type='checkbox' "+checkM+" name='Metier' id='Metier' value='Metier'></div>"+
+							  "          <div class='col-md-1 col-lg-1 col-xs-4'>Aucun <input type='checkbox' "+checkA+" name='Aucun' id='Aucun' value='Aucun'></div>"+
+							  "          <div class='col-md-4 col-lg-4 col-xs-12'><textarea class='form-control "+hiddenF+"' rows='1' id='commentaire_francais' name='commentaire_francais' placeholder='Commentaire...'>"+comF+"</textarea></div>"+
+
+							  ""+
+							" </div>"+
+							"<div class='row'>"+
+							  "          <div class='col-md-5 col-lg-5 col-xs-12'></div>"+
+							  ""+
+							  "          <div class='col-md-1 col-lg-1 col-xs-4' ></div>"+
+							  "          <div class='col-md-1 col-lg-1 col-xs-4'></div>"+
+							  "          <div class='col-md-1 col-lg-1 col-xs-4'></div>"+
+							  "<div class='col-md-4 col-lg-4 col-xs-12'><textarea class='form-control "+hiddenM+"' rows='1' id='commentaire_metier' name='commentaire_metier' placeholder='Commentaire Metier...'>"+comM+"</textarea></div>"+
+							  ""+
+							" </div>";
+					  });
+				  }
+
+
+                  ////console.log(mapPonderation);
+                  html += "</div></div></div></div><div class='form-group' id = 'div_note'><div class='form-group'>"+
+					"<div class='col-md-8'>"+
+					"</div>"+
+					"<div class='col-md-4'>"+
+					  "<label style='font-size:18px;'>Note :</label>"+
+					  "<input type='text' id='total_note_tc' name='total_note_tc' class='form-control' value='' disabled>"+
+					"</div>"+
+				"</div>";
+
+				"<!--<div class='form-group'>"+
+					"<div class='col-md-8'>"+
+					"</div>"+
+					"<div class='col-md-2' style='padding-top:30px;'>"+
+						"<label style='font-size:18px;' for='duration'>Durée</label>"+
+						"<input class='form-control' id='duration' type='text' name='duration'/></input>"+
+					"</div>"+
+				"</div>-->"+
+
+				det_ecoute.forEach(function (ecoute) {
+
+					var checkOui = " ";
+					var checkNon = " ";
+					var hideNonConformite = " ";
+					if(ecoute.conforme == true){
+						hideNonConformite = "hidden";
+						checkOui = "checked";
+					}else{
+						checkNon = "checked";
+					}
+
+					var commentaire = " ";
+					if(ecoute.commentaire_non_conformite != null){
+						commentaire = ecoute.commentaire_non_conformite;
+					}
+
+					html += "<div class='form-group hidden' id='notation_conforme'>"+
+						"<div class='col-md-8'>"+
+						"</div>"+
+						"<div class='col-md-2 col-lg-2 col-xs-4' style='padding-top:30px;' ><label style='font-size:18px;' >Conforme : </label></div>"+
+						"<div class='col-md-1 col-lg-1 col-xs-4' style='padding-top:30px;'><label><div class ='pull-left'><input type='radio' "+checkOui+" name='conformite' id='conformite' value='1' >Oui</label></div></div>"+
+						"<div class='col-md-1 col-lg-1 col-xs-4' style='padding-top:30px;'><label><input type='radio' "+checkNon+" name='conformite' id='conformite' value='0' >Non</label></div>"+
+					"</div>"+
+
+
+					"<div class='form-group "+hideNonConformite+"' id='motif_non_conformite'>"+
+						"<div class='form-group ' id='div_motif_non_conformite'>"+
+							"<div class='col-md-8'>"+
+							"</div>"+
+							"<div class='col-md-2 col-lg-1 col-xs-8' style='padding-top:30px;' ><label style='font-size:15px;color:green;' >Motif non-conformité: </label></div>"+
+							"<div class='col-md-1 col-lg-3 col-xs-8' style='padding-top:30px;'><select class='form-control' name='id_motif_non_conformite' id='motif_non_conformite_select' onclick='controle_numero_enregistrement()' onchange='load_notation()'>"+
+							  "<option value='1'>-</option>"+
+							"</select></div>"+
+						"</div>"+
+						"<div class='form-group '>"+
+							"<div class='col-md-8'>"+
+							"</div>"+
+							"<div class='col-md-2 col-lg-1 col-xs-8' style='padding-top:30px;' ><label style='font-size:15px;color:green;' >Commentaire: </label></div>"+
+							"<div class='col-md-1 col-lg-3 col-xs-8' style='padding-top:30px;'><textarea class='form-control' rows='2' id='commentaire_motif_non_conformite' name='commentaire_motif_non_conformite' placeholder='Commentaire motif de non-conformité...'>"+commentaire+"</textarea></div>"+
+						"</div>"+
+					"</div>  ";
+				});
+
+				html += "<div class='form-group' style='margin-left:150px'>"+
+					"<div class='col-md-12' style='padding-top:20px;'>"+
+					  "<button type='submit' class='btn btn-primary pull-right'>  Modifier  </button>"+
+					"</div>"+
+				"</div>  </div>";
+
+
+               %>
+              <%-html%>
+            </form>
+
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+<!-- FIN DIV pour afficher la div NOTATION -->
+
+</div>
+</br>
+</br>
+<input type='text' id='id_tc' name='id_tc' class='form-control hidden' value="<%= id_pers_tc %>"><br/>
+<% det_ecoute.forEach(function(detail_ecoute){ %>
+<input type='text' id='id_specialite' name='id_specialite' class='form-control hidden' value="<%= detail_ecoute.id_specialite %>"><br/>
+<input type='text' id='id_mode' name='id_mode' class='form-control hidden' value="<%= detail_ecoute.id_mode %>"><br/>
+<input type='text' id='id_ecoute' name='id_ecoute' class='form-control hidden' value="<%= detail_ecoute.id_ecoute %>"><br/>
+<input type='text' id='id_appreciation' name='id_appreciation' class='form-control hidden' value="<%= detail_ecoute.id_appreciation %>"><br/>
+<input type='text' id='id_type_ecoute' name='id_type_ecoute' class='form-control hidden' value="<%= detail_ecoute.id_type_ecoute %>"><br/>
+<input type='text' id='id_motif' name='id_motif' class='form-control hidden' value="<%= detail_ecoute.id_motif %>"><br/>
+<input type='text' id='id_motif_non_conformite' name='id_motif_non_conformite' class='form-control hidden' value="<%= detail_ecoute.id_motif_non_conformite %>"><br/>
+<% }); %>
+
+</body>
+<script src="/js/jquery-1.12.4.js"></script>
+<script src="/js/project.min.js"></script>
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/scripts.js"></script>
+
+<script src="/js/vendors/echarts.min.js"></script>
+<script src="/js/dependencies/sails.io.js"></script>
+<script src="/js/jquery-ui.min.js"></script>
+<script src="/js/echarts/theme.js"></script>
+<script src="/js/echarts/echarts.js"></script>
+<script src="/js/custom.min.js"></script><!--script customise-->
+<script src="/js/bootstrap-duration-picker-debug.js"></script>
+
+<script language="javascript">
+	function modifierNA(){
+		var id_ecoute = $("#id_ecoute").val(); // id mode
+
+	  var id_mode = $( "#mode_select option:selected" ).val(); // id mode
+
+	  var id_tc = $( "#tc_select option:selected" ).val(); //id tc
+	  var id_motif_appel = $( "#motif_appel_select option:selected" ).val(); // id motif appel
+	  var numero_enregistrement = $( "#numero_enregistrement_input" ).val(); // numero enregistrement
+	  var id_specialite = $( "#specialite_select option:selected" ).val(); // id specialite
+
+	//type ecoute
+	  var id_type_ecoute = $( "#type_ecoute_select option:selected" ).val();
+	  var raison = $( "#raison_input" ).val();
+	  var id_appreciation = $( "#appreciation_select option:selected" ).val();
+	  var commentaire_appreciation_francais = $( "#commentaire_appreciation_francais_input" ).val();
+	  var commentaire_appreciation_metier = $( "#commentaire_appreciation_metier_input" ).val();
+	  var reprise_francais = $( "#reprise_francais_input" ).val();
+	  var reprise_metier = $( "#reprise_metier_input" ).val();
+	  //alert(id_type_ecoute + "  " + raison + " " + id_appreciation + " " + commentaire_appreciation_francais + " " + reprise);
+	//fin type ecoute
+
+	  //Date enregistrement -------------------------------------------------
+		var date = new Date();
+		var day = date.getDate();
+		var month = date.getMonth() + 1;
+		var year = date.getFullYear();
+		if (month < 10) month = "0" + month;
+		if (day < 10) day = "0" + day;
+		var today = year + "-" + month + "-" + day;
+
+		var date_enregistrement = ""; // numero enregistrement
+
+		if($( "#date_enregistrement" ).val() == ""){
+			date_enregistrement = today;
+		}else{
+			date_enregistrement = $( "#date_enregistrement" ).val(); // numero enregistrement
+		}
+		//var duration = $( "#duration" ).val();
+		var hms = $( "#duration1" ).val();
+		var a = hms.split(':');
+		var duree_enregistrement = (+a[0]) * 60 * 60 + (+a[1]) * 60 + (+a[2]);
+		//alert(duree_enregistrement);
+	//Fin date enregistrement -------------------------------------------------
+
+		var dtTemp = new Date();
+		//$("#date_debut_form").val(dtTemp.getHours()+':'+dtTemp.getMinutes()+':'+dtTemp.getSeconds());
+		var date_debut = dtTemp.getHours()+':'+dtTemp.getMinutes()+':'+dtTemp.getSeconds();
+		//alert(dtTemp.getHours()+':'+dtTemp.getMinutes()+':'+dtTemp.getSeconds());
+
+	//Besoin de formation
+
+		/*var checkedValueF = $( "#Francais2" ).val();
+		var checkedValueM = $( "#Metier2" ).val();
+		var checkedValueA = $( "#Aucun2" ).val();
+
+		var commentaire_formation_francais = $( "#commentaire_francais2" ).val();
+		var commentaire_formation_metier = $( "#commentaire_metier2" ).val();
+
+		if (typeof checkedValueF == 'undefined'){
+			checkedValueF = '';
+			commentaire_formation_francais = '';
+		}
+		if (typeof checkedValueM == 'undefined'){
+			checkedValueM = '';
+			commentaire_formation_metier = '';
+		}
+		var francais_formation = checkedValueF +"/"+commentaire_formation_francais;
+		var metier_formation = checkedValueM +"/"+commentaire_formation_metier;*/
+		
+		var francais_formation = "";
+		var metier_formation = "";
+
+	//fin besoin de formation
+	
+		var conformite = true;
+		if($( "#conformite_non2" ).is(':checked')){
+			conformite = false;
+		}
+	//alert(conformite);
+		var variableEcoute = "id_ecoute="+id_ecoute+"&id_tc_form="+id_tc+"&numero_enregistrement_form="+numero_enregistrement+"&id_motif_appel_form="+id_motif_appel+"&id_specialite_form="+id_specialite+"&conformite2="+conformite;
+		var variableEcoute2 = "&id_mode_form="+id_mode+"&date_enregistrement_form="+date_enregistrement+"&date_debut_form="+date_debut+"&francais_formation_form="+francais_formation;
+		var variableEcoute3 = "&metier_formation_form="+metier_formation+"&id_type_ecoute_form="+id_type_ecoute+"&raison_form="+raison+"&id_appreciation_form="+id_appreciation+"&duree_enregistrement_form="+duree_enregistrement; //duree_enregistrement_form
+		var variableEcoute4 = "&commentaire_appreciation_francais_form="+commentaire_appreciation_francais+"&commentaire_appreciation_metier_form="+commentaire_appreciation_metier+"&reprise_francais_form="+reprise_francais+"&reprise_metier_form="+reprise_metier;
+
+		var urlEnregistrementNA = "/modifierNotationNA?"+variableEcoute+variableEcoute2+variableEcoute3+variableEcoute4;
+
+		///alert(" ckeck > "+checkedValueF + " Com > " + commentaire_formation_francais +"   les 2 > "+ francais_formation);
+		window.location=urlEnregistrementNA;
+
+	}
+</script>
+
+<script type="text/javascript">
+	//Motif non conformité
+	$("input[name='conformite']").change(function() {
+		if($(this).val()==0){
+			$("#motif_non_conformite").removeClass("hidden");
+		}else if($(this).val()==1){
+			$("#motif_non_conformite").addClass("hidden");
+		}
+	});
+
+	//FORMATION
+	$(document).ready(function() {
+
+		$('#Francais').change(function() {
+			if(this.checked) {
+				$("#commentaire_francais").removeClass("hidden");
+			}
+			if(!this.checked) {
+				$("#commentaire_francais").addClass("hidden");
+			}
+		});
+		$('#Metier').change(function() {
+			if(this.checked) {
+				$("#commentaire_metier").removeClass("hidden");
+			}
+			if(!this.checked) {
+				$("#commentaire_metier").addClass("hidden");
+			}
+		});
+		$('#Aucun').change(function() {
+			if(this.checked) {
+				$("#commentaire_francais").addClass("hidden");
+				$("#commentaire_metier").addClass("hidden");
+			}
+		});
+		
+		
+		//2
+		/*$('#Francais2').change(function() {
+			if(this.checked) {
+				$("#commentaire_francais2").removeClass("hidden");
+			}
+			if(!this.checked) {
+				$("#commentaire_francais2").addClass("hidden");
+			}
+		});
+		$('#Metier2').change(function() {
+			if(this.checked) {
+				$("#commentaire_metier2").removeClass("hidden");
+			}
+			if(!this.checked) {
+				$("#commentaire_metier2").addClass("hidden");
+			}
+		});
+		$('#Aucun2').change(function() {
+			if(this.checked) {
+				$("#commentaire_francais2").addClass("hidden");
+				$("#commentaire_metier2").addClass("hidden");
+			}
+		});*/
+		
+	});
+
+
+	function on_load_note_moyenne(){
+		//alert("On load note");
+		noteTotal=0;
+		noteTotalPonderation=0;
+
+		$("input[type='radio']:checked").each(function(){
+			if($(this).attr('id')!="conformite" && $(this).attr('id')!="conformite2" && $(this).attr('id')!="conformite_non2" && $(this).attr('id')!="conformite_oui2"){
+			  var ponderation = 0;
+			  var noteValue = Number($(this).val());
+			  if(noteValue == 111){
+				noteTotal += MapPonderation[$(this).attr('id')]/2;
+			  }
+				
+			if(noteValue == 112){
+				noteTotal += MapPonderation[$(this).attr('id')];
+			  }
+
+			  if(noteValue != 110){
+				noteTotalPonderation += MapPonderation[$(this).attr('id')];
+				}
+			}
+		});
+		if ($("#328").val() !== ""){
+			//alert("non vide radio");
+			var total_temp = 0;
+			var noteTotalPonderation_temp = 0;
+			total_temp = noteTotal + Number($("#328").val());
+			noteTotalPonderation_temp = noteTotalPonderation + Number(MapPonderation[$("#328").attr('id')]);
+
+			var moyenne = (total_temp * 20)/noteTotalPonderation_temp;
+
+			$("#total_note_tc").val(""+Number(moyenne.toFixed(2))+" / 20");
+			$("#total_note").val(""+Number(moyenne.toFixed(2))+" / 20");
+			if(moyenne<15){
+			  $("#notation_conforme").removeClass("hidden");
+			}else{
+			  $("#notation_conforme").addClass("hidden");
+			}
+		}
+		else{
+			var moyenne = (noteTotal * 20)/noteTotalPonderation;
+			$("#total_note_tc").val(""+Number(moyenne.toFixed(2))+" / 20");
+			$("#total_note").val(""+Number(moyenne.toFixed(2))+" / 20");
+			if(moyenne<15){
+			  $("#notation_conforme").removeClass("hidden");
+			}else{
+			  $("#notation_conforme").addClass("hidden");
+			}
+		}
+	}
+</script>
+
+<script  language="javascript">
+	//function load_profile
+	$(function(){
+		//alert("ID TC  " + $("#id_tc").val());
+		var id_pers = $("#id_tc").val();
+		$.ajax({
+		  type: "GET",
+		  url: "/getProfile?id_pers="+id_pers,
+
+		  success: function(msg){
+			var dataAll = JSON.parse(msg);
+			var data = dataAll.pr;
+			var ph = dataAll.ph;
+			//alert(msg);
+			$("#td_nom").html(""+data.nom);
+			$("#td_prenom").html(""+data.prenom);
+			$("#td_matricule").html(""+data.matricule);
+			$("#td_pseudo").html(""+data.pseudo);
+			$("#td_sat").html(""+data.sat);
+			$("#td_vague").html(""+data.libelle);
+			$("#td_niveau").html(""+data.niveau);
+			$("#td_numtel").html(""+data.num_tel);
+			$("#pdp").attr("src","data:image/png;base64, "+ph+"");
+			//$("#panel_info").removeClass("hidden");
+		  },
+		  error: function (error) {
+			alert(error);
+		  }
+		});
+	  });
+</script>
+
+<script type="text/javascript">
+	var hoursLabel = document.getElementById("hours");
+	var minutesLabel = document.getElementById("minutes");
+	var secondsLabel = document.getElementById("seconds");
+	var totalSeconds = 0;
+
+	function setTime()
+	{
+		++totalSeconds;
+		secondsLabel.innerHTML = pad(totalSeconds%60);
+		minutesLabel.innerHTML = pad(parseInt(totalSeconds/60));
+		var totalMinutes = parseInt(totalSeconds/60);
+		minutesLabel.innerHTML = pad(parseInt(totalMinutes%60));
+		hoursLabel.innerHTML = pad(parseInt(totalMinutes/60));
+	}
+
+	function pad(val)
+	{
+		var valString = val + "";
+		if(valString.length < 2)
+		{
+			return "0" + valString;
+		}
+		else
+		{
+			return valString;
+		}
+	}
+</script>
+<!-- Date enregistrement -->
+<script type="text/javascript">
+  var date = new Date();
+
+  var day = date.getDate();
+  var month = date.getMonth() + 1;
+  var year = date.getFullYear();
+
+  if (month < 10) month = "0" + month;
+  if (day < 10) day = "0" + day;
+
+  var today = day + "-" + month + "-" + year;
+  //document.getElementById('date_enregistrement').value = today;
+
+
+  //ready
+	$(function() {
+		//alert("test");
+		//var id_mode = $( "#mode_select option:selected" ).val(); // id mode
+		var id_mode = $("#id_mode").val(); // id mode
+
+
+		//alert("id ecoute" + id_ecoute);
+
+		if(id_mode == 2){
+			$("#type_ecoute_champs").removeClass("hidden");
+			//remove notation
+			$("#notation_almerys").addClass("hidden");
+			$("#div_note").addClass("hidden");
+			$("#besoin").addClass("hidden");
+		}else{
+			$("#type_ecoute_champs").addClass("hidden");
+			$("#notation_almerys").removeClass("hidden");
+			$("#div_note").removeClass("hidden");
+		}
+	} );
+
+</script>
+
+<script language="javascript">
+	 function controle_numero_enregistrement(){
+		if($("#numero_enregistrement_input").val() == ""){
+			alert("Veuillez remplir le champ numero enregistrement!");
+		}
+	  }
+
+	  /*$(function() {
+		//alert($("#date_enr").val());
+		$( "#fin_input").datepicker({
+		  dateFormat: 'yymmd'
+		});
+		$( "#date_enregistrement").datepicker({
+		  dateFormat: 'yy-mm-dd'
+		}).datepicker("setDate", new Date()); // $("#date_enr").val()
+		$('#duration').durationPicker({
+			lang: 'en',
+			//showDays : false,
+			showSeconds: true
+		}); //DURATION                  <<================================================================================================================
+	  } );*/
+
+  //alert("55");
+
+  var noteTotal=0;
+  var noteTotalPonderation = 0;
+  var MapPonderation = <%-JSON.stringify(mapPonderation)%>;
+
+  //alert(JSON.stringify(MapPonderation));
+
+  $('input[type=radio]').on('change', function() {
+    //alert($(this).attr('class') + "  " + $(this).val());
+
+    noteTotal=0;
+    noteTotalPonderation=0;
+    // prendre la valeurs des radio checked
+    //calculer note
+    // note si maitrise
+    // algo null (somme note sans les NA)
+     /*
+     total note = total ponderation
+     et
+     total note = total ponderation sans les NA
+      */
+    //calculer note a partir des ponderations
+
+    $("input[type='radio']:checked").each(function(){
+		if($(this).attr('id')!="conformite" && $(this).attr('id')!="conformite2" && $(this).attr('id')!="conformite_non2" && $(this).attr('id')!="conformite_oui2"){
+		  var ponderation = 0;
+		  var noteValue = Number($(this).val());
+		  if(noteValue == 111)
+			noteTotal += MapPonderation[$(this).attr('id')] / 2;
+			
+		  if(noteValue == 112)
+			noteTotal += MapPonderation[$(this).attr('id')];
+
+		  if(noteValue != 110)
+			noteTotalPonderation += MapPonderation[$(this).attr('id')];
+		}
+    });
+
+    /*alert (noteTotal);
+	if vide
+    alert (noteTotalPonderation);*/
+
+	if ($("#328").val() !== ""){
+		//alert("non vide radio");
+		var total_temp = 0;
+		var noteTotalPonderation_temp = 0;
+		total_temp = noteTotal + Number($("#328").val());
+		noteTotalPonderation_temp = noteTotalPonderation + Number(MapPonderation[$("#328").attr('id')]);
+
+		var moyenne = (total_temp * 20)/noteTotalPonderation_temp;
+
+		$("#total_note_tc").val(""+Number(moyenne.toFixed(2))+" / 20");
+		$("#total_note").val(""+Number(moyenne.toFixed(2))+" / 20");
+		if(moyenne<15){
+		  $("#notation_conforme").removeClass("hidden");
+		}else{
+		  $("#notation_conforme").addClass("hidden");
+		}
+	}
+	else{
+		//alert("vide radio");
+		var moyenne = (noteTotal * 20)/noteTotalPonderation;
+		$("#total_note_tc").val(""+Number(moyenne.toFixed(2))+" / 20");
+		$("#total_note").val(""+Number(moyenne.toFixed(2))+" / 20");
+		if(moyenne<15){
+		  $("#notation_conforme").removeClass("hidden");
+		}else{
+		  $("#notation_conforme").addClass("hidden");
+		}
+	}
+  });
+
+	var total_temp = 0;
+	var noteTotalPonderation_temp = 0;
+
+	$("#328").keyup(function() {
+		if ($("#328").val()!== ""){
+			//alert("non vide keyup");
+			total_temp = noteTotal + Number($("#328").val());
+			noteTotalPonderation_temp = noteTotalPonderation + Number(MapPonderation[$("#328").attr('id')]);
+			var moyenne = (total_temp * 20)/noteTotalPonderation_temp;
+
+			$("#total_note_tc").val(""+Number(moyenne.toFixed(2))+" / 20");
+			$("#total_note").val(""+Number(moyenne.toFixed(2))+" / 20");
+			if(moyenne<15){
+			  $("#notation_conforme").removeClass("hidden");
+			}else{
+			  $("#notation_conforme").addClass("hidden");
+			}
+		}else{
+			//alert("vide keyup");
+			var moyenne = (noteTotal * 20)/noteTotalPonderation;
+			$("#total_note_tc").val(""+Number(moyenne.toFixed(2))+" / 20");
+			$("#total_note").val(""+Number(moyenne.toFixed(2))+" / 20");
+			if(moyenne<15){
+			  $("#notation_conforme").removeClass("hidden");
+			}else{
+			  $("#notation_conforme").addClass("hidden");
+			}
+		}
+	});
+
+  /*
+   * Fonction pour afficher la liste deroulante des TC et la liste des motifs appels
+   * */
+  function loadAll(){
+    loadTC();
+    loadMotifAppels();
+	loadSpecialite();
+	loadMode();
+	load_duree_date();
+	loadMotifNonConformite();
+
+	loadTypeEcoute();
+	loadAppreciation();
+
+	/*alert("id tc "+ $("#id_tc_form").val());
+	alert("numero "+$("#numero_enregistrement_form").val());
+	alert("motif "+$("#motif_appel_select").val());
+	alert("specialite "+$("#id_specialite_form").val());
+	alert("mode "+$("#id_mode_form").val());
+	alert(" date "+$("#date_enregistrement_form").val());
+	alert(" duree "+$("#duree_enregistrement_form").val());*/
+
+  }
+
+  /*
+   * Fonction pour afficher la liste deroulante des appréciations
+   * */
+  function loadAppreciation(){
+    $.ajax({
+      type: "GET",
+      url: "/getLsAppreciation",
+
+      success: function(msg){
+        var html = "<option value=''></option>";
+        var data = JSON.parse(msg);
+
+        for (var i = 0 ; i<data.length ; i++){
+          html += "<option value='"+data[i].id_appreciation+"'>"+data[i].libelle+"</option>";
+        }
+        $("#appreciation_select").html(html);
+		$("#div_appreciation select").val($("#id_appreciation").val()); // set select
+      },
+      error: function (error) {
+
+      }
+    });
+  }
+
+  /*
+   * Fonction pour afficher la liste deroulante des types ecoutes
+   * */
+  function loadTypeEcoute(){
+    $.ajax({
+      type: "GET",
+      url: "/getLsTypeEcoute",
+
+      success: function(msg){
+        var html = "<option value=''></option>";
+        var data = JSON.parse(msg);
+
+        for (var i = 0 ; i<data.length ; i++){
+          html += "<option value='"+data[i].id_type_ecoute+"'>"+data[i].libelle+"</option>";
+        }
+        $("#type_ecoute_select").html(html);
+		$("#div_type_ecoute select").val($("#id_type_ecoute").val()); // set select
+      },
+      error: function (error) {
+
+      }
+    });
+  }
+
+      /*
+   * Fonction pour afficher la liste deroulante des spécialités
+   * */
+  function loadSpecialite(){
+    $.ajax({
+      type: "GET",
+      url: "/getLsSpecialiteMasque",
+
+      success: function(msg){
+        var html = "<option value=''></option>";
+        var data = JSON.parse(msg);
+        for (var i = 0 ; i<data.length ; i++){
+          html += "<option value='"+data[i].id_specialite+"'>"+data[i].libelle+"</option>";
+        }
+        $("#specialite_select").html(html);
+		$("#div_spec select").val($("#id_specialite").val()); // set select
+      },
+      error: function (error) {
+        alert("ERROR SPECIALITE");
+      }
+    });
+  }
+
+    /*
+   * Fonction pour afficher la liste deroulante des motifs de non conformité
+   * */
+  function loadMotifNonConformite(){
+    $.ajax({
+      type: "GET",
+      url: "/getLsMotifNonConformite",
+
+      success: function(msg){
+        var html = "<option value=''></option>";
+        var data = JSON.parse(msg);
+
+        for (var i = 0 ; i<data.length ; i++){
+          html += "<option value='"+data[i].id_motif_non_conformite+"'>"+data[i].libelle+"</option>";
+        }
+
+        $("#motif_non_conformite_select").html(html);
+		$("#div_motif_non_conformite select").val($("#id_motif_non_conformite").val());
+      },
+      error: function (error) {
+        alert("ERROR MOTIF APPEL");
+      }
+    });
+  }
+
+     /*
+   * Fonction pour afficher la liste deroulante des modes écoutes
+   * */
+  function loadMode(){
+    $.ajax({
+      type: "GET",
+      url: "/getLsModeMasque",
+
+      success: function(msg){
+        var html = "<option value=''></option>";
+        var data = JSON.parse(msg);
+
+        for (var i = 0 ; i<data.length ; i++){
+          html += "<option value='"+data[i].id_mode+"'>"+data[i].libelle+"</option>";
+        }
+        $("#mode_select").html(html);
+		$("#div_mode select").val($("#id_mode").val());
+      },
+      error: function (error) {
+        alert("ERROR MODE ECOUTE");
+      }
+    });
+  }
+
+
+  /*
+   * Fonction pour afficher la liste deroulante des TC
+   * */
+  function loadTC(){
+    $.ajax({
+      type: "GET",
+      url: "/getLsTCdetails?is_briant=true",
+
+      success: function(msg){
+		var id_pers = $("#id_tc").val();
+        var html = "<option value=''> - </option>";
+        var data = JSON.parse(msg);
+		var temp = 1;
+        for (var i = 0 ; i<data.length ; i++){
+          html += "<option value='"+data[i].matricule+"'>"+data[i].matricule+" - "+data[i].pseudo+" - "+data[i].appelation+"</option>";
+		  if(id_pers == parseInt(data[i].matricule)){
+			temp = data[i].matricule;
+		  }
+        }
+        $("#tc_select").html(html);
+		$("#div_tc select").val(temp); // set select
+      },
+      error: function (error) {
+
+      }
+    });
+  }
+
+  /*
+   * Fonction pour afficher la liste deroulante des motifs appels
+   * */
+  function loadMotifAppels(){
+    $.ajax({
+      type: "GET",
+      url: "/getLsMotifAppel?is_briant=true",
+
+      success: function(msg){
+        var html = "<option value=''></option>";
+        var data = JSON.parse(msg);
+
+        for (var i = 0 ; i<data.length ; i++){
+          html += "<option value='"+data[i].id_motif_appel+"'>"+data[i].libelle+"</option>";
+        }
+
+        //html += "<option value='0'><br>+ NOUVEAU MOTIF </br></option>";
+        $("#motif_appel_select").html(html);
+		$("#div_motif select").val($("#id_motif").val());
+      },
+      error: function (error) {
+        alert("ERROR MOTIF APPEL");
+      }
+    });
+  }
+
+  /*
+   * Fonction pour charger les informations generale du TC
+   * parametre
+   * id_pers
+   * */
+
+  function load_profile(id_pers) {
+    $.ajax({
+      type: "GET",
+      url: "/getProfile?id_pers="+id_pers,
+
+      success: function(msg){
+        var dataAll = JSON.parse(msg);
+        var data = dataAll.pr;
+        var ph = dataAll.ph;
+        //alert(msg);
+        $("#td_nom").html(""+data.nom);
+        $("#td_prenom").html(""+data.prenom);
+		$("#td_matricule").html(""+data.matricule);
+        $("#td_pseudo").html(""+data.pseudo);
+        $("#td_sat").html(""+data.sat);
+        $("#td_vague").html(""+data.libelle);
+        $("#td_niveau").html(""+data.niveau);
+        $("#td_numtel").html(""+data.num_tel);
+        $("#pdp").attr("src","data:image/png;base64, "+ph+"");
+        $("#panel_info").removeClass("hidden");
+
+
+		//$("#notation_almerys").removeClass("hidden");
+		var id_tc = $( "#tc_select option:selected" ).val(); //id tc
+		var id_motif_appel = $( "#motif_appel_select option:selected" ).val(); // id motif appel
+		var numero_enregistrement = $( "#numero_enregistrement_input" ).val(); // numero enregistrement
+
+		var id_specialite = $( "#specialite_select option:selected" ).val(); // id specialite
+		var id_mode = $( "#mode_select option:selected" ).val(); // id mode
+
+	//Date enregistrement -------------------------------------------------
+		var date = new Date();
+		var day = date.getDate();
+		var month = date.getMonth() + 1;
+		var year = date.getFullYear();
+		if (month < 10) month = "0" + month;
+		if (day < 10) day = "0" + day;
+		var today = year + "-" + month + "-" + day;
+		var date_enregistrement = ""; // numero enregistrement
+		if($( "#date_enregistrement" ).val() == ""){
+			date_enregistrement = today;
+		}else{
+			date_enregistrement = $( "#date_enregistrement" ).val(); // numero enregistrement
+		}
+		var duration = $( "#duration" ).val();
+		//alert(date_enregistrement);
+	//Fin date enregistrement -------------------------------------------------
+
+
+		$("#id_tc_form").val(id_tc);
+		$("#numero_enregistrement_form").val(numero_enregistrement);
+		$("#id_motif_appel_form").val(id_motif_appel);
+		$("#id_specialite_form").val(id_specialite);
+		$("#id_mode_form").val(id_mode);
+		$("#date_enregistrement_form").val(date_enregistrement);
+		$("#duree_enregistrement_form").val(duration);
+
+      },
+      error: function (error) {
+
+      }
+    });
+  }
+
+  /*
+   * Fonction pour charger la table NOTATION
+   * parametre
+   * id_pers
+   * */
+  function load_notation() {
+	//setInterval(setTime, 1000);
+	//alert("NOn conformite  "+$("#motif_non_conformite_select").val());
+    if($( "#motif_appel_select option:selected" ).val() == 0){
+      $("#motif_appel_select").addClass("hidden");
+      $("#input_motif").removeClass("hidden");
+      $("#notation_almerys").removeClass("hidden");
+
+    }else{
+      $("#notation_almerys").removeClass("hidden");
+      var id_tc = $( "#tc_select option:selected" ).val(); //id tc
+      var id_motif_appel = $( "#motif_appel_select option:selected" ).val(); // id motif appel
+      var numero_enregistrement = $( "#numero_enregistrement_input" ).val(); // numero enregistrement
+
+	  var id_specialite = $( "#specialite_select option:selected" ).val(); // id specialite
+	  var id_mode = $( "#mode_select option:selected" ).val(); // id mode
+
+	  //Date enregistrement -------------------------------------------------
+		var date = new Date();
+		var day = date.getDate();
+		var month = date.getMonth() + 1;
+		var year = date.getFullYear();
+		if (month < 10) month = "0" + month;
+		if (day < 10) day = "0" + day;
+		var today = year + "-" + month + "-" + day;
+		var date_enregistrement = ""; // numero enregistrement
+		if($( "#date_enregistrement" ).val() == ""){
+			date_enregistrement = today;
+		}else{
+			date_enregistrement = $( "#date_enregistrement" ).val(); // numero enregistrement
+		}
+		var hms = $( "#duration1" ).val();
+		var a = hms.split(':');
+		var duration = (+a[0]) * 60 * 60 + (+a[1]) * 60 + (+a[2]);
+		//var duration = $( "#duration1" ).val();
+
+		//alert(duration);
+	//Fin date enregistrement -------------------------------------------------
+
+
+      $("#id_tc_form").val(id_tc);
+      $("#numero_enregistrement_form").val(numero_enregistrement);
+	  $("#id_motif_appel_form").val(id_motif_appel);
+	  $("#id_specialite_form").val(id_specialite);
+	  $("#id_mode_form").val(id_mode);
+	  $("#date_enregistrement_form").val(date_enregistrement);
+	  $("#duree_enregistrement_form").val(duration);
+
+	  //alert(new Date().getTime());
+      var dtTemp = new Date();
+	  $("#date_debut_form").val(dtTemp.getHours()+':'+dtTemp.getMinutes()+':'+dtTemp.getSeconds());
+      //alert(dtTemp.getHours()+':'+dtTemp.getMinutes()+':'+dtTemp.getSeconds());
+    }
+  }
+
+
+  function load_duree_date(){
+	  //Date enregistrement -------------------------------------------------
+		var date = new Date();
+		var day = date.getDate();
+		var month = date.getMonth() + 1;
+		var year = date.getFullYear();
+		if (month < 10) month = "0" + month;
+		if (day < 10) day = "0" + day;
+		var today = year + "-" + month + "-" + day;
+		var date_enregistrement = ""; // numero enregistrement
+		if($( "#date_enregistrement" ).val() == ""){
+			date_enregistrement = today;
+		}else{
+			date_enregistrement = $( "#date_enregistrement" ).val(); // numero enregistrement
+		}
+		var hms = $( "#duration1" ).val();
+		var a = hms.split(':');
+		var duration = (+a[0]) * 60 * 60 + (+a[1]) * 60 + (+a[2]);
+
+	  $("#date_enregistrement_form").val(date_enregistrement);
+	  $("#duree_enregistrement_form").val(duration);
+
+	  var dtTemp = new Date();
+	  $("#date_debut_form").val(dtTemp.getHours()+':'+dtTemp.getMinutes()+':'+dtTemp.getSeconds());
+  }
+
+  function load_specialite() {
+	  //$("#notation_almerys").removeClass("hidden");
+	  var id_tc = $( "#tc_select option:selected" ).val(); //id tc
+	  var id_motif_appel = $( "#motif_appel_select option:selected" ).val(); // id motif appel
+	  var numero_enregistrement = $( "#numero_enregistrement_input" ).val(); // numero enregistrement
+
+	  var id_specialite = $( "#specialite_select option:selected" ).val(); // id specialite
+
+	  var id_mode = $( "#mode_select option:selected" ).val(); // id mode
+		//alert(id_specialite);
+
+	  //Date enregistrement -------------------------------------------------
+		var date = new Date();
+		var day = date.getDate();
+		var month = date.getMonth() + 1;
+		var year = date.getFullYear();
+		if (month < 10) month = "0" + month;
+		if (day < 10) day = "0" + day;
+		var today = year + "-" + month + "-" + day;
+		var date_enregistrement = ""; // numero enregistrement
+		if($( "#date_enregistrement" ).val() == ""){
+			date_enregistrement = today;
+		}else{
+			date_enregistrement = $( "#date_enregistrement" ).val(); // numero enregistrement
+		}
+		//var duration = $( "#duration" ).val();
+		var hms = $( "#duration1" ).val();
+		var a = hms.split(':');
+		var duration = (+a[0]) * 60 * 60 + (+a[1]) * 60 + (+a[2]);
+		//alert(duration);
+	//Fin date enregistrement -------------------------------------------------
+
+	  $("#id_tc_form").val(id_tc);
+	  $("#numero_enregistrement_form").val(numero_enregistrement);
+	  $("#id_motif_appel_form").val(id_motif_appel);
+	  $("#id_specialite_form").val(id_specialite);
+	  $("#id_mode_form").val(id_mode);
+	  $("#date_enregistrement_form").val(date_enregistrement);
+	  $("#duree_enregistrement_form").val(duration);
+
+	  //alert(new Date().getTime());
+	  var dtTemp = new Date();
+	  $("#date_debut_form").val(dtTemp.getHours()+':'+dtTemp.getMinutes()+':'+dtTemp.getSeconds());
+	  //alert(dtTemp.getHours()+':'+dtTemp.getMinutes()+':'+dtTemp.getSeconds());
+  }
+
+
+  function load_input_motif(){
+    var id_tc = $( "#tc_select option:selected" ).val(); //id tc
+
+    var id_motif_appel = $( "#input_motif" ).val(); // id motif appel   +++++++++++++++++++++++
+    var numero_enregistrement = $( "#numero_enregistrement_input" ).val(); // numero enregistrement
+
+
+	//Date enregistrement -------------------------------------------------
+		var date = new Date();
+		var day = date.getDate();
+		var month = date.getMonth() + 1;
+		var year = date.getFullYear();
+		if (month < 10) month = "0" + month;
+		if (day < 10) day = "0" + day;
+		var today = year + "-" + month + "-" + day;
+		var date_enregistrement = ""; // numero enregistrement
+		if($( "#date_enregistrement" ).val() == ""){
+			date_enregistrement = today;
+		}else{
+			date_enregistrement = $( "#date_enregistrement" ).val(); // numero enregistrement
+		}
+		var duration = $( "#duration" ).val();
+		//alert(date_enregistrement);
+	//Fin date enregistrement -------------------------------------------------
+
+
+    $("#id_tc_form").val(id_tc);
+    $("#numero_enregistrement_form").val(numero_enregistrement);
+    $("#id_motif_appel_form").val(id_motif_appel);
+    $("#date_enregistrement_form").val(date_enregistrement);
+    var dtTemp = new Date();
+    $("#date_debut_form").val(dtTemp.getHours()+':'+dtTemp.getMinutes()+':'+dtTemp.getSeconds());
+	$("#duree_enregistrement_form").val(duration);
+  }
+
+  function setDuree(valDuree){
+	//alert(val);
+	$("#duree_enregistrement_form").val(valDuree);
+  }
+
+</script>
+<script type="text/javascript" >
+  $('.closeall').click(function(){
+    $('.panel-collapse.in')
+      .collapse('hide');
+  });
+  $('.openall').click(function(){
+    $('.panel-collapse:not(".in")')
+      .collapse('show');
+  });
+</script>
+<!--fin script customise-->
+</html>

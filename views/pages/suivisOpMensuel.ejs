@@ -1,0 +1,265 @@
+
+<% if(req.session.droit==1){
+
+%>
+<% include ../includes/entete.ejs %>
+<% }else{
+
+%>
+<% include ../includes/enteteOperateur.ejs %>
+
+<% }%>
+<div id="page-wrapper">
+  <div class="row">
+    <div class="col-md-12">
+      <div class=" row ">
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+            <h3 class="panel-title"> <i class="fa fa-bar-chart-o"></i> </h3>
+            <div class="row">
+              <div class="form-group">
+                <form method="get" action="/suivisOpMens">
+
+                  <%
+                  var datech = "";
+                  if(req.session.datechoice!=null){
+                    datech = req.session.datechoice;
+                  }
+                    %>
+
+                  <div class="col-xs-2">
+                    <select class="form-control" tabindex="-1" id="departDashAdmin" placeholder = "Departement" name="departement">
+                      <option value="1">Departement</option>
+                    </select>
+
+                  </div>
+
+                  <div class="col-xs-2">
+                    <select class="form-control" tabindex="-1" id="departGroupeDashAdmin" onchange="getLsDepartementGroupe(this.value)" placeholder = "Groupe Departement" name="groupe">
+                      <option value="1">Groupe Departement</option>
+                    </select>
+
+                  </div>
+
+
+                  <div class="col-xs-2">
+                    <input class="form-control" type="date" id="datetim" name="datedeb" placeholder = "Date" value="<%=datech %>"/>
+                  </div>
+
+                  <div class="col-xs-2 pull-right">
+
+                    <select class="form-control hidden" tabindex="-1"  placeholder = ""  onchange="getAjaxFiltre(this.value)" required="true">
+                      <option value="1">TOUS</option>
+                      <option value="2">ANOMALIE PROD</option>
+                      <option value="3">ANOMALIE PAUSE</option>
+                      <option value="4">CONNECTEE</option>
+                      <option value="5">NON CONNECTEE</option>
+                      <option value="6">CONGE</option>
+                    </select>
+                  </div>
+                  <button type="submit" class="btn btn-info btn-md">ok</button>
+                </form>
+              </div>
+
+
+            </div>
+          </div>
+
+          <%
+            if(nothing!=true){
+          var dat = [];
+          var datHprod = [];
+          var datHpause = [];
+          var donneNCGPAO = [];
+          var donne = [];
+          var cpt = 0;
+          var cptn = 0;
+          var classealert = "";
+
+            //boucle pour parcourir les list des congée
+
+
+          %>
+
+          <div  class="panel-body">
+              <!--<div class="card-img" id="containerEvoVitesse"> </div>
+              <div class="card-img" id="containerEvoHeure"> </div>-->
+
+           <!-- <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
+            <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+            <script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+            <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+            <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>-->
+            <script src="/js/jquery-1.10.2.min.js"></script>
+            <br />
+
+
+            <div id="tableFiltre">
+              <table  width='100%' class="">
+                <tr class=''>
+                  <th id='date_deb_ldt' class='th text-center'>MATRICULE</td>
+                  <th id='date_deb_ldt' class="text-center">DOSSIERS</th>
+                  <th id='date_fin_ldt' class="text-center">DUREE TOTAL</th>
+                  <th id='appelation' class="text-center">PROD</th>
+                  <th id='appelation' class="text-center">HORS PROD</th>
+                </tr>
+                <tbody>
+
+                <%
+
+
+                function secondsToTime(secs)
+                {
+                  secs = math.round(secs);
+                  var hours = math.floor(secs / (60 * 60));
+
+                  var divisor_for_minutes = secs % (60 * 60);
+                  var minutes = math.floor(divisor_for_minutes / 60);
+
+                  var divisor_for_seconds = divisor_for_minutes % 60;
+                  var seconds = math.ceil(divisor_for_seconds);
+
+                  var obj = {
+                    "h": hours,
+                    "m": minutes,
+                    "s": seconds
+                  };
+                  return obj;
+                }
+
+
+
+
+                var data = "";
+                var data2 = "";
+                if(donne.length>0){
+
+                listeinLdtConnected.forEach(function (list) {
+                if(donne.length!=0){
+                  var prod = (list.duree/3600)-(list.dureeHprod/3600)
+                  var dt = 0;
+                  var prd = 0;
+                  var hprd = 0;
+                if(list.duree!=0 && list.duree!=null){
+                  dt = secondsToTime(list.duree);
+                  prd = secondsToTime(prod*3600);
+                  hprd = secondsToTime(list.dureeHprod);
+                  data2 += list.id_util+"?"+list.appelation+"?"+list.duree/3600+"?"+prod+"?"+list.dureeHprod/3600+"?0:";
+                %>
+                <tr class="">
+                  <td><%=list.id_pers%></td>
+                  <td><%=list.appelation%></td>
+                  <td><%=dt.h %>h<%=dt.m %>mn<%=dt.s %>s</td>
+                  <td><%=prd.h %>h<%=prd.m %>mn<%=prd.s %>s</td>
+                  <td><%=hprd.h %>h<%=hprd.m %>mn<%=hprd.s %>s</td>
+                </tr>
+                <%
+                }else{
+                  var className = '';
+                  if(list.typeClasse==1){
+                    className = 'error';
+                  }
+
+                  if(list.typeClasse==1){
+                    data2 += list.id_util+"?"+list.appelation+"?0?0?0?1:";
+                  }else{
+                    data2 += list.id_util+"?"+list.appelation+"?0?0?0?0:";
+                  }
+
+                %>
+                <tr >
+                  <td class="<%=className%>"><%=list.id_util%></td>
+                  <td class="<%=className%>"><%=list.appelation%></td>
+                  <td class="<%=className%>">0h0mn0s</td>
+                  <td class="<%=className%>">0h0mn0s</td>
+                  <td class="<%=className%>">0h0mn0s</td>
+                </tr>
+                <%
+                }
+                }
+
+                });
+
+
+                }
+
+
+                %>
+                </tbody>
+              </table>
+              <%
+              //console.log("data=======>"+data);
+              //console.log("data2=======>"+data2);
+
+              var donneFiltre = "";
+              donneFiltre = data2;
+              %>
+              <a href="/exportToExcelDep?data=<%=data2%>" type="button" class="btn btn-success btn-md"  >Exporter</a>
+            </div>
+
+
+
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
+<script>
+  $(function() {
+    $( "#datetim" ).datepicker({
+      dateFormat: 'yy-mm-dd'
+    });
+  } );
+
+  function getLsDepartementGroupe(id)
+  {
+    $.ajax({
+      type: "GET",
+      url: "/getLsGroupeDep?groupe="+id,
+      success: function(msg){
+        $("#departDashAdmin").html(msg);
+      },
+      error: function (error) {
+        //alert('error; ' +error);
+      }
+    });
+  }
+
+  //function ajaxFiltreTable
+
+
+  function geTableFiltre(type)
+  {
+    $.ajax({
+      type: "GET",
+      url: "/geTableFiltre?type="+type+"&data=<%=donneFiltre%>",
+      success: function(msg){
+        $("#tableFiltre").html(msg);
+      },
+      error: function (error) {
+        //alert('error; ' +error);
+      }
+    });
+  }
+
+//choix page ajax
+  function getAjaxFiltre(type)
+  {
+    if(Number(type)==1){
+      refresh(type);
+      geTableFiltre(type);
+    }else if(Number(type)==2 || Number(type)==3){
+      refresh(type);
+      geTableFiltre(type);
+    }else{
+      geTableFiltre(type);
+    }
+  }
+</script>
+<%}%>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

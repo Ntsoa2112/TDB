@@ -1,0 +1,196 @@
+
+<% if(req.session.droit==1){
+
+%>
+<% include ../includes/entete.ejs %>
+<% }else{
+
+%>
+<% include ../includes/enteteOperateur.ejs %>
+
+<% }%>
+
+<script>
+  var cars = [];
+  var prod = [];
+  var etape = [];
+  var dataetape = [];
+  var hprod = [];
+  var vitesseb = 0;
+  var vitessen = 0;
+  var quantite = 0;
+  var qualite = 0;
+</script>
+<%
+var dataDossier = {};
+
+for(var i = 0; i <doss.length; i++){
+  dataDossier[doss[i].num_dossier] = doss[i].qte;
+}
+  %>
+<div id="page-wrapper" class="content">
+
+  <div class="container-fluid  flat-blue">
+    <div class="side-body padding-top">
+      <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+          <a href="/suivisOp">
+            <div class="card green summary-inline">
+              <div class="card-body">
+                <i class="icon fa fa-users fa-4x"></i>
+                <div class="content">
+                  <div class="title" id="usr"><%=connected.length %></div>
+                  <div class="sub-title">Utilisateurs Connectées</div>
+                </div>
+                <div class="clear-both"></div>
+              </div>
+            </div>
+          </a>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+          <a href="/management">
+            <div class="card blue summary-inline">
+              <div class="card-body">
+                <i class="icon fa fa-folder-open fa-4x"></i>
+                <div class="content">
+                  <div class="title" id="ds"><%=doss.length %></div>
+                  <div class="sub-title">Dossier en cours de Traitement</div>
+                </div>
+                <div class="clear-both"></div>
+              </div>
+            </div>
+          </a>
+        </div>
+
+
+
+
+      </div>
+
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="card card-success">
+            <div class="card-header">
+              <div class="card-title">
+                <div class="title" ><i class="fa fa-bar-chart-o"></i> Quantités aujourd'hui</div>
+              </div>
+              <div class="clear-both"></div>
+            </div>
+            <div class="card-body no-padding">
+              <div class="col-sm-8 col-xs-8">
+                <%- partial ('chart/ColumnHighchart.ejs', {idElement : 'idDossierNow', title : 'Repartition des Dossiers (Aujourdhui)', titleChart : 'Dossier', labelY : 'Quantités',maxY : 1000 ,data : dataDossier}) %>
+
+
+              </div>
+              <div class="col-sm-4 col-xs-8">
+                <%- partial ('chart/PieChartHighchart.ejs', {idElement : 'idDossierHighchart',classeElement : 'pie_dossier_all', title : 'Repartition Quantité traitéé (Quantité)', titleChart : 'Dossier' ,data : dataDossier}) %>
+
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+        </div>
+
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+</div>
+<link href="css/pe-icon-7-stroke.css" rel="stylesheet" />
+<script src="js/jquery-1.10.2.js" type="text/javascript"></script>
+<script src="js/bootstrap-notify.js"></script>
+
+<script src="/js/dependencies/sails.io.js"></script>
+<script type="text/javascript">
+
+  var host = window.location.hostname;
+  io.sails.url = 'http://'+host+':9090';
+  var last_data = null;
+  var updated = 0;
+  io.socket.on("dashCP", function (msg) {
+    //console.log(msg);
+    var response = msg;
+    var dossiers = response.dBd;
+
+    updateFirstLineDash(response.cBd.length,response.dBd.length);
+
+    //conversion des donnees pour les graphe
+
+    var dataConvert = [];
+
+    //convertir les donnees
+    for(var key in dossiers){
+      dataConvert.push([dossiers[key].num_dossier, dossiers[key].qte]);
+    }
+
+
+    // update du barchart
+    updateBarchart("#idDossierNow",dataConvert);
+    updatecPiehart("#idDossierHighchart",dataConvert);
+    if( JSON.stringify(last_data)!= JSON.stringify(msg)){
+      updated ++;
+    }
+    var html = "<a href='#' class='dropdown-toggle' data-toggle='dropdown'><i class='fa fa-envelope'></i> Notifications <span class='badge'>"+updated+"</span> <b class='caret'></b></a>"+
+      "<ul class='dropdown-menu'>"+
+      "<li class='dropdown-header'>"+updated+" Mis a jours effectué</li>"+
+
+      " </ul>";
+
+    document.getElementById("message").innerHTML = html;
+    last_data = msg;
+  });
+
+  //fonction mis a jour du Utilisateur connecte et nb dossier en cours
+
+  function updateFirstLineDash(user,doss) {
+    document.getElementById("usr").innerHTML=''+user;
+    document.getElementById("ds").innerHTML=''+doss;
+
+  }
+
+  //function mis a jour du bar chart
+  function updateBarchart(idEl,data) {
+    var chart = $(idEl).highcharts();
+    chart.series.data=data;
+    chart.redraw();
+
+  }
+
+  //function mis a jour du pie chart
+  function updatecPiehart(idEl,data) {
+    var chart = $(idEl).highcharts();
+    chart.series.data=data;
+    chart.redraw();
+
+  }
+
+  //
+
+  var notify =function(message) {
+    var $message = $('<p style="display:none;">' + message + '</p>');
+
+    $('.notifications').append($message);
+    $message.slideDown(300, function() {
+      window.setTimeout(function() {
+        $message.slideUp(300, function() {
+          $message.remove();
+        });
+      }, 2000);
+    });
+  };
+
+</script>
+
+
+

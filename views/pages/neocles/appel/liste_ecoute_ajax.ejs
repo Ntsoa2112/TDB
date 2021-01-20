@@ -1,0 +1,180 @@
+<% if(!datas) return; %>
+
+<div id="load2" class="col-md-4" style="display:none">
+    <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+    <span class="sr-only">Loading...</span>
+</div>
+
+
+
+<div id="listByOp">
+<div class="x_panel">
+    <div class="x_title">
+    <h2>LISTE ECOUTE </h2>
+    <ul class="nav navbar-right panel_toolbox">
+        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+        </li>
+
+        <li><a class="close-link"><i class="fa fa-close"></i></a>
+        </li>
+    </ul>
+    <div class="clearfix"></div>
+    </div>
+    <div class="x_content">
+
+    <div id="tableFiltre">
+        <table  id="datatable-buttons_h" class="table table-striped table-bordered">
+        <thead>
+        <tr class=''>
+            <th class='th text-center' style="width: 50px;"></th>
+            <!--<th class='th text-center' style="width: 50px;"></th>-->
+            <th style="width: 25px;"></th>
+            <th class='th text-center'style="width: 100px;">Date</th>
+            <th class='th text-center'>ID Client</th>
+            <th class='th text-center'>ID Ticket</th>
+            <th class='th text-center'>Situation inacceptable</th>
+            <th class='th text-center'>Note/45</th>
+
+            <% 
+                datas.colonne.forEach(function(text){ %>
+                    <th class='th text-center'><%- text.colonne %></th>
+            <%});
+            %>
+        </tr>
+        </thead>
+        <tbody>
+        
+        <tr>
+        <%
+            function formattedDate(d = new Date) {
+                let month = String(d.getMonth() + 1);
+                let day = String(d.getDate());
+                const year = String(d.getFullYear());
+            
+                if (month.length < 2) month = '0' + month;
+                if (day.length < 2) day = '0' + day;
+            
+                return `${day}/${month}/${year}`;
+            }
+
+        datas.forEach(function (data) { 
+            let situation_inacceptable = "Non";
+            if(data.situation_inacceptable == true)  situation_inacceptable = "Oui";
+            
+            //date
+            let dateString = formattedDate(data.date_enregistrement);
+        %>
+
+            <td><a href="/neocles-edit-ecoute?id=<%- data.id %>"> <i class="fa fa-edit fa-2x text-primary"></i></a></td>
+            <!--<td><a href="#" ><i class="fa fa-remove fa-2x text-danger"></i></a></td>-->
+            <td style="width: 25px;"></td>
+            <td><%- dateString %></td>
+            <td><%- data.id_client %></td>
+            <td><%- data.id_ticket %></td>
+            <td><%- situation_inacceptable %></td>
+            <td><%- data.note_total %></td>
+            
+            <%data.note.forEach(function(note){ %>
+                <td><%- note.note %></td>
+            <%});
+        %>
+        </tr>
+
+        <%
+        });
+
+        %>
+        </tbody>
+        </table>
+
+    </div>
+
+
+
+    </div>
+</div>
+
+<div id="myModalPers" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+        <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Listes des Pointages</h4>
+        </div>
+        <div class="modal-body">
+        <div id="load3" class="col-md-4" style="display:none">
+            <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+            <span class="sr-only">Loading...</span>
+        </div>
+        <div class="col-md-12 col-sm-12 col-xs-12">
+
+            <div id="tbPt">
+            
+            </div>
+        </div>
+        </div>
+        <div class="modal-footer">
+        </div>
+
+    </div>
+    </div>
+</div>
+</div>
+  
+  
+  <div class="modal fade" id="modalLdtOnepers" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <!--Content-->
+      <form method="GET" action="#" >
+        <div class="modal-content">
+          <!--Header-->
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title" id="myModalLabel">Detail ligne de temps :</h4>
+          </div>
+          <!--Body-->
+          <div class="modal-body">
+            <table width=\"100%\"><thead><tr>
+                <th class='th'  id='matricule'>User</th>
+                <th class='th'  id='num_dossier'>Dossier</th>
+                <th class='th'  id='lib'>Etape</th>
+                <th class='th'  id='ldg'>LDG</th>
+                <th class='th'  id='type'>Type</th>
+                <th class='th'  id='h_deb'>Heure Debut</th>
+                <th class='th'  id='h_fin'>Heure Fin</th>
+                <th class='th'  id='h_fin'>Duree</th>
+                <th class='th'  id='quantite'>Qte</th>
+                <th class='th'  id='quantite'>Vitesse</th>
+                <th class='th'  id='nbre_erreur'>NbErr</th>
+                <th class='th'  id='statu'>Statut</th>
+                <th class='th'  id='statu'></th>
+                <th></th></tr></thead>
+              <tbody id="tableLdt">
+              <tr>
+                <div id="handle"></div>
+                <div id="divflottant"></div>
+              </tr>
+              </tbody>
+  
+            </table>
+            <input type="text"  id="idLien" name="id" required="required"  class="hidden" value="">
+            <input type="text"  id="idEtape" name="idetape" required="required"  class="hidden" value="">
+          </div>
+          <!--Footer-->
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermé</button>
+          </div>
+        </div>
+      </form>
+      <!--/.Content-->
+    </div>
+  </div>
+  
+  <script>
+  
+  </script>
+  

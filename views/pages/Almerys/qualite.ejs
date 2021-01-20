@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TDB Stat</title>
+
+  <link rel="stylesheet" href="/styles/importer.css">
+  <link rel="stylesheet" href="/bootflat/css/bootflat.min.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/local.css">
+  <link rel="stylesheet" href="/css/Style_v3.css">
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
+  <!--STYLES END-->
+</head>
+<body onload="getLsSpecialite();getQualiteAlmerys();">
+
+<%
+var menu = [];
+menu["aceuil"]= "selected";
+menu["dossierAdmin"]= "";
+menu["gestionDossier"]= "";
+menu["statOpAdmin"]= "";
+menu["presence"]= "";
+menu["admin"]= "";
+%>
+<% include ../../includes/entete.ejs %>
+
+<script>
+  var cars = [];
+  var prod = [];
+  var etape = [];
+  var dataetape = [];
+  var hprod = [];
+  var vitesseb = 0;
+  var vitessen = 0;
+  var quantite = 0;
+  var qualite = 0;
+</script>
+
+
+
+  <div class="row">
+    <div class="form-group col-lg-4">
+      <label for="specDashAdmin">Spécialité</label>
+      <select class="form-control" id="specDashAdmin">
+        <option value="">SPECIALITE</option>
+      </select>
+    </div>
+    <div class="form-group col-lg-4">
+      <label for="valeur">Qualite</label>
+      <input type="number" class="form-control" id="valeur" value="0" aria-describedby="emailHelp" placeholder="Entrer la valeur">
+      <small id="emailHelp" class="form-text text-muted">Taux d'erreur objective almerys.</small>
+    </div>
+    <div class="form-group col-lg-4">
+      <label for="date">Date</label>
+      <input type="text" class="form-control" id="date" aria-describedby="emailHelp" placeholder="Selectioner la date">
+    </div>
+  </div>
+  <button type="submit" class="btn btn-primary" onclick="saveData();">Enregistrer</button>
+
+<div id="table_volume">
+</div>
+
+
+<script src="/js/dependencies/sails.io.js"></script>
+<script src="/js/jquery-1.12.4.js"></script>
+<script src="/js/jquery-ui.min.js"></script>
+<script src="/js/dossierEtapeApp.js"></script>
+<script src="/bootstrap/js/bootstrap.min.js"></script>
+<!--
+<script>
+
+  function loadData(){
+    var dateDeb = $( "#datetimd" ).val();
+    var dateFin = $( "#datetimf" ).val();
+    $.ajax({
+      type: "GET",
+      url: "/ajaxAlm?datedeb="+dateDeb+"&datefin="+dateFin,
+      beforeSend: function(xhr){
+        $( "#load").show();
+      },
+      success: function(msg){
+        $("#table-response").html(msg);
+        $( "#load").hide();
+      },
+      error: function (error) {
+        alert('error; ' +error);
+      }
+    });
+  }
+
+
+  $(function() {
+    $( "#datetimd" ).datepicker({
+      dateFormat: 'yymmdd'
+    });
+    $( "#datetimf" ).datepicker({
+      dateFormat: 'yymmdd'
+    });
+  } );
+
+</script>-->
+
+<script>
+
+  var id_spec = 0;
+  var date_ajout = null;
+  var valeur = 0;
+
+  function saveData(){
+
+    id_spec = $( "#specDashAdmin" ).val();
+    date_ajout = $( "#date" ).val();
+    valeur = $( "#valeur" ).val();
+    $.ajax({
+      type: "GET",
+      url: "/add_qualite?id_spec="+id_spec+"&date_ajout="+date_ajout+"&valeur="+valeur,
+      success: function(msg){
+
+        //alert('ok');
+        //actualisation de la table
+        getQualiteAlmerys();
+      },
+      error: function (error) {
+        alert('Echec');
+      }
+    });
+  }
+
+
+
+  $(function() {
+
+    $( "#date" ).datepicker({
+      setDate: new Date(),
+      dateFormat: 'yymmdd'
+    });
+    $( "#dateEdit" ).datepicker({
+      setDate: new Date(),
+      dateFormat: 'yymmdd'
+    });
+  } );
+</script>
+
+</body>
+</html>

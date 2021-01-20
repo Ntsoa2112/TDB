@@ -1,0 +1,499 @@
+<% if(req.session.droit==1){
+
+  %>
+<% include ../../includes/entete.ejs %>
+<% }else{
+  
+  %>
+<% include ../../includes/enteteOperateur.ejs %>
+<%}%>
+
+<link rel="stylesheet" href="/jquery-ui/jquery-ui.css">
+<script src="/js/jquery-1.10.2.min.js"></script>
+<script src="/js/jquery-ui.min.js"></script>
+<style>
+  .livree {
+    background: grey;
+    color: white;
+  }
+
+  .etape {
+    background: white;
+   
+  }
+  .justifier{
+    text-align: justify !important;
+  }
+
+  .frm {
+    border: 1px solid #24C6DC;
+     border-radius: 0px;
+    padding: 10px;
+  }
+</style>
+<div class="col-md-12 col-sm-12 col-xs-12">
+  <div class="x_panel block">
+    <div class="x_title">
+      <h2></h2>
+      <ul class="nav navbar-right panel_toolbox">
+        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+        </li>
+        <li><a class="close-link"><i class="fa fa-close"></i></a>
+        </li>
+      </ul>
+      <div class="clearfix"></div>
+    </div>
+    <div class="x_content">
+
+      <form method="get" action="/gestion_hr">
+        <div class="form-groupe col-md-2">
+          <select  id="projet" name="projet" class="frm form-control">
+            <%-html_project%>
+</select>
+</div>
+<div class="form-groupe col-md-1">
+  <select id="depart" name="departement" class="frm form-control">
+
+  </select>
+</div>
+
+<div class="form-groupe col-md-1">
+  <input type="text" class="frm form-control" id="dateDeb" placeholder="Debut" />
+</div>
+
+<div class="form-groupe col-md-1">
+  <input type="text" class="frm form-control" id="dateFin" placeholder="Fin" />
+</div>
+
+<div class="form-groupe col-md-1">
+  <input type="text" class="frm form-control" id="h_debut" size="8" value="00:00:00" />
+</div>
+
+<div class="form-groupe col-md-1">
+  <input type="text" class="frm form-control" id="h_fin" size="8" value="00:00:00" />
+</div>
+<div class="form-groupe col-md-1">
+  <select id="id_etape" name="etape" class="frm form-control">
+
+  </select>
+</div>
+<div class="form-groupe col-md-2">
+  <select id="id_lotclient" name="LotClient" class="frm form-control">
+
+  </select>
+</div>
+
+<div class="form-groupe col-md-1">
+  <input type="text" class="frm form-control" id="matricule" placeholder="Matricule" />
+</div>
+
+<!--<div class="form-groupe col-md-3">
+          <input type="text" class="frm form-control" id="dateFin" placeholder="Fin"/>
+        </div>-->
+
+<div class="frm form-groupe col-md-2" style="width: 50px;padding: 5px;background: #0b2e13;color: white">
+  <a href="#" onclick="loadData()"><i class="fa fa-search fa-3x"></i> </a>
+</div>
+</form>
+
+
+</div>
+</div>
+</div>
+
+<div class="col-md-12 col-sm-12 col-xs-12">
+
+  <div class="x_panel block" id="lotclient_id">
+    <div class="x_title">
+    
+      <h2>Résultat par opérateur</h2>
+      <ul class="nav navbar-right panel_toolbox">
+        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+        </li>
+        <li><a class="close-link"><i class="fa fa-close"></i></a>
+        </li>
+      </ul>
+      <div class="clearfix"></div>
+    </div>
+    <div class="x_content">
+      <table class="table table-responsive table-bordered table-hover">
+        <thead>
+          <tr>
+            <th>Période</th>
+            <th>Matricule</th>
+            <th>Appelation</th>
+            <th>Nb dossier</th>
+            <th>Nb piece</th>
+            <th>Nb erreur</th>
+            <th>Vitesse par pièce</th>
+            <th>Vitesse par dossier</th>
+            <th>Heure consommées</th>
+          </tr>
+        </thead>
+        <tbody id="dataoperateur">
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="x_panel block" id="lotclient_id">
+    <div class="x_title">
+    
+      <h2>Résultat par lot client - par pièce</h2>
+      <ul class="nav navbar-right panel_toolbox">
+        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+        </li>
+        <li><a class="close-link"><i class="fa fa-close"></i></a>
+        </li>
+      </ul>
+      <div class="clearfix"></div>
+    </div>
+    <div class="x_content">
+
+      <table class="table table-responsive table-bordered table-hover">
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Piece</th>
+            <th>Nb dossier</th>
+            <th>Nb piece</th>
+            <th>Nb erreur</th>
+            <th>Vitesse par pièce</th>
+            <th>Vitesse par dossier</th>
+            <th>Heure consommées</th>
+          </tr>
+        </thead>
+        <tbody id="dataglobale">
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="x_panel block" id="lot_id">
+    <div class="x_title">
+      <h2>Résultat par dossier</h2>
+      <ul class="nav navbar-right panel_toolbox">
+        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+        </li>
+        <li><a class="close-link"><i class="fa fa-close" ></i></a>
+        </li>
+      </ul>
+      <div class="clearfix"></div>
+    </div>
+    <div class="x_content">
+
+      <table class="table table-responsive table-bordered table-hover">
+        <thead>
+          <tr>
+            <th>Periode</th>
+            <th>Matricule</th>
+            <th>Appelation</th>
+            <th>Type</th>
+            <th>Dossier</th>
+            <th>Pièce</th>
+            <th>Vitesse par pièce</th>
+            <th>Heure consommées</th>
+          </tr>
+        </thead>
+        <tbody id="datalot">
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="x_panel block hidden" id="faute_id">
+    <div class="x_title">
+      <h2>Résultat Fréquence des fautes par pièece</h2>
+      <ul class="nav navbar-right panel_toolbox">
+        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+        </li>
+        <li><a class="close-link"><i class="fa fa-close"></i></a>
+        </li>
+      </ul>
+      <div class="clearfix"></div>
+    </div>
+    <div class="x_content">
+
+      <table class="table table-responsive table-bordered table-hover">
+        <thead>
+          <tr>
+            <th>Matricule</th>
+            <th>Appelation</th>
+            <th>Type</th>
+            <th>Pièce</th>
+            <th>Nb dossier</th>
+            <th>Nb pièce</th>
+            <th>Nb erreur</th>
+            <th>Vitesse par pièce</th>
+            <th>Vitesse par dossier</th>
+            <th>Heure consommées</th>
+          </tr>
+        </thead>
+        <tbody id="datafrequence">
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<script>
+  function loadData() {
+    var id_dossier = $("#projet").val();
+    var dateDeb = $("#dateDeb").val();
+    var dateFin = $("#dateFin").val();
+    var id_etape = $("#id_etape").val();
+    var id_lotclient = $("#id_lotclient").val();
+    var matricule = $("#matricule").val();
+    var h_debut = $("#h_debut").val();
+    var h_fin = $("#h_fin").val();
+    var depart = $("#depart").val();
+    if (dateDeb !== dateFin && (h_debut !== '00:00:00' || h_fin !== '00:00:00')) {
+      alert("date non coforme,\n selectionnez une journée");
+      return;
+    }
+    var url = '/centralisation/ajaxByLotClient?id_dossier=' + id_dossier + '&dateDeb=' + dateDeb + '&dateFin=' + dateFin + '&id_etape=' + id_etape + '&id_lotclient=' + id_lotclient + '&matricule=' + matricule + '&h_debut=' + h_debut + '&h_fin=' + h_fin+'&depart='+depart;
+    $.ajax({
+      type: "GET",
+      url: url,
+      success: function (msg) {
+        console.log(msg);
+
+        var html_tab = '';
+        var html_total = '';
+        var html_op='';
+        html_lot = '';
+        try {
+          var data = JSON.parse(msg);
+          var valueProject = data.valuesProject;
+          var detProject = data.detailProject[0];
+          var total_qte = 0;
+          var total_duree = 0;
+          var total_lot = 0;
+          var total_err = 0;
+          var vit_glob = 0;
+          var vit_moy_glob = 0;
+          var total_credit = 0;
+          var volume_prevue = 0;
+          var volume_recu = 0;
+          var nb_err = 0;
+          if (!isNaN(detProject.volume_prevue) && detProject.volume_prevue !== 'null' && detProject.volume_prevue !== null)
+            volume_prevue = detProject.volume_prevue;
+          if (!isNaN(detProject.volume_recu) && detProject.volume_recu !== 'null' && detProject.volume_recu !== null)
+            volume_recu = detProject.volume_recu;
+    
+            for (var i = 0; i < valueProject.length; i++) {
+              var qte = 0;
+              var duree = 0;
+              var vitesse = 0;
+              var vitesse_lot = 0;
+              if (!isNaN(valueProject[i].qte))
+                qte = Number(valueProject[i].qte);
+              if (!isNaN(valueProject[i].duree))
+                duree = Number(valueProject[i].duree);
+              if (!isNaN(valueProject[i].vitesse))
+                vitesse = Number(valueProject[i].vitesse);
+              var nb_err = valueProject[i].nb_erreur !== null ? valueProject[i].nb_erreur : '0';
+              total_qte += qte;
+              total_duree += duree;
+              total_lot += Number(valueProject[i].nb_ldw);
+              total_err += Number(nb_err)
+
+              var vit = 0;
+              var credit_h = 0;
+
+              if (!isNaN(valueProject[i].vitesse) && Number(valueProject[i].vitesse) !== 0 && !isNaN(detProject.volume_prevue))
+                credit_h = Number((Number(volume_prevue) / Number(vitesse)).toFixed(2))
+              if (!isNaN(valueProject[i].vitesse) && Number(valueProject[i].vitesse) !== 0) {
+                vit_glob += 1 / Number(vitesse);
+              }
+              total_credit += credit_h;
+              html_tab += '<tr><td class="etape"> ' + valueProject[i].lot_client + '</td>';
+              var vit_moy = 0;
+
+              if (!isNaN(valueProject[i].duree) && Number(valueProject[i].duree) !== 0 && !isNaN(valueProject[i].qte))
+                vit_moy = Number(qte) / Number(duree / 3600);
+              if (!isNaN(valueProject[i].duree) && Number(valueProject[i].duree) !== 0 && !isNaN(valueProject[i].nb_ldw))
+                vitesse_lot = Number(valueProject[i].nb_ldw) / Number(duree / 3600);
+              if (vit_moy != 0)
+                vit_moy_glob += 1 / vit_moy;
+
+              var taux = 0;
+
+              if (volume_recu !== 0)
+                taux = Number(((qte * 100) / Number(volume_recu)).toFixed(2));
+              html_tab += '<td class="etape justifier">' + valueProject[i].etape + '</td>' +
+              '<td class="etape ">' + valueProject[i].nb_ldw  + '</td>' +
+                '<td class="etape">' + qte + '</td>' +
+                '<td class="etape">' + nb_err + '</td>' +
+                '<td class="etape">' + Number(vit_moy.toFixed(2)) + '</td>' +
+                '<td class="etape">' + Number(vitesse_lot.toFixed(2)) + '</td>' +
+                '<td class="etape">' + Number((Number(duree) / 3600).toFixed(2)) + '</td>';
+              html_tab += '</tr>';
+            }
+
+
+            if (vit_glob !== 0) {
+              vit_glob = Number((1 / vit_glob).toFixed(2));
+            }
+            if (vit_moy_glob !== 0) {
+              vit_moy_glob = Number((1 / vit_moy_glob).toFixed(2));
+            }
+
+            var taux_glob = 0;
+            if (total_qte != 0 && !isNaN(volume_recu) && volume_recu !== 0) {
+              taux_glob = Number((total_qte / (Number(volume_recu)) * 100).toFixed(2));
+            }
+
+            var vit_lot_global = Number(Number(total_lot) / Number(total_duree / 3600)).toFixed(2);
+            vit_moy_glob = Number(Number(total_qte) / Number(total_duree / 3600)).toFixed(2);
+            html_total = '<tr> <td class="livree">TOTAL</td>' +
+              '<td class="livree">-</td>' +
+              '<td class="livree">' + total_lot + '</td>' +
+              '<td class="livree">' + total_qte + '</td>' +
+              '<td class="livree">' + total_err + '</td>' +
+              '<td class="livree">' + vit_moy_glob + '</td>' +
+              '<td class="livree">' + vit_lot_global + '</td>' +
+              '<td class="livree">' + Number(total_duree / 3600).toFixed(2) + '</td></tr>';
+            var html_data = html_tab + html_total;
+            /*
+            partie fréquence
+            */
+            var html_frequence = '';
+            var frequenceFaute = data.frequence;
+            for (var i = 0; i < frequenceFaute.length; i++) {
+              var nb_faute = frequenceFaute[i].nberreur !== null ? frequenceFaute[i].nberreur : '';
+
+              html_frequence += '<tr><td class="etape">' + frequenceFaute[i].id_pers + '</td>' +
+                '<td class="etape">' + frequenceFaute[i].appelation + '</td>' +
+                '<td class="etape">' + frequenceFaute[i].lot_client + '</td>' +
+                '<td class="etape justifier">' + frequenceFaute[i].etape + '</td>' +
+                '<td class="etape">' + frequenceFaute[i].nblot + '</td>' +
+                '<td class="etape">' + frequenceFaute[i].qte + '</td>' +
+                '<td class="etape">' + nb_faute + '</td>' +
+
+                '<td class="etape">' + Number(Number(frequenceFaute[i].qte) / Number(frequenceFaute[i].duree / 3600)).toFixed(2) + '</td>' +
+                '<td class="etape">' + Number(Number(frequenceFaute[i].nblot) / Number(frequenceFaute[i].duree / 3600)).toFixed(2) + '</td>' +
+                '<td class="etape">' + Number((Number(frequenceFaute[i].duree) / 3600).toFixed(2)) + '</td></tr>';
+            }
+            /*fin frequence*/
+         
+            /* partie affichage Saisie*/
+         
+            var lot = data.detailLot;
+            total_qte=0;
+            total_duree=0;
+            for (var i = 0; i < lot.length; i++) {
+              var vitesse = 0;
+              if (lot[i].quantite !== null && lot[i].quantite != 0)
+                vitesse = Number(Number(lot[i].quantite) / Number(lot[i].duree / 3600)).toFixed(2)
+              var qte = Number(lot[i].quantite);
+              total_qte += qte;
+              var duree=0;
+              if (!isNaN(lot[i].duree))
+                duree = Number(lot[i].duree);
+              total_duree += duree;
+              html_lot += '<tr><td class="etape">' + lot[i].date_ldt + '</td>' +
+                '<td class="etape">' + lot[i].id_pers + '</td>' +
+                '<td class="etape">' + lot[i].appelation + '</td>' +
+                '<td class="etape">' + lot[i].type + '</td>' +
+                '<td class="etape justifier">' + lot[i].lot + '</td>' +
+                '<td class="etape">' + qte + '</td>' +
+                '<td class="etape">' + vitesse + '</td>' +
+                '<td class="etape">' + Number((Number(lot[i].duree) / 3600).toFixed(2)) + '</td></tr>';
+            }
+           
+            html_lot += '<tr> <td class="livree"> '+dateFin+' - '+dateFin+' </td>' +
+              '<td class="livree">TOTAL</td>' +
+              '<td class="livree"></td>' +
+              '<td class="livree">Tous les types</td>' +
+              '<td class="livree">' + lot.length+ '</td>' +
+              '<td class="livree">' + total_qte + '</td>' +
+              '<td class="livree">' + Number(Number(total_qte) / Number(total_duree / 3600)).toFixed(2)+' / '+Number(Number(lot.length) / Number(total_duree / 3600)).toFixed(2) + '</td>' +
+              '<td class="livree">' + Number(total_duree / 3600).toFixed(2) + '</td></tr>';
+         
+          /* fin affichage saisie*/
+
+          /*affichage par opérateur*/
+          var detailOperateur = data.detailOp;
+          html_op="";
+         total_lot=0;
+         total_qte=0;
+        total_duree=0;
+          for (var i = 0; i < detailOperateur.length; i++) {
+            total_lot+=Number(detailOperateur[i].nb_ldw);
+         total_qte+=Number(detailOperateur[i].qte);
+        total_duree+=Number(detailOperateur[i].duree);
+              html_op += '<tr><td class="etape">' +dateDeb+" - "+dateFin + '</td>' +
+              '<td class="etape">' + detailOperateur[i].id_pers + '</td>' +
+                '<td class="etape">' + detailOperateur[i].appelation + '</td>' +
+                '<td class="etape">' + detailOperateur[i].nb_ldw + '</td>' +
+                '<td class="etape">' + detailOperateur[i].qte + '</td>' +
+                '<td class="etape"></td>' +
+                '<td class="etape">' + Number(Number(detailOperateur[i].qte) / Number(detailOperateur[i].duree / 3600)).toFixed(2) + '</td>' +
+                '<td class="etape">' + Number(Number(detailOperateur[i].nb_ldw) / Number(detailOperateur[i].duree / 3600)).toFixed(2) + '</td>' +
+                '<td class="etape">' + Number((Number(detailOperateur[i].duree) / 3600).toFixed(2)) + '</td></tr>';
+            }
+   
+            html_op += '<tr> <td class="livree"> '+dateFin+' - '+dateFin+' </td>' +
+              '<td class="livree">Matricule</td>' +
+              '<td class="livree">'+detailOperateur.length+'</td>' +
+              '<td class="livree">'+total_lot+'</td>' +
+              '<td class="livree">' + total_qte+ '</td>' +
+              '<td class="livree"></td>' +
+              '<td class="livree">' + Number(Number(total_qte) / Number(total_duree / 3600)).toFixed(2)+'</td>' +
+              '<td class="livree">' + Number(Number(total_lot) / Number(total_duree / 3600)).toFixed(2)+ '</td>' +
+              '<td class="livree">' + Number(total_duree / 3600).toFixed(2) + '</td></tr>';
+           
+          /*fin affichage par opérateur*/
+        } catch (e) {
+          console.error(e);
+        }
+        $('#dataoperateur').html(html_op);
+        $('#dataglobale').html(html_data);
+        $('#datafrequence').html(html_frequence);
+        $('#datalot').html(html_lot);
+      },
+      error: function (error) {
+        console.log(error);
+      }
+    });
+  }
+
+  $("#projet").change(function () {
+    var idDoss = $("#projet").val();
+    var html_etape = '<option value="0"></option>';
+    var html_lotclient = '<option value="0"></option>';
+    var html_dep = '<option value="0"></option>';
+    $.ajax({
+      type: "GET",
+      url: "/centralisation/ajaxSelectionDossier?id_dossier=" + idDoss,
+      success: function (msg) {
+        //  retData.listEtape = result[0];
+        // retData.listLotClient = result[1];
+        var data = JSON.parse(msg);
+        for (var i = 0; i < data.listEtape.length; i++) {
+          html_etape += '<option value="' + data.listEtape[i].id_lien + '" >' + data.listEtape[i].libelle + '</option>';
+        }
+        for (var i = 0; i < data.listLotClient.length; i++) {
+          html_lotclient += '<option value="' + data.listLotClient[i].id_lotclient + '" >' + data.listLotClient[i].libelle + '</option>';
+        }
+        for (var i = 0; i < data.listDepartement.length; i++) {
+          html_dep += '<option value="' + data.listDepartement[i].id + '" >' + data.listDepartement[i].libelle + '</option>';
+        }
+        $("#id_lotclient").html(html_lotclient);
+        $("#id_etape").html(html_etape);
+        $("#depart").html(html_dep);
+      }
+    });
+
+    //  getLstEtape(idDoss);
+  });
+
+  $(function () {
+    $("#dateDeb").datepicker({
+      dateFormat: 'yymmdd'
+    });
+
+    $("#dateFin").datepicker({
+      dateFormat: 'yymmdd'
+    });
+  });
+</script>

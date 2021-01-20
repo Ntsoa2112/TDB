@@ -1,0 +1,235 @@
+<% if(req.session.droit==1){
+
+%>
+  <% include ../../includes/entete.ejs %>
+<% }else{
+
+%>
+  <% include ../../includes/enteteOperateur.ejs %>
+<%}%>
+
+<link rel="stylesheet" href="/jquery-ui/jquery-ui.css">
+<script src="/js/jquery-1.10.2.min.js"></script>
+<script src="/js/jquery-ui.min.js"></script>
+<style>
+  .livree {
+    background: grey;
+    color: white;
+  }
+
+  .etape {
+    background: white;
+  }
+
+  .frm {
+    border: 1px solid #24C6DC;
+     border-radius: 0px;
+    padding: 10px;
+  }
+</style>
+<div class="col-md-12 col-sm-12 col-xs-12">
+  <div class="x_panel block">
+    <div class="x_title">
+      <h2></h2>
+      <ul class="nav navbar-right panel_toolbox">
+        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+        </li>
+        <li><a class="close-link"><i class="fa fa-close" aria-hidden="true"></i></a>
+        </li>
+      </ul>
+      <div class="clearfix"></div>
+    </div>
+    <div class="x_content">
+
+      <form method="get" action="/gestion_hr">
+        <div class="form-groupe col-md-2">
+          <select  id="projet" name="projet" class="frm form-control">
+            <%-html_project%>
+          </select>
+        </div>
+
+        <div class="form-groupe col-md-2">
+          <input type="text" class="frm form-control" id="dateDeb" placeholder="Debut"/>
+        </div>
+
+        <!--<div class="form-groupe col-md-3">
+          <input type="text" class="frm form-control" id="dateFin" placeholder="Fin"/>
+        </div>-->
+
+        <div class="frm form-groupe col-md-2" style="width: 50px;padding: 5px;background: #0b2e13;color: white">
+          <a href="#" onclick="loadData()"><i class="fa fa-search fa-3x"></i> </a>
+        </div>
+      </form>
+
+
+    </div>
+  </div>
+</div>
+
+<div class="col-md-12 col-sm-12 col-xs-12">
+  <div class="x_panel block">
+    <div class="x_title">
+      <h2>Resultat</h2>
+      <ul class="nav navbar-right panel_toolbox">
+        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+        </li>
+        <li><a class="close-link"><i class="fa fa-close"></i></a>
+        </li>
+      </ul>
+      <div class="clearfix"></div>
+    </div>
+    <div class="x_content">
+
+      <table class="table table-responsive table-bordered table-hover">
+        <thead>
+            <tr>
+              <th></th>
+              <th>Prévu</th>
+              <th>Reçu</th>
+              <th>CUMUL OK</th>
+              <th>Taux de realisation</th>
+              <th>Vitesse moyenne</th>
+              <th>Objectif de vitesse</th>
+              <th>Crédit heure</th>
+              <th>Heure consommées</th>
+            </tr>
+        </thead>
+
+        <tbody id="dataglobale">
+
+        </tbody>
+      </table>
+
+
+    </div>
+  </div>
+</div>
+<script>
+  function loadData() {
+   // alert("chantier");
+    var id_dossier = $("#projet").val();
+    var date = $("#dateDeb").val();
+    var url = '/centralisation/ajaxByDossier?id_dossier='+id_dossier+'&date='+date;
+    $.ajax({
+      type: "GET",
+      url: url,
+      success: function(msg){
+        console.log(msg);
+
+        var html_livre = '<tr>' +
+          '<td class="livree">Livré</td>';
+        var html_tab = '';
+        try {
+          var data = JSON.parse(msg);
+          var valueProject = data.valuesProject;
+          var detProject = data.detailProject[0];
+          var total_qte = 0;
+          var total_duree = 0;
+          var vit_glob = 0;
+          var vit_moy_glob = 0;
+          var total_credit = 0;
+
+          var volume_prevue = 0;
+          var volume_recu = 0;
+          if(!isNaN(detProject.volume_prevue) && detProject.volume_prevue!=='null' && detProject.volume_prevue!==null)
+            volume_prevue = detProject.volume_prevue;
+          if(!isNaN(detProject.volume_recu) && detProject.volume_recu!=='null' && detProject.volume_recu !==null)
+            volume_recu = detProject.volume_recu;
+          for (var i=0;i<valueProject.length ; i++){
+            var qte = 0;
+            var duree = 0;
+            var vitesse = 0;
+            if(!isNaN(valueProject[i].qte))
+              qte = Number(valueProject[i].qte);
+            if(!isNaN(valueProject[i].duree))
+              duree = Number(valueProject[i].duree);
+            if(!isNaN(valueProject[i].vitesse))
+              vitesse = Number(valueProject[i].vitesse);
+
+            total_qte += qte;
+            total_duree += duree;
+
+            var vit = 0;
+            var credit_h = 0;
+
+            if(!isNaN(valueProject[i].vitesse) && Number(valueProject[i].vitesse)!==0 && !isNaN(detProject.volume_prevue))
+              credit_h = Number((Number(volume_prevue) / Number(vitesse) ).toFixed(2))
+            if(!isNaN(valueProject[i].vitesse) && Number(valueProject[i].vitesse)!==0)
+            {
+              vit_glob += 1/Number(vitesse);
+            }
+            total_credit+=credit_h;
+            html_tab +='<tr><td class="etape"> '+valueProject[i].libelle+'</td>';
+            var vit_moy = 0;
+
+            if(!isNaN(valueProject[i].duree) && Number(valueProject[i].duree)!==0 && !isNaN(valueProject[i].qte)){
+              vit_moy = Number(qte)/Number(duree/3600);
+            }
+
+            if(vit_moy!=0)
+              vit_moy_glob += 1/vit_moy;
+
+            var taux = 0;
+
+            if(volume_recu!==0)
+              taux = Number(((qte * 100)/Number(volume_recu)).toFixed(2));
+            html_tab += '<td class="etape">'+volume_prevue+'</td>' +
+              '<td class="etape">'+volume_recu+'</td>' +
+              '<td class="etape">'+qte+'</td>' +
+              '<td class="etape">'+taux+'%</td>' +
+              '<td class="etape">'+Number(vit_moy.toFixed(2))+'</td>' +
+              '<td class="etape">'+vitesse+'</td>' +
+              '<td class="etape">'+credit_h+'</td>' +
+              '<td class="etape">'+Number((Number(duree)/3600).toFixed(2))+'</td>';
+
+            html_tab += '</tr>';
+
+          }
+
+          if(vit_glob!==0){
+            vit_glob = Number((1/vit_glob).toFixed(2));
+          }
+          if(vit_moy_glob!==0){
+            vit_moy_glob = Number((1/vit_moy_glob).toFixed(2));
+          }
+
+          var taux_glob = 0;
+          if(total_qte!=0 && !isNaN(volume_recu) && volume_recu!==0){
+            taux_glob = Number((total_qte/(Number(volume_recu))*100).toFixed(2));
+          }
+
+          html_livre += '<td class="livree">'+volume_prevue+'</td>' +
+            '<td class="livree">'+volume_recu+'</td>' +
+            '<td class="livree"></td>' +
+            '<td class="livree"></td>' +
+            '<td class="livree">'+vit_moy_glob+'</td>' +
+            '<td class="livree">'+vit_glob+'</td>' +
+            '<td class="livree">'+total_credit+'</td>' +
+            '<td class="livree">'+Number((total_duree/3600).toFixed(2))+'</td>';
+
+        }catch (e) {
+          console.error(e);
+        }
+        html_livre +=
+          '</tr>';
+
+        var html_data = html_livre + html_tab;
+
+        $('#dataglobale').html(html_data);
+      },
+      error: function (error) {
+        console.log(error);
+      }
+    });
+  }
+
+  $(function() {
+    $("#dateDeb").datepicker({
+      dateFormat: 'yymmdd'
+    });
+
+    /*$("#dateFin").datepicker({
+      dateFormat: 'yymmdd'
+    });*/
+  });
+</script>

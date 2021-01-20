@@ -1,0 +1,1225 @@
+<script>
+  /***********************************GRAPHE    MOIS    ************************************************/
+  function donnee_mois() {
+    var date = new Date();
+    var d = date.getDate();
+    var m = date.getMonth();
+    m=parseInt(m)+1;
+    if(m<10)
+    {
+        m='0'+m;
+        //alert(m);
+    }
+    var y = date.getFullYear();
+    var date_compar=''+y+'-'+m+'';
+      //alert(date_compar);
+    var i=0;
+    var NowMoment = moment();
+    //    alert('mois');
+    /*******************Declaration Tableau recuperation donnee*********************************/
+    var eventObj=[];
+    var start_req = [];
+    var req_heure_start=[];
+    var req_min_start=[];
+    var req_heure_end=[];
+    var req_min_end=[];
+    var value_req_start=[];
+    var value_req_end=[];
+    var end_req=[];
+    var color_req=[];
+    var title_req=[];
+    var date_req_reservation=[];
+    var duree_req=[];
+    var duree_req_total=0;
+    var color=[];
+    var duree_req_Grande_Salle=0;
+    var duree_req_Salle_formation=0;
+    var duree_req_Salle_formation_RDJ=0;
+    var duree_req_Salle_formation_RDC=0;
+    var duree_req_Salle_reunion_RDC=0;
+    /********************fin recuperation donnee***********************************/
+    eventObj=$('#calendar').fullCalendar('clientEvents');
+    for(i=0;i<999;i++)
+    {
+      if(eventObj[i]==null)
+      {
+         // alert("BREAKKKKK (1) recuperation donnee null");
+        break;
+      }
+      date_req_reservation[i]=eventObj[i].start;
+
+      date_req_reservation[i]=date_req_reservation[i].format('YYYY-MM').toString();
+    //  alert(date_req_reservation[i]);
+      if(date_req_reservation[i]==date_compar)
+      {
+        start_req[i]=eventObj[i].start;
+        start_req[i]=start_req[i].format('HH:mm');
+      //  alert(start_req[i]);
+        end_req[i]=eventObj[i].end;
+        end_req[i]=end_req[i].format('HH:mm');
+      //  alert(end_req[i]);
+        var split_start=[];
+        split_start=start_req[i].split(':');
+        req_min_start=parseFloat(split_start[1]/60);
+        req_heure_start=parseFloat(split_start[0]);
+        value_req_start[i]=req_heure_start+req_min_start;
+        var split_end=[];
+        split_end=end_req[i].split(':');
+        req_min_end=parseFloat(split_end[1]/60);
+        req_heure_end=parseFloat(split_end[0]);
+        value_req_end[i]=parseFloat(req_heure_end)+parseFloat(req_min_end);
+        value_req_end[i]=value_req_end[i].toFixed(1);
+        value_req_start[i]=value_req_start[i].toFixed(1);
+       // alert(value_req_end[i]+' soustraire '+value_req_start[i]);
+        duree_req[i]=parseFloat(value_req_end[i]) - parseFloat(value_req_start[i]);
+        duree_req[i]=duree_req[i].toFixed(1);
+        //alert('duree_req = '+duree_req[i]);
+        duree_req_total=parseFloat(duree_req_total) + parseFloat(duree_req[i]);
+        //alert(duree_req_total);
+      }else{
+         //  alert('non heure debut');
+      }
+      // alert('date reservation==>'+date_req_reservation[i]);
+    }
+    /********************** DONNEE MOIS GRANDE SALLE***********************/
+    for(i=0;i<999;i++)
+    {
+      if(eventObj[i]==null)
+      {
+          //alert("BREAKKKKK");
+        break;
+      }
+      date_req_reservation[i]=eventObj[i].start;
+      //alert(date_req_reservation[i]);
+      color[i]=eventObj[i].color;
+      date_req_reservation[i]=date_req_reservation[i].format('YYYY-MM').toString();
+     // alert(date_req_reservation[i]);
+     // alert(date_compar);
+      if(date_req_reservation[i]==date_compar && color[i]=='blue')
+      {
+        //alert(color[i]);
+        start_req[i]=eventObj[i].start;
+        start_req[i]=start_req[i].format('HH:mm');
+        end_req[i]=eventObj[i].end;
+        end_req[i]=end_req[i].format('HH:mm');
+        var split_start=[];
+        split_start=start_req[i].split(':');
+        req_min_start=parseFloat(split_start[1]/60);
+        req_heure_start=parseFloat(split_start[0]);
+        value_req_start[i]=req_heure_start+req_min_start;
+        var split_end=[];
+        split_end=end_req[i].split(':');
+        req_min_end=parseFloat(split_end[1]/60);
+        req_heure_end=parseFloat(split_end[0]);
+        value_req_end[i]=parseFloat(req_heure_end)+parseFloat(req_min_end);
+        value_req_end[i]=value_req_end[i].toFixed(1);
+        value_req_start[i]=value_req_start[i].toFixed(1);
+        //alert(value_req_end[i]+' soustraire '+value_req_start[i]);
+        duree_req[i]=parseFloat(value_req_end[i]) - parseFloat(value_req_start[i]);
+        duree_req[i]=duree_req[i].toFixed(1);
+        //alert('duree_req = '+duree_req[i]);
+        duree_req_Grande_Salle=parseFloat(duree_req_Grande_Salle) + parseFloat(duree_req[i]);
+         //  alert(duree_req_Grande_Salle);
+      }else{
+         //  alert('non heure debut');
+      }
+     //  alert('date reservation==>'+date_req_reservation[i]);
+    }
+    /********************** DONNEE MOIS GRANDE SALLE***********************/
+    /********************** DONNEE MOIS SALLE FORMATION ***********************/
+    for(i=0;i<999;i++)
+    {
+      if(eventObj[i]==null)
+      {
+        //  alert("BREAKKKKK");
+        break;
+      }
+      date_req_reservation[i]=eventObj[i].start;
+      color[i]=eventObj[i].color;
+      date_req_reservation[i]=date_req_reservation[i].format('YYYY-MM').toString();
+      if(date_req_reservation[i]==date_compar && color[i]=='orange')
+      {
+        //        alert(color[i]);
+        start_req[i]=eventObj[i].start;
+        start_req[i]=start_req[i].format('HH:mm');
+        end_req[i]=eventObj[i].end;
+        end_req[i]=end_req[i].format('HH:mm');
+        var split_start=[];
+        split_start=start_req[i].split(':');
+        req_min_start=parseFloat(split_start[1]/60);
+        req_heure_start=parseFloat(split_start[0]);
+        value_req_start[i]=req_heure_start+req_min_start;
+        var split_end=[];
+        split_end=end_req[i].split(':');
+        req_min_end=parseFloat(split_end[1]/60);
+        req_heure_end=parseFloat(split_end[0]);
+        value_req_end[i]=parseFloat(req_heure_end)+parseFloat(req_min_end);
+        value_req_end[i]=value_req_end[i].toFixed(1);
+        value_req_start[i]=value_req_start[i].toFixed(1);
+        //alert(value_req_end[i]+' soustraire '+value_req_start[i]);
+        duree_req[i]=parseFloat(value_req_end[i]) - parseFloat(value_req_start[i]);
+        duree_req[i]=duree_req[i].toFixed(1);
+        //alert('duree_req = '+duree_req[i]);
+        duree_req_Salle_formation=parseFloat(duree_req_Salle_formation) + parseFloat(duree_req[i]);
+        // alert(duree_req_Salle_formation);
+      }else{
+        //   alert('non heure debut');
+      }
+      // alert('date reservation==>'+date_req_reservation[i]);
+    }
+    /********************** DONNEE MOIS SALLE FORMATION***********************/
+    /********************** DONNEE JOUR SALLE FORMATION ***********************/
+    for(i=0;i<999;i++)
+    {
+      if(eventObj[i]==null)
+      {
+        //  alert("BREAKKKKK");
+        break;
+      }
+      date_req_reservation[i]=eventObj[i].start;
+      color[i]=eventObj[i].color;
+      date_req_reservation[i]=date_req_reservation[i].format('YYYY-MM').toString();
+      if(date_req_reservation[i]==date_compar && color[i]=='green')
+      {
+        //      alert(color[i]);
+        start_req[i]=eventObj[i].start;
+        start_req[i]=start_req[i].format('HH:mm');
+        end_req[i]=eventObj[i].end;
+        end_req[i]=end_req[i].format('HH:mm');
+        var split_start=[];
+        split_start=start_req[i].split(':');
+        req_min_start=parseFloat(split_start[1]/60);
+        req_heure_start=parseFloat(split_start[0]);
+        value_req_start[i]=req_heure_start+req_min_start;
+        var split_end=[];
+        split_end=end_req[i].split(':');
+        req_min_end=parseFloat(split_end[1]/60);
+        req_heure_end=parseFloat(split_end[0]);
+        value_req_end[i]=parseFloat(req_heure_end)+parseFloat(req_min_end);
+        value_req_end[i]=value_req_end[i].toFixed(1);
+        value_req_start[i]=value_req_start[i].toFixed(1);
+        //alert(value_req_end[i]+' soustraire '+value_req_start[i]);
+        duree_req[i]=parseFloat(value_req_end[i]) - parseFloat(value_req_start[i]);
+        duree_req[i]=duree_req[i].toFixed(1);
+        //alert('duree_req = '+duree_req[i]);
+        duree_req_Salle_formation_RDJ=parseFloat(duree_req_Salle_formation_RDJ) + parseFloat(duree_req[i]);
+        // alert(duree_req_Salle_formation_RDJ);
+      }else{
+        //   alert('non heure debut');
+      }
+      // alert('date reservation==>'+date_req_reservation[i]);
+    }
+    /********************** DONNEE MOIS SALLE FORMATION RDC***********************/
+    /********************** DONNEE JOUR SALLE FORMATION RDC***********************/
+    for(i=0;i<999;i++)
+    {
+      if(eventObj[i]==null)
+      {
+        //  alert("BREAKKKKK");
+        break;
+      }
+      date_req_reservation[i]=eventObj[i].start;
+      color[i]=eventObj[i].color;
+      date_req_reservation[i]=date_req_reservation[i].format('YYYY-MM').toString();
+      if(date_req_reservation[i]==date_compar && color[i]=='gray')
+      {
+        //      alert(color[i]);
+        start_req[i]=eventObj[i].start;
+        start_req[i]=start_req[i].format('HH:mm');
+        end_req[i]=eventObj[i].end;
+        end_req[i]=end_req[i].format('HH:mm');
+        var split_start=[];
+        split_start=start_req[i].split(':');
+        req_min_start=parseFloat(split_start[1]/60);
+        req_heure_start=parseFloat(split_start[0]);
+        value_req_start[i]=req_heure_start+req_min_start;
+        var split_end=[];
+        split_end=end_req[i].split(':');
+        req_min_end=parseFloat(split_end[1]/60);
+        req_heure_end=parseFloat(split_end[0]);
+        value_req_end[i]=parseFloat(req_heure_end)+parseFloat(req_min_end);
+        value_req_end[i]=value_req_end[i].toFixed(1);
+        value_req_start[i]=value_req_start[i].toFixed(1);
+        //alert(value_req_end[i]+' soustraire '+value_req_start[i]);
+        duree_req[i]=parseFloat(value_req_end[i]) - parseFloat(value_req_start[i]);
+        duree_req[i]=duree_req[i].toFixed(1);
+        //alert('duree_req = '+duree_req[i]);
+        duree_req_Salle_formation_RDC=parseFloat(duree_req_Salle_formation_RDJ) + parseFloat(duree_req[i]);
+        // alert(duree_req_Salle_formation_RDJ);
+      }else{
+        //   alert('non heure debut');
+      }
+      // alert('date reservation==>'+date_req_reservation[i]);
+    }
+    /********************** DONNEE MOIS SALLE REUNION RDC***********************/
+    /********************** DONNEE JOUR SALLE REUNION RDC ***********************/
+    for(i=0;i<999;i++)
+    {
+      if(eventObj[i]==null)
+      {
+       // end_req[i]=end_req[i].format('HH:mm');
+        //  alert("BREAKKKKK");
+        break;
+      }
+      date_req_reservation[i]=eventObj[i].start;
+      color[i]=eventObj[i].color;
+      date_req_reservation[i]=date_req_reservation[i].format('YYYY-MM').toString();
+      if(date_req_reservation[i]==date_compar && color[i]=='yellowgreen')
+      {
+         //     alert(color[i]);
+        start_req[i]=eventObj[i].start;
+        start_req[i]=start_req[i].format('HH:mm');
+        end_req[i]=eventObj[i].end;
+        end_req[i]=end_req[i].format('HH:mm');
+        var split_start=[];
+        split_start=start_req[i].split(':');
+        req_min_start=parseFloat(split_start[1]/60);
+        req_heure_start=parseFloat(split_start[0]);
+        value_req_start[i]=req_heure_start+req_min_start;
+        var split_end=[];
+        //alert(end_req[i]);
+        split_end=end_req[i].split(':');
+        req_min_end=parseFloat(split_end[1]/60);
+        req_heure_end=parseFloat(split_end[0]);
+        value_req_end[i]=parseFloat(req_heure_end)+parseFloat(req_min_end);
+        value_req_end[i]=value_req_end[i].toFixed(1);
+        value_req_start[i]=value_req_start[i].toFixed(1);
+        //alert(value_req_end[i]+' soustraire '+value_req_start[i]);
+        duree_req[i]=parseFloat(value_req_end[i]) - parseFloat(value_req_start[i]);
+        duree_req[i]=duree_req[i].toFixed(1);
+        //alert('duree_req = '+duree_req[i]);
+        duree_req_Salle_reunion_RDC=parseFloat(duree_req_Salle_formation_RDJ) + parseFloat(duree_req[i]);
+        // alert(duree_req_Salle_formation_RDJ);
+      }else{
+        //   alert('non heure debut');
+      }
+      // alert('date reservation==>'+date_req_reservation[i]);
+    }
+    /*
+     alert('Total '+duree_req_total);
+     alert('Grande salle '+duree_req_Grande_Salle);
+     alert('Salle formation'+duree_req_Salle_formation);
+     alert('Salle Formation RDJ'+duree_req_Salle_formation_RDJ);
+     */
+    /********************** DONNEE MOIS SALLE FORMATION***********************/
+    var Grande_salle=(duree_req_Grande_Salle/duree_req_total)*100;
+    var Salle_formation=(duree_req_Salle_formation/duree_req_total)*100;
+    var Salle_formation_rdj=(duree_req_Salle_formation_RDJ/duree_req_total)*100;
+    var Salle_Formation_rdc=(duree_req_Salle_formation_RDC/duree_req_total)*100;
+    var Salle_Reunion_rdc=(duree_req_Salle_reunion_RDC/duree_req_total)*100;
+    $(function () {
+      Highcharts.chart('container_semaine_graph', {
+        chart: {
+          plotBackgroundColor: null,
+          plotBorderWidth: null,
+          plotShadow: false,
+          type: 'pie'
+        },
+        title: {
+          text: 'GRAPHE STATUT SALLES MOIS'
+        },
+        tooltip: {
+          pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        plotOptions: {
+          pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            dataLabels: {
+              enabled: true,
+              format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+              style: {
+                color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+              }
+            }
+          }
+        },
+        series: [{
+          name: 'Brands',
+          colorByPoint: true,
+          data: [{
+            name: 'Grande Salle',
+            y: Grande_salle,
+            color:'blue'
+          }, {
+            name: 'Salle de Formation RDJ',
+            y: Salle_formation_rdj,
+            color:'green'
+          }, {
+            name: 'Salle de Formation',
+            y: Salle_formation,
+            color:'orange'
+          }, {
+            name: 'Salle de Formation RDC',
+            y: Salle_Formation_rdc,
+            color:'gray'
+          }, {
+            name: 'Salle de Reunion RDC',
+            y: Salle_Reunion_rdc,
+            color:'yellowgreen'
+          } ]
+        }]
+      });
+    });
+    //title_req=eventObj.title;
+    //color=eventObj[0].color;
+    //start=eventObj[0].start;
+    //start=start.format('hh:mm');
+    // start=start.getMonth();
+  }
+  /***********************************GRAPHE    JOUR    ************************************************/
+  function donnee_jour() {
+    var eventObj = [];
+    var color_req = [];
+    var i = 0;
+    var x = document.getElementsByName("ronny_ok").length;
+    // alert(x);
+    for (i = 0; i < x; i++) {
+      if (document.getElementsByName("ronny_ok")[i].value === false) {
+        //       alert('breakkkkk');
+        break;
+      }
+      eventObj[i] = document.getElementsByName("ronny_ok")[i].value;
+      var myDiv = document.getElementsByName("myDivID")[i].style.backgroundColor;
+      color_req[i] = myDiv;
+      //    alert('Semaine'+eventObj[i]+' color==>'+myDiv);
+    }
+    //    alert('mois');
+    /*******************Declaration Tableau recuperation donnee DUREE_TOTAL*********************************/
+    var heure_depart = [];
+    var value_req_start = [];
+    var min_depart = [];
+    var heure_fin = [];
+    var value_req_fin = [];
+    var min_fin = [];
+    var duree_req = [];
+    var somme = 0;
+    var duree_total_semaines = 0;
+    /********************fin recuperation donnee*******************************************************/
+    /***********************************Declaration DONNEE SALLE DE FORMATION(ORAnGE)********************************************************/
+    var Salle_Formation = [];
+    var heure_depart_orange = [];
+    var value_req_start_orange = [];
+    var min_depar_orange = [];
+    var heure_fin_orange = [];
+    var value_req_fin_orange = [];
+    var min_fin_orange = [];
+    var duree_req_orange = [];
+    var somme_orange = 0;
+    var duree_total_semaines_formation = 0;
+    var j = 0;
+    for (i = 0; i < x; i++) {
+      if (document.getElementsByName("ronny_ok")[i].value === false) {
+        //       alert('breakkkkk');
+        break;
+      }
+      if (color_req[i] == 'orange') {
+        Salle_Formation[j] = document.getElementsByName("ronny_ok")[i].value;
+        myDiv = document.getElementsByName("myDivID")[i].style.backgroundColor;
+        //alert('Semaine'+Salle_Formation[i]+' color==>'+myDiv);
+        j++;
+      }
+    }
+    //alert(Salle_Formation+'<<<<<<<<SALLE FORMATION Lenght =========>'+j);
+    for (i = 0; i < j; i++) {
+      if (j == 0) {
+        // alert("BREAKKKKK_salle formation");
+        break;
+      }
+      var split_dual_Salle_Formation = [];
+      split_dual_Salle_Formation = Salle_Formation[i].split('-');
+      var recuperation_Salle_Formation_deb = (split_dual_Salle_Formation[0]).toString();
+      var recuperation_Salle_Formation_fin = (split_dual_Salle_Formation[1]).toString();
+      //alert(recuperation_Salle_Formation_deb+' rt '+recuperation_Salle_Formation_fin);
+      var split_start_Salle_Formation = [];
+      split_start_Salle_Formation = recuperation_Salle_Formation_deb.split(':');
+      heure_depart_orange[i] = parseFloat(split_start_Salle_Formation[0]);
+      min_depar_orange[i] = parseFloat(split_start_Salle_Formation[1] / 60).toFixed(1);
+      value_req_start_orange[i] = parseFloat(heure_depart_orange[i]) + parseFloat(min_depar_orange[i]);
+      value_req_start_orange[i] = parseFloat(value_req_start_orange[i]).toFixed(1);
+      //alert(heure_depart_orange[i]+' + '+min_depar_orange[i]+' = '+value_req_start_orange[i]);
+      var split_fin_Salle_Formation = [];
+      split_fin_Salle_Formation = recuperation_Salle_Formation_fin.split(':');
+      heure_fin_orange[i] = parseFloat(split_fin_Salle_Formation[0]);
+      min_fin_orange[i] = parseFloat(split_fin_Salle_Formation[1] / 60).toFixed(1);
+      value_req_fin_orange[i] = parseFloat(heure_fin_orange[i]) + parseFloat(min_fin_orange[i]);
+      value_req_fin_orange[i] = parseFloat(value_req_fin_orange[i]).toFixed(1);
+      //alert(heure_fin[i]+' + '+min_fin[i]+' = '+value_req_fin[i]);
+      duree_req_orange[i] = parseFloat(value_req_fin_orange[i]) - parseFloat(value_req_start_orange[i]);
+      duree_req_orange[i] = parseFloat(duree_req_orange[i]).toFixed(1);
+      //alert(duree_req_orange[i]);
+      somme_orange = somme_orange + parseFloat(duree_req_orange[i]);
+      //alert(somme);
+    }
+    /***********************************Fin Declaration DONNEE SALLE DE FORMATION(ORAnGE)********************************************************/
+    /***********************************Declaration DONNEE SALLE DE FORMATION RDC(gray)********************************************************/
+    var Salle_Formation_RDC = [];
+    var heure_depart_gray = [];
+    var value_req_start_orange = [];
+    var min_depar_orange = [];
+    var heure_fin_orange = [];
+    var value_req_fin_gray = [];
+    var min_fin_gray = [];
+    var duree_req_gray = [];
+    var somme_gray = 0;
+    var duree_total_semaines_formation_rdc = 0;
+    var j = 0;
+    for (i = 0; i < x; i++) {
+      if (document.getElementsByName("ronny_ok")[i].value === false) {
+        //       alert('breakkkkk');
+        break;
+      }
+      if (color_req[i] == 'gray') {
+        Salle_Formation_RDC[j] = document.getElementsByName("ronny_ok")[i].value;
+        myDiv = document.getElementsByName("myDivID")[i].style.backgroundColor;
+        //alert('Semaine'+Salle_Formation_RDC[i]+' color==>'+myDiv);
+        j++;
+      }
+    }
+    //alert(Salle_Formation_RDC+'<<<<<<<<SALLE FORMATION Lenght =========>'+j);
+    for (i = 0; i < j; i++) {
+      if (j == 0) {
+        // alert("BREAKKKKK_salle formation");
+        break;
+      }
+      var split_dual_Salle_Formation_RDC = [];
+      split_dual_Salle_Formation_RDC = Salle_Formation_RDC[i].split('-');
+      var recuperation_Salle_Formation_RDC_deb = (split_dual_Salle_Formation_RDC[0]).toString();
+      var recuperation_Salle_Formation_RDC_fin = (split_dual_Salle_Formation_RDC[1]).toString();
+      //alert(recuperation_Salle_Formation_RDC_deb+' rt '+recuperation_Salle_Formation_RDC_fin);
+      var split_start_Salle_Formation_RDC = [];
+      split_start_Salle_Formation_RDC = recuperation_Salle_Formation_RDC_deb.split(':');
+      heure_depart_gray[i] = parseFloat(split_start_Salle_Formation_RDC[0]);
+      min_depar_orange[i] = parseFloat(split_start_Salle_Formation_RDC[1] / 60).toFixed(1);
+      value_req_start_orange[i] = parseFloat(heure_depart_gray[i]) + parseFloat(min_depar_orange[i]);
+      value_req_start_orange[i] = parseFloat(value_req_start_orange[i]).toFixed(1);
+      //alert(heure_depart_gray[i]+' + '+min_depar_orange[i]+' = '+value_req_start_orange[i]);
+      var split_fin_Salle_Formation_RDC = [];
+      split_fin_Salle_Formation_RDC = recuperation_Salle_Formation_RDC_fin.split(':');
+      heure_fin_orange[i] = parseFloat(split_fin_Salle_Formation_RDC[0]);
+      min_fin_gray[i] = parseFloat(split_fin_Salle_Formation_RDC[1] / 60).toFixed(1);
+      value_req_fin_gray[i] = parseFloat(heure_fin_orange[i]) + parseFloat(min_fin_gray[i]);
+      value_req_fin_gray[i] = parseFloat(value_req_fin_gray[i]).toFixed(1);
+      //alert(heure_fin[i]+' + '+min_fin[i]+' = '+value_req_fin[i]);
+      duree_req_gray[i] = parseFloat(value_req_fin_gray[i]) - parseFloat(value_req_start_orange[i]);
+      duree_req_gray[i] = parseFloat(duree_req_gray[i]).toFixed(1);
+      //alert(duree_req_gray[i]);
+      somme_gray = somme_gray + parseFloat(duree_req_gray[i]);
+      //alert(somme);
+    }
+    /***********************************Fin Declaration DONNEE SALLE DE FORMATION RDC(gray)********************************************************/
+    /***********************************Declaration DONNEE SALLE DE REUNION RDC(yellow)********************************************************/
+    var Salle_Reunion_RDC = [];
+    var heure_depart_yellow = [];
+    var value_req_start_yellow = [];
+    var min_depar_yellow = [];
+    var heure_fin_yellow = [];
+    var value_req_fin_yellow = [];
+    var min_fin_yellow = [];
+    var duree_req_yellow = [];
+    var somme_yellow = 0;
+    var duree_total_semaines_reunion_rdc = 0;
+    var j = 0;
+    for (i = 0; i < x; i++) {
+      if (document.getElementsByName("ronny_ok")[i].value === false)
+      {
+        //       alert('breakkkkk');
+        break;
+      }
+      if (color_req[i] == 'yellowgreen') {
+        Salle_Reunion_RDC[j] = document.getElementsByName("ronny_ok")[i].value;
+        myDiv = document.getElementsByName("myDivID")[i].style.backgroundColor;
+        //alert('Semaine'+Salle_Reunion_RDC[i]+' color==>'+myDiv);
+        j++;
+      }
+    }
+    //alert(Salle_Reunion_RDC+'<<<<<<<<SALLE FORMATION Lenght =========>'+j);
+    for (i = 0; i < j; i++) {
+      if (j == 0) {
+        // alert("BREAKKKKK_salle formation");
+        break;
+      }
+      var split_dual_Salle_Reunion_RDC = [];
+      split_dual_Salle_Reunion_RDC = Salle_Reunion_RDC[i].split('-');
+      var recuperation_Salle_Reunion_RDC_deb = (split_dual_Salle_Reunion_RDC[0]).toString();
+      var recuperation_Salle_Reunion_RDC_fin = (split_dual_Salle_Reunion_RDC[1]).toString();
+      //alert(recuperation_Salle_Reunion_RDC_deb+' rt '+recuperation_Salle_Reunion_RDC_fin);
+      var split_start_Salle_Reunion_RDC = [];
+      split_start_Salle_Reunion_RDC = recuperation_Salle_Reunion_RDC_deb.split(':');
+      heure_depart_yellow[i] = parseFloat(split_start_Salle_Reunion_RDC[0]);
+      min_depar_yellow[i] = parseFloat(split_start_Salle_Reunion_RDC[1] / 60).toFixed(1);
+      value_req_start_yellow[i] = parseFloat(heure_depart_yellow[i]) + parseFloat(min_depar_yellow[i]);
+      value_req_start_yellow[i] = parseFloat(value_req_start_yellow[i]).toFixed(1);
+      //alert(heure_depart_yellow[i]+' + '+min_depar_yellow[i]+' = '+value_req_start_yellow[i])
+      var split_fin_Salle_Reunion_RDC = [];
+      split_fin_Salle_Reunion_RDC = recuperation_Salle_Reunion_RDC_fin.split(':');
+      heure_fin_yellow[i] = parseFloat(split_fin_Salle_Reunion_RDC[0]);
+      min_fin_yellow[i] = parseFloat(split_fin_Salle_Reunion_RDC[1] / 60).toFixed(1);
+      value_req_fin_yellow[i] = parseFloat(heure_fin_yellow[i]) + parseFloat(min_fin_yellow[i]);
+      value_req_fin_yellow[i] = parseFloat(value_req_fin_yellow[i]).toFixed(1);
+      //alert(heure_fin[i]+' + '+min_fin[i]+' = '+value_req_fin[i]);
+      duree_req_yellow[i] = parseFloat(value_req_fin_yellow[i]) - parseFloat(value_req_start_yellow[i]);
+      duree_req_yellow[i] = parseFloat(duree_req_yellow[i]).toFixed(1);
+      //alert(duree_req_yellow[i]);
+      somme_yellow = somme_yellow + parseFloat(duree_req_yellow[i]);
+      //alert(somme);
+    }
+    /***********************************Fin Declaration DONNEE SALLE DE REUNION RDC(YELLOW)********************************************************/
+    /***********************************Declaration DONNEE SALLE DE FORMATION RDJ(VERT)********************************************************/
+    var Salle_RDJ = [];
+    var heure_depart_RDJ = [];
+    var value_req_start_RDJ = [];
+    var min_depar_RDJ = [];
+    var heure_fin_RDJ = [];
+    var value_req_fin_RDJ = [];
+    var min_fin_RDJ = [];
+    var duree_req_RDJ = [];
+    var somme_RDJ = 0;
+    var duree_total_semaines_RDJ = 0;
+    var l = 0;
+    for (i = 0; i < x; i++) {
+      if (document.getElementsByName("ronny_ok")[i].value === false) {
+        //      alert('OKOKOK');
+        break;
+      }
+      if (color_req[i] == 'green') {
+        Salle_RDJ[l] = document.getElementsByName("ronny_ok")[i].value;
+        var myDiv2 = document.getElementsByName("myDivID")[i].style.backgroundColor;
+        //    alert('Semaine'+Salle_RDJ[i]+' color==>'+myDiv);
+        l++;
+      }
+    }
+    // alert(Salle_RDJ+'<<<<<<<<RDJ Lenght =========>'+j);
+
+    for (i = 0; i < l; i++) {
+      if (l == 0) {
+        //    alert("breakkkkk RDJ");
+        break;
+      }
+      var split_dual_RDJ = [];
+      split_dual_RDJ = Salle_RDJ[i].split('-');
+      var recuperation_RDJ_deb = (split_dual_RDJ[0]).toString();
+      var recuperation_RDJ_fin = (split_dual_RDJ[1]).toString();
+      //alert(recuperation_RDJ_deb+' rt '+recuperation_RDJ_fin);
+      var split_start_RDJ = [];
+      split_start_RDJ = recuperation_RDJ_deb.split(':');
+      heure_depart_RDJ[i] = parseFloat(split_start_RDJ[0]);
+      min_depar_RDJ[i] = parseFloat(split_start_RDJ[1] / 60).toFixed(1);
+      value_req_start_RDJ[i] = parseFloat(heure_depart_RDJ[i]) + parseFloat(min_depar_RDJ[i]);
+      value_req_start_RDJ[i] = parseFloat(value_req_start_RDJ[i]).toFixed(1);
+      //alert(heure_depart_RDJ[i]+' + '+min_depar_RDJ[i]+' = '+value_req_start_RDJ[i]);
+      var split_fin_RDJ = [];
+      split_fin_RDJ = recuperation_RDJ_fin.split(':');
+      heure_fin_RDJ[i] = parseFloat(split_fin_RDJ[0]);
+      min_fin_RDJ[i] = parseFloat(split_fin_RDJ[1] / 60).toFixed(1);
+      value_req_fin_RDJ[i] = parseFloat(heure_fin_RDJ[i]) + parseFloat(min_fin_RDJ[i]);
+      value_req_fin_RDJ[i] = parseFloat(value_req_fin_RDJ[i]).toFixed(1);
+      //alert(heure_fin[i]+' + '+min_fin[i]+' = '+value_req_fin[i]);
+      duree_req_RDJ[i] = parseFloat(value_req_fin_RDJ[i]) - parseFloat(value_req_start_RDJ[i]);
+      duree_req_RDJ[i] = parseFloat(duree_req_RDJ[i]).toFixed(1);
+      //alert(duree_req_orange[i]);
+      somme_RDJ = somme_RDJ + parseFloat(duree_req_RDJ[i]);
+      //  alert(somme_RDJ);
+    }
+    /***********************************Fin Declaration DONNEE SALLE DE FORMATION(ORAnGE)********************************************************/
+    /***********************************Declaration DONNEE GRANDe SALLE(BLUE)********************************************************/
+    var Salle_Grande_Salle = [];
+    var heure_depart_Grande_Salle = [];
+    var value_req_start_Grande_Salle = [];
+    var min_depar_Grande_Salle = [];
+    var heure_fin_Grande_Salle = [];
+    var value_req_fin_Grande_Salle = [];
+    var min_fin_Grande_Salle = [];
+    var duree_req_Grande_Salle = [];
+    var somme_Grande_Salle = 0;
+    var duree_total_semaines_Grande_Salle = 0;
+    var k = 0;
+    for (i = 0; i < x; i++) {
+      if (document.getElementsByName("ronny_ok")[i].value === false) {
+        //       alert('breakkkkk');
+        break;
+      }
+      if (color_req[i] == 'blue') {
+        Salle_Grande_Salle[k] = document.getElementsByName("ronny_ok")[i].value;
+        var myDiv = document.getElementsByName("myDivID")[i].style.backgroundColor;
+        //   alert('Semaine'+Salle_Grande_Salle[i]+' color==>'+myDiv);
+        k++;
+      }
+    }
+    // alert(Salle_Grande_Salle+'<<<<<<<<GRANDE SALLE Lenght =========>'+j);
+    for (i = 0; i < k; i++) {
+      if (k == 0) {
+        //    alert("breakkkkk GRANDE SALLE");
+        break;
+      }
+      var split_dual_Grande_Salle = [];
+      split_dual_Grande_Salle = Salle_Grande_Salle[i].split('-');
+      var recuperation_Grande_Salle_deb = (split_dual_Grande_Salle[0]).toString();
+      var recuperation_Grande_Salle_fin = (split_dual_Grande_Salle[1]).toString();
+      //alert(recuperation_Grande_Salle_deb+' rt '+recuperation_Grande_Salle_fin);
+      var split_start_Grande_Salle = [];
+      split_start_Grande_Salle = recuperation_Grande_Salle_deb.split(':');
+      heure_depart_Grande_Salle[i] = parseFloat(split_start_Grande_Salle[0]);
+      min_depar_Grande_Salle[i] = parseFloat(split_start_Grande_Salle[1] / 60).toFixed(1);
+      value_req_start_Grande_Salle[i] = parseFloat(heure_depart_Grande_Salle[i]) + parseFloat(min_depar_Grande_Salle[i]);
+      value_req_start_Grande_Salle[i] = parseFloat(value_req_start_Grande_Salle[i]).toFixed(1);
+      //alert(heure_depart_Grande_Salle[i]+' + '+min_depar_Grande_Salle[i]+' = '+value_req_start_Grande_Salle[i]);
+      var split_fin_Grande_Salle = [];
+      split_fin_Grande_Salle = recuperation_Grande_Salle_fin.split(':');
+      heure_fin_Grande_Salle[i] = parseFloat(split_fin_Grande_Salle[0]);
+      min_fin_Grande_Salle[i] = parseFloat(split_fin_Grande_Salle[1] / 60).toFixed(1);
+      value_req_fin_Grande_Salle[i] = parseFloat(heure_fin_Grande_Salle[i]) + parseFloat(min_fin_Grande_Salle[i]);
+      value_req_fin_Grande_Salle[i] = parseFloat(value_req_fin_Grande_Salle[i]).toFixed(1);
+      //alert(heure_fin[i]+' + '+min_fin[i]+' = '+value_req_fin[i]);
+      duree_req_Grande_Salle[i] = parseFloat(value_req_fin_Grande_Salle[i]) - parseFloat(value_req_start_Grande_Salle[i]);
+      duree_req_Grande_Salle[i] = parseFloat(duree_req_Grande_Salle[i]).toFixed(1);
+      //alert(duree_req_orange[i]);
+      somme_Grande_Salle = somme_Grande_Salle + parseFloat(duree_req_Grande_Salle[i]);
+      //alert(somme);
+    }
+    /***********************************Fin Declaration DONNEE SALLE DE FORMATION(ORAnGE)********************************************************/
+    for (i = 0; i < 999; i++)
+    {
+      if (eventObj[i] == null)
+      {
+        //  alert("BREAKKKKK");
+        break;
+      }
+      var split_dual = [];
+      split_dual = eventObj[i].split('-');
+      var recuperation_deb = (split_dual[0]).toString();
+      var recuperation_fin = (split_dual[1]).toString();
+      //alert(recuperation_deb+' rt '+recuperation_fin);
+      var split_start = [];
+      split_start = recuperation_deb.split(':');
+      heure_depart[i] = parseFloat(split_start[0]);
+      min_depart[i] = parseFloat(split_start[1] / 60).toFixed(1);
+      value_req_start[i] = parseFloat(heure_depart[i]) + parseFloat(min_depart[i]);
+      value_req_start[i] = parseFloat(value_req_start[i]).toFixed(1);
+      //alert(heure_depart[i]+' + '+min_depart[i]+' = '+value_req_start[i]);
+      var split_fin = [];
+      split_fin = recuperation_fin.split(':');
+      heure_fin[i] = parseFloat(split_fin[0]);
+      min_fin[i] = parseFloat(split_fin[1] / 60).toFixed(1);
+      value_req_fin[i] = parseFloat(heure_fin[i]) + parseFloat(min_fin[i]);
+      value_req_fin[i] = parseFloat(value_req_fin[i]).toFixed(1);
+      //alert(heure_fin[i]+' + '+min_fin[i]+' = '+value_req_fin[i]);
+      duree_req[i] = parseFloat(value_req_fin[i]) - parseFloat(value_req_start[i]);
+      duree_req[i] = parseFloat(duree_req[i]).toFixed(1);
+      //alert(duree_req[i]);
+      somme = somme + parseFloat(duree_req[i]);
+      //alert(somme);
+    }
+    /**********LISTE DONNEE A INSERER GRAPHE PIE CHART ******/
+    duree_total_semaines = somme;
+    // alert('duree total semaine ===>'+duree_total_semaine);
+    duree_total_semaines_Grande_Salle = somme_Grande_Salle;
+    // alert('duree total Grande Salle ===>'+duree_total_semaine_Grande_Salle);
+    duree_total_semaines_RDJ = somme_RDJ;
+    //  alert('duree total RDJ===>'+duree_total_semaine_RDJ);
+    duree_total_semaines_formation = somme_orange;
+    duree_total_semaines_formation_rdc = somme_gray;
+    duree_total_semaines_reunion_rdc= somme_yellow;
+    //   alert('duree total Formation===>'+duree_total_semaine_formation);
+    var heure_dispo = 16;
+    heure_dispo = parseFloat(16) - parseFloat(duree_total_semaines);
+    if (duree_total_semaines == 0 && duree_total_semaines_Grande_Salle == 0 && duree_total_semaines_RDJ == 0 && duree_total_semaines_formation == 0)
+    {
+      // alert('test');
+    }
+    else
+    {
+      $(function () {
+        Highcharts.chart('container_semaine_graph', {
+          chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false,
+            type: 'pie'
+          },
+          title: {
+            text: 'GRAPHE STATUT SALLES JOUR'
+          },
+          tooltip: {
+            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+          },
+          plotOptions: {
+            pie: {
+              allowPointSelect: true,
+              cursor: 'pointer',
+              dataLabels: {
+                enabled: true,
+                format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                style: {
+                  color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                }
+              }
+            }
+          },
+          series: [{
+            name: 'Brands',
+            colorByPoint: true,
+            data: [{
+              name: 'Grande Salle',
+              y: duree_total_semaines_Grande_Salle,
+              color: 'blue'
+            }, {
+              name: 'Salle de Formation RDJ',
+              y: duree_total_semaines_RDJ,
+              color: 'green'
+            }, {
+              name: 'Salle de Formation',
+              y: duree_total_semaines_formation,
+              color: 'orange'
+            }, {
+              name: 'Salle de Formation RDC',
+              y: duree_total_semaines_formation_rdc,
+              color: 'gray'
+            }, {
+              name: 'Salle de Réunion RDC',
+              y: duree_total_semaines_reunion_rdc,
+              color: 'yellow'
+            }, {
+              name: 'Disponible',
+              y: heure_dispo,
+              color: 'black'
+            }]
+          }]
+        });
+      });
+    }
+  }
+    /***********************************GRAPHE    SEMAINE    ************************************************/
+  function donnee_semaine(title_graph) {
+        var eventObj=[];
+          var color_req=[];
+          var i=0;
+          var x = document.getElementsByName("ronny_ok").length;
+         // alert(x);
+             for(i=0;i<x;i++)
+             {
+               if(document.getElementsByName("ronny_ok")[i].value===false)
+               {
+          //       alert('breakkkkk');
+                 break;
+               }
+               eventObj[i]= document.getElementsByName("ronny_ok")[i].value;
+                var myDiv = document.getElementsByName("myDivID")[i].style.backgroundColor;
+               color_req[i]=myDiv;
+           //    alert('Semaine'+eventObj[i]+' color==>'+myDiv);
+             }
+          //    alert('mois');
+          /*******************Declaration Tableau recuperation donnee DUREE_TOTAL*********************************/
+          var heure_depart=[];
+          var value_req_start=[];
+          var min_depart=[];
+          var heure_fin=[];
+          var value_req_fin=[];
+          var min_fin=[];
+          var duree_req=[];
+          var somme=0;
+          var duree_total_semaine=0;
+              /********************fin recuperation donnee*******************************************************/
+          /***********************************Declaration DONNEE SALLE DE FORMATION RDC(gray)********************************************************/
+          var Salle_Formation_RDC = [];
+          var heure_depart_gray = [];
+          var value_req_start_orange = [];
+          var min_depar_orange = [];
+          var heure_fin_orange = [];
+          var value_req_fin_gray = [];
+          var min_fin_gray = [];
+          var duree_req_gray = [];
+          var somme_gray = 0;
+          var duree_total_semaines_formation_rdc = 0;
+          var j = 0;
+          for (i = 0; i < x; i++) {
+            if (document.getElementsByName("ronny_ok")[i].value === false) {
+              //       alert('breakkkkk');
+              break;
+            }
+            if (color_req[i] == 'gray') {
+              Salle_Formation_RDC[j] = document.getElementsByName("ronny_ok")[i].value;
+              myDiv = document.getElementsByName("myDivID")[i].style.backgroundColor;
+              //alert('Semaine'+Salle_Formation_RDC[i]+' color==>'+myDiv);
+              j++;
+            }
+          }
+          //alert(Salle_Formation_RDC+'<<<<<<<<SALLE FORMATION Lenght =========>'+j);
+          for (i = 0; i < j; i++) {
+            if (j == 0) {
+              // alert("BREAKKKKK_salle formation");
+              break;
+            }
+            var split_dual_Salle_Formation_RDC = [];
+            split_dual_Salle_Formation_RDC = Salle_Formation_RDC[i].split('-');
+            var recuperation_Salle_Formation_RDC_deb = (split_dual_Salle_Formation_RDC[0]).toString();
+            var recuperation_Salle_Formation_RDC_fin = (split_dual_Salle_Formation_RDC[1]).toString();
+            //alert(recuperation_Salle_Formation_RDC_deb+' rt '+recuperation_Salle_Formation_RDC_fin);
+            var split_start_Salle_Formation_RDC = [];
+            split_start_Salle_Formation_RDC = recuperation_Salle_Formation_RDC_deb.split(':');
+            heure_depart_gray[i] = parseFloat(split_start_Salle_Formation_RDC[0]);
+            min_depar_orange[i] = parseFloat(split_start_Salle_Formation_RDC[1] / 60).toFixed(1);
+            value_req_start_orange[i] = parseFloat(heure_depart_gray[i]) + parseFloat(min_depar_orange[i]);
+            value_req_start_orange[i] = parseFloat(value_req_start_orange[i]).toFixed(1);
+            //alert(heure_depart_gray[i]+' + '+min_depar_orange[i]+' = '+value_req_start_orange[i]);
+            var split_fin_Salle_Formation_RDC = [];
+            split_fin_Salle_Formation_RDC = recuperation_Salle_Formation_RDC_fin.split(':');
+            heure_fin_orange[i] = parseFloat(split_fin_Salle_Formation_RDC[0]);
+            min_fin_gray[i] = parseFloat(split_fin_Salle_Formation_RDC[1] / 60).toFixed(1);
+            value_req_fin_gray[i] = parseFloat(heure_fin_orange[i]) + parseFloat(min_fin_gray[i]);
+            value_req_fin_gray[i] = parseFloat(value_req_fin_gray[i]).toFixed(1);
+            //alert(heure_fin[i]+' + '+min_fin[i]+' = '+value_req_fin[i]);
+            duree_req_gray[i] = parseFloat(value_req_fin_gray[i]) - parseFloat(value_req_start_orange[i]);
+            duree_req_gray[i] = parseFloat(duree_req_gray[i]).toFixed(1);
+            //alert(duree_req_gray[i]);
+            somme_gray = somme_gray + parseFloat(duree_req_gray[i]);
+            //alert(somme);
+          }
+          /***********************************Fin Declaration DONNEE SALLE DE FORMATION RDC(gray)********************************************************/
+          /***********************************Declaration DONNEE SALLE DE REUNION RDC(yellow)********************************************************/
+          var Salle_Reunion_RDC = [];
+          var heure_depart_yellow = [];
+          var value_req_start_yellow = [];
+          var min_depar_yellow = [];
+          var heure_fin_yellow = [];
+          var value_req_fin_yellow = [];
+          var min_fin_yellow = [];
+          var duree_req_yellow = [];
+          var somme_yellow = 0;
+          var duree_total_semaines_reunion_rdc = 0;
+          var j = 0;
+          for (i = 0; i < x; i++) {
+            if (document.getElementsByName("ronny_ok")[i].value === false) {
+              //       alert('breakkkkk');
+              break;
+            }
+            if (color_req[i] == 'yellowgreen') {
+              Salle_Reunion_RDC[j] = document.getElementsByName("ronny_ok")[i].value;
+              myDiv = document.getElementsByName("myDivID")[i].style.backgroundColor;
+              //alert('Semaine'+Salle_Reunion_RDC[i]+' color==>'+myDiv);
+              j++;
+            }
+          }
+          //alert(Salle_Reunion_RDC+'<<<<<<<<SALLE FORMATION Lenght =========>'+j);
+          for (i = 0; i < j; i++) {
+            if (j == 0) {
+              // alert("BREAKKKKK_salle formation");
+              break;
+            }
+            var split_dual_Salle_Reunion_RDC = [];
+            split_dual_Salle_Reunion_RDC = Salle_Reunion_RDC[i].split('-');
+            var recuperation_Salle_Reunion_RDC_deb = (split_dual_Salle_Reunion_RDC[0]).toString();
+            var recuperation_Salle_Reunion_RDC_fin = (split_dual_Salle_Reunion_RDC[1]).toString();
+            //alert(recuperation_Salle_Reunion_RDC_deb+' rt '+recuperation_Salle_Reunion_RDC_fin);
+            var split_start_Salle_Reunion_RDC = [];
+            split_start_Salle_Reunion_RDC = recuperation_Salle_Reunion_RDC_deb.split(':');
+            heure_depart_yellow[i] = parseFloat(split_start_Salle_Reunion_RDC[0]);
+            min_depar_yellow[i] = parseFloat(split_start_Salle_Reunion_RDC[1] / 60).toFixed(1);
+            value_req_start_yellow[i] = parseFloat(heure_depart_yellow[i]) + parseFloat(min_depar_yellow[i]);
+            value_req_start_yellow[i] = parseFloat(value_req_start_yellow[i]).toFixed(1);
+            //alert(heure_depart_yellow[i]+' + '+min_depar_yellow[i]+' = '+value_req_start_yellow[i]);
+            var split_fin_Salle_Reunion_RDC = [];
+            split_fin_Salle_Reunion_RDC = recuperation_Salle_Reunion_RDC_fin.split(':');
+            heure_fin_yellow[i] = parseFloat(split_fin_Salle_Reunion_RDC[0]);
+            min_fin_yellow[i] = parseFloat(split_fin_Salle_Reunion_RDC[1] / 60).toFixed(1);
+            value_req_fin_yellow[i] = parseFloat(heure_fin_yellow[i]) + parseFloat(min_fin_yellow[i]);
+            value_req_fin_yellow[i] = parseFloat(value_req_fin_yellow[i]).toFixed(1);
+            //alert(heure_fin[i]+' + '+min_fin[i]+' = '+value_req_fin[i]);
+            duree_req_yellow[i] = parseFloat(value_req_fin_yellow[i]) - parseFloat(value_req_start_yellow[i]);
+            duree_req_yellow[i] = parseFloat(duree_req_yellow[i]).toFixed(1);
+            //alert(duree_req_yellow[i]);
+            somme_yellow = somme_yellow + parseFloat(duree_req_yellow[i]);
+            //alert(somme);
+          }
+          /***********************************Declaration DONNEE SALLE DE FORMATION(ORAnGE)********************************************************/
+          var Salle_Formation=[];
+          var heure_depart_orange=[];
+          var value_req_start_orange=[];
+          var min_depar_orange=[];
+          var heure_fin_orange=[];
+          var value_req_fin_orange=[];
+          var min_fin_orange=[];
+          var duree_req_orange=[];
+          var somme_orange=0;
+          var duree_total_semaine_formation=0;
+          var j=0;
+          for(i=0;i<x;i++)
+          {
+            if(document.getElementsByName("ronny_ok")[i].value===false)
+            {
+              //       alert('breakkkkk');
+              break;
+            }
+            if(color_req[i]=='orange')
+            {
+            Salle_Formation[j]= document.getElementsByName("ronny_ok")[i].value;
+             myDiv = document.getElementsByName("myDivID")[i].style.backgroundColor;
+            //alert('Semaine'+Salle_Formation[i]+' color==>'+myDiv);
+              j++;
+            }
+          }
+          //alert(Salle_Formation+'<<<<<<<<SALLE FORMATION Lenght =========>'+j);
+          for(i=0;i<j;i++) {
+            if (j == 0) {
+               // alert("BREAKKKKK_salle formation");
+              break;
+            }
+            var split_dual_Salle_Formation=[];
+            split_dual_Salle_Formation=Salle_Formation[i].split('-');
+            var recuperation_Salle_Formation_deb=(split_dual_Salle_Formation[0]).toString();
+            var recuperation_Salle_Formation_fin=(split_dual_Salle_Formation[1]).toString();
+            //alert(recuperation_Salle_Formation_deb+' rt '+recuperation_Salle_Formation_fin);
+            var split_start_Salle_Formation=[];
+            split_start_Salle_Formation=recuperation_Salle_Formation_deb.split(':');
+            heure_depart_orange[i]=parseFloat(split_start_Salle_Formation[0]);
+            min_depar_orange[i]=parseFloat(split_start_Salle_Formation[1]/60).toFixed(1);
+            value_req_start_orange[i]=parseFloat(heure_depart_orange[i])+parseFloat(min_depar_orange[i]);
+            value_req_start_orange[i]=parseFloat(value_req_start_orange[i]).toFixed(1);
+            //alert(heure_depart_orange[i]+' + '+min_depar_orange[i]+' = '+value_req_start_orange[i]);
+            var split_fin_Salle_Formation=[];
+            split_fin_Salle_Formation=recuperation_Salle_Formation_fin.split(':');
+            heure_fin_orange[i]=parseFloat(split_fin_Salle_Formation[0]);
+            min_fin_orange[i]=parseFloat(split_fin_Salle_Formation[1]/60).toFixed(1);
+            value_req_fin_orange[i]=parseFloat(heure_fin_orange[i])+parseFloat(min_fin_orange[i]);
+            value_req_fin_orange[i]=parseFloat(value_req_fin_orange[i]).toFixed(1);
+            //alert(heure_fin[i]+' + '+min_fin[i]+' = '+value_req_fin[i]);
+            duree_req_orange[i]=parseFloat(value_req_fin_orange[i])-parseFloat(value_req_start_orange[i]);
+            duree_req_orange[i]=parseFloat(duree_req_orange[i]).toFixed(1);
+            //alert(duree_req_orange[i]);
+            somme_orange=somme_orange+parseFloat(duree_req_orange[i]);
+            //alert(somme);
+          }
+          /***********************************Fin Declaration DONNEE SALLE DE FORMATION(ORAnGE)********************************************************/
+          /***********************************Declaration DONNEE SALLE DE FORMATION RDJ(VERT)********************************************************/
+          var Salle_RDJ=[];
+          var heure_depart_RDJ=[];
+          var value_req_start_RDJ=[];
+          var min_depar_RDJ=[];
+          var heure_fin_RDJ=[];
+          var value_req_fin_RDJ=[];
+          var min_fin_RDJ=[];
+          var duree_req_RDJ=[];
+          var somme_RDJ=0;
+          var duree_total_semaine_RDJ=0;
+          var l=0;
+          for(i=0;i<x;i++)
+          {
+            if(document.getElementsByName("ronny_ok")[i].value===false)
+            {
+              //      alert('OKOKOK');
+              break;
+            }
+            if(color_req[i]=='green')
+            {
+              Salle_RDJ[l]= document.getElementsByName("ronny_ok")[i].value;
+              var myDiv2 = document.getElementsByName("myDivID")[i].style.backgroundColor;
+          //    alert('Semaine'+Salle_RDJ[i]+' color==>'+myDiv);
+              l++;
+            }
+          }
+         // alert(Salle_RDJ+'<<<<<<<<RDJ Lenght =========>'+j);
+          for(i=0;i<l;i++) {
+           if (l == 0) {
+            //    alert("breakkkkk RDJ");
+              break;
+            }
+            var split_dual_RDJ=[];
+            split_dual_RDJ=Salle_RDJ[i].split('-');
+            var recuperation_RDJ_deb=(split_dual_RDJ[0]).toString();
+            var recuperation_RDJ_fin=(split_dual_RDJ[1]).toString();
+            //alert(recuperation_RDJ_deb+' rt '+recuperation_RDJ_fin);
+            var split_start_RDJ=[];
+            split_start_RDJ=recuperation_RDJ_deb.split(':');
+            heure_depart_RDJ[i]=parseFloat(split_start_RDJ[0]);
+            min_depar_RDJ[i]=parseFloat(split_start_RDJ[1]/60).toFixed(1);
+            value_req_start_RDJ[i]=parseFloat(heure_depart_RDJ[i])+parseFloat(min_depar_RDJ[i]);
+            value_req_start_RDJ[i]=parseFloat(value_req_start_RDJ[i]).toFixed(1);
+            //alert(heure_depart_RDJ[i]+' + '+min_depar_RDJ[i]+' = '+value_req_start_RDJ[i]);
+            var split_fin_RDJ=[];
+            split_fin_RDJ=recuperation_RDJ_fin.split(':');
+            heure_fin_RDJ[i]=parseFloat(split_fin_RDJ[0]);
+            min_fin_RDJ[i]=parseFloat(split_fin_RDJ[1]/60).toFixed(1);
+            value_req_fin_RDJ[i]=parseFloat(heure_fin_RDJ[i])+parseFloat(min_fin_RDJ[i]);
+            value_req_fin_RDJ[i]=parseFloat(value_req_fin_RDJ[i]).toFixed(1);
+            //alert(heure_fin[i]+' + '+min_fin[i]+' = '+value_req_fin[i]);
+            duree_req_RDJ[i]=parseFloat(value_req_fin_RDJ[i])-parseFloat(value_req_start_RDJ[i]);
+            duree_req_RDJ[i]=parseFloat(duree_req_RDJ[i]).toFixed(1);
+            //alert(duree_req_orange[i]);
+            somme_RDJ=somme_RDJ+parseFloat(duree_req_RDJ[i]);
+          //  alert(somme_RDJ);
+          }
+          /***********************************Fin Declaration DONNEE SALLE DE FORMATION(ORAnGE)********************************************************/
+          /***********************************Declaration DONNEE GRANDe SALLE(BLUE)********************************************************/
+          var Salle_Grande_Salle=[];
+          var heure_depart_Grande_Salle=[];
+          var value_req_start_Grande_Salle=[];
+          var min_depar_Grande_Salle=[];
+          var heure_fin_Grande_Salle=[];
+          var value_req_fin_Grande_Salle=[];
+          var min_fin_Grande_Salle=[];
+          var duree_req_Grande_Salle=[];
+          var somme_Grande_Salle=0;
+          var duree_total_semaine_Grande_Salle=0;
+          var k=0;
+          for(i=0;i<x;i++)
+          {
+            if(document.getElementsByName("ronny_ok")[i].value===false)
+            {
+              //       alert('breakkkkk');
+              break;
+            }
+            if(color_req[i]=='blue')
+            {
+              Salle_Grande_Salle[k]= document.getElementsByName("ronny_ok")[i].value;
+              var myDiv = document.getElementsByName("myDivID")[i].style.backgroundColor;
+           //   alert('Semaine'+Salle_Grande_Salle[i]+' color==>'+myDiv);
+              k++;
+            }
+          }
+         // alert(Salle_Grande_Salle+'<<<<<<<<GRANDE SALLE Lenght =========>'+j);
+          for(i=0;i<k;i++) {
+           if (k == 0) {
+              //  alert("breakkkkk GRANDE SALLE");
+              break;
+            }
+            var split_dual_Grande_Salle=[];
+            split_dual_Grande_Salle=Salle_Grande_Salle[i].split('-');
+            var recuperation_Grande_Salle_deb=(split_dual_Grande_Salle[0]).toString();
+            var recuperation_Grande_Salle_fin=(split_dual_Grande_Salle[1]).toString();
+            //alert(recuperation_Grande_Salle_deb+' rt '+recuperation_Grande_Salle_fin);
+            var split_start_Grande_Salle=[];
+            split_start_Grande_Salle=recuperation_Grande_Salle_deb.split(':');
+            heure_depart_Grande_Salle[i]=parseFloat(split_start_Grande_Salle[0]);
+            min_depar_Grande_Salle[i]=parseFloat(split_start_Grande_Salle[1]/60).toFixed(1);
+            value_req_start_Grande_Salle[i]=parseFloat(heure_depart_Grande_Salle[i])+parseFloat(min_depar_Grande_Salle[i]);
+            value_req_start_Grande_Salle[i]=parseFloat(value_req_start_Grande_Salle[i]).toFixed(1);
+            //alert(heure_depart_Grande_Salle[i]+' + '+min_depar_Grande_Salle[i]+' = '+value_req_start_Grande_Salle[i]);
+            var split_fin_Grande_Salle=[];
+            split_fin_Grande_Salle=recuperation_Grande_Salle_fin.split(':');
+            heure_fin_Grande_Salle[i]=parseFloat(split_fin_Grande_Salle[0]);
+            min_fin_Grande_Salle[i]=parseFloat(split_fin_Grande_Salle[1]/60).toFixed(1);
+            value_req_fin_Grande_Salle[i]=parseFloat(heure_fin_Grande_Salle[i])+parseFloat(min_fin_Grande_Salle[i]);
+            value_req_fin_Grande_Salle[i]=parseFloat(value_req_fin_Grande_Salle[i]).toFixed(1);
+            //alert(heure_fin[i]+' + '+min_fin[i]+' = '+value_req_fin[i]);
+            duree_req_Grande_Salle[i]=parseFloat(value_req_fin_Grande_Salle[i])-parseFloat(value_req_start_Grande_Salle[i]);
+            duree_req_Grande_Salle[i]=parseFloat(duree_req_Grande_Salle[i]).toFixed(1);
+            //alert(duree_req_orange[i]);
+            somme_Grande_Salle=somme_Grande_Salle+parseFloat(duree_req_Grande_Salle[i]);
+            //alert(somme);
+          }
+          /***********************************Fin Declaration DONNEE SALLE DE FORMATION(ORAnGE)********************************************************/
+          for(i=0;i<999;i++) {
+            if (eventObj[i] == null) {
+            //  alert("BREAKKKKK");
+              break;
+            }
+            var split_dual=[];
+            split_dual=eventObj[i].split('-');
+            var recuperation_deb=(split_dual[0]).toString();
+            var recuperation_fin=(split_dual[1]).toString();
+            //alert(recuperation_deb+' rt '+recuperation_fin);
+            var split_start=[];
+            split_start=recuperation_deb.split(':');
+            heure_depart[i]=parseFloat(split_start[0]);
+            min_depart[i]=parseFloat(split_start[1]/60).toFixed(1);
+            value_req_start[i]=parseFloat(heure_depart[i])+parseFloat(min_depart[i]);
+            value_req_start[i]=parseFloat(value_req_start[i]).toFixed(1);
+            //alert(heure_depart[i]+' + '+min_depart[i]+' = '+value_req_start[i]);
+            var split_fin=[];
+            split_fin=recuperation_fin.split(':');
+            heure_fin[i]=parseFloat(split_fin[0]);
+            min_fin[i]=parseFloat(split_fin[1]/60).toFixed(1);
+            value_req_fin[i]=parseFloat(heure_fin[i])+parseFloat(min_fin[i]);
+            value_req_fin[i]=parseFloat(value_req_fin[i]).toFixed(1);
+            //alert(heure_fin[i]+' + '+min_fin[i]+' = '+value_req_fin[i]);
+            duree_req[i]=parseFloat(value_req_fin[i])-parseFloat(value_req_start[i]);
+            duree_req[i]=parseFloat(duree_req[i]).toFixed(1);
+            //alert(duree_req[i]);
+            somme=somme+parseFloat(duree_req[i]);
+            //alert(somme);
+          }
+          /**********LISTE DONNEE A INSERER GRAPHE PIE CHART ******/
+          duree_total_semaine=somme;
+         // alert('duree total semaine ===>'+duree_total_semaine);
+          duree_total_semaine_Grande_Salle=somme_Grande_Salle;
+         // alert('duree total Grande Salle ===>'+duree_total_semaine_Grande_Salle);
+          duree_total_semaine_RDJ=somme_RDJ;
+        //  alert('duree total RDJ===>'+duree_total_semaine_RDJ);
+          duree_total_semaine_formation=somme_orange;
+        //  alert('duree total formation ====> '+duree_total_semaine_formation);
+          duree_total_semaines_formation_rdc=somme_gray;
+         //alert('duree total RDC Formation ===> '+duree_total_semaines_formation_rdc)
+          duree_total_semaines_reunion_rdc=somme_yellow;
+         //
+      // alert('duree total reunion ===>'+duree_total_semaines_reunion_rdc);
+          var heure_dispo=80;
+          heure_dispo=parseFloat(80)-parseFloat(duree_total_semaine);
+      if(duree_total_semaine==0 && duree_total_semaine_Grande_Salle==0 && duree_total_semaine_formation==0&&duree_total_semaine_RDJ==0)
+      {
+       // alert('test');
+      }
+      else
+      {
+          $(function () {
+            Highcharts.chart('container_semaine_graph', {
+              chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false,
+                type: 'pie'
+              },
+              title: {
+                text: 'GRAPHE STATUT SALLES SEMAINES'
+              },
+              tooltip: {
+                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+              },
+              plotOptions: {
+                pie: {
+                  allowPointSelect: true,
+                  cursor: 'pointer',
+                  dataLabels: {
+                    enabled: true,
+                    format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                    style: {
+                      color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                    }
+                  }
+                }
+              },
+              series: [{
+                name: 'Brands',
+                colorByPoint: true,
+                data: [{
+                  name: 'Grande Salle',
+                  y: duree_total_semaine_Grande_Salle,
+                  color:'blue'
+                }, {
+                  name: 'Salle de Formation RDJ',
+                  y: duree_total_semaine_RDJ,
+                  color:'green'
+                }, {
+                  name: 'Salle de Formation',
+                  y: duree_total_semaine_formation,
+                  color:'orange'
+                }, {
+                  name: 'Salle de Formation RDC',
+                  y: duree_total_semaines_formation_rdc,
+                  color: 'gray'
+                }, {
+                  name: 'Salle de Réunion RDC',
+                  y: duree_total_semaines_reunion_rdc,
+                  color: 'yellow'
+                }, {
+                  name: 'Disponible',
+                  y: heure_dispo,
+                  color: 'black'
+                } ]
+              }]
+            });
+          });
+
+      }
+
+  }
+</script>

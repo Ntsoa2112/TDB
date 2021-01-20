@@ -1,0 +1,853 @@
+Email ===============================> 435
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  435  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+U2FsdGVkX1/CicdKMYKtJ8dLBrfxgYYeARiV6BR0D8M=
+U2FsdGVkX1%2FCicdKMYKtJ8dLBrfxgYYeARiV6BR0D8M%3D
+U2FsdGVkX1/CicdKMYKtJ8dLBrfxgYYeARiV6BR0D8M=
+356_08:59:21_20180213
+1518501561709
+1518501603710
+0.7000166666666666
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  356  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+Email ===============================> 1017
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  1017  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+SELECT p_dossier.num_dossier as DOSSIER,     p_lot_client.libelle as LOTCLIENT,     (SELECT nom from r_personnel where id_pers = almerys_p_lot_new.id_cq) as nom_cq,     (SELECT prenom from r_personnel where id_pers = almerys_p_lot_new.id_cq) as prenom_cq,     p_lot.libelle as  LOT,     p_lot.id_lotclient as  idp,     p_etape.libelle as ETAPE,     p_lot.duree as DUREE,     p_lot.qte_op as QUANTITEOP,     p_lot.id_pers as MATRICULESAISIE,     almerys_p_lot_new.id_cq as MATRICULECQ,     almerys_distinction.libelle as dist,     almerys_p_lot_new.id as id,     p_lot.id_dossier as id_dossier,     almerys_p_lot_new.echantillon as echant,     p_lot.priority as PRIORITE,     almerys_p_lot_new.libelle as NUMEROFACTURE,     almerys_p_lot_new.num_nuo as NUMERONUO,     almerys_p_lot_new.num_ps as NUMEROPS ,     almerys_interial.num_secu as NUMEROCQ,     almerys_interial.num_decompte as NUMERODECOMPTE,     almerys_interial.etat as ETATINT,       almerys_p_etat.libelle as ETAT,     almerys_p_lot_new.qte as QUANTITE,     almerys_tache.libelle as TACHE,     almerys_p_lot_new.erreur as ERREUR,     almerys_motif_rejet.libelle as MOTIFREJET,     almerys_p_lot_new.date_deb as DATE,     almerys_p_lot_new.h_deb as HEURE,     almerys_type_controle.libelle as TYPE_CONTROLE ,     almerys_type_controle.id as id_tpc ,     r_departement.libelle as dep,     r_departement.id as iddep,     almerys_p_lot_new.id_etat as id_et,     almerys_p_lot_new.id_motif_rejet as id_mot_rj,     almerys_type_erreur.libelle as erreur_cq,       almerys_type_fav.fav_a,       almerys_type_fav.fav_b,       almerys_type_fav.fav_c,       almerys_type_fav.non_fav,      almerys_ss_spe.libelle sous_sous_spec,      almerys_ss_spe2.libelle sous_sous_sous_spec, (SELECT sat from almerys_user_new where almerys_user_new.matricule = p_lot.id_pers limit 1) as sat     FROM almerys_p_lot_new     JOIN p_lot on almerys_p_lot_new.id_lot = p_lot.id_lot     JOIN almerys_p_etat on almerys_p_etat.id_etat = almerys_p_lot_new.id_etat     JOIN p_dossier on p_lot.id_dossier = p_dossier.id_dossier     JOIN p_lot_client on p_lot.id_lotclient = p_lot_client.id_lotclient     LEFT JOIN p_lien_oper_dossier ON p_lien_oper_dossier.id_lien = p_lot.id_etape     LEFT JOIN p_etape on p_etape.id_etape = p_lien_oper_dossier.id_oper     JOIN p_etat on p_lot.id_etat = p_etat.id_etat     JOIN r_personnel on r_personnel.id_pers = p_lot.id_pers     JOIN r_departement on r_personnel.id_departement = r_departement.id     LEFT JOIN almerys_motif_rejet on almerys_motif_rejet.id = almerys_p_lot_new.id_motif_rejet     LEFT JOIN almerys_type_erreur on almerys_type_erreur.id = almerys_p_lot_new.id_type_erreur     LEFT JOIN almerys_type_fav ON almerys_type_fav.id_pole_new = p_lot.id_lotclient     LEFT JOIN almerys_user_new ON almerys_user_new.matricule = p_lot.id_pers     LEFT JOIN almerys_type_controle ON almerys_type_controle.id = almerys_p_lot_new.id_type_controle     LEFT JOIN almerys_distinction ON almerys_distinction.id_distinction = almerys_p_lot_new.id_distinction     LEFT JOIN almerys_interial ON almerys_interial.id_almerys = almerys_p_lot_new.id     LEFT JOIN almerys_tache ON almerys_p_lot_new.id_tache = almerys_tache.id_tache     LEFT JOIN almerys_lien_ss_spe ON almerys_p_lot_new.id = almerys_lien_ss_spe.id_almerys     LEFT JOIN almerys_ss_spe ON almerys_lien_ss_spe.id_alm_ss_spe = almerys_ss_spe.id_ss_spe     LEFT JOIN almerys_ss_spe2 ON almerys_lien_ss_spe.id_lien_ss_spe2 = almerys_ss_spe2.id  WHERE 1= 1  AND almerys_p_lot_new.date_deb  = '20180212'  AND p_lot.id_lotclient = 20675  AND almerys_p_lot_new.id_type_controle = 3  ORDER BY almerys_p_lot_new.id asc
+Email ===============================> 1201
+int:3
+1:
+bdossier=ALMERYS CQ;result=ALM_HTP
+2:
+select * from r_periode_paie where to_date('2018/02/13','YYYY/MM/DD') between to_date(date_deb_prd,'YYYY/MM/DD') AND to_date(date_fin_prd,'YYYY/MM/DD') 
+select * from r_periode_paie where to_date('2018/02/13','YYYY/MM/DD') between to_date(date_deb_prd,'YYYY/MM/DD') AND to_date(date_fin_prd,'YYYY/MM/DD') 
+select DISTINCT id_util,commentaire,type_erreur,to_date(pdate,'yyyy/mm/dd') as dt,pdate,r_departement.libelle,r_departement.id as id_dep,nom,categorie,prenom,duree_total,duree_prod_gpao,duree_prod,duree_pause,duree_formation,duree_autre,horaire_journaliere,  (SELECT is_valide FROM r_flag_pointage_jour flag where flag.id_util = r_pointage_jour.id_util AND flag.pdate = r_pointage_jour.pdate order by id desc Limit 1 ) as validate  from r_pointage_jour join r_personnel on id_util = r_personnel.id_pers join r_equipe on r_equipe.id_equipe = r_personnel.id_eq join r_departement on r_departement.id = r_personnel.id_departement  where id_util = 356  AND to_date(pdate,'yyyy/mm/dd') between to_date('2018/01/15','yyyy/mm/dd') and to_date('2018/02/18','yyyy/mm/dd') order by to_date(pdate,'yyyy/mm/dd') desc 
+select DISTINCT id_util,commentaire,type_erreur,to_date(pdate,'yyyy/mm/dd') as dt,pdate,r_departement.libelle,r_departement.id as id_dep,nom,categorie,prenom,duree_total,duree_prod_gpao,duree_prod,duree_pause,duree_formation,duree_autre,horaire_journaliere,  (SELECT is_valide FROM r_flag_pointage_jour flag where flag.id_util = r_pointage_jour.id_util AND flag.pdate = r_pointage_jour.pdate order by id desc Limit 1 ) as validate  from r_pointage_jour join r_personnel on id_util = r_personnel.id_pers join r_equipe on r_equipe.id_equipe = r_personnel.id_eq join r_departement on r_departement.id = r_personnel.id_departement  where id_util = 356  AND to_date(pdate,'yyyy/mm/dd') between to_date('2018/01/15','yyyy/mm/dd') and to_date('2018/02/18','yyyy/mm/dd') order by to_date(pdate,'yyyy/mm/dd') desc 
+select * from r_periode_paie where to_date('2018/02/13','YYYY/MM/DD') between to_date(date_deb_prd,'YYYY/MM/DD') AND to_date(date_fin_prd,'YYYY/MM/DD') 
+select DISTINCT id_util,commentaire,type_erreur,to_date(pdate,'yyyy/mm/dd') as dt,pdate,r_departement.libelle,r_departement.id as id_dep,nom,categorie,prenom,duree_total,duree_prod_gpao,duree_prod,duree_pause,duree_formation,duree_autre,horaire_journaliere,  (SELECT is_valide FROM r_flag_pointage_jour flag where flag.id_util = r_pointage_jour.id_util AND flag.pdate = r_pointage_jour.pdate order by id desc Limit 1 ) as validate  from r_pointage_jour join r_personnel on id_util = r_personnel.id_pers join r_equipe on r_equipe.id_equipe = r_personnel.id_eq join r_departement on r_departement.id = r_personnel.id_departement  where id_util = 1069  AND to_date(pdate,'yyyy/mm/dd') between to_date('2018/01/15','yyyy/mm/dd') and to_date('2018/02/18','yyyy/mm/dd') order by to_date(pdate,'yyyy/mm/dd') desc 
+Email ===============================> 1201
+[ anonymous {
+    id_paie: '15',
+    annee: 2018,
+    date_deb_prd: '2018/01/15',
+    date_fin_prd: '2018/02/18',
+    mois: 'FEVRIER' } ]
+[ anonymous {
+    id_paie: '15',
+    annee: 2018,
+    date_deb_prd: '2018/01/15',
+    date_fin_prd: '2018/02/18',
+    mois: 'FEVRIER' } ]
+[ anonymous {
+    id_paie: '15',
+    annee: 2018,
+    date_deb_prd: '2018/01/15',
+    date_fin_prd: '2018/02/18',
+    mois: 'FEVRIER' } ]
+int:65
+int:65
+int:10
+1:
+ip::ffff:10.128.1.246
+qte========>65
+totam============>7034
+prod============>7034
+id_type_ldt0
+IN = TOURNIQUET
+1:
+bdossier=RECLAMATION;result=RECLAMATION
+misy:1
+[ 'RECLAMATION', 1.2291666666666665, 0, 10, 0 ]
+2:
+ip::ffff:10.128.1.246
+qte========>10
+qte========>22
+totam============>4425
+prod============>4425
+id_type_ldt0
+id_type_ldt0
+IN = TOURNIQUET
+1:
+ip::ffff:10.128.1.246
+qte========>65
+totam============>7034
+prod============>7034
+id_type_ldt0
+IN = TOURNIQUET
+Email ===============================> 435
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  435  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+int:3
+1:
+bdossier=ALMERYS CQ;result=ALM_HTP
+2:
+day:2
+select count(*) as ct from almerys_p_lot_new join p_lot on p_lot.id_lot= almerys_p_lot_new.id_lot where almerys_p_lot_new.id_etat = 4 AND p_lot.id_pers = 356 AND almerys_p_lot_new.date_deb = '20180212'
+Email ===============================> 1201
+0
+select count(*) as ct from almerys_p_lot_new join p_lot on p_lot.id_lot= almerys_p_lot_new.id_lot where almerys_p_lot_new.id_etat = 5 AND p_lot.id_pers = 356 AND almerys_p_lot_new.date_deb = '20180212'
+0
+[ '0', '0' ]
+day:2
+select count(*) as ct from almerys_p_lot_new join p_lot on p_lot.id_lot= almerys_p_lot_new.id_lot where almerys_p_lot_new.id_etat = 4 AND p_lot.id_pers = 1069 AND almerys_p_lot_new.date_deb = '20180212'
+1
+select count(*) as ct from almerys_p_lot_new join p_lot on p_lot.id_lot= almerys_p_lot_new.id_lot where almerys_p_lot_new.id_etat = 5 AND p_lot.id_pers = 1069 AND almerys_p_lot_new.date_deb = '20180212'
+0
+[ '1', '0' ]
+int:67
+1:
+bdossier=DETOURAGE;result=DETOURAGE
+misy:1
+[ 'DETOURAGE', 2.8819444444444446, 0, 67, 0 ]
+2:
+int:67
+1:
+bdossier=DETOURAGE;result=DETOURAGE
+misy:1
+[ 'DETOURAGE', 2.8819444444444446, 0, 67, 0 ]
+2:
+Email ===============================> 1182
+Email ===============================> 435
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  435  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+int:3
+1:
+bdossier=ALMERYS CQ;result=ALM_HTP
+2:
+select DISTINCT SUM(DATE_PART('epoch', ('2011-12-29 '||h_fin)::timestamp - ('2011-12-29 '||h_deb)::timestamp ))/3600 as duree,to_number('0' || SUM(to_number('0'||quantite,'99999.9')),'99999') as qte,p_ldt.id_pers from p_ldt LEFT join almerys_lien_ss_spe ON p_ldt.id_ldt= almerys_lien_ss_spe.id_ldt where p_ldt.id_lotclient = 17296  AND almerys_lien_ss_spe.id_alm_ss_spe=63 AND to_date(date_deb_ldt,'yyyyMMdd') BETWEEN to_date('20180213','yyyyMMdd') AND to_date('20180213','yyyyMMdd')  AND id_type_ldt=0 group by almerys_lien_ss_spe.id_almerys,p_ldt.id_pers order by p_ldt.id_pers
+select DISTINCT SUM(DATE_PART('epoch', ('2011-12-29 '||h_fin)::timestamp - ('2011-12-29 '||h_deb)::timestamp ))/3600 as duree,to_number('0' || SUM(to_number('0'||quantite,'99999.9')),'99999') as qte,p_ldt.id_pers from p_ldt LEFT join almerys_lien_ss_spe ON p_ldt.id_ldt= almerys_lien_ss_spe.id_ldt where p_ldt.id_lotclient = 17328  AND almerys_lien_ss_spe.id_alm_ss_spe=18 AND to_date(date_deb_ldt,'yyyyMMdd') BETWEEN to_date('20180213','yyyyMMdd') AND to_date('20180213','yyyyMMdd')  AND id_type_ldt=0 group by almerys_lien_ss_spe.id_almerys,p_ldt.id_pers order by p_ldt.id_pers
+undefined
+SELECT * from r_personnel where actif=true AND id_departement=undefined ORDER BY id_pers
+Email ===============================> 0
+undefined
+SELECT * from r_personnel where actif=true AND id_departement=undefined ORDER BY id_pers
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  1261  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+Email ===============================> 435
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  435  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+int:3
+1:
+bdossier=ALMERYS CQ;result=ALM_HTP
+2:
+Email ===============================> 0
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  1261  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+Email ===============================> 1182
+Email ===============================> 0
+Email ===============================> 0
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  1261  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+select count(*) as qte,p_lot.id_pers,almerys_p_lot_new.id_etat as idet from almerys_p_lot_new  join p_lot on p_lot.id_lot = almerys_p_lot_new.id_lot LEFT join almerys_lien_ss_spe ON almerys_lien_ss_spe.id_almerys= almerys_p_lot_new.id where p_lot.id_lotclient = 17328  AND almerys_lien_ss_spe.id_alm_ss_spe=18 AND to_date(almerys_p_lot_new.date_deb,'yyyyMMdd') BETWEEN to_date('20180213','yyyyMMdd') AND to_date('20180213','yyyyMMdd') group by p_lot.id_pers,almerys_p_lot_new.id_etat order by p_lot.id_pers,almerys_p_lot_new.id_etat 
+Email ===============================> 435
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  435  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+Email ===============================> 1201
+int:3
+1:
+bdossier=ALMERYS CQ;result=ALM_HTP
+2:
+Email ===============================> 447
+select count(*) as qte,p_lot.id_pers,almerys_p_lot_new.id_etat as idet from almerys_p_lot_new  join p_lot on p_lot.id_lot = almerys_p_lot_new.id_lot LEFT join almerys_lien_ss_spe ON almerys_lien_ss_spe.id_almerys= almerys_p_lot_new.id where p_lot.id_lotclient = 17296  AND almerys_lien_ss_spe.id_alm_ss_spe=63 AND to_date(almerys_p_lot_new.date_deb,'yyyyMMdd') BETWEEN to_date('20180213','yyyyMMdd') AND to_date('20180213','yyyyMMdd') group by p_lot.id_pers,almerys_p_lot_new.id_etat order by p_lot.id_pers,almerys_p_lot_new.id_etat 
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  447  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+Email ===============================> 0
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  1261  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+int:23
+1:
+bdossier=RECLAMATION;result=RECLAMATION
+misy:1
+[ 'RECLAMATION', 1.758888888888889, 0.25527777777777777, 23, 0 ]
+2:
+bdossier=RECLAMATION;result=RECLAMATION
+misy:1
+[ 'RECLAMATION', 1.758888888888889, 0.2875, 23, 0 ]
+2:
+Email ===============================> 435
+Email ===============================> 0
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  1261  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  435  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+select DISTINCT SUM(DATE_PART('epoch', ('2011-12-29 '||h_fin)::timestamp - ('2011-12-29 '||h_deb)::timestamp ))/3600 as duree,to_number('0' || SUM(to_number('0'||quantite,'99999.9')),'99999') as qte,p_ldt.id_pers from p_ldt LEFT join almerys_lien_ss_spe ON p_ldt.id_ldt= almerys_lien_ss_spe.id_ldt where p_ldt.id_lotclient = 17308  AND almerys_lien_ss_spe.id_alm_ss_spe=47 AND to_date(date_deb_ldt,'yyyyMMdd') BETWEEN to_date('20180213','yyyyMMdd') AND to_date('20180213','yyyyMMdd')  AND id_type_ldt=0 group by almerys_lien_ss_spe.id_almerys,p_ldt.id_pers order by p_ldt.id_pers
+int:3
+1:
+bdossier=ALMERYS CQ;result=ALM_HTP
+2:
+Email ===============================> 447
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  447  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+int:23
+1:
+bdossier=RECLAMATION;result=RECLAMATION
+misy:1
+[ 'RECLAMATION', 1.758888888888889, 0.25527777777777777, 23, 0 ]
+2:
+bdossier=RECLAMATION;result=RECLAMATION
+misy:1
+[ 'RECLAMATION', 1.758888888888889, 0.2875, 23, 0 ]
+2:
+select count(*) as qte,p_lot.id_pers,almerys_p_lot_new.id_etat as idet from almerys_p_lot_new  join p_lot on p_lot.id_lot = almerys_p_lot_new.id_lot LEFT join almerys_lien_ss_spe ON almerys_lien_ss_spe.id_almerys= almerys_p_lot_new.id where p_lot.id_lotclient = 17308  AND almerys_lien_ss_spe.id_alm_ss_spe=47 AND to_date(almerys_p_lot_new.date_deb,'yyyyMMdd') BETWEEN to_date('20180213','yyyyMMdd') AND to_date('20180213','yyyyMMdd') group by p_lot.id_pers,almerys_p_lot_new.id_etat order by p_lot.id_pers,almerys_p_lot_new.id_etat 
+Email ===============================> 447
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  447  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+int:23
+1:
+bdossier=RECLAMATION;result=RECLAMATION
+misy:1
+[ 'RECLAMATION', 1.758888888888889, 0.25527777777777777, 23, 0 ]
+2:
+bdossier=RECLAMATION;result=RECLAMATION
+misy:1
+[ 'RECLAMATION', 1.758888888888889, 0.2875, 23, 0 ]
+2:
+Email ===============================> 0
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  1261  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+Email ===============================> 1270
+Email ===============================> 0
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  1261  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+Email ===============================> 447
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  447  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+int:23
+1:
+bdossier=RECLAMATION;result=RECLAMATION
+misy:1
+[ 'RECLAMATION', 1.758888888888889, 0.25527777777777777, 23, 0 ]
+2:
+bdossier=RECLAMATION;result=RECLAMATION
+misy:1
+[ 'RECLAMATION', 1.758888888888889, 0.2875, 23, 0 ]
+2:
+Email ===============================> 1270
+Email ===============================> 1270
+Email ===============================> 0
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  1261  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+Email ===============================> 1270
+Email ===============================> 1270
+Email ===============================> 1270
+Email ===============================> 351
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  351  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+int:65
+1:
+Email ===============================> 1270
+Email ===============================> 0
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  1261  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+Email ===============================> 351
+Email ===============================> 351
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  351  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+int:65
+1:
+Email ===============================> 1160
+Email ===============================> 447
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  447  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+Email ===============================> 0
+int:23
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  1261  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+1:
+bdossier=RECLAMATION;result=RECLAMATION
+misy:1
+[ 'RECLAMATION', 1.758888888888889, 0.25527777777777777, 23, 0 ]
+2:
+bdossier=RECLAMATION;result=RECLAMATION
+misy:1
+[ 'RECLAMATION', 1.758888888888889, 0.2875, 23, 0 ]
+2:
+Email ===============================> 1160
+U2FsdGVkX1+awuEfu5YBQH5yBBpkjqNwN+k3Iu63QZI=
+U2FsdGVkX1%2BawuEfu5YBQH5yBBpkjqNwN%2Bk3Iu63QZI%3D
+U2FsdGVkX1+awuEfu5YBQH5yBBpkjqNwN+k3Iu63QZI=
+729_09:00:37_20180213
+1518501637159
+1518501674160
+0.6166833333333333
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  729  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+select * from r_periode_paie where to_date('2018/02/13','YYYY/MM/DD') between to_date(date_deb_prd,'YYYY/MM/DD') AND to_date(date_fin_prd,'YYYY/MM/DD') 
+select DISTINCT id_util,commentaire,type_erreur,to_date(pdate,'yyyy/mm/dd') as dt,pdate,r_departement.libelle,r_departement.id as id_dep,nom,categorie,prenom,duree_total,duree_prod_gpao,duree_prod,duree_pause,duree_formation,duree_autre,horaire_journaliere,  (SELECT is_valide FROM r_flag_pointage_jour flag where flag.id_util = r_pointage_jour.id_util AND flag.pdate = r_pointage_jour.pdate order by id desc Limit 1 ) as validate  from r_pointage_jour join r_personnel on id_util = r_personnel.id_pers join r_equipe on r_equipe.id_equipe = r_personnel.id_eq join r_departement on r_departement.id = r_personnel.id_departement  where id_util = 729  AND to_date(pdate,'yyyy/mm/dd') between to_date('2018/01/15','yyyy/mm/dd') and to_date('2018/02/18','yyyy/mm/dd') order by to_date(pdate,'yyyy/mm/dd') desc 
+[ anonymous {
+    id_paie: '15',
+    annee: 2018,
+    date_deb_prd: '2018/01/15',
+    date_fin_prd: '2018/02/18',
+    mois: 'FEVRIER' } ]
+int:60
+1:
+bdossier=DETOURAGE;result=DETOURAGE
+misy:1
+[ 'DETOURAGE', 2.7030555555555553, 0, 60, 0 ]
+2:
+ip::ffff:10.128.6.23
+qte========>1
+qte========>2
+qte========>3
+qte========>4
+qte========>5
+qte========>6
+qte========>7
+qte========>8
+qte========>9
+qte========>10
+qte========>11
+qte========>12
+qte========>13
+qte========>14
+qte========>15
+qte========>16
+qte========>17
+qte========>18
+qte========>19
+qte========>20
+qte========>21
+qte========>22
+qte========>23
+qte========>24
+qte========>25
+qte========>26
+qte========>26
+qte========>26
+qte========>27
+qte========>28
+qte========>29
+qte========>30
+qte========>31
+qte========>32
+qte========>33
+qte========>34
+qte========>35
+qte========>36
+qte========>37
+qte========>38
+qte========>39
+qte========>40
+qte========>41
+qte========>42
+qte========>43
+qte========>44
+qte========>45
+qte========>46
+qte========>47
+qte========>48
+qte========>49
+qte========>50
+qte========>51
+qte========>51
+qte========>52
+qte========>53
+qte========>54
+qte========>55
+qte========>56
+qte========>56
+qte========>57
+qte========>58
+qte========>59
+qte========>60
+qte========>61
+qte========>61
+qte========>61
+qte========>62
+qte========>63
+qte========>64
+qte========>65
+qte========>66
+totam============>9731
+prod============>9731
+id_type_ldt0
+id_type_ldt0
+IN = TOURNIQUET
+Email ===============================> 1270
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  1270  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+int:40
+Email ===============================> 0
+1:
+Email ===============================> 1160
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  1261  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+day:2
+select count(*) as ct from almerys_p_lot_new join p_lot on p_lot.id_lot= almerys_p_lot_new.id_lot where almerys_p_lot_new.id_etat = 4 AND p_lot.id_pers = 729 AND almerys_p_lot_new.date_deb = '20180212'
+0
+select count(*) as ct from almerys_p_lot_new join p_lot on p_lot.id_lot= almerys_p_lot_new.id_lot where almerys_p_lot_new.id_etat = 5 AND p_lot.id_pers = 729 AND almerys_p_lot_new.date_deb = '20180212'
+0
+[ '0', '0' ]
+Email ===============================> 1160
+Email ===============================> 351
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  351  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+Email ===============================> 1160
+int:65
+1:
+Email ===============================> 1160
+Email ===============================> 1160
+Email ===============================> 1256
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  1256  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+int:8
+Email ===============================> 1160
+1:
+bdossier=ALM_HOSPI;result=ALM_HOSPI
+misy:1
+[ 'ALM_HOSPI', 0.9524999999999999, 0, 8, 0 ]
+2:
+bdossier=ALM_HOSPI;result=ALM_HOSPI
+misy:1
+[ 'ALM_HOSPI', 0.9524999999999999, 0.055, 8, 0 ]
+2:
+bdossier=ALM_HOSPI;result=ALM_HOSPI
+misy:1
+[ 'ALM_HOSPI', 0.9524999999999999, 0.1113888888888889, 8, 0 ]
+2:
+bdossier=ALM_HOSPI;result=ALM_HOSPI
+misy:1
+[ 'ALM_HOSPI', 0.9524999999999999, 0.5466666666666666, 8, 0 ]
+2:
+Email ===============================> 447
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  447  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+int:23
+1:
+bdossier=RECLAMATION;result=RECLAMATION
+misy:1
+[ 'RECLAMATION', 1.758888888888889, 0.25527777777777777, 23, 0 ]
+2:
+bdossier=RECLAMATION;result=RECLAMATION
+misy:1
+[ 'RECLAMATION', 1.758888888888889, 0.2875, 23, 0 ]
+2:
+U2FsdGVkX1+dNSPboa6T7ScQDADfMVk0fV0HezMK40U=
+U2FsdGVkX1%2BdNSPboa6T7ScQDADfMVk0fV0HezMK40U%3D
+U2FsdGVkX1+dNSPboa6T7ScQDADfMVk0fV0HezMK40U=
+773_09:00:47_20180213
+1518501647915
+1518501682915
+0.5833333333333334
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  773  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+select * from r_periode_paie where to_date('2018/02/13','YYYY/MM/DD') between to_date(date_deb_prd,'YYYY/MM/DD') AND to_date(date_fin_prd,'YYYY/MM/DD') 
+select DISTINCT id_util,commentaire,type_erreur,to_date(pdate,'yyyy/mm/dd') as dt,pdate,r_departement.libelle,r_departement.id as id_dep,nom,categorie,prenom,duree_total,duree_prod_gpao,duree_prod,duree_pause,duree_formation,duree_autre,horaire_journaliere,  (SELECT is_valide FROM r_flag_pointage_jour flag where flag.id_util = r_pointage_jour.id_util AND flag.pdate = r_pointage_jour.pdate order by id desc Limit 1 ) as validate  from r_pointage_jour join r_personnel on id_util = r_personnel.id_pers join r_equipe on r_equipe.id_equipe = r_personnel.id_eq join r_departement on r_departement.id = r_personnel.id_departement  where id_util = 773  AND to_date(pdate,'yyyy/mm/dd') between to_date('2018/01/15','yyyy/mm/dd') and to_date('2018/02/18','yyyy/mm/dd') order by to_date(pdate,'yyyy/mm/dd') desc 
+[ anonymous {
+    id_paie: '15',
+    annee: 2018,
+    date_deb_prd: '2018/01/15',
+    date_fin_prd: '2018/02/18',
+    mois: 'FEVRIER' } ]
+int:55
+1:
+ip::ffff:10.128.1.246
+qte========>55
+totam============>7230
+prod============>7230
+id_type_ldt0
+IN = TOURNIQUET
+Email ===============================> 351
+U2FsdGVkX1/DpxMsY6okQSeBceNrDEpzdcWCPNUfbXg=
+U2FsdGVkX1%2FDpxMsY6okQSeBceNrDEpzdcWCPNUfbXg%3D
+U2FsdGVkX1/DpxMsY6okQSeBceNrDEpzdcWCPNUfbXg=
+1069_08:59:25_20180213
+1518501565701
+1518501683701
+1.9666666666666666
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  1069  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+select * from r_periode_paie where to_date('2018/02/13','YYYY/MM/DD') between to_date(date_deb_prd,'YYYY/MM/DD') AND to_date(date_fin_prd,'YYYY/MM/DD') 
+select DISTINCT id_util,commentaire,type_erreur,to_date(pdate,'yyyy/mm/dd') as dt,pdate,r_departement.libelle,r_departement.id as id_dep,nom,categorie,prenom,duree_total,duree_prod_gpao,duree_prod,duree_pause,duree_formation,duree_autre,horaire_journaliere,  (SELECT is_valide FROM r_flag_pointage_jour flag where flag.id_util = r_pointage_jour.id_util AND flag.pdate = r_pointage_jour.pdate order by id desc Limit 1 ) as validate  from r_pointage_jour join r_personnel on id_util = r_personnel.id_pers join r_equipe on r_equipe.id_equipe = r_personnel.id_eq join r_departement on r_departement.id = r_personnel.id_departement  where id_util = 1069  AND to_date(pdate,'yyyy/mm/dd') between to_date('2018/01/15','yyyy/mm/dd') and to_date('2018/02/18','yyyy/mm/dd') order by to_date(pdate,'yyyy/mm/dd') desc 
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  351  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+int:65
+[ anonymous {
+    id_paie: '15',
+    annee: 2018,
+    date_deb_prd: '2018/01/15',
+    date_fin_prd: '2018/02/18',
+    mois: 'FEVRIER' } ]
+1:
+int:10
+1:
+bdossier=RECLAMATION;result=RECLAMATION
+misy:1
+[ 'RECLAMATION', 1.2291666666666665, 0, 10, 0 ]
+2:
+ip::ffff:10.128.1.246
+qte========>10
+qte========>22
+totam============>4425
+prod============>4425
+id_type_ldt0
+id_type_ldt0
+IN = TOURNIQUET
+Email ===============================> 1160
+Email ===============================> 1256
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  1256  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+Email ===============================> 1270
+int:8
+1:
+bdossier=ALM_HOSPI;result=ALM_HOSPI
+misy:1
+[ 'ALM_HOSPI', 0.9524999999999999, 0, 8, 0 ]
+2:
+bdossier=ALM_HOSPI;result=ALM_HOSPI
+misy:1
+[ 'ALM_HOSPI', 0.9524999999999999, 0.055, 8, 0 ]
+2:
+bdossier=ALM_HOSPI;result=ALM_HOSPI
+misy:1
+[ 'ALM_HOSPI', 0.9524999999999999, 0.1113888888888889, 8, 0 ]
+2:
+bdossier=ALM_HOSPI;result=ALM_HOSPI
+misy:1
+[ 'ALM_HOSPI', 0.9524999999999999, 0.5466666666666666, 8, 0 ]
+2:
+day:2
+select count(*) as ct from almerys_p_lot_new join p_lot on p_lot.id_lot= almerys_p_lot_new.id_lot where almerys_p_lot_new.id_etat = 4 AND p_lot.id_pers = 773 AND almerys_p_lot_new.date_deb = '20180212'
+0
+select count(*) as ct from almerys_p_lot_new join p_lot on p_lot.id_lot= almerys_p_lot_new.id_lot where almerys_p_lot_new.id_etat = 5 AND p_lot.id_pers = 773 AND almerys_p_lot_new.date_deb = '20180212'
+0
+[ '0', '0' ]
+Email ===============================> 1160
+Email ===============================> 1270
+Email ===============================> 1270
+day:2
+select count(*) as ct from almerys_p_lot_new join p_lot on p_lot.id_lot= almerys_p_lot_new.id_lot where almerys_p_lot_new.id_etat = 4 AND p_lot.id_pers = 1069 AND almerys_p_lot_new.date_deb = '20180212'
+1
+select count(*) as ct from almerys_p_lot_new join p_lot on p_lot.id_lot= almerys_p_lot_new.id_lot where almerys_p_lot_new.id_etat = 5 AND p_lot.id_pers = 1069 AND almerys_p_lot_new.date_deb = '20180212'
+0
+[ '1', '0' ]
+Email ===============================> 1256
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  1256  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+Email ===============================> 1270
+int:8
+1:
+bdossier=ALM_HOSPI;result=ALM_HOSPI
+misy:1
+[ 'ALM_HOSPI', 0.9524999999999999, 0, 8, 0 ]
+2:
+bdossier=ALM_HOSPI;result=ALM_HOSPI
+misy:1
+[ 'ALM_HOSPI', 0.9524999999999999, 0.055, 8, 0 ]
+2:
+bdossier=ALM_HOSPI;result=ALM_HOSPI
+misy:1
+[ 'ALM_HOSPI', 0.9524999999999999, 0.1113888888888889, 8, 0 ]
+2:
+bdossier=ALM_HOSPI;result=ALM_HOSPI
+misy:1
+[ 'ALM_HOSPI', 0.9524999999999999, 0.5466666666666666, 8, 0 ]
+2:
+Email ===============================> 1270
+select DISTINCT SUM(DATE_PART('epoch', ('2011-12-29 '||h_fin)::timestamp - ('2011-12-29 '||h_deb)::timestamp ))/3600 as duree,to_number('0' || SUM(to_number('0'||quantite,'99999.9')),'99999') as qte,p_ldt.id_pers from p_ldt LEFT join almerys_lien_ss_spe ON p_ldt.id_ldt= almerys_lien_ss_spe.id_ldt where p_ldt.id_lotclient = 17296  AND almerys_lien_ss_spe.id_alm_ss_spe=63 AND to_date(date_deb_ldt,'yyyyMMdd') BETWEEN to_date('20180213','yyyyMMdd') AND to_date('20180213','yyyyMMdd')  AND id_type_ldt=0 group by almerys_lien_ss_spe.id_almerys,p_ldt.id_pers order by p_ldt.id_pers
+select count(*) as qte,p_lot.id_pers,almerys_p_lot_new.id_etat as idet from almerys_p_lot_new  join p_lot on p_lot.id_lot = almerys_p_lot_new.id_lot LEFT join almerys_lien_ss_spe ON almerys_lien_ss_spe.id_almerys= almerys_p_lot_new.id where p_lot.id_lotclient = 17296  AND almerys_lien_ss_spe.id_alm_ss_spe=63 AND to_date(almerys_p_lot_new.date_deb,'yyyyMMdd') BETWEEN to_date('20180213','yyyyMMdd') AND to_date('20180213','yyyyMMdd') group by p_lot.id_pers,almerys_p_lot_new.id_etat order by p_lot.id_pers,almerys_p_lot_new.id_etat 
+Email ===============================> 1160
+Email ===============================> 1256
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  1256  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+int:8
+1:
+bdossier=ALM_HOSPI;result=ALM_HOSPI
+misy:1
+[ 'ALM_HOSPI', 0.9524999999999999, 0, 8, 0 ]
+2:
+bdossier=ALM_HOSPI;result=ALM_HOSPI
+misy:1
+[ 'ALM_HOSPI', 0.9524999999999999, 0.055, 8, 0 ]
+2:
+bdossier=ALM_HOSPI;result=ALM_HOSPI
+misy:1
+[ 'ALM_HOSPI', 0.9524999999999999, 0.1113888888888889, 8, 0 ]
+2:
+bdossier=ALM_HOSPI;result=ALM_HOSPI
+misy:1
+[ 'ALM_HOSPI', 0.9524999999999999, 0.5466666666666666, 8, 0 ]
+2:
+Email ===============================> 1160
+Email ===============================> 0
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  1261  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+Email ===============================> 351
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  351  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+int:65
+1:
+Email ===============================> 1256
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  1256  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+int:8
+1:
+bdossier=ALM_HOSPI;result=ALM_HOSPI
+misy:1
+[ 'ALM_HOSPI', 0.9524999999999999, 0, 8, 0 ]
+2:
+bdossier=ALM_HOSPI;result=ALM_HOSPI
+misy:1
+[ 'ALM_HOSPI', 0.9524999999999999, 0.055, 8, 0 ]
+2:
+bdossier=ALM_HOSPI;result=ALM_HOSPI
+misy:1
+[ 'ALM_HOSPI', 0.9524999999999999, 0.1113888888888889, 8, 0 ]
+2:
+bdossier=ALM_HOSPI;result=ALM_HOSPI
+misy:1
+[ 'ALM_HOSPI', 0.9524999999999999, 0.5466666666666666, 8, 0 ]
+2:
+Email ===============================> 435
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  435  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+int:3
+1:
+bdossier=ALMERYS CQ;result=ALM_HTP
+2:
+Email ===============================> 351
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  351  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+int:65
+1:
+U2FsdGVkX1+shknXw0gkYiM8r+mR7Y1EqXFEU2hACVs=
+U2FsdGVkX1%2BshknXw0gkYiM8r%2BmR7Y1EqXFEU2hACVs%3D
+U2FsdGVkX1+shknXw0gkYiM8r+mR7Y1EqXFEU2hACVs=
+129_09:00:21_20180213
+1518501621082
+1518501714082
+1.55
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  129  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+U2FsdGVkX1+aFfgMY3pnEHIfUh67C8WGnXUem4Ti4VA=
+U2FsdGVkX1%2BaFfgMY3pnEHIfUh67C8WGnXUem4Ti4VA%3D
+U2FsdGVkX1+aFfgMY3pnEHIfUh67C8WGnXUem4Ti4VA=
+129_09:01:21_20180213
+1518501681303
+1518501714303
+0.55
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  129  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+select * from r_periode_paie where to_date('2018/02/13','YYYY/MM/DD') between to_date(date_deb_prd,'YYYY/MM/DD') AND to_date(date_fin_prd,'YYYY/MM/DD') 
+select DISTINCT id_util,commentaire,type_erreur,to_date(pdate,'yyyy/mm/dd') as dt,pdate,r_departement.libelle,r_departement.id as id_dep,nom,categorie,prenom,duree_total,duree_prod_gpao,duree_prod,duree_pause,duree_formation,duree_autre,horaire_journaliere,  (SELECT is_valide FROM r_flag_pointage_jour flag where flag.id_util = r_pointage_jour.id_util AND flag.pdate = r_pointage_jour.pdate order by id desc Limit 1 ) as validate  from r_pointage_jour join r_personnel on id_util = r_personnel.id_pers join r_equipe on r_equipe.id_equipe = r_personnel.id_eq join r_departement on r_departement.id = r_personnel.id_departement  where id_util = 129  AND to_date(pdate,'yyyy/mm/dd') between to_date('2018/01/15','yyyy/mm/dd') and to_date('2018/02/18','yyyy/mm/dd') order by to_date(pdate,'yyyy/mm/dd') desc 
+select * from r_periode_paie where to_date('2018/02/13','YYYY/MM/DD') between to_date(date_deb_prd,'YYYY/MM/DD') AND to_date(date_fin_prd,'YYYY/MM/DD') 
+select DISTINCT id_util,commentaire,type_erreur,to_date(pdate,'yyyy/mm/dd') as dt,pdate,r_departement.libelle,r_departement.id as id_dep,nom,categorie,prenom,duree_total,duree_prod_gpao,duree_prod,duree_pause,duree_formation,duree_autre,horaire_journaliere,  (SELECT is_valide FROM r_flag_pointage_jour flag where flag.id_util = r_pointage_jour.id_util AND flag.pdate = r_pointage_jour.pdate order by id desc Limit 1 ) as validate  from r_pointage_jour join r_personnel on id_util = r_personnel.id_pers join r_equipe on r_equipe.id_equipe = r_personnel.id_eq join r_departement on r_departement.id = r_personnel.id_departement  where id_util = 129  AND to_date(pdate,'yyyy/mm/dd') between to_date('2018/01/15','yyyy/mm/dd') and to_date('2018/02/18','yyyy/mm/dd') order by to_date(pdate,'yyyy/mm/dd') desc 
+[ anonymous {
+    id_paie: '15',
+    annee: 2018,
+    date_deb_prd: '2018/01/15',
+    date_fin_prd: '2018/02/18',
+    mois: 'FEVRIER' } ]
+int:10
+1:
+bdossier=ALM_HOSPI;result=RECLAMATION
+2:
+bdossier=ALM_HOSPI;result=RECLAMATION
+bdossier=RECLAMATION;result=RECLAMATION
+misy:2
+[ 'RECLAMATION', 1.6905555555555556, 0, 0, 0 ]
+2:
+ip::ffff:10.128.1.246
+qte========>10
+qte========>24
+qte========>24
+totam============>7146
+prod============>7146
+id_type_ldt0
+id_type_ldt0
+id_type_ldt0
+IN = TOURNIQUET
+[ anonymous {
+    id_paie: '15',
+    annee: 2018,
+    date_deb_prd: '2018/01/15',
+    date_fin_prd: '2018/02/18',
+    mois: 'FEVRIER' } ]
+int:10
+1:
+bdossier=ALM_HOSPI;result=RECLAMATION
+2:
+bdossier=ALM_HOSPI;result=RECLAMATION
+bdossier=RECLAMATION;result=RECLAMATION
+misy:2
+[ 'RECLAMATION', 1.6905555555555556, 0, 0, 0 ]
+2:
+ip::ffff:10.128.1.246
+qte========>10
+qte========>24
+qte========>24
+totam============>7146
+prod============>7146
+id_type_ldt0
+id_type_ldt0
+id_type_ldt0
+IN = TOURNIQUET
+day:2
+select count(*) as ct from almerys_p_lot_new join p_lot on p_lot.id_lot= almerys_p_lot_new.id_lot where almerys_p_lot_new.id_etat = 4 AND p_lot.id_pers = 129 AND almerys_p_lot_new.date_deb = '20180212'
+0
+select count(*) as ct from almerys_p_lot_new join p_lot on p_lot.id_lot= almerys_p_lot_new.id_lot where almerys_p_lot_new.id_etat = 5 AND p_lot.id_pers = 129 AND almerys_p_lot_new.date_deb = '20180212'
+0
+[ '0', '0' ]
+Email ===============================> 0
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  1261  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+day:2
+select count(*) as ct from almerys_p_lot_new join p_lot on p_lot.id_lot= almerys_p_lot_new.id_lot where almerys_p_lot_new.id_etat = 4 AND p_lot.id_pers = 129 AND almerys_p_lot_new.date_deb = '20180212'
+0
+select count(*) as ct from almerys_p_lot_new join p_lot on p_lot.id_lot= almerys_p_lot_new.id_lot where almerys_p_lot_new.id_etat = 5 AND p_lot.id_pers = 129 AND almerys_p_lot_new.date_deb = '20180212'
+0
+[ '0', '0' ]
+Email ===============================> 542
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  542  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+int:78
+1:
+bdossier=ALM_TPS;result=ALM_TPS
+misy:1
+[ 'ALM_TPS', 1.8855555555555557, 0.03916666666666667, 78, 0 ]
+2:
+Email ===============================> 542
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  542  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+int:78
+1:
+bdossier=ALM_TPS;result=ALM_TPS
+misy:1
+[ 'ALM_TPS', 1.8855555555555557, 0.03916666666666667, 78, 0 ]
+2:
+Email ===============================> 542
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  542  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+int:78
+select DISTINCT SUM(DATE_PART('epoch', ('2011-12-29 '||h_fin)::timestamp - ('2011-12-29 '||h_deb)::timestamp ))/3600 as duree,to_number('0' || SUM(to_number('0'||quantite,'99999.9')),'99999') as qte,p_ldt.id_pers from p_ldt LEFT join almerys_lien_ss_spe ON p_ldt.id_ldt= almerys_lien_ss_spe.id_ldt where p_ldt.id_lotclient = 20688  AND almerys_lien_ss_spe.id_alm_ss_spe=201  AND almerys_lien_ss_spe.id_lien_ss_spe2=133 AND to_date(date_deb_ldt,'yyyyMMdd') BETWEEN to_date('20180213','yyyyMMdd') AND to_date('20180213','yyyyMMdd')  AND id_type_ldt=0 group by almerys_lien_ss_spe.id_almerys,p_ldt.id_pers order by p_ldt.id_pers
+1:
+bdossier=ALM_TPS;result=ALM_TPS
+misy:1
+[ 'ALM_TPS', 1.8855555555555557, 0.03916666666666667, 78, 0 ]
+2:
+select count(*) as qte,p_lot.id_pers,almerys_p_lot_new.id_etat as idet from almerys_p_lot_new  join p_lot on p_lot.id_lot = almerys_p_lot_new.id_lot LEFT join almerys_lien_ss_spe ON almerys_lien_ss_spe.id_almerys= almerys_p_lot_new.id where p_lot.id_lotclient = 20688  AND almerys_lien_ss_spe.id_alm_ss_spe=201  AND almerys_lien_ss_spe.id_lien_ss_spe2=133 AND to_date(almerys_p_lot_new.date_deb,'yyyyMMdd') BETWEEN to_date('20180213','yyyyMMdd') AND to_date('20180213','yyyyMMdd') group by p_lot.id_pers,almerys_p_lot_new.id_etat order by p_lot.id_pers,almerys_p_lot_new.id_etat 
+Email ===============================> 1160
+Email ===============================> 1160
+Email ===============================> 460
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  460  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+1:
+bdossier=p99f-64;result=p99f-64
+misy:1
+rows:NaN
+[ 'p99f-64', 1.448888888888889, 0.2225, 0, 8 ]
+2:
+bdossier=p99f-64;result=p99f-64
+misy:1
+rows:NaN
+[ 'p99f-64', 2.0811111111111114, 0.2225, 0, 9 ]
+2:
+bdossier=p99f-64;result=p99f-64
+misy:1
+[ 'p99f-64', 2.0811111111111114, 0.22277777777777777, 0, 9 ]
+2:
+Email ===============================> 649
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  649  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+int:19
+1:
+bdossier=ALMERYS CQ;result=ALMERYS CQ
+misy:1
+[ 'ALMERYS CQ', 0.7761111111111111, 0.4752777777777778, 19, 0 ]
+2:
+bdossier=ALMERYS CQ;result=ALMERYS CQ
+misy:1
+[ 'ALMERYS CQ', 0.7761111111111111, 1.26, 19, 0 ]
+2:
+Email ===============================> 460
+Email ===============================> 649
+Email ===============================> 460
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  649  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+int:19
+1:
+bdossier=ALMERYS CQ;result=ALMERYS CQ
+misy:1
+[ 'ALMERYS CQ', 0.7761111111111111, 0.4752777777777778, 19, 0 ]
+2:
+bdossier=ALMERYS CQ;result=ALMERYS CQ
+misy:1
+[ 'ALMERYS CQ', 0.7761111111111111, 1.26, 19, 0 ]
+2:
+Email ===============================> 819
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  819  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+int:95
+1:
+Email ===============================> 819
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  819  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+int:95
+1:
+Email ===============================> 649
+Email ===============================> 649
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  649  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+int:19
+1:
+bdossier=ALMERYS CQ;result=ALMERYS CQ
+misy:1
+[ 'ALMERYS CQ', 0.7761111111111111, 0.4752777777777778, 19, 0 ]
+2:
+bdossier=ALMERYS CQ;result=ALMERYS CQ
+misy:1
+[ 'ALMERYS CQ', 0.7761111111111111, 1.26, 19, 0 ]
+2:
+Email ===============================> 819
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  819  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+int:95
+1:
+Email ===============================> 649
+Email ===============================> 649
+Email ===============================> 435
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  435  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+int:3
+1:
+bdossier=ALMERYS CQ;result=ALMERYS CQ
+misy:1
+[ 'ALMERYS CQ', 0.5286111111111111, 0.014722222222222222, 3, 0 ]
+2:
+bdossier=ALMERYS CQ;result=ALM_HTP
+2:
+U2FsdGVkX1+TeTgvQd+EpBxOAvzfIPiAW2SO7foNAHQ=
+U2FsdGVkX1%2BTeTgvQd%2BEpBxOAvzfIPiAW2SO7foNAHQ%3D
+U2FsdGVkX1+TeTgvQd+EpBxOAvzfIPiAW2SO7foNAHQ=
+351_09:02:19_20180213
+1518501739254
+1518501774254
+0.5833333333333334
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  351  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+U2FsdGVkX1+8NYiYQyjRn4MOmCurTHahF4IOCFr4h14=
+U2FsdGVkX1%2B8NYiYQyjRn4MOmCurTHahF4IOCFr4h14%3D
+U2FsdGVkX1+8NYiYQyjRn4MOmCurTHahF4IOCFr4h14=
+351_09:01:26_20180213
+1518501686355
+1518501774358
+1.4667166666666667
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  351  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+select * from r_periode_paie where to_date('2018/02/13','YYYY/MM/DD') between to_date(date_deb_prd,'YYYY/MM/DD') AND to_date(date_fin_prd,'YYYY/MM/DD') 
+select DISTINCT id_util,commentaire,type_erreur,to_date(pdate,'yyyy/mm/dd') as dt,pdate,r_departement.libelle,r_departement.id as id_dep,nom,categorie,prenom,duree_total,duree_prod_gpao,duree_prod,duree_pause,duree_formation,duree_autre,horaire_journaliere,  (SELECT is_valide FROM r_flag_pointage_jour flag where flag.id_util = r_pointage_jour.id_util AND flag.pdate = r_pointage_jour.pdate order by id desc Limit 1 ) as validate  from r_pointage_jour join r_personnel on id_util = r_personnel.id_pers join r_equipe on r_equipe.id_equipe = r_personnel.id_eq join r_departement on r_departement.id = r_personnel.id_departement  where id_util = 351  AND to_date(pdate,'yyyy/mm/dd') between to_date('2018/01/15','yyyy/mm/dd') and to_date('2018/02/18','yyyy/mm/dd') order by to_date(pdate,'yyyy/mm/dd') desc 
+select * from r_periode_paie where to_date('2018/02/13','YYYY/MM/DD') between to_date(date_deb_prd,'YYYY/MM/DD') AND to_date(date_fin_prd,'YYYY/MM/DD') 
+select DISTINCT id_util,commentaire,type_erreur,to_date(pdate,'yyyy/mm/dd') as dt,pdate,r_departement.libelle,r_departement.id as id_dep,nom,categorie,prenom,duree_total,duree_prod_gpao,duree_prod,duree_pause,duree_formation,duree_autre,horaire_journaliere,  (SELECT is_valide FROM r_flag_pointage_jour flag where flag.id_util = r_pointage_jour.id_util AND flag.pdate = r_pointage_jour.pdate order by id desc Limit 1 ) as validate  from r_pointage_jour join r_personnel on id_util = r_personnel.id_pers join r_equipe on r_equipe.id_equipe = r_personnel.id_eq join r_departement on r_departement.id = r_personnel.id_departement  where id_util = 351  AND to_date(pdate,'yyyy/mm/dd') between to_date('2018/01/15','yyyy/mm/dd') and to_date('2018/02/18','yyyy/mm/dd') order by to_date(pdate,'yyyy/mm/dd') desc 
+[ anonymous {
+    id_paie: '15',
+    annee: 2018,
+    date_deb_prd: '2018/01/15',
+    date_fin_prd: '2018/02/18',
+    mois: 'FEVRIER' } ]
+int:65
+1:
+ip::ffff:10.128.1.246
+qte========>0
+qte========>65
+totam============>7128
+prod============>7128
+id_type_ldt0
+IN = TOURNIQUET
+[ anonymous {
+    id_paie: '15',
+    annee: 2018,
+    date_deb_prd: '2018/01/15',
+    date_fin_prd: '2018/02/18',
+    mois: 'FEVRIER' } ]
+int:65
+1:
+ip::ffff:10.128.1.246
+qte========>0
+qte========>65
+totam============>7128
+prod============>7128
+id_type_ldt0
+IN = TOURNIQUET
+day:2
+select count(*) as ct from almerys_p_lot_new join p_lot on p_lot.id_lot= almerys_p_lot_new.id_lot where almerys_p_lot_new.id_etat = 4 AND p_lot.id_pers = 351 AND almerys_p_lot_new.date_deb = '20180212'
+0
+select count(*) as ct from almerys_p_lot_new join p_lot on p_lot.id_lot= almerys_p_lot_new.id_lot where almerys_p_lot_new.id_etat = 5 AND p_lot.id_pers = 351 AND almerys_p_lot_new.date_deb = '20180212'
+0
+[ '0', '0' ]
+day:2
+select count(*) as ct from almerys_p_lot_new join p_lot on p_lot.id_lot= almerys_p_lot_new.id_lot where almerys_p_lot_new.id_etat = 4 AND p_lot.id_pers = 351 AND almerys_p_lot_new.date_deb = '20180212'
+0
+select count(*) as ct from almerys_p_lot_new join p_lot on p_lot.id_lot= almerys_p_lot_new.id_lot where almerys_p_lot_new.id_etat = 5 AND p_lot.id_pers = 351 AND almerys_p_lot_new.date_deb = '20180212'
+0
+[ '0', '0' ]
+Email ===============================> 435
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  435  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+int:3
+1:
+bdossier=ALMERYS CQ;result=ALMERYS CQ
+misy:1
+[ 'ALMERYS CQ', 0.5286111111111111, 0.014722222222222222, 3, 0 ]
+2:
+bdossier=ALMERYS CQ;result=ALM_HTP
+2:
+Email ===============================> 435
+select SUM(DATE_PART('epoch', ('2011-12-29 '||p_ldt.h_fin)::timestamp - ('2011-12-29 '||p_ldt.h_deb)::timestamp )) as somme,  sum(to_number('0'||quantite,'99999')) as qte, p_ldt.id_pers, id_type_ldt,p_dossier.num_dossier as dossier, r_personnel.appelation,p_ldt.h_fin,p_ldt.h_deb FROM p_ldt  LEFT JOIN r_personnel ON r_personnel.id_pers=p_ldt.id_pers  LEFT JOIN p_dossier ON p_dossier.id_dossier=p_ldt.id_dossier  where 1=1  AND p_ldt.date_deb_ldt = '20180213'	AND p_ldt.id_pers =  435  GROUP BY p_ldt.id_pers,  r_personnel.appelation, id_type_ldt,p_ldt.h_fin,p_ldt.h_deb,p_dossier.num_dossier order by p_ldt.id_pers, p_dossier.num_dossier, id_type_ldt 
+int:3
+1:
+bdossier=ALMERYS CQ;result=ALMERYS CQ
+misy:1
+[ 'ALMERYS CQ', 0.5286111111111111, 0.014722222222222222, 3, 0 ]
+2:
+bdossier=ALMERYS CQ;result=ALM_HTP
+2:
+select DISTINCT SUM(DATE_PART('epoch', ('2011-12-29 '||h_fin)::timestamp - ('2011-12-29 '||h_deb)::timestamp ))/3600 as duree,to_number('0' || SUM(to_number('0'||quantite,'99999.9')),'99999') as qte,p_ldt.id_pers from p_ldt LEFT join almerys_lien_ss_spe ON p_ldt.id_ldt= almerys_lien_ss_spe.id_ldt where p_ldt.id_lotclient = 17308  AND almerys_lien_ss_spe.id_alm_ss_spe=47 AND to_date(date_deb_ldt,'yyyyMMdd') BETWEEN to_date('20180213','yyyyMMdd') AND to_date('20180213','yyyyMMdd')  AND id_type_ldt=0 group by almerys_lien_ss_spe.id_almerys,p_ldt.id_pers order by p_ldt.id_pers
+SELECT p_dossier.num_dossier as DOSSIER,     p_lot_client.libelle as LOTCLIENT,     (SELECT nom from r_personnel where id_pers = almerys_p_lot_new.id_cq) as nom_cq,     (SELECT prenom from r_personnel where id_pers = almerys_p_lot_new.id_cq) as prenom_cq,     p_lot.libelle as  LOT,     p_lot.id_lotclient as  idp,     p_etape.libelle as ETAPE,     p_lot.duree as DUREE,     p_lot.qte_op as QUANTITEOP,     p_lot.id_pers as MATRICULESAISIE,     almerys_p_lot_new.id_cq as MATRICULECQ,     almerys_distinction.libelle as dist,     almerys_p_lot_new.id as id,     p_lot.id_dossier as id_dossier,     almerys_p_lot_new.echantillon as echant,     p_lot.priority as PRIORITE,     almerys_p_lot_new.libelle as NUMEROFACTURE,     almerys_p_lot_new.num_nuo as NUMERONUO,     almerys_p_lot_new.num_ps as NUMEROPS ,     almerys_interial.num_secu as NUMEROCQ,     almerys_interial.num_decompte as NUMERODECOMPTE,     almerys_interial.etat as ETATINT,       almerys_p_etat.libelle as ETAT,     almerys_p_lot_new.qte as QUANTITE,     almerys_tache.libelle as TACHE,     almerys_p_lot_new.erreur as ERREUR,     almerys_motif_rejet.libelle as MOTIFREJET,     almerys_p_lot_new.date_deb as DATE,     almerys_p_lot_new.h_deb as HEURE,     almerys_type_controle.libelle as TYPE_CONTROLE ,     almerys_type_controle.id as id_tpc ,     r_departement.libelle as dep,     r_departement.id as iddep,     almerys_p_lot_new.id_etat as id_et,     almerys_p_lot_new.id_motif_rejet as id_mot_rj,     almerys_type_erreur.libelle as erreur_cq,       almerys_type_fav.fav_a,       almerys_type_fav.fav_b,       almerys_type_fav.fav_c,       almerys_type_fav.non_fav,      almerys_ss_spe.libelle sous_sous_spec,      almerys_ss_spe2.libelle sous_sous_sous_spec, (SELECT sat from almerys_user_new where almerys_user_new.matricule = p_lot.id_pers limit 1) as sat     FROM almerys_p_lot_new     JOIN p_lot on almerys_p_lot_new.id_lot = p_lot.id_lot     JOIN almerys_p_etat on almerys_p_etat.id_etat = almerys_p_lot_new.id_etat     JOIN p_dossier on p_lot.id_dossier = p_dossier.id_dossier     JOIN p_lot_client on p_lot.id_lotclient = p_lot_client.id_lotclient     LEFT JOIN p_lien_oper_dossier ON p_lien_oper_dossier.id_lien = p_lot.id_etape     LEFT JOIN p_etape on p_etape.id_etape = p_lien_oper_dossier.id_oper     JOIN p_etat on p_lot.id_etat = p_etat.id_etat     JOIN r_personnel on r_personnel.id_pers = p_lot.id_pers     JOIN r_departement on r_personnel.id_departement = r_departement.id     LEFT JOIN almerys_motif_rejet on almerys_motif_rejet.id = almerys_p_lot_new.id_motif_rejet     LEFT JOIN almerys_type_erreur on almerys_type_erreur.id = almerys_p_lot_new.id_type_erreur     LEFT JOIN almerys_type_fav ON almerys_type_fav.id_pole_new = p_lot.id_lotclient     LEFT JOIN almerys_user_new ON almerys_user_new.matricule = p_lot.id_pers     LEFT JOIN almerys_type_controle ON almerys_type_controle.id = almerys_p_lot_new.id_type_controle     LEFT JOIN almerys_distinction ON almerys_distinction.id_distinction = almerys_p_lot_new.id_distinction     LEFT JOIN almerys_interial ON almerys_interial.id_almerys = almerys_p_lot_new.id     LEFT JOIN almerys_tache ON almerys_p_lot_new.id_tache = almerys_tache.id_tache     LEFT JOIN almerys_lien_ss_spe ON almerys_p_lot_new.id = almerys_lien_ss_spe.id_almerys     LEFT JOIN almerys_ss_spe ON almerys_lien_ss_spe.id_alm_ss_spe = almerys_ss_spe.id_ss_spe     LEFT JOIN almerys_ss_spe2 ON almerys_lien_ss_spe.id_lien_ss_spe2 = almerys_ss_spe2.id  WHERE 1= 1  AND almerys_p_lot_new.date_deb  = '20180212'  AND p_lot.id_lotclient = 17204  AND almerys_p_lot_new.id_type_controle = 3  ORDER BY almerys_p_lot_new.id asc
+select count(*) as qte,p_lot.id_pers,almerys_p_lot_new.id_etat as idet from almerys_p_lot_new  join p_lot on p_lot.id_lot = almerys_p_lot_new.id_lot LEFT join almerys_lien_ss_spe ON almerys_lien_ss_spe.id_almerys= almerys_p_lot_new.id where p_lot.id_lotclient = 17308  AND almerys_lien_ss_spe.id_alm_ss_spe=47 AND to_date(almerys_p_lot_new.date_deb,'yyyyMMdd') BETWEEN to_date('20180213','yyyyMMdd') AND to_date('20180213','yyyyMMdd') group by p_lot.id_pers,almerys_p_lot_new.id_etat order by p_lot.id_pers,almerys_p_lot_new.id_etat 
+Email ===============================> 542
+Email ===============================> 542
+Email ===============================> 542
+Email ===============================> 542
+Email ===============================> 542

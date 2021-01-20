@@ -1,0 +1,4 @@
+<% include ../operation/op-statistique.ejs %>
+
+<%- partial ('../chart/stackedBarHigchartSimple.ejs', {idElement : 'heure',classeElement : ' ', title : 'evolution des heures de production', titleChart : 'Heures'}) %>
+<%- partial ('../chart/lineHigchartSimple.ejs', {idElement : 'lineVit',classeElement : ' ', title : 'evotution de vitesse', titleChart : 'Vitesse'}) %>

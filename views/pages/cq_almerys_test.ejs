@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>TDB Stat</title>
+ 
+    <link rel="stylesheet" href="/styles/importer.css">
+    <link rel="stylesheet" href="/bootflat/css/bootflat.min.css">
+    <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/local.css">
+    <link rel="stylesheet" href="/css/Style_v3.css">
+    <link rel="stylesheet" href="/jquery-ui/jquery-ui.css">
+    <link rel="stylesheet" href="/css/almerys_cq.css">
+    <!--STYLES END-->
+  </head>
+ 
+  <body onLoad="loadspecialite();loadetat();loadcategorie();loadSAT();loadspecialiteMod();loaddistinction();">
+  <% if(req.session.droit==1){
+ 
+  %>
+  <% include ../includes/entete.ejs %>
+  <% }else{
+ 
+  %>
+  <% include ../includes/enteteOperateur.ejs %>
+ 
+  <% }%>
+  <div id="page-wrapper">
+    <div class="row">
+      <div class="col-md-12">
+        <div class=" row ">
+ 
+            <div  class="">
+ 
+              <div class="panel panel-primary">
+                <div class="panel-heading">
+                  <h3 class="panel-title"> <i class="fa fa-bar-chart-o"></i> </h3>
+                  <div class="row">
+                    <div class="form-group">
+ 
+                        <div class="col-xs-1 col-md-1 col-lg-1">
+                          <select class="form-control" tabindex="-1" id="specialite" onchange="loadsousspecialite(this.value);loadTache(this.value);loadtypeFav(this.value);loadsat(this.value);loadetape(this.value);">
+                            <option value="">POLE</option>
+                          </select>
+ 
+                        </div>
+                      <div class="col-xs-1 col-md-1 col-lg-1" style="display:none" id="divsspec">
+                          <select class="form-control" tabindex="-1" id="sspecialite" onchange="loadMotif(this.value);loadsoussousspecialite(this.value);">
+                            <option value="">SPECIALITE</option>
+                          </select>
+ 
+                        </div>
+ 
+                      <div class="col-xs-1 col-md-1 col-lg-1" style="display:none" id="divssspec">
+                          <select class="form-control" tabindex="-1" id="ssspecialite" onchange="loadsoussoussousspecialite(this.value);">
+                            <option value="">SOUS SPECIALITE</option>
+                          </select>
+ 
+                        </div>
+ 
+                      <div class="col-xs-1 col-md-1 col-lg-1" style="display:none" id="divsssspec">
+                          <select class="form-control" tabindex="-1" id="sssspecialite">
+                            <option value="">SOUS SOUS SPECIALITE</option>
+                          </select>
+ 
+                        </div>
+ 
+                      <!--<div class="col-xs-1 col-md-1 col-lg-" style="display:none" id="divtraitement">
+                          <select class="form-control" tabindex="-1" id="traitement">
+                            <option value="">TRAITEMENT</option>
+                          </select>
+ 
+                        </div>-->
+                      <div class="col-xs-1 col-md-1 col-lg-1">
+                        <select class="form-control" tabindex="-1" id="etape">
+                          <option value="">ETAPE</option>
+                        </select>
+ 
+                      </div>
+ 
+                      <div class="col-xs-1 col-md-1 col-lg-1">
+                        <select class="form-control" tabindex="-1" id="distinction">
+                          <option value="">DISTICTION</option>
+                        </select>
+ 
+                      </div>
+ 
+                      <div class="col-xs-1 col-md-1 col-lg-1" id="divtache">
+                          <select class="form-control" tabindex="-1" id="tache">
+                            <option value="">TACHES</option>
+                          </select>
+ 
+                        </div>
+                        <div class="col-xs-1 col-md-1 col-lg-1" >
+                          <select class="form-control" tabindex="-1" id="etat">
+                            <option value="">STATUS</option>
+                          </select>
+ 
+                        </div>
+                      <div class="col-xs-1 col-md-1 col-lg-1" id="divsat">
+                        <select class="form-control" tabindex="-1" id="sat">
+                          <option value="">SAT</option>
+                        </select>
+ 
+                      </div>
+                      <div class="col-xs-1 col-md-1 col-lg-1" style="display:none" id="divmot">
+                      <select class="form-control" tabindex="-1" id="motif">
+                            <option value="">MOTIF</option>
+                          </select>
+ 
+                        </div>
+ 
+                      <div class="col-xs-1 col-md-1 col-lg-1"  style="display:none" id="divfav">
+                      <select class="form-control" tabindex="-1" id="typefav">
+                        <option value="">TYPE FAV</option>
+                        <option value="1">FAV_A</option>
+                        <option value="2">FAV_B</option>
+                        <option value="3">FAV_C</option>
+                        <option value="4">NON_FAV</option>
+                      </select>
+ 
+                        </div>
+                      <div class="col-xs-1 col-md-1 col-lg-1"   style="display:none" id="divcat">
+                      <select class="form-control" tabindex="-1" id="categorie">
+                            <option value="1">CATEGORIE</option>
+                          </select>
+ 
+                        </div>
+ 
+ 
+ 
+ 
+                      <div class="col-xs-1 col-md-1 col-lg-1">
+                        <select class="form-control" tabindex="-1" id="contr">
+                          <option value="">TYPE CQ</option>
+                          <option value="1">FAV</option>
+                          <option value="2">CIBLE</option>
+                          <option value="3">ISO</option>
+                        </select>
+ 
+                      </div>
+                      <div class="col-xs-1 col-md-1 col-lg-1">
+                        <input class="form-control" tabindex="-1" placeholder="Date Debut" id="datedeb" type="text" autocomplete="off"/>
+ 
+                        </div>
+                      <div class="col-xs-1 col-md-1 col-lg-1">
+                      <input class="form-control" tabindex="-1" placeholder="Date Fin" id="datefin" type="text" autocomplete="off"/>
+ 
+                        </div>
+                      <div class="col-xs-1 col-md-1 col-lg-1">
+                        <input class="form-control" tabindex="-1" placeholder="Matricule" id="matr" type="text"/>
+ 
+                            </div>
+                        <div class="col-xs-1 col-md-2 col-lg-2">
+              <a   title="echantillons CQ"> <span style="cursor:pointer"><i class="fa fa-ellipsis-v fa-3x link">  </i></span> </a>
+                          <a onclick="searchCQalm(0);" class="text-warning" title="recherche globale"><span style="cursor:pointer" class="gray"><i class="fa fa-search fa-3x link"> </i></span></a>
+              <a   > <span><i class="fa fa-ellipsis-v fa-3x link">  </i></span> </a>
+                          <a onclick="searchCQalm(1);" class="text-info" title="echantillons CQ"> <span style="cursor:pointer"><i class="fa fa-filter fa-3x link">  </i></span> </a>
+                          <a> <span><i class="fa  fa-ellipsis-v fa-3x link">  </i></span> </a>
+                          <a onclick="loadGraph();" class="text-success" title="Statistiques"> <span style="cursor:pointer"><i class="fa fa-pie-chart fa-3x link"></i></span> </a>
+              <a   > <span><i class="fa fa-ellipsis-v fa-3x link">  </i></span> </a>
+                          <a href='#' data-toggle='modal' data-target='#myModalQte' onclick="//params();" class="" title="Parametre"> <span style="cursor:pointer"><i class="fa fa-cog fa-3x link"></i></span> </a>
+              <a   > <span><i class="fa fa-ellipsis-v fa-3x link">  </i></span> </a>
+                        </div>
+                    </div>
+ 
+ 
+                  </div>
+                </div>
+              </div>
+ 
+ 
+            </div>
+ 
+ 
+ 
+ 
+          </div>
+        </div>
+ 
+ 
+ 
+ 
+      </div>
+    </div>
+  <div id="loadG" class="col-md-4" style="display:none">
+    <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+    <span class="sr-only">Loading...</span>
+  </div>
+  <div id="divGraph" class="col-md-12 col-sm-12 col-xs-12">
+ 
+  </div>
+  <div id="loadC" class="col-md-4" style="display:none">
+    <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+    <span class="sr-only">Loading...</span>
+  </div>
+  <div id="div" class="col-md-12 col-sm-12 col-xs-12">
+  </div>
+ 
+ 
+  </div>
+  <!-- MODAL POUR FAIRE LA CQ DEPARTEMENT ALMERYS  -->
+  <div id="myModalCq" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-md">
+ 
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title text-primary" id="titre" ></h4>
+        </div>
+        <div class="modal-body">
+              <form class="form-horizontal">
+                <div class="form-group">
+                  <label class="control-label col-sm-2" for="email">MATRICULE:</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" placeholder="" id="matricule">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label col-sm-2" for="" id="lib_fact">NUMERO FACTURE:</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" id="nfact" placeholder="">
+                  </div>
+                </div>
+ 
+                <div class="form-group">
+                  <label class="control-label col-sm-2" for="pwd" id="lib_nuo">NUMERO NUO:</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" id="nnuo" placeholder="">
+                  </div>
+                </div>
+ 
+                <input type="hidden" class="form-control" id="is_int" placeholder="" value="false">
+ 
+                <div class="form-group">
+                  <label class="control-label col-sm-2" for="pwd" >NUMERO PS:</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" id="nps" placeholder="">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label col-sm-2" for="mont">MONTANT:</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" id="mont" placeholder="">
+                  </div>
+                </div>
+ 
+                <!--<div class="form-group" style="display: none;" id="div_etat">
+                  <label class="control-label col-sm-2" for="mont">ETAT:</label>
+                  <div class="col-sm-10">
+                    <select  class="form-control" id="etat" onchange="">
+                      <option value=""></option>
+                      <option value=""></option>
+                      <option value=""></option>
+                      <option value=""></option>
+                    </select>
+                  </div>
+                </div>-->
+                <div class="form-group" style="display: none" id="div_int_etat">
+                  <label class="control-label col-sm-2" for="statut">ETAT:</label>
+                  <div class="col-sm-10">
+                    <select class="form-control" id="eta_int">
+                      <option value=""></option><option value="a_controler">a_controler</option><option value="en_cours">en_cours</option><option value="en_instance">en_instance</option>
+ 
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label col-sm-2" for="statut">STATUT:</label>
+                  <div class="col-sm-10">
+                    <select  class="form-control" id="statut" onchange="loadMotifMod(this.value)">
+ 
+                    </select>
+                  </div>
+                </div>
+ 
+ 
+ 
+                <div class="form-group">
+                  <label class="control-label col-sm-2" for="statut">MOTIF:</label>
+                  <div class="col-sm-10">
+                    <select  class="form-control" id="motifmodal" onchange="onNew(this.value)">
+ 
+                    </select>
+                  </div>
+                </div>
+ 
+                <div class="form-group hidden" id="new">
+                  <label class="control-label col-sm-2" for="statut"></label>
+                  <div class="col-sm-10">
+                    <input  class="form-control" id="new_motif" type="text"/>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label col-sm-2" for="statut">TYPE DE CONTROLE:</label>
+                  <div class="col-sm-10">
+                    <select  class="form-control" id="type_controle">
+ 
+                    </select>
+                  </div>
+                </div>
+ 
+                <div class="form-group">
+                  <label class="control-label col-sm-2" for="statut">LISTE CLIENT :</label>
+                  <div class="col-sm-10">
+                    <select  class="form-control" id="alm_client">
+ 
+                    </select>
+                  </div>
+                </div>
+                <!--  ETAT OPERATEUR SAISIE -->
+                <div class="form-group">
+                  <label class="control-label col-sm-2" for="statut">Status Operateur Saisie :</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" id="status_op_saisie" placeholder="" disabled>
+                  </div>
+                </div>
+                <!--  ETAT OPERATEUR SAISIE -->
+                <div class="form-group">
+                  <label class="control-label col-sm-2" for="statut">Detail Operateur Saisie :</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" id="commentaire_op_saisie" placeholder="" disabled>
+                  </div>
+                </div>
+                <!--  ETAT REPRISE  -->
+                <div class="form-group">
+                  <label class="control-label col-sm-2" for="statut">ETAT REPRISE:</label>
+                  <div class="col-sm-10">
+                    <select  class="form-control" id="reprise_fini">
+                      <option value="true">TERMINER REPRISE</option>
+                      <option value="false">NE PAS TERMINER REPRISE</option>
+                    </select>
+                  </div>
+                </div>
+              </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" onclick="updateCQ()" data-dismiss="modal">OK</button>
+ 
+ 
+ 
+        </div>
+ 
+      </div>
+    </div>
+  </div>
+ 
+ 
+  <div id="myModalQte" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-md">
+ 
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title text-primary" id="titre" ></h4>
+        </div>
+        <div class="modal-body">
+          <form class="form-horizontal">
+ 
+ 
+            <div class="form-group">
+              <label class="control-label col-sm-2" for="statut">DEPARTEMENT</label>
+              <div class="col-sm-10">
+                <select  class="form-control" id="depmodal" onchange="loadsousspecialiteMod(this.value)">
+ 
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-sm-2" for="statut">SOUS SPECIALITE</label>
+              <div class="col-sm-10">
+                <select  class="form-control" id="sspecmodal" onchange="loadPopuMod(this.value)">
+ 
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-sm-2" for="statut">QUANTITE</label>
+              <div class="col-sm-10">
+                <input  class="form-control" id="qtemod" value="">
+              </div>
+            </div>
+ 
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" onclick="updateQte()" data-dismiss="modal">OK</button>
+ 
+ 
+ 
+        </div>
+ 
+      </div>
+    </div>
+  </div>
+ 
+  <!-- GRILLE AGLAE-->
+  <div id="grille-aglae" class="modal fade " role="dialog">
+    <div class="modal-dialog modal-xl grilles">
+      <!-- Modal content-->
+      <div class="modal-content">
+ 
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title text-primary" id="titre"> GRILLE AGLAE</h4>
+        </div>
+ 
+        <div class="modal-body">
+          <div class="info">
+
+
+            <div class="card">
+              <div class="card-header" id="headingOne">
+                <h5 class="mb-0">
+                  <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    Montrer/cacher infos
+                  </button>
+                </h5>
+              </div>
+
+              <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+                <div class="card-body">
+                  
+                  <table >
+                      <tr style="display: none;">
+                        <td id="id-cq"></td>
+                      </tr>
+                      <tr style="display: none;">
+                        <td id="id-pole"></td>
+                      </tr>
+                      <tr style="display: none;">
+                        <td id="id-type-controle"></td>
+                      </tr>
+                      <tr style="display: none;">
+                        <td id="type-action"></td>
+                      </tr>
+                      <tr>
+                        <td style="text-align: left !important; font-weight: bold;"> Pôle </td>
+                        <td style="text-align: right !important;" id="info-pole">  </td>
+                      </tr>
+                      <tr>
+                        <td style="text-align: left !important; font-weight: bold;"> Spécialité </td>
+                        <td style="text-align: right !important;" id="info-spec">  </td>
+                      </tr>
+                      <tr>
+                        <td style="text-align: left !important; font-weight: bold;"> Matricule OP </td>
+                        <td style="text-align: right !important;" id="info-matricule-op">  </td>
+                      </tr>
+                      <tr>
+                        <td style="text-align: left !important; font-weight: bold;"> Matricule CQ </td>
+                        <td style="text-align: right !important;" id="info-matricule-cq">  </td>
+                      </tr>
+                      <tr>
+                        <td style="text-align: left !important; font-weight: bold;"> Numéro facture </td>
+                        <td style="text-align: right !important;" id="info-num-facture">  </td>
+                      </tr>
+                      <tr>
+                        <td style="text-align: left !important; font-weight: bold;"> Numéro archive </td>
+                        <td style="text-align: right !important;" id="info-num-archive">  </td>
+                      </tr>
+                      <tr>
+                        <td style="text-align: left !important; font-weight: bold;"> Grille de contrôle </td>
+                        <td style="text-align: right !important;" id="info-type-grille">  </td>
+                      </tr>
+                  </table>
+
+                </div>
+              </div>
+            </div>
+            
+          </div>
+ 
+          <div class="check">
+            <table id="table-controle" >
+              <thead>
+                <th> Etapes contrôle </th>
+                <th> Check </th>
+                <th> Résultat CQ </th>
+                <th> Type de l'anomalie </th>
+                <th> Description de l'anomalie </th>
+                <th> Remise en conformité </th>
+              </thead>
+ 
+              <tbody id="id-type-grille"></tbody>
+            </table>
+          </div>
+ 
+          <div id="id-type-cq">
+            <select class="form-control" id="type-cq">
+              <option value="1">FAV</option>
+              <option value="2">CIBLE</option>
+              <option value="3">ISO</option>
+            </select>
+          </div>
+        </div>
+ 
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" onclick="validerCq()" >OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
+ 
+ 
+  <!-- GRILLE ERREUR-->
+  <div id="grille-aglae" class="modal fade " role="dialog">
+    <div class="modal-dialog modal-xl grilles">
+      <!-- Modal content-->
+      <div class="modal-content">
+ 
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title text-primary" id="titre"> LISTE ERREURS</h4>
+        </div>
+ 
+        <div class="modal-body">
+          
+          <div class="check">
+            <table id="controle">
+              <thead>
+                <th> Etapes contrôle </th>
+                <th> Check </th>
+                <th> Résultat CQ </th>
+                <th> Type de l'anomalie </th>
+                <th> Description de l'anomalie </th>
+                <th> Remise en conformité </th>
+              </thead>
+ 
+              <tbody id="id-type-grille"></tbody>
+            </table>
+          </div>
+ 
+          <div class="ea">
+            
+          </div>
+        </div>
+ 
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" onclick="validerCq()" >OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
+ 
+  </div>
+ 
+  <!-- ECharts -->
+  <script src="/vendors/echarts/dist/echarts.min.js"></script>
+  <script src="/js/jquery-1.12.4.js"></script>
+  <script src="/js/dependencies/sails.io.js"></script>
+  <script src="/js/jquery-ui.min.js"></script>
+  <script src="/bootstrap/js/bootstrap.min.js"></script>
+  <script src="/vendors/fastclick/lib/fastclick.js"></script>
+  <!-- NProgress -->
+  <script src="/vendors/nprogress/nprogress.js"></script>
+  <script src="/js/dossierEtapeApp.js"></script>
+  <script src="/js/echarts/theme.js"></script>
+  <script src="/js/echarts/echarts.js"></script>
+ 
+  <!-- Custom Theme Scripts -->
+  <script src="/js/custom.min.js"></script>
+ 
+  <script>
+    var listeAnomalies = ``;
+    $(
+      function() {
+       // recupererEtapesGrille(3);
+        //$('#grille-aglae').modal();
+        getTypeAnomalie();
+      }
+    );
+  </script>
+ 
+  <script>
+ 
+    function loaddistinction() {
+        
+      $.ajax({
+        type: "GET",
+        url: "/loadDistinction",
+ 
+        success: function(msg){
+ 
+          var html = "<option value=''>DISTINCTION</option>";
+          var data = null;
+ 
+          try {
+            data = JSON.parse(msg);
+            for (var i = 0 ; i<data.length ; i++){
+              html += "<option value='"+data[i].id_distinction+"'>"+data[i].libelle+"</option>"
+            }
+            $("#distinction").html(html);
+          }
+          catch (e) {
+            $("#distinction").html(html);
+          }
+ 
+        },
+        error: function (error) {
+ 
+        }
+      });
+ 
+    }
+    var niveaux = <%=req.session.niveaux %>;
+    var user = <%=req.session.user %>;
+ 
+ 
+    //alert(niveaux);
+  </script>
+  <script src="/js/cq_almerys_test.js"></script>
+ 
+    <script>
+ 
+      function buildEtapesGrille(idTypeGrille, pole, specialite, matriculeOp, matriculeCq, numFacture, numArchive, idLigne, idPole, idTypeControle, designationGrille ) {
+        if(matriculeCq === null) matriculeCq = "";
+ 
+        recupererEtapesGrille(idTypeGrille)
+ 
+        .then((etapes) => {
+ 
+            buildHeaders(etapes, idTypeGrille, idPole);
+ 
+            $("#info-pole").text(pole),
+            $("#info-spec").text(specialite);
+            $("#info-matricule-op").text(matriculeOp);
+            $('#info-matricule-cq').text(matriculeCq);
+            $('#info-num-facture').text(numFacture);
+            $('#info-num-archive').text(numArchive);
+            $('#info-type-grille').text(designationGrille);
+            $("#id-cq").text(idLigne);
+            $("#id-pole").text(idPole);
+            $("#id-type-controle").text(idTypeControle);
+ 
+            $("#type-action").text(1); //=> type action ajout nouveau
+ 
+            if(matriculeCq !== null && matriculeCq !== undefined) {
+              $("#type-action").text(2); //=> type action modification
+              setExistantEtapes(idLigne);
+            }
+        })
+ 
+        .catch((error) => {
+          console.log(error);
+          alert(`Une erreur s'est produite, Veuillez contacter le responsable`);
+        });
+        
+      }
+ 
+ 
+      function recupererEtapesGrille(idTypeGrille) {
+ 
+        return new Promise((resolve, reject) => {
+          $.ajax({
+            type: "GET",
+            url: "/get-etapes-grille?id-type-grille=" + idTypeGrille,
+            success: function(etapes){
+              resolve(etapes);
+            },
+            error: function (error) {
+              reject(error);
+            }
+          });
+        });
+ 
+      }
+ 
+ 
+      function setExistantEtapes(idLigne) {
+ 
+        recupererErreursCheckCq(idLigne)
+ 
+        .then((listeErreurs) => {
+          listeErreurs.forEach((current) => {
+            affectEtape(current);
+          });
+        })
+ 
+        .catch((error) => {
+          console.log(error);
+          alert(`Une erreur s'est produite, Veuillez contacter le responsable`);
+        });
+ 
+      }
+ 
+ 
+      /**
+       * Affecte les valeurs à une étape déjà traité
+      */
+      async function affectEtape(currentEtape)  {
+        let pole = $("#id-pole").text();
+        let typeControle = $("#id-type-controle").text();
+ 
+        //=> on récupère les descriptions des types d'anomalie parce que les lignes change selon le type
+        //=> donc on récupère pour chaque ligne pour avoir la liste déroulante et pré-selectionner la valeur de la description d'anomalie
+        loadDesc(currentEtape.id_etape, currentEtape.id_anomalie, pole)
+        
+        .then(() => {
+          $("#res_cq_"+currentEtape.id_etape).val(parseInt(currentEtape.resultat));
+          $("#type_anomalie_"+currentEtape.id_etape).val(parseInt(currentEtape.id_anomalie));
+          $("#desc_"+currentEtape.id_etape).val(currentEtape.id_description);
+          $("#conformite_"+currentEtape.id_etape).val(currentEtape.id_conformite);
+          $("#type-cq").val(typeControle);
+
+          setSelectColor(currentEtape.id_etape, currentEtape.resultat);
+        });
+        
+      }
+ 
+ 
+      function newTypeGrille(idTypeGrille) {
+ 
+        let listeGrilles =  {
+          "1" : "GR_Tt NON SOUMIS A PEC",
+          "2" : "GR_Tt SOUMIS A PEC",
+          "3" : "GR_AGLAE",
+          "4" : "GR_RETOUR",
+          "5" : "GR_Tt PARTICULIERS",
+          "6" : "GR_CONVENTION RIB",
+          "7" : "GR_GARANTIE",
+          "8" : "GR_HTP"
+        };
+ 
+        return listeGrilles[idTypeGrille];
+ 
+      }
+ 
+ 
+      function buildHeaders(headers = {}, idTypeGrille, idPole) {
+        let value =``;
+ 
+        for (const key in headers) {
+          if (headers.hasOwnProperty(key)) {
+            const element = headers[key];
+           
+            value += `
+ 
+              <tr class="etapes-header">
+                <td>${element.designation_etape}</td>
+                <td colspan="5"></td>  
+              </tr>
+ 
+            `;
+ 
+            value += buildEtapes(element.childs, idPole);
+ 
+          }
+        }
+ 
+        $('#id-type-grille').html(value);
+ 
+      }
+ 
+ 
+      function buildEtapes(childs = {}, idPole) {
+ 
+        let value = ``;
+ 
+        for (const key in childs) {
+          if (childs.hasOwnProperty(key)) {
+            const element = childs[key];
+            
+            value += `
+                <tr class="etapes-normal" id="${element.id_etape}" style="padding">
+                  <td style="text-align: left !important;"> ${element.designation_etape} </td>
+                  <td>
+                    <input type="checkbox" id="check_${element.id_etape}">
+                  </td>
+                  <td>
+                    <select class="form-control" id="res_cq_${element.id_etape}" style="width:95%;" onchange="setSelectColor(${element.id_etape}, this.value)">
+                      <option value="1" >OK</option>  
+                      <option value="2" class="select-rejected" >KO</option>
+                    </select>
+                  </td>
+                  <td>
+                    <select class="form-control" id="type_anomalie_${element.id_etape}" onchange="loadDesc(${element.id_etape}, this.value, '${idPole}')" style="width:95%;">
+                      ${listeAnomalies}
+                    </select>
+                  </td>
+                  <td>
+                    <select class="form-control" name="" id="desc_${element.id_etape}" style="width:95%;">
+                    </select>
+                  </td>
+                  <td>
+                    <select class="form-control" name="" id="conformite_${element.id_etape}" style="width:95%;">
+                      <option value=""></option>
+                      <option value="1">oui, par l'opérateur</option>
+                      <option value="2">oui, par le contrôlleur</option>
+                    </select>
+                  </td>
+                </tr>
+            `;
+          }
+        }
+ 
+        return value;
+ 
+      }
+
+
+      function setSelectColor(idEtape, value) {
+        let select = $(`#res_cq_${idEtape}`);
+
+        if(parseInt(value) === 1) select.attr("class", "form-control");
+        if(parseInt(value) === 2) select.attr("class", "form-control select-rejected");
+      }
+ 
+     
+      function getTypeAnomalie() {
+        $.ajax({
+          type: "GET",
+          url: "/getetat",
+          success: function(etapes){
+            etapes = JSON.parse(etapes);
+ 
+            //=> listeAnomalie est une variable globale parceque la structure ne change jamais
+            //=> Elle est construite dans cette fonction et ne change pas 
+            listeAnomalies = `
+                <option value=""></option>
+            `;
+ 
+            etapes.forEach(current => {
+              listeAnomalies += `
+                <option value="${current.id_etat}">${current.libelle}</option>
+              `;
+            });
+ 
+          },
+          error: function (error) {
+            console.log(error);
+            alert(`Une erreur s'est produite, Veuillez contacter le responsable`);
+          }
+        });
+      }
+ 
+     
+      function loadDesc(idEtape, idEtat, idPole) {
+ 
+        return new Promise((resolve, reject) => {
+ 
+          if(idEtat === "") {
+          $("#desc_"+idEtape).html("");
+          } else {
+            
+              recupererDesc(idEtat, idPole)
+ 
+              .then((liste) => {
+                  let html = `
+                      <option value=""></option>
+                  `;
+ 
+                  liste.forEach(current => {
+                    html += `
+                      <option value="${current.id}">${current.libelle}</option>
+                    `;
+                  });
+ 
+                  $("#desc_"+idEtape).html(html);
+                  resolve();
+              })
+ 
+              .catch((error) => {
+                console.log(error);
+                alert(`Une erreur s'est produite, Veuillez contacter le responsable`);
+                reject();
+              });
+ 
+          }
+ 
+        });
+ 
+      }
+ 
+ 
+      function recupererDesc(idEtat, idPole) {
+ 
+        return new Promise((resolve, reject) => {
+          $.ajax({
+              type: "GET",
+              url: `/getErreur?id_pole=${idPole}&etat=${idEtat}`,
+              success: function(liste){
+                resolve(JSON.parse(liste));
+              },
+              error: function (error) {
+                reject(error);
+              }
+            });
+        });
+ 
+      }
+     
+ 
+      function validerCq() {
+ 
+        let tableauToInsert = [];
+        let notChecked = false;
+ 
+        $("table#table-controle tr.etapes-normal").each((index, element) => {
+          let currentId = element.getAttribute('id');
+          let line = getLine(currentId);
+          
+          if(!line.check) {
+            notChecked = true;
+          }
+          tableauToInsert.push(line);
+          
+        });
+ 
+        if(notChecked) {
+          alert('Veuillez cocher toutes les cases');
+          return;
+        }
+ 
+        let idLigne = $("#id-cq").text();
+        let typeCq = $("#type-cq").val();
+ 
+        let grilleCq = {
+          id : idLigne,
+          type_cq : typeCq,
+          cq : tableauToInsert
+        };
+ 
+       
+        traiterGrille(grilleCq)
+ 
+        .then(() => {
+          searchCQalm(0);
+          $("#grille-aglae").modal('hide');
+        })
+        
+        .catch((err) => {
+          alert('Une erreur s\'est produite');
+        });
+        
+ 
+      }
+ 
+ 
+      function traiterGrille(grilleCq) {
+        let typeAction = parseInt($("#type-action").text());
+ 
+        switch(typeAction) {
+          case(1) : {
+            return enregistrerGrille(grilleCq);
+            break;
+          }
+ 
+          case(2) : {
+            return updateGrille(grilleCq);
+            break;
+          }
+        }
+      }
+ 
+ 
+ 
+ 
+      /**
+       * Récupère les valeurs sur une ligne (une étape)
+       */
+      function getLine(id) {
+        let check = $("#check_"+id).is(':checked');
+        let resCq = $("#res_cq_"+id).val();
+        let anomalie = $("#type_anomalie_"+id).val();
+        let description = $("#desc_"+id).val();
+        let conformite = $("#conformite_"+id).val();
+ 
+        return {
+          etape : id,
+          check : check,
+          resultat : resCq,
+          anomalie : anomalie,
+          description : description,
+          conformite : conformite
+        };
+      }
+ 
+ 
+      function enregistrerGrille(grille) {
+        return new Promise((resolve, reject) => {
+          $.post (
+                "/grille/enregistrer",
+                {
+                    grille : grille,
+                },
+                function(data){
+                    resolve();
+                }
+          ).fail(
+              function(erreur) {
+                  console.log('taraiky ilay requête');
+                  reject(erreur);
+              }
+          );
+        });
+      }
+ 
+ 
+      function updateGrille(grille) {
+        return new Promise((resolve, reject) => {
+          $.post (
+                "/grille/update",
+                {
+                    grille : grille,
+                },
+                function(data){
+                    resolve();
+                }
+          ).fail(
+              function(erreur) {
+                  console.log('taraiky ilay requête');
+                  reject(erreur);
+              }
+          );
+        });
+      }
+ 
+ 
+      function buildErreursCheckCq(idCq) {
+ 
+        recupererErreursCheckCq(idCq)
+ 
+        .then((lisetErreurs) => {
+ 
+            let anomalies = $("#anomalies_"+idCq);
+ 
+            let listeErr = ``;
+ 
+            lisetErreurs.forEach((current) => {
+              listeErr += `
+                <li> ${current.desc_anomalie} </li>
+              `;
+            });
+ 
+            let erreurs = `
+              <ul style="min-width: 150px; margin-left: 15px; ">
+                ${listeErr}
+              </ul>
+            `;
+ 
+            anomalies.html(erreurs);
+        })
+ 
+        .catch((error) => {
+          console.log(error);
+          alert(`Une erreur s'est produite, Veuillez contacter le responsable`);
+        });
+ 
+      }
+ 
+ 
+      function recupererErreursCheckCq(idCq) {
+        
+        return new Promise((resolve, reject) => {
+          $.ajax({
+            type: "GET",
+            url: `/grille/anomalies?id=${idCq}`,
+            success: function(listeErreurs){
+              resolve(listeErreurs);
+            },
+            error: function (error) {
+              reject(error);
+            }
+          });
+        });
+ 
+      }
+ 
+ 
+    </script>
+  </body>
+ 
+</html>

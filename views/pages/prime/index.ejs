@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Gestion prime almerys</title>
+  <link rel="stylesheet" href="/styles/importer.css">
+  <link rel="stylesheet" href="/bootflat/css/bootflat.min.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/local.css">
+  <link rel="stylesheet" href="/css/Style_v3.css">
+  <link rel="stylesheet" href="/jquery-ui/jquery-ui.css">
+  <!--STYLES END-->
+</head>
+
+<body onLoad="loadspecialite();">
+<% if(req.session.droit==1){
+%>
+<% include ../../includes/entete.ejs %>
+<% }else{
+%>
+<% include ../../includes/enteteOperateur.ejs %>
+<% }%>
+<div id="page-wrapper">
+  <div class="row">
+    <div class="col-md-12">
+      <div class=" row ">
+        <div  class="">
+          <div class="panel panel-primary">
+            <div class="panel-heading">
+              <h3 class="panel-title"> <i class="fa fa-bar-chart-o"></i> </h3>
+              <div class="row">
+                <div class="form-group">
+                  <div class="col-xs-1 col-md-1 col-lg-2">
+                    <select class="form-control" tabindex="-1" id="specialite">
+                      <option value="">SPECIALITE</option>
+                    </select>
+                  </div>
+                  <div class="col-xs-1 col-md-1 col-lg-1">
+                    <input class="form-control" tabindex="-1" placeholder="Date Debut" id="datedeb" type="text"/>
+                  </div>
+                  <div class="col-xs-1 col-md-2 col-lg-2">
+                    <a   title="echantillons CQ"> <span style="cursor:pointer"><i class="fa fa-ellipsis-v fa-3x link">  </i></span> </a>
+                    <a onclick="loadPrime();" class="text-success" title="Statistiques"> <span style="cursor:pointer"><i class="fa fa-pie-chart fa-3x link"></i></span> </a>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="loadG" class="col-md-4" style="display:none">
+    <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+    <span class="sr-only">Loading...</span>
+  </div>
+
+  <div class="row">
+    <div id="" class="col-md-12 col-sm-12 col-xs-12">
+    </div>
+  </div>
+</div>
+<div id="loadC" class="col-md-4" style="display:none">
+  <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+  <span class="sr-only">Loading...</span>
+</div>
+<div id="prime" class="col-md-12 col-sm-12 col-xs-12">
+</div>
+</div>
+</div>
+<script src="/js/jquery-1.12.4.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+
+
+<script src="/material/chart/highcharts.js"></script>
+<script src="/material/chart/exporting.js"></script>
+<script>
+  var niveaux = <%=req.session.niveaux %>;
+  var user = <%=req.session.user %>;
+
+</script>
+<script>
+  $(function() {
+    $( "#datedeb").datepicker({
+      dateFormat: 'yy/mm/dd'
+    }).datepicker("setDate", new Date());
+    $( "#datefin").datepicker({
+      dateFormat: 'yymmdd'
+    }).datepicker("setDate", new Date());
+  } );
+</script>
+<!-- ECharts -->
+<script src="/vendors/echarts/dist/echarts.min.js"></script>
+<script src="/js/dependencies/sails.io.js"></script>
+<script src="/js/jquery-ui.min.js"></script>
+<!-- NProgress -->
+<script src="/js/echarts/theme.js"></script>
+<script src="/js/echarts/echarts.js"></script>
+<!-- Custom Theme Scripts -->
+<script src="/js/custom.min.js"></script>
+<!--<script src="/js/rp_almerys.js"></script>-->
+</body>
+</html>
+<script>
+  var host = window.location.hostname;
+  io.sails.url = 'http://'+host+':9090';
+  function loadspecialite() {
+    $.ajax({
+      type: "GET",
+      url: "/getspecialite",
+
+      success: function(msg){
+
+        var html = "<option value=''>DEPARTEMENT</option>";
+        var data = null;
+        $("#specialite").html("");
+        try {
+          data = JSON.parse(msg);
+          for (var i = 0 ; i<data.length ; i++){
+            html += "<option value='"+data[i].id_dossier+"'>"+data[i].num_dossier+"</option>"
+          }
+          $("#specialite").html(html);
+        }
+        catch (e) {
+          $("#specialite").html(html);
+        }
+
+      },
+      error: function (error) {
+
+      }
+    });
+  }
+
+  var dataPie = {};
+ var listPaie = [];
+  var data = [];
+  var datacrenaux = [];
+ var id_lot = null;
+ var idd = null;
+  var ioSocket = false;
+  var legendeSave = [];
+  var dataSave = [];
+
+
+  function affecterLot(lot){
+    id_lot = lot;
+  }
+  function loadPrime(){
+    var id = $("#specialite").val();
+    idd = $("#specialite").val();
+    var date = $("#datedeb").val();
+    $.ajax({
+      type: "GET",
+      url: "/loadData?id_dossier="+id+"&pdate="+date,
+
+      success: function(msg){
+        ////console.log(JSON.stringify(msg));
+        var dataSourse = null;
+        legendeSave = [];
+        dataSave = [];
+        try {
+          dataSourse = JSON.parse(msg);
+           data = dataSourse.ssp;
+          var datapr = dataSourse.prime;
+          ioSocket= dataSourse.isSocketLaunch;
+          ////console.log(datapr);
+          $("#prime").html("");
+          listPaie = [];
+          for (var i = 0 ; i<data.length ; i++){
+            var html_table_global = "<div class='col-md-12 col-sm-12 col-xs-12'>"+
+              "          <div class='x_panel'>"+
+              "            <div class='x_title'>"+
+              "            <h2>"+data[i].libelle+"</h2>"+
+              "          <ul class='nav navbar-right panel_toolbox'>"+
+              "            <li><a class='collapse-link'><i class='fa fa-chevron-up'></i></a>"+
+              "            </li>"+
+              "            <li><a href='#' onclick='fullscreen(idd,"+data[i].id_lotclient+",\""+date+"\");'><i class='fa fa-external-link'></i></a>" +
+              "                 "+
+              "            </li>"+
+              ""+
+              "            <li><a class='close-link'><i class='fa fa-close'></i></a>"+
+              "            </li>"+
+              "            </ul>"+
+              "            <div class='clearfix'></div>"+
+              "            </div>"+
+              "            <div class='x_content row'>" +
+              "<div class='col-lg-8 col-md-8 col-xs-12' id='line_"+data[i].id_lotclient+"'  style='height:400px;' onmouseover='affecterLot("+data[i].id_lotclient+")'></div>" +
+              "<div class='col-lg-4 col-md-4 col-xs-12' id='list_"+data[i].id_lotclient+"'  style='height:400px;'>" +
+              "<table class='table table-hover'>" +
+              "     <thead>" +
+              "<tr>" +
+              "<th>Crenaux</th><th>Prime</th><th>Effectif<br/>(titulaire/renfort)</th><th>Montant<br/>(Total)</th>" +
+              "</tr>" +
+              "</thead>" +
+              "<tbody>" +
+              "<tr>" +
+              "<td>Moins de 9H</td><td id='pr_9H_"+data[i].id_lotclient+"'></td><td id='ef_9H_"+data[i].id_lotclient+"'></td><td id='mt_9H_"+data[i].id_lotclient+"'></td>" +
+              "</tr>" +
+              "<tr>" +
+              "<td>9H à 11H</td><td id='pr_9-11H_"+data[i].id_lotclient+"'></td><td id='ef_9-11H_"+data[i].id_lotclient+"'></td><td id='mt_9-11H_"+data[i].id_lotclient+"'></td>" +
+              "</tr>" +
+              "<tr>" +
+              "<td>11H à 13H</td><td id='pr_11-13H_"+data[i].id_lotclient+"'></td><td id='ef_11-13H_"+data[i].id_lotclient+"'></td><td id='mt_11-13H_"+data[i].id_lotclient+"'></td>" +
+              "</tr>" +
+              "<tr>" +
+              "<td>13H à 15H</td><td id='pr_13-15H_"+data[i].id_lotclient+"'></td><td id='ef_13-15H_"+data[i].id_lotclient+"'></td><td id='mt_13-15H_"+data[i].id_lotclient+"'></td>" +
+              "</tr>" +
+              "<tr>" +
+              "<td>Plus de 15H</td><td id='pr_15H-Plus_"+data[i].id_lotclient+"'></td><td id='ef_15H-Plus_"+data[i].id_lotclient+"'></td><td id='mt_15H-Plus_"+data[i].id_lotclient+"'></td>" +
+              "</tr>" +
+              "</tbody>" +
+              "</table>" +
+              "<div class='col-lg-12 col-md-12 col-xs-12' id='pie_"+data[i].id_lotclient+"'  style='height:200px; display: none;'></div>" +
+              "</div>" +
+              "</div></div>";
+            $("#prime").append(html_table_global);
+            var dataCr = dataSourse.crenaux;
+            datacrenaux = dataSourse.crenaux;
+            /* var libGlobale = [];
+            var dataGlobale = [];
+            libGlobale.push("1020");
+            libGlobale.push("1019");
+            var obj = {name:"1020",value:2};
+            dataGlobale.push(obj);
+            var obj = {name:"1019",value:4};
+            dataGlobale.push(obj);
+            var echartPieCollapseAl = echarts.init(document.getElementById('pie_'+data[i].id_lotclient+''), theme);
+            echartPieCollapseAl.setOption(getOptionPieCol(libGlobale,dataGlobale));*/
+
+
+            var libGlobale2 = [];
+            var dataGlobale2 = [];
+            var dtp = [];
+            var col = [];
+            dataPie[data[i].id_lotclient] = {};
+            for(var a = 0 ;a<dataCr.length;a++){
+              libGlobale2.push(dataCr[a].libelle);
+
+              var html = "<i class='fa fa-close text-danger'></i>";
+              var nbT = 0;
+              var nbR = 0;
+              var montant = 0;
+              for(var b = 0 ;b<datapr.length;b++){
+                if(Number(datapr[b].id_s_spec) == Number(data[i].id_lotclient) && Number(datapr[b].id_spec) == Number(data[i].id_dossier) && Number(datapr[b].id_crenaux) == Number(dataCr[a].id)){
+                  var primary = JSON.parse(datapr[b].json_titulaire);
+                  var renfort = JSON.parse(datapr[b].json_renfort);
+
+                  nbR = renfort.length;
+                  nbT = primary.length;
+                  dataPie[data[i].id_lotclient][dataCr[a].libelle] = {pri:primary.length,ref:renfort.length};
+                  dtp.push(datapr[b].reel);
+                  col.push('bleu');
+                  ////console.log(dataCr[a].libelle+"_"+data[i].id_lotclient+"");
+                  if(datapr[b].prime){
+                    ////console.log(dataCr[a].libelle+"_"+data[i].id_lotclient+"");
+                    html = "<i class='fa fa-check text-success'></i>";
+                    montant = Number(datapr[b].montant ||'0') * nbT;
+                  }
+
+                }
+              }
+              $("#pr_"+dataCr[a].libelle.replace("<","")+"_"+data[i].id_lotclient+"").html(html);
+              $("#ef_"+dataCr[a].libelle.replace("<","")+"_"+data[i].id_lotclient+"").html(nbT+"/"+nbR);
+              $("#mt_"+dataCr[a].libelle.replace("<","")+"_"+data[i].id_lotclient+"").html(montant+" Ar");
+            }
+
+            legendeSave = libGlobale2;
+
+
+
+            //alert(dtp);
+            var obj2 =  {
+              name:'Quantite',
+              type:'bar',
+              stack: 'sum',
+              barCategoryGap: '50%',
+              itemStyle: {
+                normal: {
+                  color: 'tomato',
+                  barBorderColor: 'tomato',
+                  barBorderWidth: 6,
+                  barBorderRadius:0,
+                  label : {
+                    show: true, position: 'insideTop'
+                  }
+                }
+              },
+              data:dtp,
+              colours:col
+            };
+            var objet =  {
+              name:data[i].libelle,
+              data:dtp,
+            };
+
+            dataGlobale2.push(obj2);
+            dataSave.push(objet)
+            /*var obj2 = {
+              name:'Reste',
+              type:'bar',
+              stack: 'sum',
+              itemStyle: {
+                normal: {
+                  color: '#fff',
+                  barBorderColor: 'tomato',
+                  barBorderWidth: 6,
+                  barBorderRadius:0,
+                  label : {
+                    show: true,
+                    position: 'top',
+                    formatter: function (params) {
+                      for (var i = 0, l = option.xAxis[0].data.length; i < l; i++) {
+                        if (option.xAxis[0].data[i] == params.name) {
+                          return option.series[0].data[i] + params.value;
+                        }
+                      }
+                    },
+                    textStyle: {
+                      color: 'tomato'
+                    }
+                  }
+                }
+              },
+              data:[0,20,10]
+            };
+            dataGlobale2.push(obj2);*/
+
+            Highcharts.chart('line_'+data[i].id_lotclient+'',optHighchart(libGlobale2,dtp));
+           /* var echartBarCollapseAl = echarts.init(document.getElementById('line_'+data[i].id_lotclient+''), theme);
+            echartBarCollapseAl.setOption(getOptionBarThermo(libGlobale2,dataGlobale2));
+            listPaie.push(echartBarCollapseAl);*/
+            var id = data[i].id_lotclient;
+            /*echartBarCollapseAl.on('click', function (params) {
+              load_pie(id_lot,params.name);
+              //console.log(id_lot); // do whatever you want with another chart say chartTwo here
+              //lert( "chartOne clicked=>"+id);
+            });
+            ////console.log(dataPie);
+            load_pie(data[i].id_lotclient,"<9H");*/
+
+
+          }
+
+          var html_table_global = "<div class='col-md-12 col-sm-12 col-xs-12'>"+
+            "          <div class='x_panel'>"+
+            "            <div class='x_title'>"+
+            "            <h2>All</h2>"+
+            "          <ul class='nav navbar-right panel_toolbox'>"+
+            "            <li><a class='collapse-link'><i class='fa fa-chevron-up'></i></a>"+
+            "            </li>"+
+            ""+
+            "            <li><a class='close-link'><i class='fa fa-close'></i></a>"+
+            "            </li>"+
+            "            </ul>"+
+            "            <div class='clearfix'></div>"+
+            "            </div>"+
+            "            <div class='x_content row'>" +
+            "<div class='col-lg-12 col-md-12 col-xs-12' id='line_all'></div>" +
+            "</div>" +
+            "</div></div>";
+          $("#prime").prepend(html_table_global);
+
+          Highcharts.chart('line_all',optHighchartMultiple(legendeSave,dataSave));
+
+          /*for (var v = 0 ; v< ssp.length ; v++){
+            listPaie[v].on('click', function (params) {
+              //load_pie(data[i].id_lotclient,params.name);
+              ////console.log(data[i].id_lotclient); // do whatever you want with another chart say chartTwo here
+              alert( "chartOne clicked=>"+v );
+            });
+          }*/
+
+
+
+          $.getScript( "/vendors/echarts/dist/echarts.min.js" );
+          $.getScript( "/js/custom.min.js" );
+          $.getScript( "/js/echarts/theme.js" );
+          $.getScript( "/js/echarts/echarts.js" );
+
+        }
+        catch (e) {
+        }
+
+        if(ioSocket){
+          listenSocket("prime_"+idd);
+        }
+
+
+      },
+      error: function (error) {
+
+      }
+    });
+  }
+
+
+  function load_pie(id_lotclient,crenaux){
+    var libGlobale = [];
+    var dataGlobale = [];
+    libGlobale.push("Titulaire");
+    libGlobale.push("Renfort");
+    var obj = {name:"Titulaire",value:dataPie[id_lotclient][crenaux].pri};
+    dataGlobale.push(obj);
+    var obj = {name:"Renfort",value:dataPie[id_lotclient][crenaux].ref};
+    dataGlobale.push(obj);
+
+
+
+
+    var echartPieCollapseAl = echarts.init(document.getElementById('pie_'+id_lotclient+''), theme);
+    echartPieCollapseAl.setOption(getOptionPieCol(libGlobale,dataGlobale));
+
+
+  }
+
+  function fullscreen(doss,id_lot,pdate){
+    window.open(
+      "/primeZoom?id_dossier="+doss+"&pdate="+pdate+"&id_lot="+id_lot,
+      null,
+      "addressbar=0,directories=0,titlebar=0,toolbar=0,location=yes,status=0,menubar=0,scrollbars=0,resizable=1,fullscreen=1"
+    );
+  }
+
+  function listenSocket(id){
+    //console.log(datacrenaux);
+    io.socket.on(id, function (msg) {
+
+
+      try {
+        var dataprime = JSON.parse(msg);
+        ////console.log(dataprime.length);
+        legendeSave = [];
+        dataSave = [];
+        for (var i = 0 ; i<data.length ; i++){
+          var libGlobale2 = [];
+          var dataGlobale2 = [];
+          var dtp = [];
+          var col = [];
+          dataPie[data[i].id_lotclient] = {};
+          for(var a = 0 ;a<datacrenaux.length;a++){
+            libGlobale2.push(datacrenaux[a].libelle);
+
+            var html = "<i class='fa fa-close text-danger'></i>";
+            var nbT = 0;
+            var nbR = 0;
+            var montant = 0;
+            for(var b = 0 ;b<dataprime.length;b++){
+              if(Number(dataprime[b].id_s_spec) == Number(data[i].id_lotclient) && Number(dataprime[b].id_spec) == Number(data[i].id_dossier) && Number(dataprime[b].id_crenaux) == Number(datacrenaux[a].id)){
+                var primary = JSON.parse(dataprime[b].json_titulaire);
+                var renfort = JSON.parse(dataprime[b].json_renfort);
+
+                nbR = renfort.length;
+                nbT = primary.length;
+                dataPie[data[i].id_lotclient][datacrenaux[a].libelle] = {pri:primary.length,ref:renfort.length};
+                dtp.push(dataprime[b].reel);
+                col.push('bleu');
+                ////console.log(datacrenaux[a].libelle+"_"+data[i].id_lotclient+"");
+                if(dataprime[b].prime){
+                  ////console.log(datacrenaux[a].libelle+"_"+data[i].id_lotclient+"");
+                  html = "<i class='fa fa-check text-success'></i>";
+                  montant = 100 * nbT;
+                }
+
+              }
+            }
+            $("#pr_"+datacrenaux[a].libelle.replace("<","")+"_"+data[i].id_lotclient+"").html(html);
+            $("#ef_"+datacrenaux[a].libelle.replace("<","")+"_"+data[i].id_lotclient+"").html(nbT+"/"+nbR);
+            $("#mt_"+datacrenaux[a].libelle.replace("<","")+"_"+data[i].id_lotclient+"").html(montant+" Ar");
+          }
+
+
+
+          //alert(dtp);
+          var obj2 =  {
+            name:'Quantite',
+            type:'bar',
+            stack: 'sum',
+            barCategoryGap: '50%',
+            itemStyle: {
+              normal: {
+                color: 'tomato',
+                barBorderColor: 'tomato',
+                barBorderWidth: 6,
+                barBorderRadius:0,
+                label : {
+                  show: true, position: 'insideTop'
+                }
+              }
+            },
+            data:dtp,
+            colours:col
+          };
+          dataGlobale2.push(obj2);
+
+          var objet =  {
+            name:data[i].libelle,
+            data:dtp,
+          };
+          dataSave.push(objet)
+          /*var obj2 = {
+           name:'Reste',
+           type:'bar',
+           stack: 'sum',
+           itemStyle: {
+           normal: {
+           color: '#fff',
+           barBorderColor: 'tomato',
+           barBorderWidth: 6,
+           barBorderRadius:0,
+           label : {
+           show: true,
+           position: 'top',
+           formatter: function (params) {
+           for (var i = 0, l = option.xAxis[0].data.length; i < l; i++) {
+           if (option.xAxis[0].data[i] == params.name) {
+           return option.series[0].data[i] + params.value;
+           }
+           }
+           },
+           textStyle: {
+           color: 'tomato'
+           }
+           }
+           }
+           },
+           data:[0,20,10]
+           };
+           dataGlobale2.push(obj2);*/
+
+
+          Highcharts.chart('line_'+data[i].id_lotclient+'',optHighchart(libGlobale2,dtp));
+          /*var echartBarCollapseAl = echarts.init(document.getElementById('line_'+data[i].id_lotclient+''), theme);
+          echartBarCollapseAl.setOption(getOptionBarThermo(libGlobale2,dataGlobale2));
+          listPaie.push(echartBarCollapseAl);*/
+        }
+
+        Highcharts.chart('line_all',optHighchartMultiple(legendeSave,dataSave));
+
+
+      }
+      catch (e) {
+        //console.log(e);
+      }
+
+    });
+  }
+
+
+  </script>

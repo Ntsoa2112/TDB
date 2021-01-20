@@ -1,0 +1,918 @@
+ <% include ../../includes/entete.ejs %>
+ <link rel="stylesheet" href="/jquery-ui/jquery-ui.css">
+ <script src="/js/jquery-1.12.4.js"></script>
+ <script src="/js/jquery-ui.min.js"></script>
+ <script src="/js/weekPicker.js"></script>
+ <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
+ <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+ <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+
+ <style>
+   .sp_alert{
+     font-size: 18px;
+
+   }
+   #left {
+     font-size: 26px;
+
+   }
+
+   .sp_alert span {
+     min-width: 50px;
+
+   } #left span {
+     font-size: 26px;
+
+   }
+
+   #right span {
+     font-size: 26px;
+
+   }
+
+   #right {
+     font-size: 26px;
+   }
+
+   /**
+   Multi select
+   /
+    */
+
+   .select-pure__select {
+     align-items: center;
+     background: #f9f9f8;
+     border-radius: 4px;
+     border: 1px solid rgba(0, 0, 0, 0.15);
+     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+     box-sizing: border-box;
+     color: #363b3e;
+     cursor: pointer;
+     display: flex;
+     font-size: 16px;
+     font-weight: 500;
+     justify-content: left;
+     min-height: 44px;
+     padding: 5px 10px;
+     position: relative;
+     transition: 0.2s;
+     width: 100%;
+   }
+
+   .select-pure__options {
+     border-radius: 4px;
+     border: 1px solid rgba(0, 0, 0, 0.15);
+     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+     box-sizing: border-box;
+     color: #363b3e;
+     display: none;
+     left: 0;
+     max-height: 221px;
+     overflow-y: scroll;
+     position: absolute;
+     top: 50px;
+     width: 100%;
+     z-index: 5;
+   }
+
+   .select-pure__select--opened .select-pure__options {
+     display: block;
+   }
+
+   .select-pure__option {
+     background: #fff;
+     border-bottom: 1px solid #e4e4e4;
+     box-sizing: border-box;
+     height: 44px;
+     line-height: 25px;
+     padding: 10px;
+   }
+
+   .select-pure__option--selected {
+     color: #e4e4e4;
+     cursor: initial;
+     pointer-events: none;
+   }
+
+   .select-pure__option--hidden {
+     display: none;
+   }
+
+   .select-pure__selected-label {
+     background: #5e6264;
+     border-radius: 4px;
+     color: #fff;
+     cursor: initial;
+     display: inline-block;
+     margin: 5px 10px 5px 0;
+     padding: 3px 7px;
+   }
+
+   .select-pure__selected-label:last-of-type {
+     margin-right: 0;
+   }
+
+   .select-pure__selected-label i {
+     cursor: pointer;
+     display: inline-block;
+     margin-left: 7px;
+   }
+
+   .select-pure__selected-label i:hover {
+     color: #e4e4e4;
+   }
+
+   .select-pure__autocomplete {
+     background: #f9f9f8;
+     border-bottom: 1px solid #e4e4e4;
+     border-left: none;
+     border-right: none;
+     border-top: none;
+     box-sizing: border-box;
+     font-size: 16px;
+     outline: none;
+     padding: 10px;
+     width: 100%;
+   }
+
+
+   /* Style the tab */
+   .tab {
+     overflow: hidden;
+     border: 1px solid #ccc;
+     background-color: #f1f1f1;
+   }
+
+   /* Style the buttons that are used to open the tab content */
+   .tab button {
+     background-color: inherit;
+     float: left;
+     border: none;
+     outline: none;
+     cursor: pointer;
+     padding: 14px 16px;
+     transition: 0.3s;
+   }
+
+   /* Change background color of buttons on hover */
+   .tab button:hover {
+     background-color: #ddd;
+   }
+
+   /* Create an active/current tablink class */
+   .tab button.active {
+     background-color: #ccc;
+   }
+
+   /* Style the tab content */
+   .tabcontent {
+     display: none;
+     padding: 6px 12px;
+     border: 1px solid #ccc;
+     border-top: none;
+   }
+
+
+   .tabcontent {
+     animation: fadeEffect 1s; /* Fading effect takes 1 second */
+   }
+
+   /* Go from zero to full opacity */
+   @keyframes fadeEffect {
+     from {opacity: 0;}
+     to {opacity: 1;}
+   }
+ </style>
+ <%
+ var html_pole= "";
+
+ var fckOpt = [];
+ var semsOpt = [];
+ pole.forEach(function(p){
+
+   var optsfck = {};
+
+   optsfck.label = p.libelle;
+   optsfck.value = ""+p.id;
+   fckOpt.push(optsfck);
+
+   /*if(Number(p.id)===Number(poleid)){
+     html_pole += "<option value='"+p.id+"' selected>"+p.libelle+"</option>";
+   }else{
+     html_pole += "<option value='"+p.id+"'>"+p.libelle+"</option>";
+   }*/
+
+ });
+
+ var html_semaine= "";
+ listsemaine.forEach(function(s){
+
+   var optsfck = {};
+
+   optsfck.label = "SEMAINE "+s.num_semaine+" "+s.annee;
+   optsfck.value = ""+s.num_semaine;
+   semsOpt.push(optsfck);
+   /*if(Number(s.num_semaine)===Number(semid)){
+     html_semaine += "<option value='"+s.num_semaine+"' selected>SEMAINE "+s.num_semaine+" "+s.annee+"</option>";
+   }else{
+     html_semaine += "<option value='"+s.num_semaine+"'>SEMAINE "+s.num_semaine+" "+s.annee+"</option>";
+   }*/
+
+ });
+ %>
+ <div class="col-md-12 col-sm-12 col-xs-12">
+   <div class="x_panel block">
+     <div class="x_title">
+       <h2></h2>
+       <ul class="nav navbar-right panel_toolbox">
+         <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+         </li>
+         <li><a class="close-link"><i class="fa fa-close"></i></a>
+         </li>
+       </ul>
+       <div class="clearfix"></div>
+     </div>
+     <div class="x_content">
+
+       <form method="get" action="/gestion_hr_moment">
+         <div class="form-groupe col-md-3">
+           <span class="autocomplete-select pole-span"></span>
+
+           <input type="hidden" id="pole" name="pole" value="<%=poleid%>">
+           <!--<select  id="pole" name="pole" class="frm form-control">
+           </select>-->
+         </div>
+
+         <div class="form-groupe col-md-3">
+
+           <span class="autocomplete-select sem-span" ></span>
+
+           <input type="hidden" id="sem" name="sem" value="<%=semid%>">
+         </div>
+
+         <div class="form-groupe col-md-1">
+           <label for="sem"></label>
+           <input type="submit" value="OK" class="btnH"/>
+         </div>
+
+         <div class="form-groupe col-md-3">
+           <label for="validate"></label>
+           <a onclick="saveAllHS()" class="btnH ">ENREGISTRER</a>
+         </div>
+       </form>
+
+
+     </div>
+   </div>
+ </div>
+
+ <%
+ /*
+ * Multi semaine
+ * */
+
+ var html_all = '';
+ var html_header = '<div class="tab">';
+ var html_content = '';
+
+ //week list
+
+ var weekday = new Array(7);
+ weekday[0] = "Sam";
+ weekday[1] =  "Dim";
+ weekday[2] = "Lun";
+ weekday[3] = "Mar";
+ weekday[4] = "Mer";
+ weekday[5] = "Jeu";
+ weekday[6] = "Ven";
+
+ var dateArray = [];
+
+
+ //header
+
+ var i = true;
+
+ //sails.log(result);
+ semaine.forEach(function(sem){
+    if(i){
+      html_header += '<button class="tablinks" onclick="openCity(event, \'sem_'+sem.num_semaine+'\')" id="defaultOpen">Semaine '+sem.num_semaine+'</button>';
+      i = false;
+    }else{
+      html_header += '<button class="tablinks" onclick="openCity(event, \'sem_'+sem.num_semaine+'\')" >Semaine '+sem.num_semaine+'</button>';
+    }
+
+      html_content +='<div id="sem_'+sem.num_semaine+'" class="tabcontent">';
+
+    /*
+    * contenu par semaine
+    * */
+    var html_table = '<div id="tableData" style="overflow-x:auto;">'
+
+   var debSplit = sem.date_debut.split('/');
+   var finSplit = sem.date_fin.split('/');
+
+   var thDate = "<th class=\"\"></th><th class=\"\"></th><th class=\"\">-</th>";
+   var thPrincipale = "<th class=\"\">-</th><th class=\"\"></th><th class=\"\"></th><th class=\"vh_head_conge\">SEMAINE "+sem.num_semaine+" </th><th class=\"\"></th><th class=\"\"></th>";
+   var thSecondaire = "<th class=\"\">Matricule</th><th class=\"\">Departement</th><th class=\"\">Appelation</th><th class=\"vh_head_conge\">H Total</th><th class=\"vh_head_conge\">HS réel</th><th class=\"\">HS validé</th>";
+
+   var dateDeb = new Date(""+debSplit[1]+"/"+debSplit[0]+"/"+debSplit[2]);
+   dateDeb.setDate(dateDeb.getDate()+1);
+   var dateFin = new Date(""+finSplit[1]+"/"+finSplit[0]+"/"+finSplit[2]);
+   dateFin.setDate(dateFin.getDate()+1);
+
+   var ct = 0;
+
+   var currentDate = dateDeb;
+
+   while (currentDate <= dateFin) {
+     var dat = currentDate.toISOString().replace(/-/,'/').replace(/-/,'/').substr(0,10);
+     //sails.log(currentDate.getDay());
+     var datSplt =dat.split('/');
+     dateArray.push(currentDate);
+     thDate +="<th class=\"\">"+weekday[currentDate.getDay()]+"</th><th class=\"\">"+datSplt[2]+"/"+datSplt[1]+"</th><input id='date_"+ct+"' type=\"hidden\" value=\""+datSplt[2]+"/"+datSplt[1]+"/"+datSplt[0]+"\"/><th class=\"\"></th>";
+     currentDate = new Date(currentDate.setTime( currentDate.getTime() + 1 * 86400000 ));
+
+     if(ct>0){
+       thPrincipale+="<th class=\"\"></th><th class=\"\"></th><th class=\"\"></th>";
+       thSecondaire+="<th class=\"vh_head_conge\">H Total </th><th class=\"\">HS réel</th><th class=\"\">HS validé</th>";
+     }
+     ct++;
+   }
+
+   thDate += "<th></th><th>heure Sup</th><th></th><th></th><th></th>";
+   thPrincipale += "<th></th><th>heure Sup</th><th></th></th><th></th>><th></th>";
+   thSecondaire += "<th>Heure Total</th><th>30%</th><th>50%</th><th>HS total</th><th>HC</th>";
+
+   html_table += '<table class="table table-responsive">' +
+     '<thead><tr>'+
+     thDate +
+     '</tr><tr>'+
+     thSecondaire +
+     '</tr></thead>' +
+     '<tbody>' ;
+
+
+
+
+     var listId = []
+
+   var html_s_table = '';
+   //sails.log("S VIEW "+sem.num_semaine);
+   //sails.log(result[""+sem.num_semaine][0].gh);
+    result[""+sem.num_semaine].forEach(function(resultat){
+
+      listId.push(resultat.id_pers);
+      var ghTable = resultat.gh;
+
+
+      //sails.log(ghTable);
+
+      var hs_reel = '00:00:00' ;
+      var hs_predef = '00:00:00' ;
+      var hs_total_s_p = '00:00:00' ;
+
+      var heure_total = 0;
+      var heure_sup_total = 0;
+      var heure_complementaire = 0;
+      var heure_conge = 0;
+      var heure_contrat = '00:00:00' ;
+
+
+      html_s_table +='<tr>';
+      html_s_table +='<td class="" align="right">'+resultat.id_pers+'</td>';
+      html_s_table +='<td class="" align="right">'+resultat.dep+'</td>';
+      html_s_table +='<td class="" align="right">'+resultat.appelation+'</td>';
+
+      var ct_date = 0;
+      ghTable.forEach(function (resul) {
+        if(resultat.categorie ==='HC'){
+          if(typeof resul[0] !=='undefined'){
+            hs_total_s_p = resul[0].duree_prod || '00:00:00';
+            heure_conge = resul[0].conge || '0';
+            if((resul[0].hc || '00:00:00' !=='00:00:00') && resul[0].conge<0)heure_contrat = resul[0].hc || '00:00:00';
+
+            if (hs_total_s_p =='00:00:00' || hs_total_s_p ==null) hs_total_s_p = '';
+
+            var html_hpredef = ''+hs_total_s_p;
+            if(hs_total_s_p===''){
+              if(Number(heure_conge)>0){
+                html_hpredef = "<a class='sp_alert'><span class=\"label label-info\">"+heure_conge+"</span></a>";
+              }else{
+                html_hpredef = "<a class='sp_alert'><span class=\"label label-danger\">absence</span></a>";
+              }
+            }
+
+            html_s_table +='<td><a onclick="detail(\''+ resultat.id_pers +'\',\''+ resul[0].date +'\')" class="vh_heure_conge vh_conge" href="#"  href="#" data-toggle="modal" data-target="#myModal">'+ html_hpredef+' </a> </td>';
+
+
+          }else{
+            html_s_table +='<td>-</td>';
+          }
+
+          html_s_table +='<td>-</td>';
+          html_s_table +='<td>-</td>';
+        }else {
+          if(resul.length !== 0){
+            hs_reel = resul[0].heure_sup_reel;
+            hs_predef = resul[0].heure_sup || '00:00:00';
+            hs_total_s_p = resul[0].duree_prod || '00:00:00';
+            heure_conge = resul[0].conge || '0';
+            heure_contrat = resul[0].hc || '00:00:00'
+
+          }else{
+            hs_reel = ' 00:00:00';
+            hs_predef = '00:00:00';
+            hs_total_s_p = '00:00:00' ;
+            //sails.log(resul[0].date);
+          }
+
+          if (hs_reel =='00:00:00' || hs_total_s_p =='00:00:00' || hs_reel ==null) hs_reel = '';
+          if (hs_total_s_p =='00:00:00' || hs_total_s_p == null) hs_reel = '', hs_total_s_p = '';
+
+          var html_hpredef = ''+hs_total_s_p;
+          if(hs_total_s_p===''){
+            if(Number(heure_conge)>0){
+              html_hpredef = "<a class='sp_alert' ><span class=\"label label-info\">"+heure_conge+"</span></a>";
+            }else{
+              html_hpredef = "<a class='sp_alert'><span class=\"label label-danger\">absence</span></a>";
+            }
+          }
+
+          if(hs_reel===''){
+            html_s_table += '<td><a  class="vh_heure_conge vh_conge" > '+html_hpredef +' </a> </td>';
+            html_s_table += '<td><a class="vh_heure_conge vh_conge"> '+hs_reel +'</a> <input   class="vh_heure_conge vh_conge" id="hs_reel_'+ct_date+'_'+resultat.id_pers +'" type="hidden" size="8" value="'+ hs_reel +'" disabled/> </td>';
+            html_s_table += '<td class=""><input   class="vh_heure_conge timepicker" id="hs_predef_'+ct_date+'_'+ resultat.id_pers +'" type="text" size="8" value="'+ hs_predef +'"/></td>';
+          }else{
+            if(typeof resul[0] !=='undefined'){
+              var classHs = '' ;
+
+              if(resul[0].negative){
+                classHs = 'btn-warning' ;
+              }
+
+              html_s_table += '<td><a onclick="detail(\''+ resultat.id_pers +'\',\''+ resul[0].date +'\')" class="vh_heure_conge vh_conge" href="#" data-toggle="modal" data-target="#myModal">'+ html_hpredef +'</a> </td>';
+              html_s_table += '<td class=""  ondblclick="affectationValeurReel(\''+ct_date+'\',\''+ resultat.id_pers +'\');"><a  onclick="detail(\''+ resultat.id_pers +'\',\''+ resul[0].date +'\')" class="vh_heure_conge vh_conge '+classHs+'" href="#" data-toggle="modal" data-target="#myModal">'+hs_reel +'</a> <input   class="vh_heure_conge vh_conge" id="hs_reel_'+ct_date+'_'+ resultat.id_pers +'" type="hidden" size="8" value="'+ hs_reel +'" disabled/> <a style="cursor: pointer;" onclick="affectationValeurReel(\''+ct_date+'\',\''+ resultat.id_pers +'\');"><i class="fa fa-forward"></i> </a> </td>';
+              html_s_table += '<td class=""><input   class="vh_heure_conge timepicker" id="hs_predef_'+ct_date+'_'+ resultat.id_pers +'" type="text" size="8" value="'+ hs_predef +'"/></td>';
+
+            }else{
+              html_s_table += '<td><a class="vh_heure_conge vh_conge" href="#" data-toggle="modal" data-target="#myModal">'+ hs_total_s_p +'</a> </td>';
+              html_s_table += '<td   ondblclick="affectationValeurReel(\''+ ct_date +'\',\''+ resultat.id_pers +'\');"> <a class="vh_heure_conge vh_conge" href="#" data-toggle="modal" data-target="#myModal">'+ hs_reel +'</a> <input   class="vh_heure_conge vh_conge" id="hs_reel_'+ ct_date +'_'+ resultat.id_pers +'" type="hidden" size="8"   value="'+ hs_reel +'" disabled/> <a href="#" onclick="affectationValeurReel(\''+ ct_date+'\',\''+ resultat.id_pers +'\');"><i class="fa fa-forward"></i> </a> </td>';
+              html_s_table += '<td class=""><input   class="vh_heure_conge timepicker" id="hs_predef_'+ct_date+'_'+ resultat.id_pers +'" type="text" size="8" value="'+ hs_predef +'"/></td>';
+            }
+          }
+
+        }
+        if(hs_total_s_p!=='' && hs_total_s_p !=='00:00:00' ){
+          var h_split_s = hs_total_s_p.split(":");
+          heure_total += (Number(h_split_s[0])+(Number(h_split_s[1])/60)+(Number(h_split_s[2])/60/60));
+        }
+        if(hs_predef!=='' && hs_predef !=='00:00:00' ){
+          //sails.log("hs:"+hs_predef);
+          var h_split_hs = hs_predef.split(":");
+          heure_sup_total += (Number(h_split_hs[0])+(Number(h_split_hs[1])/60)+(Number(h_split_hs[2])/60/60));
+          //sails.log("tts"+heure_sup_total);
+        }
+
+        ct_date++;
+
+      });
+
+      var h_30 = heure_sup_total;
+      var h_50 = 0;
+      var h_c = 0;
+      var h_cont = 0;
+      var h_split = heure_contrat.split(":");
+      h_cont += (Number(h_split[0])+(Number(h_split[1])/60)+(Number(h_split[2])/60/60));
+
+      //sails.log(heure_sup_total);
+
+      if(h_30>8){
+        h_30 = 8;
+        h_50 = heure_sup_total - 8;
+      }else{
+        h_30 = heure_sup_total;
+      }
+
+      sails.log("hc:::"+heure_contrat);
+      if(h_cont<7  && h_cont!==0){
+        sails.log(h_cont<7);
+        if(heure_total>40 || heure_total==40){
+          h_c = 40-(h_cont*6);
+        }else if(heure_total<40){
+
+          h_c = heure_total-(h_cont*6);
+
+          if(h_c<0){
+            h_c= 0;
+          }
+        }
+
+      }
+
+      html_s_table += '<td>'+Number(heure_total.toFixed(2))+'</td>';
+      html_s_table += '<td>'+Number(h_30.toFixed(2))+'</td>';
+      html_s_table += '<td>'+Number(h_50.toFixed(2))+'</td>';
+      html_s_table += '<td>'+Number(heure_sup_total.toFixed(2))+'</td>';
+      html_s_table += '<td>'+Number(h_c.toFixed(2))+'</td>';
+      html_s_table += '</tr>';
+
+
+    });
+
+
+   html_table += html_s_table;
+    html_table += ''+
+      '</tbody></table>';;
+    html_table += '</div>';
+    html_content+=html_table;
+    html_content +='</div>';
+  });
+
+ html_header += '</div>'
+
+ html_all = html_header+html_content;
+
+
+ %>
+
+
+
+
+      <%-html_all%>
+
+
+ <!-- Modal -->
+ <div id="myModal" class="modal fade" role="dialog">
+   <div class="modal-dialog modal-lg">
+
+     <!-- Modal content-->
+     <div class="modal-content">
+       <div class="modal-header">
+         <button type="button" class="close" data-dismiss="modal">&times;</button>
+         <h4 class="modal-title">Heures Détailées</h4>
+       </div>
+       <div class="modal-body">
+         <!--
+         Debut corps
+         -->
+
+         <div id="exTab1" class="">
+           <ul  class="nav nav-pills">
+             <li class="active">
+               <a  href="#resume" data-toggle="tab">Resumé</a>
+             </li>
+
+             <li class="">
+               <a  href="#pt-pane" data-toggle="tab">Pointages</a>
+             </li>
+             <li><a href="#ldt-pane" data-toggle="tab">Lignes de temps</a>
+             </li>
+           </ul>
+
+           <div class="tab-content clearfix">
+             <div class="tab-pane active" id="resume">
+               <div id="loader_resume">
+                 <i class="fa fa-spinner fa-3x"></i>
+               </div>
+
+               <div id="corp" class="row">
+                 <div id="left" class="col-lg-6 col-md-6 col-xs-12">
+                   <a>heure bio total <span id="bio_tot" class="badge">--:--:--</span></a><br>
+                   <a>heure bio productif <span id="bio_prod"  class="badge">--:--:--</span></a><br>
+                   <a>heure pause bio <span  id="bio_pause"  class="badge">--:--:--</span></a><br>
+                   <a>entrée  <span  id="bio_ent"  class="badge">--:--:--</span></a><br>
+                   <a>sortie  <span id="bio_sort"  class="badge">--:--:--</span></a><br>
+
+                   <hr/>
+
+                   <a>heure contrat <span  id="h_contra"  class="badge">--:--:--</span></a><br>
+                 </div>
+
+                 <div id="right" class="col-lg-6 col-md-6 col-xs-12">
+                   <a>heure gpao total <span id="gpao_tot"  class="badge">--:--:--</span></a><br>
+                   <a>heure gpao productif <span id="gpao_prod" class="badge">--:--:--</span></a><br>
+                   <a>heure gpao autre <span id="gpao_autre" class="badge">--:--:--</span></a><br>
+                   <a>heure formation gpao <span  id="gpao_form" class="badge">--:--:--</span></a><br>
+                   <a>heure veille <span  id="gpao_veille" class="badge">--:--:--</span></a><br>
+
+                   <hr/>
+                   <a>Congé (en jour) <span  id="j_conge"  class="badge">0</span></a><br>
+                 </div>
+               </div>
+             </div>
+
+             <div class="tab-pane" id="pt-pane">
+               <div id="loader_pointage">
+                 <i class="fa fa-spinner fa-3x"></i>
+               </div>
+               <div id="pointage">
+                 <h3>Aucune information disponible</h3>
+               </div>
+
+             </div>
+             <div class="tab-pane" id="ldt-pane">
+               <div id="loader_ldt">
+                 <i class="fa fa-spinner fa-3x"></i>
+               </div>
+               <div id="ldt">
+                 <h3>Aucune information disponible</h3>
+               </div>
+             </div>
+
+           </div>
+         </div>
+
+
+         <!--
+         Fin corps
+         -->
+
+       </div>
+       <div class="modal-footer">
+         <button type="button" class="btn btn-default" data-dismiss="modal">Fermé</button>
+       </div>
+     </div>
+
+   </div>
+ </div>
+
+ <script src="/js/index.js"></script>
+ <script src="/js/bundle.min.js"></script>
+ <script>
+
+   var poles = <%-JSON.stringify(fckOpt)%>;
+   var sems = <%-JSON.stringify(semsOpt)%>;
+   $(function() {
+     $( "#datedeb").datepicker({
+       dateFormat: 'dd/mm/yy'
+     }).datepicker("setDate", new Date());
+
+
+     //convertToWeekPicker($("#sem"));
+     //$('input.timepicker').timepicker({});
+
+     var valP = "<%=poleid%>";
+     var valS = "<%=semid%>";
+
+     var valPSp = valP.split(",");
+     var valSSP = valS.split(",");
+
+     var valPoleJson = [];
+     var valSemJson = [];
+     document.getElementById("defaultOpen").click();
+
+     for(var i=0;i<valPSp.length;i++) {
+       valPoleJson.push("" + valPSp[i])
+     }
+
+
+       for(var i=0;i<valSSP.length;i++){
+         valSemJson.push(""+valSSP[i])
+       }
+
+
+
+       var autocompletePole = new SelectPure(".pole-span", {
+       options: poles,
+       value: valPoleJson,
+       multiple: true,
+       autocomplete: true,
+       icon: "fa fa-times",
+       onChange: value => {
+         console.log(value);
+         $("#pole").val(value.toString());
+         },
+   });
+
+
+     var autocompleteSem = new SelectPure(".sem-span", {
+       options: sems,
+       value: valSemJson,
+       multiple: true,
+       autocomplete: true,
+       icon: "fa fa-times",
+       onChange: value => {
+         console.log(value);
+          $("#sem").val(value.toString());
+         },
+   });
+
+     //alert("ok");
+
+
+   } );
+
+
+   function openCity(evt, cityName) {
+     // Declare all variables
+     var i, tabcontent, tablinks;
+
+     // Get all elements with class="tabcontent" and hide them
+     tabcontent = document.getElementsByClassName("tabcontent");
+     for (i = 0; i < tabcontent.length; i++) {
+       tabcontent[i].style.display = "none";
+     }
+
+     // Get all elements with class="tablinks" and remove the class "active"
+     tablinks = document.getElementsByClassName("tablinks");
+     for (i = 0; i < tablinks.length; i++) {
+       tablinks[i].className = tablinks[i].className.replace(" active", "");
+     }
+
+     // Show the current tab, and add an "active" class to the button that opened the tab
+     document.getElementById(cityName).style.display = "block";
+     evt.currentTarget.className += " active";
+   }
+   var date_deb = '';
+   var date_fin = '';
+   /*var result = <%-''//JSON.stringify(result)%>;
+   var dateArray = <%-''//JSON.stringify(dateArray)%>;
+
+   function saveAllHS(){
+      for(var i = 0;i<result.length;i++){
+
+        var data_gh = result[i].gh;
+        var id_pers = result[i].id_pers;
+
+        for(var y = 0;y<dateArray.length;y++){
+          saveHSById(id_pers,y);
+          console.log(id_pers+" "+y);
+        }
+
+
+      }
+   }*/
+
+   function affectationValeurReel(date_cible,id_pers){
+     //alert(date_cible);
+     //alert(""+$("#hs_reel_"+date_cible+"_"+id_pers).val());
+     var value = $("#hs_reel_"+date_cible+"_"+id_pers).val();
+
+     if(value===''){
+       value='00:00:00';
+     }
+      $("#hs_predef_"+date_cible+"_"+id_pers).val(value);
+      $("#hs_predef_"+date_cible+"_"+id_pers).addClass("btn-success");
+   }
+
+   function saveHSById(id,ct_date) {
+     var value = $("#hs_predef_"+ct_date+"_"+id).val();
+     if (value == '') value = '0';
+
+     //alert(isNaN(Number(value)));
+       var date = $("#date_"+ct_date).val();
+
+       //console.log("/saveGh?id_pers="+id+"&date="+encodeURIComponent(date)+"&heure_travaille="+ghH+"&heure_conge="+ghC);
+
+
+       $.ajax({
+         type: "GET",
+         url: "/saveHS?id_pers="+id+"&date="+encodeURIComponent(date)+"&value="+value,
+
+         success: function(msg){
+
+         },
+         error: function (error) {
+
+         }
+       });
+
+
+   }
+
+
+
+   function detail (id,date) {
+
+     clear();
+     var datSplit = date.split('/');
+
+
+     loadpointage(id,''+datSplit[2]+'/'+datSplit[1]+'/'+datSplit[0]);
+     load_resume(id,''+datSplit[2]+'/'+datSplit[1]+'/'+datSplit[0]);
+     loadldt(id,''+datSplit[2]+''+datSplit[1]+''+datSplit[0]);
+
+   }
+
+   function load_resume(id,date){
+
+
+     $("#loader_resume").show();
+      var url = "/get_r_pointage_jour?id_pers="+id+"&pdate="+date;
+
+     $.ajax({
+       type: "GET",
+       url: url,
+       success: function(msg){
+        // $("#pointage").html(msg);
+
+         console.log(msg);
+
+         var data = null;
+
+         try{
+           data = JSON.parse(msg);
+           $("#bio_tot").html(data[0].duree_total);
+           $("#bio_prod").html(data[0].duree_prod);
+           $("#bio_pause").html(data[0].duree_pause);
+           $("#bio_ent").html(data[0].entree);
+           $("#bio_sort").html(data[0].sortie);
+
+           $("#gpao_tot").html(data[0].duree_gpao_total);
+           $("#gpao_prod").html(data[0].duree_prod_gpao);
+           $("#gpao_autre").html(data[0].duree_autre);
+           $("#gpao_veille").html(data[0].duree_veille);
+           $("#gpao_form").html(data[0].duree_formation);
+
+
+           $("#h_contra").html(data[0].hc);
+           $("#j_conge").html(data[0].conge);
+           $("#loader_resume").hide();
+         }catch (e){
+
+         }
+         //$("#date").val(date);
+       },
+       error: function (error) {
+
+         $("#loader_resume").hide();
+         console.log(error);
+         //alert('error; ' +error);
+       }
+     });
+   }
+
+   function clear()
+   {
+     $("#bio_tot").html("...");
+     $("#bio_prod").html("...");
+     $("#bio_pause").html("...");
+     $("#bio_ent").html("...");
+     $("#bio_sort").html("...");
+
+     $("#gpao_tot").html("...");
+     $("#gpao_prod").html("...");
+     $("#gpao_autre").html("...");
+     $("#gpao_veille").html("...");
+     $("#gpao_form").html("...");
+
+
+     $("#h_contra").html("...");
+     $("#j_conge").html("...");
+   }
+
+
+   function loadpointage(idpers,date){
+     $("#loader_pointage").show();
+     var url = "/ajaxPointageDet?pdate="+date+"&id_pers="+idpers;
+
+
+     //alert("List pt de "+idpers+" du "+date);
+     $.ajax({
+       type: "GET",
+       url: url,
+       success: function(msg){
+         $("#pointage").html(msg);
+         $("#loader_pointage").hide();
+         //$("#date").val(date);
+       },
+       error: function (error) {
+         //alert('error; ' +error);
+         $("#loader_pointage").hide();
+       }
+     });
+   }
+
+
+
+   function loadldt(idpers,date){
+     $("#loader_ldt").show();
+       var action  = "getLstLdt";
+       var deb  = ""+date;
+       var fin  = "";
+       var dossier  = "";
+       var etape  = "";
+       var mat  = idpers;
+       var stat  = "";
+       var orderby  = "";
+       var dep  = "";
+
+       url = "http://gpao.easytech.mg/php/link.php?action="+action+"&deb="+deb+"&fin="+fin+"&dossier="+dossier+"&mat="+mat+"&stat="+stat+"&orderby="+orderby+"&dep="+dep+"&etape="+etape;
+
+     //alert("List pt de "+idpers+" du "+date);
+     $.ajax({
+       type: "GET",
+       url: url,
+       success: function(msg){
+         $("#ldt").html(msg);
+         $("#loader_ldt").hide();
+         //$("#date").val(date);
+       },
+       error: function (error) {
+         //alert('error; ' +error);
+         $("#loader_ldt").hide();
+       }
+     });
+   }
+ </script>

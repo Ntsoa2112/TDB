@@ -1,0 +1,296 @@
+
+<% if(req.session.droit==1){
+
+%>
+<% include ../includes/entete.ejs %>
+<% }else{
+
+%>
+<% include ../includes/enteteOperateur.ejs %>
+
+<% }%>
+
+<script>
+    var cars = [];
+    var etape = [];
+    var dataetape = [];
+    var prod = [];
+    var hprod = [];
+    var vitesseb = 0;
+    var vitessen = 0;
+    var quantite = 0;
+    var qualite = 0;
+</script>
+
+<div id="page-wrapper">
+
+<div class="row">
+	 <div class="col-md-12">
+            <div class="panel panel-primary">
+                  <div class="panel-heading">
+                         <h3 class="panel-title"><i class="fa fa-bar-chart-o"></i></h3>
+                             <div class="row">
+                                  <div class="form-group">
+                                      <form method="get" action="/dossier">
+                                       <div class="col-xs-2">
+                                           <select class="form-control" tabindex="-1" id="dossierDash" placeholder = "Dossier" name="dossier" required="true">
+                                               <option value="1">Dossier</option>
+                                            </select>
+                                          </div>
+                                        <div class="col-xs-2">
+                                          <input class="form-control" type="date" id="datetim" name="datedeb"/>
+                                        </div>
+                                         <button type="submit" class="btn btn-info btn-md">ok</button>
+                                      </form>
+                                    </div>
+                               </div>
+                     </div>
+                     <div id="ajaxDossier" class="<%=display%>">
+                            <div class="panel-body">
+                              <% if (dossier!=null){
+                              var delai = "Indéterminé";
+                              var livraison = "Indéterminé";
+                              var vitessesetime = "Indéterminé";
+                              var vitessereel = "Indéterminé";
+                              var volumeprevue = "Indéterminé";
+                              var id_pers_cp = "Indéterminé";
+
+                              if(dossier.delai !=null && dossier.delai != ''){
+                                delai =dossier.delai;
+                              }else if(dossier.date_livr !=null && dossier.date_livr != ''){
+                                livraison =dossier.date_livr;
+                              }else if(dossier.vitesse_estime !=null && dossier.vitesse_estime != ''){
+                                vitessesetime =''+dossier.vitesse_estime;
+                              }else if(dossier.vitesse_reelle !=null && dossier.vitesse_reelle != ''){
+                                vitessereel =''+dossier.vitesse_reelle;
+                              }else if(dossier.volume_prevue !=null && dossier.volume_prevue != ''){
+                                volumeprevue =''+dossier.volume_prevue;
+                              }else if(dossier.id_pers_cp !=null && dossier.id_pers_cp != ''){
+                                id_pers_cp =dossier.id_pers_cp;
+                              }
+                              %>
+                                Delais:<%=delai %><br/>
+                                Date livraison:<%=livraison %><br/>
+                                Vitesse Estimée:<%=vitessesetime %><br/>
+                                Vitèsse Reelle:<%=vitessereel %><br/>
+                                Volume Prévue:<%=volumeprevue %><br/>
+                                id_pers_cp:<%=id_pers_cp %><br/>
+                              <% }%>
+
+                            </div>
+                     </div>
+                </div>
+        </div>
+  </div>
+  <div class="row <%=display%>">
+    <div class="col-md-4">
+       <div class="panel panel-primary">
+           <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-bar-chart-o"></i></h3>
+            </div>
+            <div class="panel-body">
+                 <div class="card-img" id="conPieDossier1"> </div>
+            </div>
+        </div>
+    </div>
+    <link rel="stylesheet" href="/jquery-ui/jquery-ui.css">
+    <script src="/js/jquery-1.12.4.js"></script>
+    <script src="/jquery-ui/jquery-ui.js"></script>
+    <script>
+      $(function() {
+        $( "#datetim" ).datepicker({
+          dateFormat: 'yymmdd'
+        });
+      } );
+    </script>
+
+    <script>
+      var etape = [<% if(dossier!=null)
+      {
+        for(var iEtapes = 0; iEtapes<etapes.length;iEtapes++)
+        {
+          if(iEtapes!=0)
+          {
+                %>,
+          <%
+            }
+          %>
+          '<%= etapes[iEtapes]['libelle'] %>'
+          <%
+        }
+      }
+        %>];
+
+
+
+    </script>
+
+    <script>
+      var dataEtape = [<% if(dossier!=null){
+      for(var iEtapes = 0; iEtapes<etapes.length;iEtapes++){
+      if(iEtapes!=0){
+
+      %>
+        ,
+        <%
+        }
+        var duree = 0;
+        var qte = 0;
+          for (var cpt = 0; cpt<vop.length;cpt++){
+            if(etapes[iEtapes]['libelle']==vop[cpt]['libelle']){
+              duree = duree+ vop[cpt]['duree'];
+
+            }
+          }
+          duree = duree/3600;
+
+
+        %>
+         <%=duree %>
+        <%
+        }}
+        %>];
+
+      var quantit = [<% if(dossier!=null){
+      for(var iEtapes = 0; iEtapes<etapes.length;iEtapes++){
+      if(iEtapes!=0){
+
+      %>
+        ,
+        <%
+        }
+
+          var qte = 0;
+          for (var cpt = 0; cpt<vop.length;cpt++){
+            if(etapes[iEtapes]['libelle']==vop[cpt]['libelle']){
+              qte = qte+ 10;//Number(vop[cpt]['qte']);
+
+            }
+          }
+
+
+        %>
+
+        <%=qte %>
+        <%
+        }}
+        %>];
+
+
+      var lib = "durée";
+      var vitess = [<% if(dossier!=null){
+      for(var iEtapes = 0; iEtapes<etapes.length;iEtapes++){
+      if(iEtapes!=0){
+
+      %>
+        ,
+        <%
+        }
+
+          var vit = 0;
+          var qte = 0;
+          var duree = 0;
+          for (var cpt = 0; cpt<vop.length;cpt++){
+            if(etapes[iEtapes]['libelle']==vop[cpt]['libelle']){
+              qte = qte+ Number(vop[cpt]['qte']);
+              duree = duree+ vop[cpt]['duree'];
+
+            }
+          }
+          if(duree!=0){
+            vit = qte/duree;
+          }
+
+
+
+        %>
+        <%=vit %>
+        <%
+        }}
+        %>];
+    </script>
+
+    <div class="col-md-8">
+       <div class="panel panel-primary">
+           <div class="panel-heading">
+
+             <div class="row col-xs-2 panel-title">
+               <h3 class=""><i class="fa fa-bar-chart-o"></i></h3>
+                 <select class="form-control" tabindex="-1"  placeholder = "" name="dossier" onchange="chartFuction(this.value)" required="true">
+                   <option value="1">Durée</option>
+                   <option value="2">Quantité</option>
+                   <option value="3">Vitesse</option>
+                 </select>
+               </div>
+            </div>
+            <div class="panel-body">
+                 <div class="card-img" id="containerEtape"> </div>
+            </div>
+        </div>
+    </div>
+ </div>
+
+ <div class=" row <%=display%>">
+       <div class="panel panel-primary">
+           <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-bar-chart-o"></i></h3>
+            </div>
+            <div class="panel-body">
+                 <div class="card-img" id="containerQualite"> </div>
+            </div>
+        </div>
+    </div>
+  <script>
+    var datatemp = [];
+    datatemp = dataEtape;
+    function chartFuction(id) {
+
+      if(id==='2'){
+
+        dataEtape = quantit;
+        lib = "quantité";
+      }else if(id==='3'){
+        dataEtape = vitess;
+        lib = "vitesse";
+      }else{
+        dataEtape = datatemp;
+        lib = "durée";
+      }
+
+      $('#containerEtape').highcharts({
+        chart: {
+          type: 'bar'
+        },
+        title: {
+          text: 'Avencement des Etapes du dossier'
+        },
+        xAxis: {
+          categories: etape
+        },
+        yAxis: {
+          min: 0,
+          title: {
+            text: 'Pourcentage'
+          }
+        },
+        legend: {
+          reversed: true
+        },
+        plotOptions: {
+          series: {
+            stacking: 'normal'
+          }
+        },
+        series: [{
+          name: lib,
+          data: dataEtape
+        }]
+      });
+    }
+  </script>
+
+
+
+
+</div>
+

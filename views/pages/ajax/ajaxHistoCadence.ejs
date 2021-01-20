@@ -1,0 +1,144 @@
+<table class = "table table-bordered">
+  <caption>Historique de stock</caption>
+
+  <thead>
+  <tr>
+    <th>Specialite</th>
+    <th>Date</th>
+    <th>Vitesses</th>
+    <th>options</th>
+  </tr>
+  </thead>
+
+  <tbody>
+
+    <%
+    cadence.forEach(function (cadence) {
+      %>
+    <tr>
+      <td><%=cadence.libelle %></td>
+      <td><%=cadence.date_ajout %></td>
+      <td><%=cadence.valeur %></td>
+      <td>
+        <a href="#" onclick="updateModal('<%=cadence.date_ajout %>','<%=cadence.valeur %>','<%=cadence.id_cadence %>');"><i class="fa fa-edit" data-toggle="modal" data-target="#myModalEdit"></i> </a> <span> </span>
+        <a href="#" onclick="updateModal('<%=cadence.date_ajout %>','<%=cadence.valeur %>','<%=cadence.id_cadence %>');"><i class="fa fa-remove" data-toggle="modal" data-target="#myModalDelete"></i> </a>
+      </td>
+    </tr>
+    <%
+    });
+      %>
+  </tbody>
+
+</table>
+
+<!--modal edit-->
+<div id="myModalEdit" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Modification</h4>
+      </div>
+      <div class="modal-body">
+        <div class="form-group col-lg-4">
+          <label for="valeur">Volumes</label>
+          <input type="number" class="form-control" id="valeurEdit" value="0" aria-describedby="emailHelp" placeholder="Entrer la valeur">
+          <input type="hidden" id="idEdit">
+        </div>
+        <div class="form-group col-lg-4">
+          <label for="date">Date</label>
+          <input type="text" class="form-control" id="dateEdit" aria-describedby="emailHelp" placeholder="Selectioner la date">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" onclick="updateCadence();">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!--modal delete-->
+<div id="myModalDelete" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Confirmation</h4>
+      </div>
+      <div class="modal-body">
+        Ete vous sur de vouloir supprimer cette element?
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" onclick="deleteCadence();">OUI</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">NON</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+
+  function updateModal(dateEdit,valeur,id_vol){
+    $( "#dateEdit" ).val(dateEdit);
+    $( "#valeurEdit" ).val(valeur);
+    $( "#idEdit" ).val(id_vol);
+  }
+
+
+
+  function updateCadence(){
+
+    var date_ajout = $( "#dateEdit" ).val();
+    var valeur = $( "#valeurEdit" ).val();
+    var id_cadence = $( "#idEdit" ).val();
+    getStockAlmerys();
+    $.ajax({
+      type: "GET",
+      url: "/update_cadence?id_cadence="+id_cadence+"&date_ajout="+date_ajout+"&valeur="+valeur,
+      success: function(msg){
+
+        //alert('ok');
+        //actualisation de la table
+        //getStockAlmerys();
+        window.location.href = '/cadence_almerys';
+      },
+      error: function (error) {
+        alert('Echec');
+      }
+    });
+  }
+
+
+  function deleteCadence(){
+
+    var id_cadence = $( "#idEdit" ).val();
+    getStockAlmerys();
+    $.ajax({
+      type: "GET",
+      url: "/delete_cadence?id_cadence="+id_cadence+"",
+      success: function(msg){
+
+        //alert('ok');
+        //actualisation de la table
+        //getStockAlmerys();
+        window.location.href = '/cadence_almerys';
+      },
+      error: function (error) {
+        alert('Echec');
+      }
+    });
+  }
+  $(function() {
+
+    $( "#dateEdit" ).datepicker({
+      setDate: new Date(),
+      dateFormat: 'yymmdd'
+    });
+  } );
+</script>
