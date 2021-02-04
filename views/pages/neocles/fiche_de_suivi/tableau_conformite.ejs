@@ -1,0 +1,215 @@
+<form action="/update_conformite/<%= my %>/<%= id %>/<%= ticket %>" method="POST">
+<input class="enregistrer" type="submit" value="Enregistrer"><br><br>
+<table border="2" id="board"> 
+  <tr> 
+      <td colspan="2"></td>
+      <th class="green" colspan="2">TECHNICITE</th>
+      <th class="green" colspan="2">IMPLICATION</th>
+      <th class="green" colspan="3">QUALITE</th>
+      <td rowspan="2" class="vert">Total note/12</td> 
+      <td rowspan="2" class="rejet_tete">Nombre REJET</td>
+      <td rowspan="2" class="vert">seuil</td>                    
+  </tr>
+  <tr>
+      <td class="vert">N°</td>
+      <td class="vert">Ticket</td>
+      <td class="cyan">Technicité</td>
+      <td class="cyan">Recherche personnelle</td>
+      <td class="cyan">Inactivité sur les tickets</td>
+      <td class="cyan">Auto affectation</td>
+      <td class="cyan">Description et compréhension du ticket</td>
+      <td class="cyan">Pertinence des Informations</td>
+      <td class="cyan">Prise en compte des consignes et application des procédures</td>
+  </tr>
+  <% 
+    var rejet, total = [], inactivite="", affect="", implic = 0, somme1=0, somme2=0, somme3=0, m1, m2, m3, total_rejet = 0, col_rejet, seuil_ticket_pers=0;
+    var inexistante = 0, basique = 0, superficielle = 0, avancee = 0, tre_avancee = 0, donne_tec, nbr_inactivite_oui = 0, nbr_inactivite_non = 0;
+    var nbr_affect_oui = 0, nbr_affect_non = 0;
+    if(fiche){
+      seuil_ticket_pers = seuil_ticket;
+    for(var i=1; i<=ticket_tec.rowCount; i++){
+      total[i-1] = qualite1.rows[i-1].note_q1 + qualite2.rows[i-1].note_q2 + qualite3.rows[i-1].note_q3 ;
+      somme1 = somme1 + qualite1.rows[i-1].note_q1;
+      somme2 = somme2 + qualite2.rows[i-1].note_q2;
+      somme3 = somme3 + qualite3.rows[i-1].note_q3;
+      if(total >= seuil_ticket ){
+        rejet = 0;
+        col_rejet = "verte";
+      }
+      else{
+        rejet = 1;
+        col_rejet = "rouge";
+      }
+      total_rejet = total_rejet + rejet;
+      if(imp.rowCount != 0){
+        inactivite = imp.rows[i-1].inactivite;
+        if(inactivite == "OUI"){
+          nbr_inactivite_oui = nbr_inactivite_oui + 1;
+        }
+        else if(inactivite == "NON"){
+          nbr_inactivite_non = nbr_inactivite_non + 1;
+        }
+        affect = imp.rows[i-1].auto_affectation;
+        if(affect == "OUI"){
+          nbr_affect_oui = nbr_affect_oui + 1;
+        }
+        else if(affect== "NON"){
+          nbr_affect_non = nbr_affect_non + 1;
+        }
+        implic = 1;
+      }
+    %>
+    <tr>
+        <td class="green"><%= i %></td>
+        <td><%= ticket_tec.rows[i-1].nom %></td>
+        <td><% if(ticket_tec.rows[i-1].note_tec){
+                  donne_tec = ticket_tec.rows[i-1].note_tec;
+                  if(donne_tec == 1){
+                    inexistante = inexistante + 1;
+                  }
+                  else if(donne_tec == 2){
+                    basique = basique + 1;
+                  }
+                  else if(donne_tec == 3){
+                    superficielle = superficielle + 1;
+                  }
+                  else if(donne_tec == 4){
+                    avancee = avancee + 1;
+                  }
+                  else if(donne_tec == 5){
+                    tre_avancee = tre_avancee + 1;
+                  }
+          %>
+          <%=  ticket_tec.rows[i-1].note_tec  %>
+          <%
+        }
+          %></td>
+        <td><%= ticket_tec.rows[i-1].t3 %></td>
+        <td>
+          <select name="inactivite<%= i %>" id="implic">
+            <option value="<%= inactivite %>"><%= inactivite %></option>
+            <option value="OUI">OUI</option>
+            <option value="NON">NON</option>                   
+          </select>
+        </td>
+        <td>
+          <select name="affect<%= i %>" id="implic">
+            <option value="<%= affect %>"><%= affect %></option>
+            <option value="OUI">OUI</option>
+            <option value="NON">NON</option>                   
+          </select>
+        </td>
+          <td><%= qualite1.rows[i-1].note_q1 %></td>
+          <td><%= qualite2.rows[i-1].note_q2 %></td>
+          <td><%= qualite3.rows[i-1].note_q3 %></td>
+        <td><%= total[i-1] %></td>
+        <td class="<%= col_rejet %>"><%= rejet %></td>
+        <td><%= seuil_ticket %></td>
+    </tr>
+    <input type="hidden" name="id_ticket<%= i %>" value="<%= ticket_tec.rows[i-1].ticket_id %>">
+    <input type="hidden" name="implic" value="<%=implic%>">
+    <%
+    }
+    m1 = (somme1 / ticket_tec.rowCount).toFixed(2);
+    m2 = (somme2 / ticket_tec.rowCount).toFixed(2);
+    m3 = (somme3 / ticket_tec.rowCount).toFixed(2);
+  }
+  else{
+    for(var i=1; i<=ticket; i++){
+    %>
+    <tr>
+      <td class="green"><%= i %></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>
+        <select name="" id="implic">
+          <option value=""></option>
+          <option value="OUI">OUI</option>
+          <option value="NON">NON</option>                   
+        </select>
+      </td>
+      <td>
+        <select name="" id="implic">
+          <option value=""></option>
+          <option value="OUI">OUI</option>
+          <option value="NON">NON</option>                   
+        </select>
+      </td>
+        <td></td>
+        <td></td>
+        <td></td>
+      <td></td>
+      <td class="rejet"></td>
+      <td></td>
+  </tr>
+    <%
+}
+  }
+  %>
+  <tr>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td class="vert">Moyenne Qualité</td>                  
+    <td><%= m1 %></td>
+    <td><%= m2 %></td>
+    <td><%= m3 %></td>
+    <td class="green">Total Nombre de Rejet</td>
+    <td class="green"><%= total_rejet %></td>
+    <td></td>
+  </tr>
+ </table><br><br>
+
+ <% include Gqualite.ejs %>
+ <% include Gnote_mois.ejs %>
+ <% include Gtechnicite.ejs %>
+ <% include Ginactivite.ejs %>
+ <% include Gaffectation.ejs %>
+ <!-- <% include lineaire.ejs %> -->
+
+ <!-- <details>
+    <summary>Graphe Qualité</summary>
+    <div class="faq__content">
+        <% include Gqualite.ejs %>
+    </div>
+  </details>
+  <details>
+    <summary>Graphe note mensuelle</summary>
+    <div class="faq__content">
+        <% include Gnote_mois.ejs %>
+    </div>
+  </details>
+  <details>
+    <summary>Graphe Technicité</summary>
+    <div class="faq__content">
+        <% include Gtechnicite.ejs %>
+    </div>
+  </details>
+  <details>
+      <summary>Graphe Implication - Inactivité sur les tickets traités avec action
+          </summary>
+      <div class="faq__content">
+          <% include Ginactivite.ejs %>
+      </div>
+    </details>
+  <details>
+      <summary>Graphe Implication- Auto affectation de ticket</summary>
+      <div class="faq__content">
+          <% include Gaffectation.ejs %>
+      </div>
+    </details>
+    <details>
+  <summary>Graphe CONFORMITE ISO 2859   </summary>
+  <div class="faq__content">
+      <% include lineaire.ejs %>
+  </div>
+</details> -->
+</form>
+
+
+
+
+

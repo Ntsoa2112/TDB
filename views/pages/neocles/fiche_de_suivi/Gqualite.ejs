@@ -1,0 +1,58 @@
+
+
+        <body>
+                <h3 align="center">GRAPHE QUALITE</h3>
+                <div class="Gqualite"><canvas id="barChart" ></canvas></div><br><br><br>
+                <script>
+                        var vehicles = ["Description et\ncompréhension du ticket",
+                                "Pertinence des informations",
+                                "Prise en compte des\nconsignes et application\ndes procédures"];
+                        var percentage = [<%= m1 %>,<%= m2 %>,<%= m3 %>];
+                        var ctx = document.getElementById("barChart");
+                        var lineChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                        labels: vehicles,
+                        datasets: [{
+                        data: percentage,
+                        label: "Moyenne qualité",
+                        backgroundColor: "orange",
+                        fill: false
+                        }]
+                        },
+                        options: {  
+                                label:{
+                                  position:'bottom'
+                                },
+                                plugins: {
+                                datalabels: {
+                                        color: '#ffffff',
+                                        fontSize:25
+                                }
+                                },
+                              
+                                scales: {
+                                        yAxes: [{
+                                                ticks: {
+                                                beginAtZero: true,
+                                                min: 0,
+                                                max:4,
+                                                stepSize:1,
+                                                }
+                                        }],
+                                        xAxes: [{                                                
+                                                ticks: {
+                                                autoSkip: false,
+                                                maxRotation:0,
+                                                minRotation:0
+                                                }
+                                        }]
+                                        }
+                                 },
+                        });
+                </script>    
+        </body>
+
+       
+            
+           

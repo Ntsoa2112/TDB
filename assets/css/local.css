@@ -81,20 +81,291 @@ tbody.scrol {
 
 
 th, td {
-  text-align: center !important;
-  padding: 8px !important;
+  text-align: center;
+  padding: 8px;
 }
 .ui-datepicker-calendar th, td {
-  text-align: center !important;
-  padding: 0px !important;
+  text-align: center ;
+  padding: 0px;
 }
 
 tr:nth-child(even){background-color: #edf7fc !important}
 
 th {
+  text-align: center;
+  background-color: #136ea2 ;
+  color: white;
+}
+
+/*css Odilon */
+
+.green{
+  background-color: black !important;
+  color: #09D780 !important;
+}
+
+.vert{
+  background-color: #09D780;
+  color: black;  
+
+}
+
+.cyan{
+  background-color: #8EFAFA;
+  /* color: black; */
+  font-size: small;
+}
+
+#mois{
+  color: black;
+  /* width: 175px; */
+}
+
+#implic{
+  /* width: 310px;
+  height: 25px;
+  color: black; */
+  font-size: small;
+  /* border: none; */
+  text-align: none;
+}
+
+.rouge{
+  background-color: #F9CBC0;
+  color: red;
+}
+.verte{
+  background-color: #65d838;
+  color: rgb(8, 7, 7);
+}
+
+.rejet_tete{
+  background-color: #F0EAE8;
+}
+
+#board tr{
+  height: 25px;
+
+}
+
+/* **************** */
+/* css luc */    
+.titre{
+  background: black;
+  color:rgb(28, 209, 118);
+}
+td input{
+  width:205px;
+}
+#titrecol {
+  font-size:normal;
+  text-justify: auto;
+  font-size: 20px;
+  margin-top:50px;
+}
+#titrecol1 {
+  font-size:normal;
+  text-align:left;
+  margin-left:10px;
+  text-justify: auto;
+}
+.qualite{
+  background:rgb(28, 209, 118);
+  color:black;
+}
+.note{
+  background: black;
+  color:white;
+}
+.orange{
+  background: rgb(255, 199, 96);
+}
+.tabl td{
+ /* text-align:left; */
+ margin-left:-10px;
+}
+.icobout{
+  margin-left:10px;
+  border: 1px solid rgb(12, 130, 199);
+  padding:1px 5px;
+}
+.enregistrer{
+  padding:5px 2px;
+  width:100px;
+  height:35px;;
+  background:rgb(28, 209, 118);
+  color: rgb(255, 255, 255);
+  border: 2px solid rgb(8, 238, 65);
+  border-radius:5%;
+  margin-top:-70px;
+  margin-left:1360px;
+}
+.enregistrer2{
+  padding:5px 2px;
+  width:100px;
+  height:35px;;
+  background:rgb(28, 209, 118);
+  color: rgb(17, 14, 14);
+  border: 2px solid rgb(8, 238, 65);
+  border-radius:5%;
+  margin-top:-72px;
+  margin-left:800px;
+}
+.enregistrer:hover{
+  background: chartreuse;
+  transition: 0.7s;
+  color:black;
+}
+.enregistrer2:hover{
+  background: chartreuse;
+  transition: 0.7s;
+  color:black;
+}
+.fikiab{
+  width:350px;
+  height:5px;
+  background: #030303;
+}
+.cent{
   text-align: center !important;
-  background-color: #136ea2 !important;
-  color: white !important;
+}
+.no{
+  font-size: 20px;
+  color:rgb(2, 1, 1);
+  
+}
+
+summary {
+  font-size: 1.25rem;
+  font-weight: 600;
+  background-color:#7cb8db;
+  color: rgb(1, 7, 97);
+  padding: 1rem;
+  margin-bottom: 1rem;
+  outline: none;
+  border-radius: 0.25rem;
+  text-align: left;
+  cursor: pointer;
+  position: relative;
+  text-align: center;
+  font-size: 18px;
+  
+}
+details > summary::after {
+  position: absolute;
+  content: "+";
+  right: 20px;
+}
+details[open] > summary::after {
+  position: absolute;
+  content: "-";
+  right: 20px;
+}
+details > summary::-webkit-details-marker {
+  display: none;
+}
+details[open] summary ~ * {
+  animation: sweep .5s ease-in-out;
+}
+@keyframes sweep {
+  0%    {opacity: 0; margin-top: -10px}
+  100%  {opacity: 1; margin-top: 0px}
+}
+.Gqualite{
+  width: 1100px;
+  height: 500px;
+  text-align: center;
+  margin-left:250px;
+}
+.Gnote{
+  width: 1100px;
+  height: 500px;
+  margin-left: 250px;
+}
+/* fichecoaching css  */
+#board tr th{
+  color: green;
+
+}
+
+input,
+label {
+    margin: .4rem 0;
+    color:black;
+}
+.cul{
+  list-style: none;
+}
+.cli{
+  display: inline;
+}
+.cli input{
+  color: white;
+  width:80px;
+  height:30px;
+  background: #0069d9;
+  border: 1px solid rgb(17, 0, 255);
+  border-radius: 5%;
+}
+.cli input:hover{
+  background: rgb(71, 203, 255);
+  transition-duration: 0.6s;
+}
+
+.tabcoaching{
+  font-family: Arial;
+  font-size: 15px;
+}
+.tabcoaching .coultab{
+  background: brown;
+  color: beige;
+  text-align: center;           
+}
+textarea{
+  width:460px;
+  height:200px;
+  resize: none;
+  padding: 10px;
+}
+.cont{
+  float: right;
+  margin-right:10px;
+  margin-bottom:10px;
+}
+.cont input{
+  width: 100px;
+}
+.cul .cli .red{
+background: red;
+}
+.cul .cli .orange{
+  background: orangered;
+  }
+.cul .cli .jaune{
+  background: yellow;
+  color: #000;
+}
+.cul .cli .violet{
+  background: violet;
+}
+.vid{
+  background: beige;
+  color: black;
+  width:300px;
+  height:200px;
+}
+.cul .cli .vert{
+background: green;
+}
+.cul .cli .gris{
+  background: gray;
+}
+/* fichecoaching css  */
+
+/* css luc */
+/* **************** */
+.tit{
+  margin-left: 20px;
 }
 
 .ldt_date

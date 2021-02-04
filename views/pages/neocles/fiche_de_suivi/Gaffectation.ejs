@@ -1,0 +1,29 @@
+
+<html>
+  <head>
+    <script type="text/javascript">
+      google.charts.load("current", {packages:["corechart"]});
+      google.charts.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['Task', 'Hours per Day'],
+          ['Tickets auto-attribués',    <%= nbr_affect_oui %>],
+          ['Tickets non auto-attribués',      <%= nbr_affect_non %>]
+        ]);
+
+        var options = {
+          title: '',
+          is3D: true,
+          width:800,
+          height:400,
+        };
+        var chart = new google.visualization.PieChart(document.getElementById('affectation'));
+        chart.draw(data, options);
+      }
+    </script>
+  </head>
+  <body>
+      <h3 align="center">GRAPHE IMPLICATION- AUTO AFFECTATION DE TICKET</h3>
+    <div  align="center" id="affectation"></div>
+  </body>
+</html>

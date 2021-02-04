@@ -1,0 +1,870 @@
+<form action="/update_suivi_details/<%= my %>/<%= id %>/<%= ticket %>/<%= id_fiche %>" method="POST">
+    <input class="enregistrer" type="submit" value="Enregistrer"><br><br>
+    <table border="1" class="tabl">
+        <tr>
+        <td id="titrecol" class="titre" rowspan="2">Tickets<br><input disabled class="fikiab" type="text"></td>
+        <% 
+        for(var i=1; i<=ticket; i++){
+        %>
+            <td class="titre"><%= i %></td>
+        <%
+        }
+        %>
+        </tr>
+        <!-- ligne vide -->
+        <tr>
+        <% for(var i=1; i<=ticket; i++){
+        %>
+            <td><input type="text" name="ticket<%= i %>" id="" value="<%= donne_ticket.rows[i-1].nom %>"></td>
+        <%
+        }
+        %>
+        </tr>
+        <tr>
+            <!-- ligne vide -->
+        <td id="titrecol1"></td>
+        <% for(var i=1; i<=ticket; i++){
+        %>
+            <td>+</td>
+        <%
+        }
+        %>
+        
+        </tr>
+        <tr>
+            <!-- Qualité- Description et comprehension du ticket -->
+        <td id="titrecol1" class="qualite">Qualité- Description et comprehension du ticket</td>
+        <% for(var i=1; i<=ticket; i++){
+        %>
+            <td></td>
+        <%
+        }
+        %>
+        </tr> 
+        <tr>
+            <!-- Qualité- Description et comprehension du ticketbi bi-chat-left-text -->
+        <td id="titrecol1">Sollicitation du client bien décrite</td>
+        <%
+        var val, e=0; 
+        for(var i=1; i<= qualite.rowCount; i++){
+            if(qualite.rows[i-1].type_qaulite == 1){
+                val = 0;
+                if(qualite.rows[i-1].q1 === true){
+                    val = 1;
+                };
+                e = e + 1;
+        %>
+            <td id="chel1<%=e%>"><select name="q1l1_<%= e %>" id="selectq1_<%= e %>_l1"><option value="<%= val %>"><%= val %></option><option value="0">0</option><option value="1">1</option></select><boutton class="icobout"><i  id="tacl1<%=e%>" class="glyphicon glyphicon-pencil" style="color:#257ac0"></i></button></td>
+        <%
+            }
+        }
+        %>
+        
+        </tr> 
+        <tr>
+            <!-- Questionnement complet/récup infos complementaire -->
+        <td id="titrecol1">Questionnement complet/récup infos complementaire</td>
+        <%
+        e = 0;
+        for(var i=1; i<= qualite.rowCount; i++){
+            if(qualite.rows[i-1].type_qaulite === 1){
+                val = 0;
+                if(qualite.rows[i-1].q2 === true){
+                    val = 1;
+                };
+                e = e + 1;
+        %>
+        <td id="chel2<%=e%>"><select name="q1l2_<%= e %>" id="selectq1_<%= e %>_l2"><option value="<%= val %>"><%= val %></option></option><option value="0">0</option><option value="1">1</option></select><boutton class="icobout"><i  id="tacl2<%=e%>" class="glyphicon glyphicon-pencil" style="color:#257ac0"></i></button></td>
+        <%
+            }
+        }
+        %>
+        </tr> 
+        <tr>
+            <!-- Hors sujet(Sollicitation du client par mail/front office -->
+        <td id="titrecol1">Hors sujet(Sollicitation du client par mail/front office)</td>
+        <%
+        e = 0;
+        for(var i=1; i<= qualite.rowCount; i++){
+            if(qualite.rows[i-1].type_qaulite === 1){
+                val = 0;
+                if(qualite.rows[i-1].q3 === true){
+                    val = 1;
+                };
+                e = e + 1;
+        %>
+        <td id="chel3<%=e%>"><select name="q1l3_<%= e %>" id="selectq1_<%= e %>_l3"><option value="<%= val %>"><%= val %></option><option value="0">0</option><option value="1">1</option></select><boutton class="icobout"><i  id="tacl3<%=e%>" class="glyphicon glyphicon-pencil" style="color:#257ac0"></i></button></td>
+        <%
+            }
+        }
+        %>
+        </tr>   
+        <tr>
+            <!-- Traitement complet du ticket -->
+        <td id="titrecol1">Traitement complet du ticket</td>
+        <%
+        e = 0
+        for(var i=1; i<= qualite.rowCount; i++){
+            if(qualite.rows[i-1].type_qaulite === 1){
+                val = 0;
+                if(qualite.rows[i-1].q4 === true){
+                    val = 1;
+                };
+                e = e + 1;
+        %>
+        <td id="chel4<%=e%>"><select name="q1l4_<%= e %>" id="selectq1_<%= e %>_l4"><option value="<%= val %>"><%= val %></option><option value="0">0</option><option value="1">1</option></select><boutton class="icobout"><i  id="tacl4<%=e%>" class="glyphicon glyphicon-pencil" style="color:#257ac0"></i></button></td>
+        <%
+            }
+        }
+        %>
+        </tr>
+        <tr>
+            <!-- Traitement complet du ticket -->
+        <td id="titrecol1"  class="note">Note</td>
+        <%
+        e = 0;
+        for(var i=1; i<= qualite.rowCount; i++){
+            if(qualite.rows[i-1].type_qaulite === 1){
+                e = e + 1;
+        %>
+            <td class="no" id="noteq1_<%= e %>"><span id="spnoteq1<%= e %>"><%= qualite.rows[i-1].note %></span></td>
+            <%
+            }
+        }
+        %>
+        </tr>  
+        <tr>
+            <!-- ligne vide orange -->
+        <td id="titrecol1" class="orange"></td>
+        <% for(var i=1; i<=ticket; i++){
+            %>
+            <td class="orange">.</td>
+            <%
+            }
+        %>
+        </tr>
+        <tr>
+                <!-- Pertinence des informations -->
+            <td id="titrecol1" class="qualite">Pertinence des informations</td>
+            <% for(var i=1; i<=ticket; i++){
+                %>
+                <td></td>
+                <%
+                }
+            %>
+        </tr> 
+        <tr>
+            <!-- Outil(s) utilisé(s) bien indiqué(s) -->
+        <td id="titrecol1">Outil(s) utilisé(s) bien indiqué(s)</td>
+        <%
+        e = 0;
+        for(var i=1; i<= qualite.rowCount; i++){
+            if(qualite.rows[i-1].type_qaulite === 2){
+                val = 0;
+                if(qualite.rows[i-1].q1 === true){
+                    val = 1;
+                };
+                e = e + 1;
+        %>
+            <td id="chel5<%=e%>"><select name="q2l5_<%= e %>" id="selectq2_<%= e %>_l1"><option value="<%= val %>"><%= val %></option><option value="0">0</option><option value="1">1</option></select><boutton class="icobout"><i  id="tacl5<%=e%>" class="glyphicon glyphicon-pencil" style="color:#257ac0"></i></button></td>
+            <%
+            }
+        }
+        %>
+        </tr> 
+        <tr>
+            <!-- Pertinence des informations(ATD,clôture,mail envoyé au client) -->
+        <td id="titrecol1">Pertinence des informations(ATD,clôture,mail envoyé au client)</td>
+        <%
+        e = 0;
+        for(var i=1; i<= qualite.rowCount; i++){
+            if(qualite.rows[i-1].type_qaulite === 2){
+                val = 0;
+                if(qualite.rows[i-1].q2 === true){
+                    val = 1;
+                };
+                e = e + 1;
+        %>
+            <td id="chel6<%=e%>"><select name="q2l6_<%= e %>" id="selectq2_<%= e %>_l2"><option value="<%= val %>"><%= val %></option><option value="0">0</option><option value="1">1</option></select><boutton class="icobout"><i  id="tacl6<%=e%>" class="glyphicon glyphicon-pencil" style="color:#257ac0"></i></button></td>
+            <%
+            }
+        }
+        %>
+        </tr> 
+        <tr>
+            <!-- Relecture -->
+        <td id="titrecol1">Relecture</td>
+        <%
+        e = 0;
+        for(var i=1; i<= qualite.rowCount; i++){
+            if(qualite.rows[i-1].type_qaulite === 2){
+                val = 0;
+                if(qualite.rows[i-1].q3 === true){
+                    val = 1;
+                };
+                e = e + 1;
+        %>
+            <td id="chel7<%=e%>"><select name="q2l7_<%= e %>" id="selectq2_<%= e %>_l3"><option value="<%= val %>"><%= val %></option><option value="0">0</option><option value="1">1</option></select><boutton class="icobout"><i  id="tacl7<%=e%>" class="glyphicon glyphicon-pencil" style="color:#257ac0"></i></button></td>
+            <%
+            }
+        }
+        %>
+        </tr>   
+        <tr>
+            <!-- Renseignement correct des informations en cas de recherche personnelle -->
+        <td id="titrecol1">Renseignement correct des informations en cas de recherche personnelle</td>
+        <%
+        e = 0;
+        for(var i=1; i<= qualite.rowCount; i++){
+            if(qualite.rows[i-1].type_qaulite === 2){
+                val = 0;
+                if(qualite.rows[i-1].q4 === true){
+                    val = 1;
+                };
+                e = e + 1;
+        %>
+            <td id="chel8<%=e%>"><select name="q2l8_<%= e %>" id="selectq2_<%= e %>_l4"><option value="<%= val %>"><%= val %></option><option value="0">0</option><option value="1">1</option></select><boutton class="icobout"><i  id="tacl8<%=e%>" class="glyphicon glyphicon-pencil" style="color:#257ac0"></i></button></td>
+            <%
+            }
+        }
+        %>
+        </tr>
+        <tr>
+            <!-- Note -->
+        <td id="titrecol1"  class="note">Note</td>
+        <%
+        e = 0;
+        for(var i=1; i<= qualite.rowCount; i++){
+            if(qualite.rows[i-1].type_qaulite === 2){
+                e = e + 1;
+        %>
+            <td class="no" id="noteq2_<%= e %>"><span id="spnoteq2<%= e %>"><%= qualite.rows[i-1].note %></span></td>
+            <%
+            }
+        }
+        %>
+        </tr>  
+        <tr>
+            <!-- ligne vide orange -->
+        <td id="titrecol1" class="orange"></td>
+        <% for(var i=1; i<=ticket; i++){
+            %>
+            <td class="orange">.</td>
+            <%
+            }
+        %>
+        </tr>  
+        <!-- TECHNICITE- Performance technique -->
+        <td id="titrecol1" class="qualite">TECHNICITE- Performance technique</td>
+        <% for(var i=1; i<=ticket; i++){
+            %>
+            <td></td>
+            <%
+            }
+        %>
+        </tr> 
+        <tr>
+            <!-- Analyse -->
+        <td id="titrecol1">Analyse</td>
+        <%
+        var tec; 
+        var tec_val;
+
+        for(var i=1; i<=technicite.rowCount; i++){
+            tec = "Inexistante/erroné"
+            tec_val = 1
+            if(technicite.rows[i-1].note == 2){
+                tec = "Basique";
+                tec_val = 2;
+            }
+            else if(technicite.rows[i-1].note == null){
+                tec = "";
+                tec_val = "";
+            }
+            else if(technicite.rows[i-1].note == 3){
+                tec = "Superficielle";
+                tec_val = 3;
+            }
+            else if(technicite.rows[i-1].note == 4){
+                tec = "Avancée";
+                tec_val = 4;
+            }
+            else if(technicite.rows[i-1].note == 5){
+                tec = "Trés avancée";
+                tec_val = 5;
+            }
+            %>
+            
+            <td id="chel9<%=i%>">
+                <select name="tec1_<%= i %>" id="tec_<%= i %>">
+                    <option value="<%= tec_val %>"><%= tec %></option>
+                    <option value="1">Inexistante/erroné</option>
+                    <option value="2">Basique</option>
+                    <option value="3">Superficielle</option>
+                    <option value="4">Avancée</option>
+                    <option value="5">Trés avancée</option>
+                </select><boutton class="icobout"><i id="tacl9<%=i%>"class="glyphicon glyphicon-pencil" style="color:#257ac0"></i></button>
+            </td>
+            <%
+            }
+        %>
+        </tr> 
+        <tr>
+            <!-- Interpretation des analyse/tests faits -->
+        <td id="titrecol1">Interpretation des analyse/tests faits</td>
+        <% for(var i=1; i<=technicite.rowCount; i++){
+            %>
+            <td id="chel10<%=i%>"><select name="tec2_<%= i %>"><option value="<%= technicite.rows[i-1].t2 %>"><%= technicite.rows[i-1].t2 %></option><option value="OUI">OUI</option><option value="NON">NON</option></select><boutton class="icobout"><i id="tacl10<%=i%>"class="glyphicon glyphicon-pencil" style="color:#257ac0"></i></button></td>
+            <%
+            }
+        %>
+        </tr> 
+        <tr>
+            <!-- Recherche personnelle hors jarvis -->
+        <td id="titrecol1">Recherche personnelle hors jarvis</td>
+        <% for(var i=1; i<=technicite.rowCount; i++){
+            %>
+            <td id="chel16<%=i%>"><select name="tec3_<%= i %>"><option value="<%= technicite.rows[i-1].t3 %>"><%= technicite.rows[i-1].t3 %></option><option value="OUI">OUI</option><option value="NON">NON</option></select><boutton class="icobout"><i id="tacl16<%=i%>"class="glyphicon glyphicon-pencil" style="color:#257ac0"></i></button></td>
+            <%
+            }
+        %>
+        </tr>   
+        <tr>
+            <!-- Note -->
+        <td id="titrecol1"  class="note">Note</td>
+        <%
+        var note_tec; 
+        for(var i=1; i<=technicite.rowCount; i++){
+            note_tec = technicite.rows[i-1].note;
+            if(note_tec == null){
+                note_tec = 0;
+            }
+            %>
+            <td class="no" id="notetec_<%= i %>"><span id="spntec<%= i %>"><%= note_tec %></span></td>
+            <%
+            }
+        %>
+        </tr>
+        <tr>
+            <!-- ligne vide orange -->
+        <td id="titrecol1" class="orange"></td>
+        <% for(var i=1; i<=ticket; i++){
+            %>
+            <td class="orange">.</td>
+            <%
+            }
+        %>
+        </tr>  
+        <!-- Suivi de la bonne gestion de la vie d'un ticket/consignes/procédures -->
+        <td id="titrecol1" class="qualite">Suivi de la bonne gestion de la vie d'un ticket/consignes/procédures</td>
+        <% for(var i=1; i<=ticket; i++){
+        %>
+        <td></td>
+        <%
+        }
+    %>
+        </tr> 
+        <tr>
+            <!-- respect SLA du ticket -->
+        <td id="titrecol1">Respect SLA du ticket</td>
+        <%
+        e = 0;
+        for(var i=1; i<= qualite.rowCount; i++){
+            if(qualite.rows[i-1].type_qaulite === 3){
+                val = 0;
+                if(qualite.rows[i-1].q1 === true){
+                    val = 1;
+                };
+                e = e + 1;
+        %>
+        <td id="chel12<%=e%>"><select name="q3l12_<%= e %>" id="selectq3_<%= e %>_l1"><option value="<%= val %>"><%= val %></option><option value="0">0</option><option value="1">1</option></select><boutton class="icobout"><i id="tacl12<%=e%>" class="glyphicon glyphicon-pencil" style="color:#257ac0"></i></button></td>
+            <%
+            }
+        }
+        %>
+        </tr> 
+        <tr>
+            <!-- Suivi consigne spécifique du client -->
+        <td id="titrecol1">Suivi consigne spécifique du client</td>
+        <%
+        e = 0;
+        for(var i=1; i<= qualite.rowCount; i++){
+            if(qualite.rows[i-1].type_qaulite === 3){
+                val = 0;
+                if(qualite.rows[i-1].q2 === true){
+                    val = 1;
+                };
+                e = e + 1;
+        %>
+        <td id="chel13<%=e%>"><select name="q3l13_<%= e %>" id="selectq3_<%= e %>_l2"><option value="<%= val %>"><%= val %></option><option value="0">0</option><option value="1">1</option></select><boutton class="icobout"><i id="tacl13<%=e%>" class="glyphicon glyphicon-pencil" style="color:#257ac0"></i></button></td>
+            <%
+            }
+        }
+        %>
+        </tr> 
+        <tr>
+            <!-- Suivi consigne interne-->
+        <td id="titrecol1">Suivi consigne interne</td>
+        <%
+        e = 0;
+        for(var i=1; i<= qualite.rowCount; i++){
+            if(qualite.rows[i-1].type_qaulite === 3){
+                val = 0;
+                if(qualite.rows[i-1].q3 === true){
+                    val = 1;
+                };
+                e = e + 1;
+        %>
+        <td id="chel14<%=e%>"><select name="q3l14_<%= e %>" id="selectq3_<%= e %>_l3"><option value="<%= val %>"><%= val %></option><option value="0">0</option><option value="1">1</option></select><boutton class="icobout"><i id="tacl14<%=e%>" class="glyphicon glyphicon-pencil" style="color:#257ac0"></i></button></td>
+            <%
+            }
+        }
+        %>
+        </tr>   
+        <tr>
+            <!-- Suivi de procédure -->
+        <td id="titrecol1">Suivi de procédure</td>
+        <%
+        e = 0;
+        for(var i=1; i<= qualite.rowCount; i++){
+            if(qualite.rows[i-1].type_qaulite === 3){
+                val = 0;
+                if(qualite.rows[i-1].q4 === true){
+                    val = 1;
+                };
+                e = e + 1;
+        %>
+        <td id="chel15<%=e%>"><select name="q3l15_<%= e %>" id="selectq3_<%= e %>_l4"><option value="<%= val %>"><%= val %></option><option value="0">0</option><option value="1">1</option></select><boutton class="icobout"><i id="tacl15<%=e%>" class="glyphicon glyphicon-pencil" style="color:#257ac0"></i></button></td>
+        <%
+            }
+        }
+        %>
+        </tr>
+        <tr>
+            <!-- Note -->
+        <td id="titrecol1"  class="note">Note</td>
+        <%
+        e = 0;
+        for(var i=1; i<= qualite.rowCount; i++){
+            if(qualite.rows[i-1].type_qaulite === 3){
+                e = e + 1;
+        %>
+            <td class="no" id="noteq3_<%= e %>"><span id="spnoteq3<%= e %>"><%= qualite.rows[i-1].note %></span></td>
+            <%
+            }
+        }
+        %>
+        </tr>  
+        <tr>
+    </table>
+</form>
+<!-- <script src="js/neocles/js.js"></script> -->
+<script>
+    // l1
+    for(var i=1; i<=20; i++){
+        $("#tacl1"+i).click(function(){
+        var getid =this.id 
+        var str = getid.substr(5,2);
+
+        if(!$("#inpl1"+str).length){
+            // alert(i),
+            $("#chel1"+str).append(                
+            $(          
+            "<input type='text' name ='inpl1"+str+"' id='inpl1"+str+"'>",
+            ));
+        }else{
+            if($("#inpl1"+str).length){
+                $("#inpl1"+str).remove();
+            }
+        }
+        });
+    }
+    // l2
+    for(var i=1; i<=20; i++){
+        $("#tacl2"+i).click(function(){
+        var getid =this.id 
+        var str = getid.substr(5,2);
+
+        if(!$("#inpl2"+str).length){
+            // alert(i),
+            $("#chel2"+str).append(                
+            $(          
+            "<input type='text' name='inpl2"+str+"' id='inpl2"+str+"'>",
+            ));
+        }else{
+            if($("#inpl2"+str).length){
+                $("#inpl2"+str).remove();
+            }
+        }
+        });
+    }
+    // l3
+    for(var i=1; i<=20; i++){
+        $("#tacl3"+i).click(function(){
+        var getid =this.id 
+        var str = getid.substr(5,2);
+
+        if(!$("#inpl3"+str).length){
+            // alert(i),
+            $("#chel3"+str).append(                
+            $(          
+            "<input type='text' name='inpl3"+str+"' id='inpl3"+str+"'>",
+            ));
+        }else{
+            if($("#inpl3"+str).length){
+                $("#inpl3"+str).remove();
+            }
+        }
+        });
+    }
+    // l4
+    for(var i=1; i<=20; i++){
+        $("#tacl4"+i).click(function(){
+        var getid =this.id 
+        var str = getid.substr(5,2);
+
+        if(!$("#inpl4"+str).length){
+            // alert(i),
+            $("#chel4"+str).append(                
+            $(          
+            "<input type='text' name='inpl4"+str+"' id='inpl4"+str+"'>",
+            ));
+        }else{
+            if($("#inpl4"+str).length){
+                $("#inpl4"+str).remove();
+            }
+        }
+        });
+    }
+    // l5
+    for(var i=1; i<=20; i++){
+        $("#tacl5"+i).click(function(){
+        var getid =this.id 
+        var str = getid.substr(5,2);
+
+        if(!$("#inpl5"+str).length){
+            // alert(i),
+            $("#chel5"+str).append(                
+            $(          
+            "<input type='text' name='inpl5"+str+"'  id='inpl5"+str+"'>",
+            ));
+        }else{
+            if($("#inpl5"+str).length){
+                $("#inpl5"+str).remove();
+            }
+        }
+        });
+    }
+     // l6
+     for(var i=1; i<=20; i++){
+        $("#tacl6"+i).click(function(){
+        var getid =this.id 
+        var str = getid.substr(5,2);
+        if(!$("#inpl6"+str).length){
+            // alert(i),
+            $("#chel6"+str).append(                
+            $(          
+            "<input type='text' name='inpl6"+str+"' id='inpl6"+str+"'>",
+            ));
+        }else{
+            if($("#inpl6"+str).length){
+                $("#inpl6"+str).remove();
+            }
+        }
+        });
+    }
+    // l7
+    for(var i=1; i<=20; i++){
+        $("#tacl7"+i).click(function(){
+        var getid =this.id 
+        var str = getid.substr(5,2);
+
+        if(!$("#inpl7"+str).length){
+            // alert(i),
+            $("#chel7"+str).append(                
+            $(          
+            "<input type='text' name='inpl7"+str+"' id='inpl7"+str+"'>",
+            ));
+        }else{
+            if($("#inpl7"+str).length){
+                $("#inpl7"+str).remove();
+            }
+        }
+        });
+    }
+    // l8
+    for(var i=1; i<=20; i++){
+        $("#tacl8"+i).click(function(){
+        var getid =this.id 
+        var str = getid.substr(5,2);
+
+        if(!$("#inpl8"+str).length){
+            // alert(i),
+            $("#chel8"+str).append(                
+            $(          
+            "<input type='text' name='inpl8"+str+"' id='inpl8"+str+"'>",
+            ));
+        }else{
+            if($("#inpl8"+str).length){
+                $("#inpl8"+str).remove();
+            }
+        }
+        });
+    }
+    // l9
+    for(var i=1; i<=20; i++){
+        $("#tacl9"+i).click(function(){
+        var getid =this.id 
+        var str = getid.substr(5,2);
+        // alert(getid)
+        if(!$("#inpl9"+str).length){
+            // alert(i),
+            $("#chel9"+str).append(                
+            $(          
+            "<input type='text' name='inpl9"+str+"' id='inpl9"+str+"'>",
+            ));
+        }else{
+            if($("#inpl9"+str).length){
+                $("#inpl9"+str).remove();
+            }
+        }
+        });
+    }
+    // l10
+    for(var i=1; i<=20; i++){
+        $("#tacl10"+i).click(function(){
+        var getid =this.id 
+        var str = getid.substr(6,2);
+       
+        if(!$("#inpl10"+str).length){
+            // alert(i),
+            $("#chel10"+str).append(                
+            $(          
+            "<input type='text' name='inpl10"+str+"' id='inpl10"+str+"'>",
+            ));
+        }else{
+            if($("#inpl10"+str).length){
+                $("#inpl10"+str).remove();
+            }
+        }
+        });
+    }
+    // l16
+    for(var i=1; i<=20; i++){
+        $("#tacl16"+i).click(function(){
+        var getid =this.id 
+        var str = getid.substr(6,2);
+        // alert(getid);
+        if(!$("#inpl16"+str).length){
+            // alert(i),
+            $("#chel16"+str).append(                
+            $(          
+            "<input type='text' name='inpl16"+str+"' id='inpl16"+str+"'>",
+            ));
+        }else{
+            if($("#inpl16"+str).length){
+                $("#inpl16"+str).remove();
+            }
+        }
+        });
+    }
+    // l12
+    for(var i=1; i<=20; i++){
+        $("#tacl12"+i).click(function(){
+        var getid =this.id 
+        var str = getid.substr(6,2);
+  
+        if(!$("#inpl12"+str).length){
+            // alert(i),
+            $("#chel12"+str).append(                
+            $(          
+            "<input type='text' name='inpl12"+str+"' id='inpl12"+str+"'>",
+            ));
+        }else{
+            if($("#inpl12"+str).length){
+                $("#inpl12"+str).remove();
+            }
+        }
+        });
+    }
+    // l13
+    for(var i=1; i<=20; i++){
+        $("#tacl13"+i).click(function(){
+        var getid =this.id 
+        var str = getid.substr(6,2);
+
+        if(!$("#inpl13"+str).length){
+            // alert(i),
+            $("#chel13"+str).append(                
+            $(          
+            "<input type='text' name='inpl13"+str+"' id='inpl13"+str+"'>",
+            ));
+        }else{
+            if($("#inpl13"+str).length){
+                $("#inpl13"+str).remove();
+            }
+        }
+        });
+    }
+    // l14
+    for(var i=1; i<=20; i++){
+        $("#tacl14"+i).click(function(){
+        var getid =this.id 
+        var str = getid.substr(6,2);
+
+        if(!$("#inpl14"+str).length){
+            // alert(i),
+            $("#chel14"+str).append(                
+            $(          
+            "<input type='text' name='inpl14"+str+"' id='inpl14"+str+"'>",
+            ));
+        }else{
+            if($("#inpl14"+str).length){
+                $("#inpl14"+str).remove();
+            }
+        }
+        });
+    }
+    // l5
+    for(var i=1; i<=20; i++){
+        $("#tacl15"+i).click(function(){
+        var getid =this.id 
+        var str = getid.substr(6,2);
+
+        if(!$("#inpl15"+str).length){
+            // alert(i),
+            $("#chel15"+str).append(                
+            $(          
+            "<input type='text' name='inpl15"+str+"' id='inpl15"+str+"'>",
+            ));
+        }else{
+            if($("#inpl15"+str).length){
+                $("#inpl15"+str).remove();
+            }
+        }
+        });
+        }
+
+// qualité q1
+$("select").change(function(){
+        var getid =this.id 
+        var str = getid.substr(-14,8);
+        var val = [];
+        
+        for(i=1; i<=20; i++){
+        //  for(a=1; a<=3; a++){
+            for(e=1; e<=4; e++){
+            val[e] = $('#selectq1_'+i+'_l'+e).val()
+                if(val[e]== undefined || val[e]==""){
+                    val[e]=0;
+                }else{
+                    val[e] = parseInt($('#selectq1_'+i+'_l'+e).val(),10);   
+                } 
+            var note = val[1]+val[2]+val[3]+val[4];
+            }
+            if(!$("#spnoteq1"+i).length){
+            $("#noteq1_"+i).append(
+                "<span id='spnoteq1"+i+"'>"+note+"</span>",
+            )
+            }else{
+            if($("#spnoteq1"+i).length){
+                $("#spnoteq1"+i).remove();
+                $("#noteq1_"+i).append(
+                "<span id='spnoteq1"+i+"'>"+note+"</span>",
+            )
+            } 
+        }    
+    }
+});
+// qualité q2
+$("select").change(function(){
+        var getid =this.id 
+        var str = getid.substr(-14,8);
+        
+        var val = [];
+        
+        for(i=1; i<=20; i++){
+        //  for(a=1; a<=3; a++){
+            for(e=1; e<=4; e++){
+            val[e] = $('#selectq2_'+i+'_l'+e).val()
+                if(val[e]== undefined || val[e]==""){
+                    val[e]=0;
+                }else{
+                    val[e] = parseInt($('#selectq2_'+i+'_l'+e).val(),10);   
+                } 
+            var note = val[1]+val[2]+val[3]+val[4];
+            }
+            if(!$("#spnoteq2"+i).length){
+            $("#noteq2_"+i).append(
+                "<span id='spnoteq2"+i+"'>"+note+"</span>",
+            )
+            }else{
+            if($("#spnoteq2"+i).length){
+                $("#spnoteq2"+i).remove();
+                $("#noteq2_"+i).append(
+                "<span id='spnoteq2"+i+"'>"+note+"</span>",
+            )
+            } 
+        }    
+    }
+});
+// qualité q3
+$("select").change(function(){
+        var getid =this.id 
+        var str = getid.substr(-14,8);
+      
+        var val = [];
+        
+        for(i=1; i<=20; i++){
+        //  for(a=1; a<=3; a++){
+            for(e=1; e<=4; e++){
+            val[e] = $('#selectq3_'+i+'_l'+e).val()
+                if(val[e]== undefined || val[e]==""){
+                    val[e]=0;
+                }else{
+                    val[e] = parseInt($('#selectq3_'+i+'_l'+e).val(),10);   
+                } 
+            var note = val[1]+val[2]+val[3]+val[4];
+            }
+            if(!$("#spnoteq3"+i).length){
+            $("#noteq3_"+i).append(
+                "<span id='spnoteq3"+i+"'>"+note+"</span>",
+            )
+            }else{
+            if($("#spnoteq3"+i).length){
+                $("#spnoteq3"+i).remove();
+                $("#noteq3_"+i).append(
+                "<span id='spnoteq3"+i+"'>"+note+"</span>",
+            )
+            } 
+        }    
+    }
+});
+
+// Technicité tec_<%= i %>
+$("select").change(function(){
+        var val;
+        var note;
+        for(i=1; i<=20; i++){
+            val = $("#tec_"+i).val();
+            
+            if(val==""){
+                note = 0;
+            }else{
+                note = val;
+            }
+            if(!$("#spntec"+i).length){
+            $("#notetec_"+i).append(
+                "<span id='spntec"+i+"'>"+note+"</span>",
+            )
+            }else{
+            if($("#spntec"+i).length){
+                $("#spntec"+i).remove();
+                $("#notetec_"+i).append(
+                "<span id='spntec"+i+"'>"+note+"</span>",
+            )
+            } 
+        }
+        }
+});
+</script>

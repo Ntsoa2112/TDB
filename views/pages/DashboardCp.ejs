@@ -79,23 +79,14 @@ for(var i = 0; i <doss.length; i++){
             <div class="card-body no-padding">
               <div class="col-sm-8 col-xs-8">
                 <%- partial ('chart/ColumnHighchart.ejs', {idElement : 'idDossierNow', title : 'Repartition des Dossiers (Aujourdhui)', titleChart : 'Dossier', labelY : 'Quantités',maxY : 1000 ,data : dataDossier}) %>
-
-
               </div>
               <div class="col-sm-4 col-xs-8">
                 <%- partial ('chart/PieChartHighchart.ejs', {idElement : 'idDossierHighchart',classeElement : 'pie_dossier_all', title : 'Repartition Quantité traitéé (Quantité)', titleChart : 'Dossier' ,data : dataDossier}) %>
-
-
-
               </div>
             </div>
           </div>
         </div>
-
-
-
-        </div>
-
+      </div>
     </div>
   </div>
 

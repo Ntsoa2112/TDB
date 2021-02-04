@@ -1,0 +1,70 @@
+<% if(existe == false){ %>
+<form action="/compte_rendu_post/<%= mois %>/<%= annee %>/<%= id_pers %>" method="POST">
+<div class="cont">
+    <input type="submit" name="submit" value="Conserver">
+    <input type="submit" name="submit" value="Valider">
+</div>
+
+ <Table class="tabcoaching" border="1">
+     <thead>
+         <th class="coultab">CRITERES</th>
+         <th class="coultab">QUALITE</th>
+         <th class="coultab">TECHNICITE</th>
+         <th class="coultab">IMPLICATION</th>
+     </thead>
+     <tbody>
+         <tr>
+             <th class="vid">POINTS POSITIFS</th>
+             <td><textarea name="q1" id="" cols="30" rows="10"></textarea></td>
+             <td><textarea name="t1" id="" cols="30" rows="10"></textarea></td>
+             <td><textarea name="imp1" id="" cols="30" rows="10"></textarea></td>
+         </tr>
+         <tr>
+             <th class="vid">POINTS A AMELIORER</th>
+             <td><textarea name="q2" id="" cols="30" rows="10"></textarea></td>
+             <td><textarea name="t2" id="" cols="30" rows="10"></textarea></td>
+             <td><textarea name="imp2" id="" cols="30" rows="10"></textarea></td>
+         </tr>
+     </tbody>
+    </form>
+ </Table>
+<%
+}
+else{
+%>
+<form action="/compte_rendu_post/<%= mois %>/<%= annee %>/<%= id_pers %>" method="POST">
+    <div class="cont">
+        <% if(resultat.rows[0].valider == false){ %>
+        <input type="submit" name="submit" value="Conserver">
+        <input type="submit" name="submit" value="Valider">
+        <input type="hidden" name="update" value="true">
+        <input type="hidden" name="id_cr" value="<%= resultat.rows[0].id %>">
+        <% } %>
+    </div>
+    
+     <Table class="tabcoaching" border="1">
+         <thead>
+             <th class="coultab">CRITERES</th>
+             <th class="coultab">QUALITE</th>
+             <th class="coultab">TECHNICITE</th>
+             <th class="coultab">IMPLICATION</th>
+         </thead>
+         <tbody>
+             <tr>
+                 <th class="vid">POINTS POSITIFS</th>
+                 <td><textarea name="q1" id="" cols="30" rows="10" ><%= resultat.rows[0].qual_positif %></textarea></td>
+                 <td><textarea name="t1" id="" cols="30" rows="10"><%= resultat.rows[0].technicite_positif %></textarea></td>
+                 <td><textarea name="imp1" id="" cols="30" rows="10"><%= resultat.rows[0].implication_positif %></textarea></td>
+             </tr>
+             <tr>
+                 <th class="vid">POINTS A AMELIORER</th>
+                 <td><textarea name="q2" id="" cols="30" rows="10"><%= resultat.rows[0].qual_ameliorer %></textarea></td>
+                 <td><textarea name="t2" id="" cols="30" rows="10"><%= resultat.rows[0].technicite_ameliorer %></textarea></td>
+                 <td><textarea name="imp2" id="" cols="30" rows="10"><%= resultat.rows[0].implication_ameliorer %></textarea></td>
+             </tr>
+         </tbody>
+        </form>
+     </Table>
+<%
+}
+%>

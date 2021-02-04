@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        .tabcoaching{
+            font-family: Arial;
+            font-size: 15px;
+        }
+        .tabcoaching .coultab{
+            background: brown;
+            color: beige;           
+        }
+        textarea{
+            width:300px;
+            height:200px;
+            resize: none;
+        }
+        .cont{
+            float: right;
+            margin-right:155px;
+            margin-bottom:10px;
+        }
+        
+
+        .cul{
+            list-style: none;
+        }
+        .cli{
+            display: inline;
+        }
+        .cli input{
+            color: white;
+            width:80px;
+            height:30px;
+            background: #0069d9;
+            border: 1px solid rgb(17, 0, 255);
+            border-radius: 5%;
+        }
+        .cli input:hover{
+            background: rgb(71, 203, 255);
+            transition-duration: 0.6s;
+        }
+        .act{
+            background: rgb(71, 203, 255);
+            border: 1px solid rgb(0, 225, 255);
+        }
+    </style>
+</head>
+<body>
+   <div class="cont">
+       <input type="button" value="Conserver">
+       <input type="button" value="Valider">
+  </div>
+   <div class="conttab">
+    <Table class="tabcoaching" border="1">
+        <thead>
+            <th class="coultab">CRITERES</th>
+            <th class="coultab">QUALITE</th>
+            <th class="coultab">TECHNICITE</th>
+            <th class="coultab">IMPLICATION</th>
+        </thead>
+        <tbody>
+            <tr>
+                <th>POINTS POSITIFS</th>
+                <td><textarea name="" id="" cols="30" rows="10"></textarea></td>
+                <td><textarea name="" id="" cols="30" rows="10"></textarea></td>
+                <td><textarea name="" id="" cols="30" rows="10"></textarea></td>
+            </tr>
+            <tr>
+                <th>POINTS A AMELIORER</th>
+                <td><textarea name="" id="" cols="30" rows="10"></textarea></td>
+                <td><textarea name="" id="" cols="30" rows="10"></textarea></td>
+                <td><textarea name="" id="" cols="30" rows="10"></textarea></td>
+            </tr>
+        </tbody>
+    </Table>
+</div>
+</body>
+
+</html>

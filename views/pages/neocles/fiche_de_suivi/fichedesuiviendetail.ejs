@@ -4,14 +4,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
     <!--STYLES-->
-    <link rel="stylesheet" href="/styles/importer.css">
-    <link rel="stylesheet" href="/bootflat/css/bootflat.min.css">
+    <!-- <link rel="stylesheet" href="/styles/importer.css"> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="/css/local.css">
     <link rel="stylesheet" href="/css/Style_v3.css">
     <link rel="stylesheet" href="/morris/morris.css">
     <link rel="stylesheet" href="/css/bootstrap-material-datetimepicker.css">
     <!--STYLES END-->
+    <style>
+        
+    </style>
 </head>
 <body>
 <% if(req.session.droit==1){
@@ -25,7 +29,93 @@
 <% include ../../../includes/enteteOperateur.ejs %>
 
 <% }%>
-<h1>Fiche de suivi en détail</h1>
+<h1 class="tit" >Fiche de suivi en détail</h1>
+<% 
+if(create == true){
+%>
+  <script>
+    alert("Fiche de suivi créé avec succès");
+  </script>
+<%
+}
+if(update == true){
+  %>
+  <script>
+    alert("Fiche de suivi mise à jour avec succès");
+  </script>
+<% 
+}
+%>
+
+<div id="page-wrapper">
+    <div class="row">
+      <div class="col-md-12">
+        <div class=" row ">
+            <div  class="">
+              <div class="panel panel-primary">
+                <div class="panel-heading">
+                  <h3 class="panel-title"></h3>
+                  <div class="row">
+                    <div class="form-group">
+                      <!-- <div class="col-xs-2 col-md-2 col-lg-2">
+                        <select class="form-control" tabindex="-1" id="equipeDashAdmin" placeholder = "Equipe" name="equipe" >
+                          <option value="1">EQUIPE</option> 
+                        </select>                          
+                      </div> -->
+                      <div class="col-xs-2 col-md-2 col-lg-2">
+                        <!-- <input class="form-control" tabindex="-1" id="datetim" /> -->
+
+                        <input type="month" id="mois" class="form-control" name="mois"  min="0000-01" max="9999-01" placeholder="mois année" required/>
+                      </div>
+                      <div class="col-xs-2 col-md-2 col-lg-2">
+                      <% 
+                      if(manager == true){
+                      %>
+                        <!-- <input type="text" class="form-control" tabindex="-1" id="id_pers" placeholder="Matricule" required/> -->
+                        <select class="form-control" id="id_pers" placeholder = "Matricule" name="Matricule" >
+                            <option value=""></option>
+                            <% 
+                              for (var i = 0 ; i < id_appelation.rowCount; i++){
+                            %>
+                            <option value="<%= id_appelation.rows[i].id_pers %>"><%= id_appelation.rows[i].appelation %> <%= id_appelation.rows[i].id_pers %></option>
+                            <% 
+                              }
+                            %>
+                      </select>
+                      <%
+                      }
+                      else{
+                      %>
+                        <input type="text" class="form-control" tabindex="-1" id="id_pers" placeholder="Matricule" value="<%= id %>" disabled/>
+                       
+                      <%
+                      }
+                      %>
+                      </div>
+                      <div class="col-xs-2 col-md-2 col-lg-2">
+                        <button type="submit" style="margin-top:-1px"  class="btn btn-info" onclick="suivi_en_details();">Recherche</button>
+                      </div>
+                  </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- <div class="clearfix"></div>
+    <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+    <span class="sr-only">Loading...</span>
+    </div>
+    <div id="div" class="col-md-12 col-sm-12 col-xs-12"> -->
+
+                <!-- tableau -->
+    <form action="">
+      
+      <div id="tableau_en_details">
+        
+      </div>
+    </form>
+
+
     <script src="/js/dependencies/sails.io.js"></script>
     <script src="/js/jquery-1.10.2.min.js"></script>
     <script src="/bootstrap/js/bootstrap.min.js"></script>
@@ -35,5 +125,6 @@
     <script src="/js/jquery-ui.min.js"></script>
     <script src="/js/material-modal.min.js"></script>
     <script src="/js/pikaday.js"></script>
+    <script src="/js/neocles/js.js"></script>
 </body>
 

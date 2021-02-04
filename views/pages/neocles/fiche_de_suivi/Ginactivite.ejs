@@ -1,0 +1,29 @@
+
+<html>
+  <head>
+    <script type="text/javascript">
+      google.charts.load("current", {packages:["corechart"]});
+      google.charts.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['Task', 'Hours per Day'],
+          ['Ticket traités avec action',     <%= nbr_inactivite_oui %>],
+          ['Ticket sans action de traitement',     <%= nbr_inactivite_non %>]
+        ]);
+
+        var options = {
+          title: '',
+          is3D: true,
+          width:800,
+          height:400,
+        };
+        var chart = new google.visualization.PieChart(document.getElementById('inactivite'));
+        chart.draw(data, options);
+      }
+    </script>
+  </head>
+  <body>
+      <h3 align="center">GRAPHE IMPLICATION-INACTIVITE SUR TICKETS</h3>
+    <div  align="center" id="inactivite"></div>
+  </body>
+</html>

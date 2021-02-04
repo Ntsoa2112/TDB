@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+       
+        <div class="Gnote">
+        <h3 align="center">GRAPHE NOTE MENSUELLE</h3>
+           <canvas id="notemoi"></canvas> 
+        </div><br><br><br>
+        <script>
+            var vehicles = [
+                    <%
+                    for(var i = 1; i <= ticket; i++){
+                            %>
+                            <%= i+"," %>
+                            <%
+                    }
+                    %>
+
+                ];
+                         var percentage = [
+                                        <%
+                                for(var i = 0; i < ticket; i++){
+                                        %>
+                                        <%= total[i]+"," %>
+                                        <%
+                                }
+                                %>
+                         ];
+         
+                         var ctx = document.getElementById("notemoi");
+                         var lineChart = new Chart(ctx, {
+                         type: 'bar',
+                         data: {
+                         labels: vehicles,
+                         datasets: [{
+                         data: percentage,
+                         label: "Total note/12",
+                         backgroundColor: "#3e95cd",
+                         fill: false
+                         }]
+                         },
+                            options: {
+                                annotation: {
+                                        annotations: [{
+                                                type: 'line',
+                                                display:true,
+                                                mode: 'horizontal',
+                                                scaleID: 'y-axis-0',
+                                                value: <%= seuil_ticket_pers %>,
+                                                borderColor: 'red',
+                                                borderWidth: 4
+                                        }],
+                                        drawTime: "afterDraw" // (default)
+                                        },
+                                plugins: {
+                // Change options for ALL labels of THIS CHART
+                                    datalabels: {
+                                            color: '#ffffff',
+                                            FontSize :25,
+                                    }
+                                   
+                                    },
+                            scales: {
+                            yAxes: [{
+                                    ticks: {
+                                    beginAtZero: true,
+                                    min: 0,
+                                    max:12,
+                                    stepSize:2,
+                                    }
+                            }],
+                            xAxes: [{
+                                    ticks: {
+                                    autoSkip: false,
+                                    maxRotation:0,
+                                    minRotation:0
+                                    }
+                            }]
+                            }
+                            }
+                         });
+        </script>
+</body>
+</html>

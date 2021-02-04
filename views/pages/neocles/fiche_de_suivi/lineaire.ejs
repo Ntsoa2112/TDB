@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <h3 align="center">GRAPHE CONFORMITE ISO 2859</h3>
+    <canvas id="lineaire"></canvas>
+    <script>
+         var ctx = document.getElementById("lineaire");
+        let chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                datasets: [{
+                    label: 'Résultat conformité %',
+                    data: [0, 20, 40, 50]
+                }],
+                labels: ['Janvier', 'Février', 'Mars', 'Avril','Mai','Juin','Juillet','Août','September','Octobre','Novembre','Décembre']
+            },
+            options: {
+                annotation: {
+                annotations: [{
+                        type: 'line',
+                        display:true,
+                        mode: 'horizontal',
+                        scaleID: 'y-axis-0',
+                        value: '98',
+                        borderColor: 'red',
+                        borderWidth: 4
+                }],
+                drawTime: "afterDraw" // (default)
+                },
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            min:90,
+                            max:100,
+                            stepSize:1,
+                        }
+                    }]
+                }
+            }
+        });
+    </script>
+</body>
+</html>

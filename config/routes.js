@@ -124,8 +124,17 @@ module.exports.routes = {
   '/neocles-reporting-conformite-annuelle' : 'NeoclesReportingController.getConformiteParEquipe',
   
   /*********** Ajout suivi ***********************/
-  '/fiche_suivi_en_detail': 'FichedesuivineoController.fichedesuiviendetail',
-  '/fiche_suivi_de_conformite': 'FichedesuivineoController.fichedesuivideconformite',
+  '/coaching/:create?':'CoachingController.fichecoaching',
+  '/fiche_suivi_en_detail/:create?': 'FichedesuivineoController.fichedesuiviendetail',
+  '/fiche_suivi_de_conformite/:update?': 'FichedesuivineoController.fichedesuivideconformite',
+  'get /suivi_conformite' : 'FichedesuivineoController.suivi_conformite',
+  'get /suivi_en_details' : 'FichedesuivineoController.suivi_en_details',
+  'post /suivi_details_post/:my/:id/:ticket' : 'FichedesuivineoController.post_suivi_details',
+  'post /update_conformite/:my/:id/:ticket' : 'FichedesuivineoController.post_update_conformite',
+  'post /update_suivi_details/:my/:id/:ticket/:id_fiche' : 'FichedesuivineoController.post_update_suivi_details',
+  '/suivi_coaching' : 'CoachingController.suivi_coaching',
+  'post /suivi_coaching_month' : 'CoachingController.suivi_coaching_month',
+  'post /compte_rendu_post/:mois/:annee/:id_pers' : 'CoachingController.compte_rendu_post',
   /*********** Dossiers ************************************************************************************************/
   '/statOp': 'LienOperDossierController.index',
   '/ajaxStat': 'LienOperDossierController.ajaxStat',
